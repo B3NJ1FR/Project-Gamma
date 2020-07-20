@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Main Menu">
+      <UniqueIdentifier>{28d76d65-a353-4721-8c42-29379fbc6871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Main Menu">
+      <UniqueIdentifier>{9c97a83d-6075-46c9-96f0-4a1db973bc2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Initialisation Game Launching">
+      <UniqueIdentifier>{856c1a3a-b2b1-4ff9-a733-16ffc361f541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Initialisation Game Launching">
+      <UniqueIdentifier>{4d19f66a-688e-4d26-a0e4-aa32b2b1bb3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game">
+      <UniqueIdentifier>{52ef696f-761c-40c4-8bdf-bf17902b603f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game">
+      <UniqueIdentifier>{f4fdc0da-a5b5-4b1b-9e6f-e5e85f66ae1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Buildings">
+      <UniqueIdentifier>{8ba26b92-b81a-47d2-910d-33fa3c236683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Ressources">
+      <UniqueIdentifier>{ebc1b374-462c-47a4-ab06-b8476e19cc21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Construction Mode">
+      <UniqueIdentifier>{d27ce42b-e070-4dc2-8f62-4a679ae61d1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Workers">
+      <UniqueIdentifier>{d04d97fe-a8b3-4352-8d89-cb7a1a0d69df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Buildings">
+      <UniqueIdentifier>{c3b1edfb-aaac-48df-a72d-4c7d14a7be6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Construction Mode">
+      <UniqueIdentifier>{9d2f4dce-bdaa-48fa-be6a-7693fb7b676a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Ressources">
+      <UniqueIdentifier>{7aa84914-e728-4234-87f1-a0bea09a975f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Money">
+      <UniqueIdentifier>{ffdcf277-f298-4ac6-819c-c33460f8cc36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Money">
+      <UniqueIdentifier>{80bae991-7c90-4094-ae6a-d1063c0b5d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Time">
+      <UniqueIdentifier>{e9dd75d0-ff25-4472-968c-b0af6abd70e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Time">
+      <UniqueIdentifier>{4c1ceec1-d097-4c9f-bb62-f6a7b884ed00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Entities">
+      <UniqueIdentifier>{292f1f8f-1f0f-4a8a-b4b6-869a36d4cb5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Entities\Workers">
+      <UniqueIdentifier>{c9a48d51-1693-416d-b2cc-1a3bb3fb3dc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Internal Game">
+      <UniqueIdentifier>{26bb9c6a-f54e-4585-9a85-6459ffddc3ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Internal Game">
+      <UniqueIdentifier>{ee0298a6-8e43-4c86-8eef-08e40fb52f8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Entities">
+      <UniqueIdentifier>{7b1dba66-c26f-464f-a2e7-5b9a2f4fe3ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Entities\Workers">
+      <UniqueIdentifier>{e137e9f3-e868-4569-a386-178acda29d07}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Initialisation.cpp">
+      <Filter>Fichiers sources\Initialisation Game Launching</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Fichiers sources\Main Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Buildings.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="InitBuildingsFromFile.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Ressources.cpp">
+      <Filter>Fichiers sources\Game\Ressources</Filter>
+    </ClCompile>
+    <ClCompile Include="Money.cpp">
+      <Filter>Fichiers sources\Game\Money</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManagement.cpp">
+      <Filter>Fichiers sources\Game\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorsLogFile.cpp">
+      <Filter>Fichiers sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Vines.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecificsBuildings.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDisplay.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInitialisation.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInput.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUpdate.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities.cpp">
+      <Filter>Fichiers sources\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Workers.cpp">
+      <Filter>Fichiers sources\Game\Entities\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinding.cpp">
+      <Filter>Fichiers sources\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkedList.cpp">
+      <Filter>Fichiers sources\Game</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Fichiers d%27en-tête\Main Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Definitions.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Initialisation.hpp">
+      <Filter>Fichiers d%27en-tête\Initialisation Game Launching</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Buildings.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="InitBuildingsFromFile.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDefinitions.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Ressources.h">
+      <Filter>Fichiers d%27en-tête\Game\Ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="Money.h">
+      <Filter>Fichiers d%27en-tête\Game\Money</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManagement.h">
+      <Filter>Fichiers d%27en-tête\Game\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorsLogFile.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Vines.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecificsBuildings.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathfinding.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Workers.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDisplay.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInitialisation.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInput.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUpdate.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

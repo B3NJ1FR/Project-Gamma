@@ -1,0 +1,126 @@
+#include "MainMenu.h"
+
+
+MainMenu::MainMenu()
+{
+	this->background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 0);
+	this->buttonPlay = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Play.png", 1);
+	this->buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
+	this->buttonQuit = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
+}
+
+MainMenu::~MainMenu()
+{
+	delete (this->background.getTexture());
+	delete (this->buttonPlay.getTexture());
+	delete (this->buttonOptions.getTexture());
+	delete (this->buttonQuit.getTexture());
+}
+
+
+void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_generalState)
+{
+	sf::Event event;
+	while (_window.pollEvent(event))
+	{
+		// Closing by pressing the Close button
+		if (event.type == sf::Event::Closed)
+		{
+			exit(EXIT_SUCCESS);
+		}
+
+		if (event.type == sf::Event::KeyPressed)
+		{
+			// If we pressed the escape key, we close the game
+			if (event.key.code == sf::Keyboard::Escape)
+			{
+				exit(EXIT_SUCCESS);
+			}
+		}
+
+		if (event.type == sf::Event::MouseButtonPressed)
+		{
+			// If we pressed the escape key, we close the game
+			if (event.key.code == sf::Mouse::Left)
+			{
+				sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
+
+				// Button Play
+				if (mousePostionAtScreen.x > 400 - (buttonPlay.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < 400 + (buttonPlay.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y > 300 - (buttonPlay.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < 300 + (buttonPlay.getGlobalBounds().height / 2))
+				{
+					std::cout << "\n\nGame launching ...\n\n\n";
+					*(_generalState) = MAIN_STATE_GAME;
+
+					this->~MainMenu();					
+				}
+
+				// Button Options
+				if (mousePostionAtScreen.x > 400 - (buttonOptions.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < 400 + (buttonOptions.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y > 600 - (buttonOptions.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < 600 + (buttonOptions.getGlobalBounds().height / 2))
+				{
+					std::cout << "\n\nOptions ...\n\n\n";
+				}
+
+				// Button Quit
+				if (mousePostionAtScreen.x > 400 - (buttonQuit.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < 400 + (buttonQuit.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y > 900 - (buttonQuit.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < 900 + (buttonQuit.getGlobalBounds().height / 2))
+				{
+					std::cout << "\n\nSee you soon !\n\n\n";
+					exit(EXIT_SUCCESS);
+				}
+			}
+		}
+		
+	}
+}
+
+
+void MainMenu::UpdateMainMenu()
+{
+
+}
+
+
+void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
+{
+	_window.clear();
+
+	// Blit the background
+	BlitSprite(this->background, 0, 0, 0, _window);
+
+
+	// Blit the logo
+
+
+
+	// Blit the buttons
+	BlitSprite(this->buttonPlay, 400, 300, 0, _window);
+	BlitSprite(this->buttonOptions, 400, 600, 0, _window);
+	BlitSprite(this->buttonQuit, 400, 900, 0, _window);
+
+
+	_window.display();
+
+}
+
+
+
+void MainMenuState(Data *_data)
+{
+	// Input
+	_data->mainMenu->menu.InputMainMenu(_data->system->window, &_data->state);
+
+	// Update
+	_data->mainMenu->menu.UpdateMainMenu();
+
+	// Display
+	_data->mainMenu->menu.DisplayMainMenu(_data->system->window);
+	
+}
