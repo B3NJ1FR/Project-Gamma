@@ -22,6 +22,8 @@ void Vines::InitialisationVines(Buildings *_vine)
 
 	this->list = LinkedListInitialisation();
 
+
+	// Temporaire :
 	//this->list = new sLinkedList;
 
 	//// We init the first and the last element of the linked list
@@ -51,7 +53,7 @@ void Vines::ReadVineLinkedList()
 				positionCounter++;
 			}
 
-			std::cout << std::endl << std::endl << std::endl;
+			//std::cout << std::endl << std::endl << std::endl;
 		}
 	}
 }
@@ -357,19 +359,19 @@ void Vines::UpdateVineProduction(Ressources *_ressource)
 				if (((Vines::sVines *)currentElement->data)->isProduced == true)
 				{
 					// Add quantity produced to the ressource targeted
-					_ressource->AddQuantityOwned(this->vineBuilding->GetRessourceQuantityProduced());
+					//_ressource->AddQuantityOwned(this->vineBuilding->GetRessourceQuantityProduced());
 
 					// Launch the feedback animation of producing
 
 
-					((Vines::sVines *)currentElement->data)->isProduced = false;
+					//((Vines::sVines *)currentElement->data)->isProduced = false;
 				}
 			}
 		}
 	}
 }
 
-bool Vines::CheckVinePresenceAtPosition(const sf::Vector2f &_mapPosition)
+bool Vines::ConfirmVinePresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
 {
 	if (this->list != nullptr)
 	{
@@ -377,7 +379,6 @@ bool Vines::CheckVinePresenceAtPosition(const sf::Vector2f &_mapPosition)
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				// If the building has produced the ressources, we manage it
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
 				{
 					((Vines::sVines *)currentElement->data)->isWorkerThere = true;
@@ -398,4 +399,81 @@ bool Vines::CheckVinePresenceAtPosition(const sf::Vector2f &_mapPosition)
 	{
 		return false;
 	}	
+}
+
+bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Vines::sVines *)currentElement->data)->isProduced == true)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// If the building has produced the ressources, we manage it
+				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Vines::sVines *)currentElement->data)->isProduced == true)
+					{
+						// Launch the feedback animation of producing
+
+						((Vines::sVines *)currentElement->data)->isProduced = false;
+						
+
+						return this->vineBuilding->GetRessourceQuantityProduced();
+					}
+					else
+					{
+						return 0;
+					}
+				}
+
+			}
+
+			return 0;
+
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
 }

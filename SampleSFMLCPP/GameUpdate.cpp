@@ -124,11 +124,9 @@ void GameUpdate(struct Game *_game)
 	}
 	else
 	{
-		_game->workers->InitPathfinding(_game);
-		_game->workers->UpdatePathAndActivities(_game->time.GetFrameTime(), _game->map, &_game->vines, &_game->stompingVats);
+		_game->workersList->UpdateWorkersLife(_game, _game->time.GetFrameTime(), _game->map, &_game->vines, &_game->stompingVats);
 	}
 
-	//_game->path.WalkProcess(&_game->workerPosition, _game->time.GetFrameTime() * 5);
 
 	_game->time.UpdateFrameTime();
 

@@ -78,7 +78,10 @@ public:
 	void UpdateVineLife(const float &_frametime);
 	void UpdateVineSprite(unsigned short ***_map);
 	void UpdateVineProduction(Ressources *_ressource);
-	bool CheckVinePresenceAtPosition(const sf::Vector2f &_mapPosition);
+
+	bool ConfirmVinePresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
+	int VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition);
 
 private:
 	LinkedListClass::sLinkedList *list;

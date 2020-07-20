@@ -123,13 +123,15 @@ void DisplayUIGeneral(struct Game *_game)
 
 	//BlitSprite(_game->workerTest, (150 + (_game->workerPosition.x * (TILE_SIZE + 3))) + 16, (50 + (_game->workerPosition.y * (TILE_SIZE + 3))) + 16, 0, *_game->window);
 	
-	sf::Vector2f tileCoordinates = WorldToScreen(_game->workers->GetWorkerPosition().x, _game->workers->GetWorkerPosition().y); // Faire une version stack
-	sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y); // Faire une version stack
-	
-	BlitSprite(_game->workerTest,
-				(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _game->camera.z),
-				(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _game->camera.z),
-				0, *_game->window);
+	//sf::Vector2f tileCoordinates = WorldToScreen(_game->workers->GetWorkerPosition().x, _game->workers->GetWorkerPosition().y); // Faire une version stack
+	//sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y); // Faire une version stack
+	//
+	//BlitSprite(_game->workerTest,
+	//			(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _game->camera.z),
+	//			(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _game->camera.z),
+	//			0, *_game->window);
+
+	_game->workersList->DisplayWorkersSprite(_game->camera, &_game->workerTest, *_game->window);
 }
 
 

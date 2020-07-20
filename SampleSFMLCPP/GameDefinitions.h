@@ -6,7 +6,7 @@
 #include "Vines.h"
 #include "SpecificsBuildings.h"
 #include "Pathfinding.h"
-#include "Workers.h"
+#include "WorkersList.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -112,7 +112,7 @@ struct Game
 
 	// Workers
 	sf::Sprite workerTest;
-	Workers *workers;
+	WorkersList *workersList;
 
 
 	// Temporary

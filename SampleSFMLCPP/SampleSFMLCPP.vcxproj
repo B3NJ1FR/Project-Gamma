@@ -171,6 +171,7 @@
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="Vines.cpp" />
     <ClCompile Include="Workers.cpp" />
+    <ClCompile Include="WorkersList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buildings.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="Vines.h" />
     <ClInclude Include="Workers.h" />
+    <ClInclude Include="WorkersList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

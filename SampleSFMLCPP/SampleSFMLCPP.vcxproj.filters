@@ -147,6 +147,9 @@
     <ClCompile Include="LinkedList.cpp">
       <Filter>Fichiers sources\Game</Filter>
     </ClCompile>
+    <ClCompile Include="WorkersList.cpp">
+      <Filter>Fichiers sources\Game\Entities\Workers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="LinkedList.h">
       <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkersList.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities\Workers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

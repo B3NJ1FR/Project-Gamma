@@ -34,8 +34,9 @@ public:
 		enum MainBuildingStatus actualState;
 
 		int quantitativeThreshold; // Seuil minimum de lancement
-		int maximalQuantity; // Seuil minimum de lancement
-		int internalRessourceCounter;
+		int maximalQuantity; // Seuil maximal
+		int internalImportRessourceCounter;
+		int internalExportRessourceCounter;
 
 		float lifeTime;
 		float actualProductionTime;

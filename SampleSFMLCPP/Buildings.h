@@ -3,6 +3,15 @@
 
 #include "Common.hpp"
 
+enum TypeOfBuilding
+{
+	BUILDING_VINES,
+	BUILDING_GRAPE_STOMPING_VATS,
+	BUILDING_WINE_PRESS,
+	BUILDING_WINE_STOREHOUSE,
+};
+
+
 class Buildings
 {
 protected :

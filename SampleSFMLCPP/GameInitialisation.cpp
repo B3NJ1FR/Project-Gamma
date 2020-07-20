@@ -289,14 +289,9 @@ void GameInitialisation(struct Game *_game)
 	TextsInit(_game);
 	RessourcesInitialisation(_game);
 
-	_game->workers = new Workers;
-	//_game->workers->InitMapCopyPathfinding(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->map, (FIRST_FLOOR + COLLISIONS_ID)); // TEMPORAIRE
-	//_game->workers->SetStartingPosition(sf::Vector2i(2, 4)); // TEMPORAIRE
-	//_game->workers->SetEndingPosition(sf::Vector2i(18, 4)); // TEMPORAIRE
+	_game->workersList = new WorkersList;
 
-
-	_game->workers->SetWorkerPosition(sf::Vector2f(0, 0)); // TEMPORAIRE
-
+	
 	_game->camera.x = -15;
 	_game->camera.y = -15;
 	_game->camera.z = RESET;
@@ -314,6 +309,8 @@ void GameInitialisation(struct Game *_game)
 	_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[1]);
 	_game->winePress.InitialisationSpeBuilding(&_game->buildings[2]);
 	_game->wineStorehouse.InitialisationSpeBuilding(&_game->buildings[3]);
+
+	_game->workersList->InitialisationWorkersList();
 
 	_game->buildingUI = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_test.png", 0);
 	_game->buildingUIclosed = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_closed.png", 0);

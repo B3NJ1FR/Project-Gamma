@@ -220,28 +220,19 @@ void GameInput(struct Game *_game)
 				_game->path.isPressingEnd = true;
 			}*/
 
-			if (event.key.code == sf::Keyboard::Y && _game->actualGameState == TEST_PATHFINDING_MODE)
-			{
-				std::cout << "Demande de lancemement de chemin\n";
-				_game->workers->ActiveLauchingMovement();
-			}
-			if (event.key.code == sf::Keyboard::U && _game->actualGameState == TEST_PATHFINDING_MODE)
-			{
-				std::cout << "Depart chemin\n";
-				_game->workers->isPressingStart = true;
-			}
-			if (event.key.code == sf::Keyboard::I && _game->actualGameState == TEST_PATHFINDING_MODE)
-			{
-				std::cout << "Fin chemin\n";
-				_game->workers->isPressingEnd = true;
-			}
 			
-			// TEST		
+			// Touche placé sur Y, mais à changer	
 			if (event.key.code == sf::Keyboard::Y)
 			{
-				/*_game->vines.RemoveElementsOfLinkedList(true, 10);
-				_game->vines.ReadLinkedList();*/
+				// Prix temporaire
+				if (_game->money.GetMoneyQuantity() - 1000 >= 0)
+				{
+					_game->money.SubtractMoney(1000);
+					_game->workersList->AddNewWorkersToList(sf::Vector2f(rand() % _game->numberColumns, rand() % _game->numberLines));
+				}
 			}
+
+
 			// TEST
 			if (event.key.code == sf::Keyboard::U)
 			{
@@ -253,7 +244,16 @@ void GameInput(struct Game *_game)
 				std::cout << _game->buildings[3].GetRessourceIDProduced() << " " << _game->buildings[3].GetRessourceQuantityProduced() << std::endl;
 				//std::cout << _game->buildings[3].GetRessourceIDNeeded() << " " << _game->buildings[3].GetRessourceIDNeeded(2) << std::endl;
 			}
-
+			// TEST
+			if (event.key.code == sf::Keyboard::Add)
+			{
+				_game->workersList->ChangeWorkerNumberSelectedAdd();
+			}
+			// TEST
+			if (event.key.code == sf::Keyboard::Subtract)
+			{
+				_game->workersList->ChangeWorkerNumberSelectedSubtract();
+			}
 
 			if (_game->actualGameState == BUILD_MODE
 				&& event.key.code == sf::Keyboard::Num1)
@@ -321,10 +321,7 @@ void GameInput(struct Game *_game)
 						&& _game->buildingCaseSelected.y >= 0
 						&& _game->buildingCaseSelected.y < _game->numberLines)
 					{
-						_game->workers->SetEndingPosition(_game->buildingCaseSelected, _game->map);
-
-						_game->workers->SetWorkerStatus(IDLE);
-						_game->workers->ActiveLauchingMovement();
+						_game->workersList->WorkerListSetEndPosition(_game->buildingCaseSelected, _game->map);
 					}
 				}
 				else if (_game->actualGameState == BUILD_MODE)
@@ -488,7 +485,7 @@ void GameInput(struct Game *_game)
 					// If we didn't found an occupied place, we call that is an empty place
 					(isAreaEmpty) ? _game->isBuildingCaseOccupied = false : _game->isBuildingCaseOccupied = true;
 
-					// Add the building is the place is empty
+					// Add the building if the place is empty
 					if (_game->isBuildingCaseOccupied == false)
 					{
 						for (int y = 0; y < _game->buildings[_game->IDChosenBuilding].GetSize().y; y++)
@@ -504,7 +501,7 @@ void GameInput(struct Game *_game)
 									_game->map[FIRST_FLOOR + COLLISIONS_ID][_game->buildingCaseSelected.y - y][_game->buildingCaseSelected.x - x] = COLLISION;
 
 									// Set the correct building ID
-									_game->map[FIRST_FLOOR + BUILDING_ID][_game->buildingCaseSelected.y - y][_game->buildingCaseSelected.x - x] = 0;
+									_game->map[FIRST_FLOOR + BUILDING_ID][_game->buildingCaseSelected.y - y][_game->buildingCaseSelected.x - x] = _game->IDChosenBuilding;
 								}
 								else
 								{

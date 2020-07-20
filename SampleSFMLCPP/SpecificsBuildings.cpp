@@ -61,7 +61,8 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
 	// A CONFIGURER
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->maximalQuantity = 5;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalRessourceCounter = RESET;
+	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalImportRessourceCounter = RESET;
+	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalExportRessourceCounter = RESET;
 
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->lifeTime = RESET;
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualProductionTime = RESET;
@@ -108,10 +109,10 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						if (_ressourceSent->GetQuantityOwned() - 1 > 0)
 						{
 							_ressourceSent->SubtractQuantityOwned(1);
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter += 1;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
 						}
 
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->maximalQuantity)
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->maximalQuantity)
 						{
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_WORKS;
 						}
@@ -130,22 +131,22 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						break;
 					case BUILDING_COLLECTING_PRODUCTION:
 						
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter > 0)
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter > 0)
 						{
 							_ressourceProduced->AddQuantityOwned(1);
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter -= 1;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter -= 1;
 						}
-						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter == 0)
+						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter == 0)
 						{
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter = RESET;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
 
 						}
-						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter < 0)
+						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter < 0)
 						{
 							// ERROR LOG
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalRessourceCounter = RESET;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
 						}
 
 						break;
@@ -179,12 +180,6 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState != PLANNED
-					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
-				{
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime += _frametime;
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = false;
-				}
 
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState != BUILT)
 				{
@@ -205,6 +200,12 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 
 						break;
 					case CONSTRUCTION:
+
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
+						{
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime += _frametime;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = false;
+						}
 
 						// If the building life is higher than the construction time, we launch it's growthing
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())

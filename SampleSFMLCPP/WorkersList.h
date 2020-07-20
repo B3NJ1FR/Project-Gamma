@@ -1,0 +1,28 @@
+#ifndef WORKERS_LIST__H
+#define WORKERS_LIST__H
+
+#include "Workers.h"
+
+class WorkersList : public Workers
+{
+public:
+	WorkersList();
+	~WorkersList();
+
+	void InitialisationWorkersList();
+	void ReadWorkersLinkedList();
+	void AddNewWorkersToList(sf::Vector2f _mapPosition);
+	void UpdateWorkersLife(struct Game *_game, const float &_frametime, unsigned short ***_map, Vines *_vines, SpecificsBuildings *_buildings);
+	void DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::Sprite *_sprite, sf::RenderWindow &_window);
+	void UpdateWorkersProduction(Ressources *_ressource);
+	void ChangeWorkerNumberSelectedAdd();
+	void ChangeWorkerNumberSelectedSubtract();
+	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map);
+	bool CheckWorkersPresenceAtPosition(const sf::Vector2f &_mapPosition);
+
+private:
+	LinkedListClass::sLinkedList *list;
+	int workerNumberSelected;
+};
+
+#endif // !WORKERS_LIST__H

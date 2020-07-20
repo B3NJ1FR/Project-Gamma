@@ -25,7 +25,6 @@ enum WorkerCaste
 class Workers : public Entities
 {
 private :
-
 	//enum WorkerCaste caste; // FUTURE UPDATE
 	//int happiness; // FUTURE UPDATE
 	//int age; // FUTURE UPDATE
@@ -37,6 +36,12 @@ private :
 
 	bool isLauchingMovement; // Temporaire
 	bool isItWorkingPlace;
+
+	enum TypesOfRessources *ressourceHeld;
+	int *quantityRessourceHeld;
+
+	enum TypeOfBuilding actualBuilding;
+	enum TypeOfBuilding *targetedBuilding;
 
 public:
 	Workers();
