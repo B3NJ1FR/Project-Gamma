@@ -96,7 +96,7 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				sf::Vector2f tileCoordinates = WorldToScreen(((Workers *)currentElement->data)->GetWorkerPosition().x, ((Workers *)currentElement->data)->GetWorkerPosition().y); // Faire une version stack
+				sf::Vector2f tileCoordinates = WorldToScreen(((Workers *)currentElement->data)->GetWorkerPosition()); // Faire une version stack
 				sf::Vector2f cameraIso = WorldToScreen(_cameraPosition.x, _cameraPosition.y); // Faire une version stack
 
 				BlitSprite(*_sprite,

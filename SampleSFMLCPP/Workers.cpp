@@ -299,8 +299,7 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 			// Add quantity produced to the ressource targeted
 			//_ressource->AddQuantityOwned(this->vineBuilding->GetRessourceQuantityProduced());
 
-
-
+			
 
 
 

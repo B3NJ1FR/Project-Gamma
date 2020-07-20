@@ -189,11 +189,29 @@ sf::Vector2f WorldToScreen(float _x, float _y)
 	return position;
 }
 
+sf::Vector2f WorldToScreen(sf::Vector2f _position)
+{
+	sf::Vector2f position;
+
+	position.x = ((_position.x - _position.y) * TILE_WIDTH) / 2;
+	position.y = (((_position.x + _position.y) * TILE_HEIGHT) / 2);
+
+	return position;
+}
+
 
 sf::Vector2i ScreenToTileMouse(float _x, float _y, sf::Vector2f _scale)
 {
 	sf::Vector2i coordinates = { (int)((_x + _y * 2) / (TILE_WIDTH * _scale.x)),
 								 (int)((_y * 2 - _x) / (TILE_WIDTH * _scale.x)) };
+
+	return coordinates;
+}
+
+sf::Vector2i ScreenToTileMouse(sf::Vector2f _position, sf::Vector2f _scale)
+{
+	sf::Vector2i coordinates = { (int)((_position.x + _position.y * 2) / (TILE_WIDTH * _scale.x)),
+								 (int)((_position.y * 2 - _position.x) / (TILE_WIDTH * _scale.x)) };
 
 	return coordinates;
 }

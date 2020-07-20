@@ -3,6 +3,7 @@
 
 MainMenu::MainMenu()
 {
+	// Initialisation of the sprites
 	this->background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 0);
 	this->buttonPlay = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Play.png", 1);
 	this->buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
@@ -11,6 +12,7 @@ MainMenu::MainMenu()
 
 MainMenu::~MainMenu()
 {
+	// Deletion of the sprites
 	delete (this->background.getTexture());
 	delete (this->buttonPlay.getTexture());
 	delete (this->buttonOptions.getTexture());

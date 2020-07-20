@@ -28,8 +28,10 @@ void BlitString(sf::Text _textString, const int &_posX, const int &_posY, sf::Re
 void BlitString(sf::Text _textString, sf::RenderWindow &_window);
 
 sf::Vector2f WorldToScreen(float _x, float _y);
+sf::Vector2f WorldToScreen(sf::Vector2f _position);
 
 sf::Vector2i ScreenToTileMouse(float _x, float _y, sf::Vector2f _scale);
+sf::Vector2i ScreenToTileMouse(sf::Vector2f _position, sf::Vector2f _scale);
 
 #endif // !COMMON__HPP
 
