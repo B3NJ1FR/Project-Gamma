@@ -60,7 +60,7 @@ public:
 	int GetWorkerMoneyCostPerMonth();
 
 	void DisplayWorker();
-	void UpdatePathAndActivities(const float &_frametime, unsigned short ***_map, Vines *_vines, SpecificsBuildings *_buildings);
+	void UpdatePathAndActivities(struct Game *_game);
 
 	void ActiveLauchingMovement(); // TEMPORAIRE
 	bool isPressingStart; // Temporaire

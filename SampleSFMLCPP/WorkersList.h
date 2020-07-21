@@ -12,7 +12,7 @@ public:
 	void InitialisationWorkersList();
 	void ReadWorkersLinkedList();
 	void AddNewWorkersToList(sf::Vector2f _mapPosition);
-	void UpdateWorkersLife(struct Game *_game, const float &_frametime, unsigned short ***_map, Vines *_vines, SpecificsBuildings *_buildings);
+	void UpdateWorkersLife(struct Game *_game);
 	void DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::Sprite *_sprite, sf::RenderWindow &_window);
 	void UpdateWorkersProduction(Ressources *_ressource);
 	void ChangeWorkerNumberSelectedAdd();

@@ -124,7 +124,7 @@ void GameUpdate(struct Game *_game)
 	}
 	else
 	{
-		_game->workersList->UpdateWorkersLife(_game, _game->time.GetFrameTime(), _game->map, &_game->vines, &_game->stompingVats);
+		_game->workersList->UpdateWorkersLife(_game);
 	}
 
 

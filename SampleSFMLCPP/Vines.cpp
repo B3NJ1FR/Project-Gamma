@@ -477,3 +477,4 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 		return 0;
 	}
 }
+

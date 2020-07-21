@@ -104,8 +104,7 @@ struct Game
 
 	// Ressources
 	Ressources *ressources;
-
-
+	
 	// Time management
 	TimeManagement time;
 

@@ -299,7 +299,7 @@ void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
 	}
 }
 
-bool SpecificsBuildings::CheckSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition)
+bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
 {
 	if (this->list != nullptr)
 	{
@@ -344,5 +344,138 @@ bool SpecificsBuildings::CheckSpecificBuildingPresenceAtPosition(const sf::Vecto
 	else
 	{
 		return false;
+	}
+}
+
+
+bool SpecificsBuildings::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// If the building has produced the ressources, we manage it
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
+					{
+						// Launch the feedback animation of producing
+
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
+
+
+						return this->building->GetRessourceQuantityProduced();
+					}
+					else
+					{
+						return 0;
+					}
+				}
+
+			}
+
+			return 0;
+
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			float lastLowerDistance(RESET);
+			sf::Vector2i buildingPosition = { RESET, RESET };
+
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (currentElement == this->list->first)
+				{
+					float distance = DistanceFormula(_mapPosition, ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition);
+
+					lastLowerDistance = distance;
+					buildingPosition = (sf::Vector2i)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition;
+				}
+				else
+				{
+					float distance = DistanceFormula(_mapPosition, ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition);
+
+					if (distance < lastLowerDistance)
+					{
+						lastLowerDistance = distance;
+						buildingPosition = (sf::Vector2i)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition;
+					}
+					else if (distance == lastLowerDistance)
+					{
+
+					}
+					else
+					{
+
+					}
+
+				}
+			}
+
+			return buildingPosition;
+
+		}
+		else
+		{
+			return _mapPosition;
+		}
+	}
+	else
+	{
+		return _mapPosition;
 	}
 }

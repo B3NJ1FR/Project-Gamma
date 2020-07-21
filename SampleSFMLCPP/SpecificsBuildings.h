@@ -57,7 +57,11 @@ public:
 	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource, Ressources *_ressourceProduced);
 	void UpdateBuildingSprite(unsigned short ***_map);
 	void UpdateBuildingProduction(Ressources *_ressource);
-	bool CheckSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition);
+
+	bool ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
+	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition);
+	sf::Vector2i SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition);
 
 private:
 	LinkedListClass::sLinkedList *list;

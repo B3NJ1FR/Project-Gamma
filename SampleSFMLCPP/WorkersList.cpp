@@ -67,7 +67,7 @@ void WorkersList::AddNewWorkersToList(sf::Vector2f _mapPosition)
 	this->ReadLinkedList(this->list);
 }
 
-void WorkersList::UpdateWorkersLife(struct Game *_game, const float &_frametime, unsigned short ***_map, Vines *_vines, SpecificsBuildings *_buildings)
+void WorkersList::UpdateWorkersLife(struct Game *_game)
 {
 	if (this->list != nullptr)
 	{
@@ -78,7 +78,7 @@ void WorkersList::UpdateWorkersLife(struct Game *_game, const float &_frametime,
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				((Workers *)currentElement->data)->InitPathfinding(_game);
-				((Workers *)currentElement->data)->UpdatePathAndActivities(_frametime, _map, _vines, _buildings);
+				((Workers *)currentElement->data)->UpdatePathAndActivities(_game);
 			}
 		}
 	}

@@ -115,7 +115,7 @@ void Workers::InitPathfinding(struct Game *_game)
 	}
 }
 
-void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short ***_map, Vines *_vines, SpecificsBuildings *_buildings)
+void Workers::UpdatePathAndActivities(struct Game *_game)
 {
 	float speed(RESET);
 
@@ -159,21 +159,21 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 	case MOVEMENT:
 		
 		// Speed modification depending on the type of soil
-		if (_map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == PATH)
+		if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == PATH)
 		{
-			speed = _frametime * 2.25f;
+			speed = _game->time.GetFrameTime() * 2.25f;
 		}
-		else if (_map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == STONE_PATH)
+		else if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == STONE_PATH)
 		{
-			speed = _frametime * 3.5f;
+			speed = _game->time.GetFrameTime() * 3.5f;
 		}
-		else if(_map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == ROAD)
+		else if(_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == ROAD)
 		{
-			speed = _frametime * 5;
+			speed = _game->time.GetFrameTime() * 5;
 		}
 		else
 		{
-			speed = _frametime * 1.5f;
+			speed = _game->time.GetFrameTime() * 1.5f;
 		}
 
 		//std::cout << "MOVEMENT\n";
@@ -207,13 +207,29 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 				}
 				else
 				{
-					this->SetWorkerStatus(WORKING);
+					// Temporaire
+					if (this->ressourceHeld != nullptr)
+					{
+						this->SetWorkerStatus(DEPOSIT_RESSOURCES);
+					}
+					else
+					{
+						this->SetWorkerStatus(WORKING);
+
+					}
 				}				
 			}
 			// Else, the worker just wait at the IDLE status
 			else
 			{
-				this->SetWorkerStatus(IDLE);
+				if (this->ressourceHeld != nullptr)
+				{
+					this->SetWorkerStatus(DEPOSIT_RESSOURCES);
+				}
+				else
+				{
+					this->SetWorkerStatus(IDLE);
+				}
 			}
 
 			// We delete the path and init his pointer to null
@@ -225,38 +241,96 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 
 	case WORKING:
 
-		// We send at the vines building the confirmation that a worker is there
-		if (_vines->ConfirmVinePresenceAtWorkerPosition(this->mapPosition) == true)
+		if (this->actualBuilding == BUILDING_VINES)
 		{
-			//std::cout << "Working ...\n";
-
-			if (_vines->CheckVineHasProducedRessource(this->mapPosition) == true)
+			// We send at the vines building the confirmation that a worker is there
+			if (_game->vines.ConfirmVinePresenceAtWorkerPosition(this->mapPosition) == true)
 			{
-				this->SetWorkerStatus(PICKUP_RESSOURCES);
+				//std::cout << "Working ...\n";
+
+				if (_game->vines.CheckVineHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
 			}
+			// If the result is false, that mean the building isn't there or has been destroyed
+			else
+			{
+
+			}
+
 		}
-		// If the result is false, that mean the building isn't there or has been destroyed
+		else if (this->actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
+		{
+			// We send at the stomping vats building the confirmation that a worker is there
+			if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			{
+				//std::cout << "Working ...\n";
+
+				if (_game->stompingVats.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
+
+			}
+			else
+			{
+
+			}
+
+		}
+		else if (this->actualBuilding == BUILDING_WINE_PRESS)
+		{
+			// We send at the wine press building the confirmation that a worker is there
+			if (_game->winePress.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			{
+				//std::cout << "Working ...\n";
+
+				if (_game->winePress.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
+
+
+			}
+			else
+			{
+
+			}
+
+		}
+		else if (this->actualBuilding == BUILDING_WINE_STOREHOUSE)
+		{
+			// We send at the wine storehouse building the confirmation that a worker is there
+			if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			{
+				//std::cout << "Working ...\n";
+							   				 
+				if (_game->wineStorehouse.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
+			}
+			else
+			{
+
+			}
+
+		}
 		else
 		{
-
+			std::cout << "ERROR, the worker don't find a building where works\n";
 		}
 
-		if (_buildings->CheckSpecificBuildingPresenceAtPosition(this->mapPosition) == true)
-		{
-			//std::cout << "Working ...\n";
-		}
-		else
-		{
 
-		}
 
 		break;
 	
 	case PICKUP_RESSOURCES:
 
-		if (this->isItWorkingPlace == true)
+		if (this->actualBuilding == BUILDING_VINES)
 		{
-			int ressourceProduced = _vines->VinesSendRessourceProducedToPresentWorker(this->mapPosition);
+			int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition);
 
 			// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 			if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -271,8 +345,9 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 
 				this->isItWorkingPlace = false;
 
+
 				// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve le fouloir le plus proche
-				this->SetEndingPosition((sf::Vector2i(10, 10)), _map);
+				this->SetEndingPosition(_game->stompingVats.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
 				this->SetWorkerStatus(IDLE);
 				this->ActiveLauchingMovement();
 
@@ -286,6 +361,114 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 
 				std::cout << "Worker, error during pick up of ressources\n";
 			}
+
+		}
+		else if (this->actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
+		{
+			int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+
+			// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
+			if (ressourceProduced != 0 && ressourceProduced > 0)
+			{
+				this->ressourceHeld = new enum TypesOfRessources;
+				this->quantityRessourceHeld = new int;
+				this->targetedBuilding = new enum TypeOfBuilding;
+
+				*(this->ressourceHeld) = GRAPES_MUST;
+				*(this->quantityRessourceHeld) = ressourceProduced;
+				*(this->targetedBuilding) = BUILDING_WINE_PRESS;
+
+				this->isItWorkingPlace = false;
+
+				// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve la presse la plus proche
+				this->SetEndingPosition(_game->winePress.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+				this->SetWorkerStatus(IDLE);
+				this->ActiveLauchingMovement();
+
+				std::cout << "Worker, picked up ressources\n";
+			}
+			// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
+			else
+			{
+				// For security, we reaffect the worker to the WORKING status
+				this->SetWorkerStatus(WORKING);
+
+				std::cout << "Worker, error during pick up of ressources\n";
+			}
+
+		}
+		else if (this->actualBuilding == BUILDING_WINE_PRESS)
+		{
+			int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+
+			// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
+			if (ressourceProduced != 0 && ressourceProduced > 0)
+			{
+				this->ressourceHeld = new enum TypesOfRessources;
+				this->quantityRessourceHeld = new int;
+				this->targetedBuilding = new enum TypeOfBuilding;
+
+				*(this->ressourceHeld) = GRAPE_JUICE;
+				*(this->quantityRessourceHeld) = ressourceProduced;
+				*(this->targetedBuilding) = BUILDING_WINE_STOREHOUSE;
+
+				this->isItWorkingPlace = false;
+
+				// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve le fouloir le plus proche
+				this->SetEndingPosition(_game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+				this->SetWorkerStatus(IDLE);
+				this->ActiveLauchingMovement();
+
+				std::cout << "Worker, picked up ressources\n";
+			}
+			// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
+			else
+			{
+				// For security, we reaffect the worker to the WORKING status
+				this->SetWorkerStatus(WORKING);
+
+				std::cout << "Worker, error during pick up of ressources\n";
+			}
+
+		}
+		else if (this->actualBuilding == BUILDING_WINE_STOREHOUSE)
+		{
+
+			int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+
+			// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
+			if (ressourceProduced != 0 && ressourceProduced > 0)
+			{
+				this->ressourceHeld = new enum TypesOfRessources;
+				this->quantityRessourceHeld = new int;
+				this->targetedBuilding = new enum TypeOfBuilding;
+
+				*(this->ressourceHeld) = AMPHORA_OF_WINE;
+				*(this->quantityRessourceHeld) = ressourceProduced;
+				*(this->targetedBuilding) = BUILDING_WINE_STOREHOUSE; // TEMPORAIRE A REMPLACER PAR UN ENTREPOT
+
+				this->isItWorkingPlace = false;
+
+				// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve le fouloir le plus proche
+				this->SetEndingPosition(_game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map); // TEMPORAIRE A REMPLACER PAR UN ENTREPOT
+				this->SetWorkerStatus(IDLE);
+				this->ActiveLauchingMovement();
+
+				std::cout << "Worker, picked up ressources\n";
+			}
+			// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
+			else
+			{
+				// For security, we reaffect the worker to the WORKING status
+				this->SetWorkerStatus(WORKING);
+
+				std::cout << "Worker, error during pick up of ressources\n";
+			}
+
+		}
+		else
+		{
+			std::cout << "ERROR, the worker don't find a building where works\n";
 		}
 
 		break;
@@ -299,9 +482,8 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 			// Add quantity produced to the ressource targeted
 			//_ressource->AddQuantityOwned(this->vineBuilding->GetRessourceQuantityProduced());
 
+			_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
 			
-
-
 
 			// Reset of the main data
 			delete this->ressourceHeld;
@@ -311,6 +493,8 @@ void Workers::UpdatePathAndActivities(const float &_frametime, unsigned short **
 			this->ressourceHeld = nullptr;
 			this->quantityRessourceHeld = nullptr;
 			this->targetedBuilding = nullptr;
+
+			this->SetWorkerStatus(IDLE);
 		}
 		else
 		{

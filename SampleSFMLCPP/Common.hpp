@@ -33,5 +33,8 @@ sf::Vector2f WorldToScreen(sf::Vector2f _position);
 sf::Vector2i ScreenToTileMouse(float _x, float _y, sf::Vector2f _scale);
 sf::Vector2i ScreenToTileMouse(sf::Vector2f _position, sf::Vector2f _scale);
 
+float DistanceFormula(const sf::Vector2f &_1stMapPosition, const sf::Vector2f &_2ndMapPosition);
+
+
 #endif // !COMMON__HPP
 
