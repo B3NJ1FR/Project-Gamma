@@ -58,6 +58,7 @@ public:
 	sf::Vector2f GetWorkerPosition();
 	int GetWorkerMoneyValue();
 	int GetWorkerMoneyCostPerMonth();
+	enum WorkerStatus GetWorkerStatus();
 
 	void DisplayWorker();
 	void UpdatePathAndActivities(struct Game *_game);

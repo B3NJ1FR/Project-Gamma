@@ -217,6 +217,11 @@ sf::Vector2i ScreenToTileMouse(sf::Vector2f _position, sf::Vector2f _scale)
 }
 
 
+float DistanceFormula(const float &_1stX, const float &_2ndX, const float &_1stY, const float &_2ndY)
+{
+	return sqrt(pow((_1stX - _2ndX), 2) + pow((_1stY - _2ndY), 2));
+}
+
 float DistanceFormula(const sf::Vector2f &_1stMapPosition, const sf::Vector2f &_2ndMapPosition)
 {
 	return sqrt((pow(abs(_1stMapPosition.x - _2ndMapPosition.x), 2) + pow(abs(_1stMapPosition.y - _2ndMapPosition.y), 2)));

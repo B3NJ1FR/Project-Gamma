@@ -205,6 +205,7 @@ void Vines::UpdateVineLife(const float &_frametime)
 						
 						if (((Vines::sVines *)currentElement->data)->actualProductionTime >= this->vineBuilding->GetProductionTimeCost())
 						{
+							((Vines::sVines *)currentElement->data)->actualProductionTime = RESET;
 							((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 							((Vines::sVines *)currentElement->data)->annualState = NEED_HARVEST;
 						}

@@ -318,5 +318,9 @@ void GameInitialisation(struct Game *_game)
 	_game->contour = LoadSprite("Data/Assets/Sprites/Menu/contour_selection.png", 0);
 	_game->workerTest = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
 
+	_game->workersIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
+	_game->workersIcons[1] = LoadSprite("Data/Assets/Sprites/Entities/worker_waiting.png", 1);
+	_game->workersIcons[2] = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
+
 }
 

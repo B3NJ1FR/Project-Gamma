@@ -111,6 +111,7 @@ struct Game
 
 	// Workers
 	sf::Sprite workerTest;
+	sf::Sprite workersIcons[3];
 	WorkersList *workersList;
 
 

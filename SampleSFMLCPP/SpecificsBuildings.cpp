@@ -180,7 +180,6 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState != BUILT)
 				{
 					switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState)
@@ -189,6 +188,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 						// Plannification of the building construction
 
 						// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
+						//std::cout << "Planned ! " << std::endl;
 
 						// TEMPORARY
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
@@ -469,13 +469,5 @@ sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf:
 			return buildingPosition;
 
 		}
-		else
-		{
-			return _mapPosition;
-		}
-	}
-	else
-	{
-		return _mapPosition;
 	}
 }

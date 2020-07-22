@@ -497,18 +497,6 @@ void Pathfinding::MainStatePathfinding()
 	}*/
 }
 
-float DistanceFormula(float _1stX, float _2ndX, float _1stY, float _2ndY)
-{
-	float distance = 0;
-
-	return distance = sqrt(pow((_1stX - _2ndX), 2) + pow((_1stY - _2ndY), 2));
-}
-float DistanceFormula(sf::Vector2f _firstValue, sf::Vector2f _secondValue)
-{
-	float distance = 0;
-
-	return distance = sqrt(pow((_firstValue.x - _secondValue.x), 2) + pow((_firstValue.y - _secondValue.y), 2));
-}
 
 void Pathfinding::WalkProcess(sf::Vector2f *_workerPosition, const float &_speed)
 {

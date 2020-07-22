@@ -3,7 +3,21 @@
 
 #include "Common.hpp"
 
-
+enum MonthsInOneYear
+{
+	IANUARIUS,
+	FEBRUARIUS,
+	MARTIUS,
+	APRILIS,
+	MAïUS,
+	IUNIUS,
+	QUINTILIS,
+	SEXTILIS,
+	SEPTEMBER,
+	OCTOBER,
+	NOVEMBER,
+	DECEMBER,
+};
 
 //	Ianuarius : (mars) 31 jours en l'honneur du dieu romain Janus
 //	Februarius : (mars) 28 jours 
@@ -12,7 +26,7 @@
 //	Maïus : (mai) 31 jours en l'honneur des sénateurs romains ou maiores
 //	Iunius : (juin) 30 jours en l'honneur de la déesse romaine Junon.
 //	Quintilis : (juillet) 31 jours qui deviendra juillet en l'honneur Jules César.
-//	Sextlis : (août) 31 jours qui deviendra août en l'honneur de l'empereur Auguste.
+//	Sextilis : (août) 31 jours qui deviendra août en l'honneur de l'empereur Auguste.
 //	September : (septembre) 30 jours
 //	October : (octobre) 31 jours
 //	November : (novembre) 30 jours
@@ -28,13 +42,9 @@ private:
 public:
 	TimeManagement();
 	~TimeManagement();
-
-	struct Timer
-	{
-		int a;
-		int b;
-		int c;
-	};
+	
+	enum MonthsInOneYear actualMonth;
+	int numberOfYears;
 
 	void UpdateFrameTime();
 	void UpdateGeneralTime();
