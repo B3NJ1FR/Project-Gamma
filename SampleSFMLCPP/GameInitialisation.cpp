@@ -7,67 +7,109 @@
 
 void MapInitialisation(struct Game *_game)
 {
-	// Temporary, to define into a config file in the futur
-	_game->numberLayers = THIRD_FLOOR;
-	_game->numberLines = 35;
-	_game->numberColumns = 40;
+	std::ifstream mapInitialisationFile("Data/Configurations/Settings.data", std::ios::in);
 
-	_game->map = new unsigned short **[_game->numberLayers];
+	std::string temporaryString;
+	temporaryString.erase();
+	
+	bool isMapHasBeenDefined = false;
 
-	for (int i = 0; i < _game->numberLayers; i++)
+	if (!mapInitialisationFile.is_open())
 	{
-		_game->map[i] = new unsigned short *[_game->numberLines];
+		std::cout << "Error accessing Settings.data file" << std::endl;
+
+		exit(EXIT_FAILURE);
 	}
 
-	for (int i = 0; i < _game->numberLayers; i++)
+	while (!mapInitialisationFile.eof())
 	{
-		for (int j = 0; j < _game->numberLines; j++)
+		mapInitialisationFile >> temporaryString;
+
+		if (temporaryString == "MAP"
+			&& isMapHasBeenDefined == false)
 		{
-			_game->map[i][j] = new unsigned short[_game->numberColumns];
+			// Read the map size infos
+			mapInitialisationFile >> _game->numberColumns >> _game->numberLines >> _game->numberLayers;
+
+			std::cout << "Map size : " << _game->numberColumns << " " << _game->numberLines << " " << _game->numberLayers << std::endl;
+
+			isMapHasBeenDefined = true;
+			temporaryString.erase();
 		}
 	}
 
-	for (int z = 0; z < _game->numberLayers; z++)
+
+	// Temporary, to define into a config file in the futur
+	/*_game->numberLayers = THIRD_FLOOR;
+	_game->numberLines = 35;
+	_game->numberColumns = 40;*/
+
+	if (isMapHasBeenDefined == true)
 	{
-		for (int y = 0; y < _game->numberLines; y++)
+		_game->map = new unsigned short **[_game->numberLayers];
+
+		for (int i = 0; i < _game->numberLayers; i++)
 		{
-			for (int x = 0; x < _game->numberColumns; x++)
+			_game->map[i] = new unsigned short *[_game->numberLines];
+		}
+
+		for (int i = 0; i < _game->numberLayers; i++)
+		{
+			for (int j = 0; j < _game->numberLines; j++)
 			{
-				_game->map[z][y][x] = RESET;
+				_game->map[i][j] = new unsigned short[_game->numberColumns];
+			}
+		}
 
-				if (z == (ZERO_FLOOR + COLLISIONS_ID) && z % 3 == COLLISIONS_ID)
+		for (int z = 0; z < _game->numberLayers; z++)
+		{
+			for (int y = 0; y < _game->numberLines; y++)
+			{
+				for (int x = 0; x < _game->numberColumns; x++)
 				{
-					// Collisions of the road
-					if (y == 4)
-					{
-						_game->map[z][y][x] = ROAD;
-					}
-					else if (y == 5)
-					{
-						_game->map[z][y][x] = ROAD;
-					}
-				}
+					_game->map[z][y][x] = RESET;
 
-				if (z == (ZERO_FLOOR + SPRITE_ID) && z % 3 == SPRITE_ID)
-				{					
-					// Display of the road
-					if (y == 4)
+					if (z == (ZERO_FLOOR + COLLISIONS_ID) && z % 3 == COLLISIONS_ID)
 					{
-						_game->map[z][y][x] = 5;
+						// Collisions of the road
+						if (y == 4)
+						{
+							_game->map[z][y][x] = ROAD;
+						}
+						else if (y == 5)
+						{
+							_game->map[z][y][x] = ROAD;
+						}
 					}
-					else if (y == 5)
-					{
-						_game->map[z][y][x] = 6;
-					}
-					else
-					{
-						_game->map[z][y][x] = rand() % 2 + 1;
-					}
-				}
 
+					if (z == (ZERO_FLOOR + SPRITE_ID) && z % 3 == SPRITE_ID)
+					{
+						// Display of the road
+						if (y == 4)
+						{
+							_game->map[z][y][x] = 5;
+						}
+						else if (y == 5)
+						{
+							_game->map[z][y][x] = 6;
+						}
+						else
+						{
+							_game->map[z][y][x] = rand() % 2 + 1;
+						}
+					}
+
+				}
 			}
 		}
 	}
+	else
+	{
+		// ERROR LOG
+		std::cout << "ERROR OF MAP DEFINITION\n\n\n";
+	}
+
+	
 }
 
 
