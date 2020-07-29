@@ -118,6 +118,20 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::
 						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 						0, _window);
 				}
+				else if (((Workers *)currentElement->data)->GetWorkerStatus() == PICKUP_RESSOURCES)
+				{
+					BlitSprite(_iconsSprite[3],
+						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+						0, _window);
+				}
+				else if (((Workers *)currentElement->data)->GetWorkerStatus() == DEPOSIT_RESSOURCES)
+				{
+					BlitSprite(_iconsSprite[4],
+						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+						0, _window);
+				}
 
 				if (positionCounter == this->workerNumberSelected)
 				{

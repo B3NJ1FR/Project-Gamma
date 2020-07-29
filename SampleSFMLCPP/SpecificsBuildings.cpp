@@ -66,6 +66,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->lifeTime = RESET;
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualProductionTime = RESET;
+	((SpecificsBuildings::sBuildingData *)newBuilding->data)->secondaryTime = RESET;
 
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isChangingSprite = false;
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isProduced = false;
@@ -384,7 +385,7 @@ bool SpecificsBuildings::CheckSpecificBuildingHasProducedRessource(const sf::Vec
 }
 
 
-int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition)
+int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
 	if (this->list != nullptr)
 	{
@@ -397,12 +398,22 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 				{
 					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
 					{
-						// Launch the feedback animation of producing
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime += _frametime;
 
-						((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime >= this->building->GetPickupingTimeCost())
+						{
+							// Launch the feedback animation of producing
 
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
 
-						return this->building->GetRessourceQuantityProduced();
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime = RESET;
+
+							return this->building->GetRessourceQuantityProduced();
+						}
+						else
+						{
+							return 0;
+						}
 					}
 					else
 					{
@@ -469,5 +480,57 @@ sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf:
 			return buildingPosition;
 
 		}
+	}
+}
+
+
+bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			int positionCounter(1);
+			bool isBuildingFind(false);
+
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				//std::cout << "Map : " << positionCounter << "/" << this->list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+
+				// If the building position is identical to which send, we save his position in the linked list
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition
+					&& isBuildingFind == false)
+				{
+					isBuildingFind = true;
+				}
+
+				if (isBuildingFind == false)
+				{
+					positionCounter++;
+				}
+			}
+
+			//std::cout << std::endl;
+
+			// After having saved the building's position, we ask to destroy it
+			if (isBuildingFind == true)
+			{
+				RemoveElementsOfLinkedList(this->list, true, positionCounter);
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
 	}
 }

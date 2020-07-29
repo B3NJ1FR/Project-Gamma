@@ -558,7 +558,42 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 			// Any element of the linked list must be deleted
 			else
 			{
-				if (_position > _list->size
+				if (_position == _list->size)
+				{
+					LinkedListClass::sElement *temporary = _list->last;
+
+					// Case if this is the first and last element of the linked list
+					if (temporary == _list->first
+						&& temporary == _list->last)
+					{
+						free(temporary->data);
+						free(temporary);
+
+						// We init the first and the last element of the linked list
+						_list->first = nullptr;
+						_list->last = nullptr;
+
+						_list->size = RESET;
+					}
+					else if (temporary == _list->last)
+					{
+						LinkedListClass::sElement *current = _list->first;
+
+						while (current->next != temporary)
+						{
+							current = current->next;
+						}
+
+						current->next = nullptr;
+						_list->last = current;
+
+						free(temporary->data);
+						free(temporary);
+
+						(_list->size)--;
+					}
+				}
+				else if (_position > _list->size
 					|| _position == 0
 					|| _position < -1)
 				{
@@ -578,7 +613,7 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 					LinkedListClass::sElement *temporary = _list->first;
 					LinkedListClass::sElement *current = _list->first;
 
-					while (positionCounter <= _position)
+					while (positionCounter < _position)
 					{
 						std::cout << "Pos : " << positionCounter << std::endl;
 

@@ -75,6 +75,7 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 
 	((Vines::sVines *)newVine->data)->lifeTime = RESET;
 	((Vines::sVines *)newVine->data)->actualProductionTime = RESET;
+	((Vines::sVines *)newVine->data)->secondaryTime = RESET;
 
 	((Vines::sVines *)newVine->data)->isChangingSprite = false;
 	((Vines::sVines *)newVine->data)->isProduced = false;
@@ -220,17 +221,11 @@ void Vines::UpdateVineLife(const float &_frametime)
 					if (((Vines::sVines *)currentElement->data)->annualState == NEED_HARVEST
 						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
 					{
-						//std::cout << "Ready to produce : " << ((Vines::sVines *)currentElement->data)->isWorkerThere << std::endl;
-						//std::cout << this->vineBuilding->GetProductionTimeCost() << " seconds lapsed, to produce one grape !\n\n";
-
+						((Vines::sVines *)currentElement->data)->secondaryTime = RESET;
 						((Vines::sVines *)currentElement->data)->actualProductionTime = RESET;
 
 						((Vines::sVines *)currentElement->data)->isProduced = true;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-
-						// Changer de sprite
-						((Vines::sVines *)currentElement->data)->annualState = HARVESTED;
+						((Vines::sVines *)currentElement->data)->isWorkerThere = false;						
 					}
 
 					if (((Vines::sVines *)currentElement->data)->annualState == HARVESTED)
@@ -437,7 +432,7 @@ bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 	}
 }
 
-int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition)
+int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
 	if (this->list != nullptr)
 	{
@@ -450,12 +445,29 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 				{
 					if (((Vines::sVines *)currentElement->data)->isProduced == true)
 					{
-						// Launch the feedback animation of producing
+						((Vines::sVines *)currentElement->data)->secondaryTime += _frametime;
 
-						((Vines::sVines *)currentElement->data)->isProduced = false;
-						
+						if (((Vines::sVines *)currentElement->data)->secondaryTime >= this->vineBuilding->GetPickupingTimeCost())
+						{
+							// Changer de sprite
+							((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+							((Vines::sVines *)currentElement->data)->annualState = HARVESTED;
 
-						return this->vineBuilding->GetRessourceQuantityProduced();
+							((Vines::sVines *)currentElement->data)->secondaryTime = RESET;
+
+							// Launch the feedback animation of producing
+
+
+							((Vines::sVines *)currentElement->data)->isProduced = false;
+
+
+							return this->vineBuilding->GetRessourceQuantityProduced();
+
+						}
+						else
+						{
+							return 0;
+						}
 					}
 					else
 					{
@@ -476,6 +488,58 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 	else
 	{
 		return 0;
+	}
+}
+
+
+bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			int positionCounter(1);
+			bool isBuildingFind(false);
+			
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				//std::cout << "Map : " << positionCounter << "/" << this->list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+
+				// If the building position is identical to which send, we save his position in the linked list
+				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition
+					&& isBuildingFind == false)
+				{
+					isBuildingFind = true;
+				}
+				
+				if (isBuildingFind == false)
+				{
+					positionCounter++;
+				}
+			}
+
+			//std::cout << std::endl;
+
+			// After having saved the building's position, we ask to destroy it
+			if (isBuildingFind == true)
+			{
+				RemoveElementsOfLinkedList(this->list, true, positionCounter);
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
 	}
 }
 

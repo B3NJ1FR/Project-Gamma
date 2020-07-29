@@ -70,16 +70,28 @@ void Buildings::SetConstructionMoneyCost(const int _moneyCost)
 }
 
 
-void Buildings::SetConstructionTimeCost(const float _timeCost)
+void Buildings::SetConstructionTimeCost(const float &_timeCost)
 {
 	// Set the construction cost in term of time necessary
 	this->timeToBuild = _timeCost;
 }
 
-void Buildings::SetProductionTimeCost(const float _timeCost)
+void Buildings::SetProductionTimeCost(const float &_timeCost)
 {
 	// Set the production cost in term of time for each ressource produced
 	this->timeToProduce = _timeCost;
+}
+
+void Buildings::SetPickupingTimeCost(const float &_timeCost)
+{
+	// Set the construction cost in term of time necessary
+	this->timeToPickUpRessources = _timeCost;
+}
+
+void Buildings::SetDepositingTimeCost(const float &_timeCost)
+{
+	// Set the production cost in term of time for each ressource produced
+	this->timeToDeposeRessources = _timeCost;
 }
 
 void Buildings::SetRessourceIDNeeded(int *_resssourceID, const unsigned char _numberRessources)
@@ -140,6 +152,18 @@ float Buildings::GetProductionTimeCost()
 {
 	// Get the production time cost
 	return this->timeToProduce;
+}
+
+float Buildings::GetDepositingTimeCost()
+{
+	// Get the depositing cost in term of time
+	return this->timeToDeposeRessources;
+}
+
+float Buildings::GetPickupingTimeCost()
+{
+	// Get the pickuping cost in term of time necessary
+	return this->timeToPickUpRessources;
 }
 
 int Buildings::GetRessourceIDNeeded(const unsigned char &_value)

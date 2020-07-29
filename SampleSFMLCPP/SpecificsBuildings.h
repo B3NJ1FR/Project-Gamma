@@ -40,6 +40,7 @@ public:
 
 		float lifeTime;
 		float actualProductionTime;
+		float secondaryTime;
 
 		bool isChangingSprite;
 		bool isProduced;
@@ -60,8 +61,10 @@ public:
 
 	bool ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
-	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition);
+	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
 	sf::Vector2i SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition);
+
+	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
 private:
 	LinkedListClass::sLinkedList *list;

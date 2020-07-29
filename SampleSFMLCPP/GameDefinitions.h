@@ -89,6 +89,7 @@ struct Game
 
 	sf::Sprite buildingUI;
 	sf::Sprite buildingUIclosed;
+	sf::Sprite buildingUIdestroyBuildings;
 	sf::Sprite blackFilter;
 	sf::Sprite contour;
 
@@ -111,7 +112,7 @@ struct Game
 
 	// Workers
 	sf::Sprite workerTest;
-	sf::Sprite workersIcons[3];
+	sf::Sprite workersIcons[5];
 	WorkersList *workersList;
 
 

@@ -17,6 +17,8 @@ Workers::Workers()
 	this->quantityRessourceHeld = nullptr;
 	this->targetedBuilding = nullptr;
 
+	this->SetTimeToDeposit(RESET);
+
 	std::cout << "Ouvrier initialisé\n\n";
 }
 
@@ -76,6 +78,25 @@ void Workers::DisplayWorker()
 
 }
 
+void Workers::SetTimeToDeposit(const float &_time)
+{
+	// Get the pickuping cost in term of time necessary
+	this->timeToDeposit = _time;
+}
+
+void Workers::AddTimeToDeposit(const float &_frametime)
+{
+	// Get the depositing cost in term of time
+	this->timeToDeposit += _frametime;
+}
+
+float Workers::GetTimeToDeposit()
+{
+	// Get the pickuping cost in term of time necessary
+	return this->timeToDeposit;
+}
+
+
 void Workers::ActiveLauchingMovement() // TEMPORAIRE
 {
 	std::cout << "Chemin lance\n";
@@ -84,7 +105,10 @@ void Workers::ActiveLauchingMovement() // TEMPORAIRE
 
 void Workers::SetEndingPosition(sf::Vector2i _mapPosition, unsigned short ***_map)
 {
-	this->mapEndPosition = (sf::Vector2f)_mapPosition;
+	if (_mapPosition.x >= 0 && _mapPosition.y >= 0)
+	{
+		this->mapEndPosition = (sf::Vector2f)_mapPosition;
+	}
 
 	// If this place is a building
 	if (_map[FIRST_FLOOR + COLLISIONS_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] != 0)
@@ -340,7 +364,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == BUNCH_OF_GRAPE)
 				{
-					int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition);
+					int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
@@ -361,7 +385,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition);
+				int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -384,6 +408,11 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 
 					std::cout << "Worker, picked up ressources\n";
 				}
+				// We check if the building is still in the produced state
+				else if (_game->vines.CheckVineHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
 				else
 				{
@@ -404,7 +433,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == GRAPES_MUST)
 				{
-					int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+					int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_WINE_PRESS;
@@ -425,7 +454,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+				int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -447,6 +476,11 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 
 					std::cout << "Worker, picked up ressources\n";
 				}
+				// We check if the building is still in the produced state
+				else if (_game->stompingVats.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
 				else
 				{
@@ -466,7 +500,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == GRAPE_JUICE)
 				{
-					int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+					int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_WINE_STOREHOUSE;
@@ -489,7 +523,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+				int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -511,6 +545,11 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 
 					std::cout << "Worker, picked up ressources\n";
 				}
+				// We check if the building is still in the produced state
+				else if (_game->winePress.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
+				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
 				else
 				{
@@ -530,7 +569,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == AMPHORA_OF_WINE)
 				{
-					int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+					int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_WINE_STOREHOUSE;
@@ -553,7 +592,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition);
+				int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -574,6 +613,11 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
+				}
+				// We check if the building is still in the produced state
+				else if (_game->wineStorehouse.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+				{
+					this->SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
 				else
@@ -596,24 +640,150 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		
 		if (this->ressourceHeld != nullptr)
 		{
-			std::cout << "Worker, deposit ressources\n";
-
 			// Add quantity produced to the ressource targeted
 			//_ressource->AddQuantityOwned(this->vineBuilding->GetRessourceQuantityProduced());
 
-			_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
-			
+			switch (*(this->ressourceHeld))
+			{
+			case GRAPE_VINE:
+				break;
+			case BUNCH_OF_GRAPE:
 
-			// Reset of the main data
-			delete this->ressourceHeld;
-			delete this->quantityRessourceHeld;
-			delete this->targetedBuilding;
+				this->AddTimeToDeposit(_game->time.GetFrameTime());
 
-			this->ressourceHeld = nullptr;
-			this->quantityRessourceHeld = nullptr;
-			this->targetedBuilding = nullptr;
+				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
+				{
+					std::cout << "Worker, want to deposit ressources\n";
 
-			this->SetWorkerStatus(IDLE);
+					_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
+
+					this->SetTimeToDeposit(RESET);
+
+					// Reset of the main data
+					delete this->ressourceHeld;
+					delete this->quantityRessourceHeld;
+					delete this->targetedBuilding;
+
+					this->ressourceHeld = nullptr;
+					this->quantityRessourceHeld = nullptr;
+					this->targetedBuilding = nullptr;
+
+					this->SetWorkerStatus(IDLE);
+				}
+
+				break;
+			case GRAPES_MUST:
+				
+				this->AddTimeToDeposit(_game->time.GetFrameTime());
+
+				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
+				{
+					std::cout << "Worker, want to deposit ressources\n";
+
+					_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
+
+					this->SetTimeToDeposit(RESET);
+
+					// Reset of the main data
+					delete this->ressourceHeld;
+					delete this->quantityRessourceHeld;
+					delete this->targetedBuilding;
+
+					this->ressourceHeld = nullptr;
+					this->quantityRessourceHeld = nullptr;
+					this->targetedBuilding = nullptr;
+
+					this->SetWorkerStatus(IDLE);
+				}
+
+				break;
+			case GRAPE_JUICE:
+
+				this->AddTimeToDeposit(_game->time.GetFrameTime());
+
+				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+				{
+					std::cout << "Worker, want to deposit ressources\n";
+
+					_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
+
+					this->SetTimeToDeposit(RESET);
+
+					// Reset of the main data
+					delete this->ressourceHeld;
+					delete this->quantityRessourceHeld;
+					delete this->targetedBuilding;
+
+					this->ressourceHeld = nullptr;
+					this->quantityRessourceHeld = nullptr;
+					this->targetedBuilding = nullptr;
+
+					this->SetWorkerStatus(IDLE);
+				}
+
+				break;
+			case PURE_GRAPE_JUICE:
+
+				break;
+			case GRAPE_MARC:
+
+				break;
+			case DOLIUM:
+
+				break;
+			case AMPHORAS:
+
+				this->AddTimeToDeposit(_game->time.GetFrameTime());
+
+				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+				{
+					std::cout << "Worker, want to deposit ressources\n";
+
+					_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
+
+					this->SetTimeToDeposit(RESET);
+
+					// Reset of the main data
+					delete this->ressourceHeld;
+					delete this->quantityRessourceHeld;
+					delete this->targetedBuilding;
+
+					this->ressourceHeld = nullptr;
+					this->quantityRessourceHeld = nullptr;
+					this->targetedBuilding = nullptr;
+
+					this->SetWorkerStatus(IDLE);
+				}
+
+				break;
+			case AMPHORA_OF_WINE:
+
+				std::cout << "Worker, want to deposit ressources\n";
+
+				_game->ressources[*(this->ressourceHeld)].AddQuantityOwned(*(this->quantityRessourceHeld));
+
+				this->SetTimeToDeposit(RESET);
+
+				// Reset of the main data
+				delete this->ressourceHeld;
+				delete this->quantityRessourceHeld;
+				delete this->targetedBuilding;
+
+				this->ressourceHeld = nullptr;
+				this->quantityRessourceHeld = nullptr;
+				this->targetedBuilding = nullptr;
+
+				this->SetWorkerStatus(IDLE);
+
+				break;
+			case TOOLS:
+				break;
+			case WICKER_BASKET:
+				break;
+			default:
+				break;
+			}
+						
 		}
 		else
 		{

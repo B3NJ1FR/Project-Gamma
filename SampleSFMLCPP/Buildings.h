@@ -9,6 +9,11 @@ enum TypeOfBuilding
 	BUILDING_GRAPE_STOMPING_VATS,
 	BUILDING_WINE_PRESS,
 	BUILDING_WINE_STOREHOUSE,
+	BUILDING_STOREHOUSE,
+	BUILDING_STALL,
+
+	BUILDING_VILLA, // NEXT UPDATE
+	BUILDING_DORMITORY, // NEXT UPDATE
 };
 
 
@@ -32,6 +37,9 @@ protected :
 	float timeToBuild;
 	float timeToProduce;
 
+	float timeToPickUpRessources;
+	float timeToDeposeRessources;
+
 	unsigned char numberRessourceNeeded;
 	int *ressourceIDNeeded;
 	int *ressourceQuantityNeeded;
@@ -54,8 +62,10 @@ public :
 	void SetSprite(const std::string _spriteFileName, int _spriteOriginPosition = 0);
 	void SetIcon(const std::string _iconFileName, int _iconOriginPosition = 0);
 	void SetConstructionMoneyCost(const int _moneyCost);
-	void SetConstructionTimeCost(const float _timeCost);
-	void SetProductionTimeCost(const float _timeCost);
+	void SetConstructionTimeCost(const float &_timeCost);
+	void SetProductionTimeCost(const float &_timeCost);
+	void SetPickupingTimeCost(const float &_timeCost = 0);
+	void SetDepositingTimeCost(const float &_timeCost = 0);
 	void SetRessourceIDNeeded(int *_resssourceID, const unsigned char _numberRessources = 1);
 	void SetRessourceQuantityNeeded(int *_resssourceQuantity = 0);
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char _numberRessources = 1);
@@ -67,6 +77,8 @@ public :
 	int GetConstructionCost();
 	float GetConstructionTimeCost();
 	float GetProductionTimeCost();
+	float GetDepositingTimeCost();
+	float GetPickupingTimeCost();
 	int GetRessourceIDNeeded(const unsigned char &_value = 1);
 	int GetRessourceQuantityNeeded(const unsigned char &_value = 1);
 	int GetRessourceIDProduced(const unsigned char &_value = 1);

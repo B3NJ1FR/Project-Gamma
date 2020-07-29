@@ -62,6 +62,7 @@ public:
 
 		float lifeTime;
 		float actualProductionTime;
+		float secondaryTime;
 
 		bool isChangingSprite;
 		bool isProduced;
@@ -81,7 +82,9 @@ public:
 
 	bool ConfirmVinePresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
-	int VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition);
+	int VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
+
+	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
 private:
 	LinkedListClass::sLinkedList *list;

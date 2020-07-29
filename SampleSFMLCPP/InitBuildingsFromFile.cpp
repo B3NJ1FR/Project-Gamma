@@ -10,6 +10,7 @@ void InitBuildingsFromFile(struct Game *_game)
 	std::string temporaryString;
 	temporaryString.erase();
 	int temporaryNumber(RESET);
+	float temporaryFloatingNumber(RESET);
 
 	// Security to be sure to add elements to an existing array, and not into the void
 	bool isAllocated = false;
@@ -192,11 +193,17 @@ void InitBuildingsFromFile(struct Game *_game)
 					}
 					else if (temporaryString == "TIME")
 					{
-						buildingsFile >> temporaryNumber;
-						_game->buildings[buildingID].SetConstructionTimeCost((float)temporaryNumber);
+						buildingsFile >> temporaryFloatingNumber;
+						_game->buildings[buildingID].SetConstructionTimeCost(temporaryFloatingNumber);
 
-						buildingsFile >> temporaryNumber;
-						_game->buildings[buildingID].SetProductionTimeCost((float)temporaryNumber);
+						buildingsFile >> temporaryFloatingNumber;
+						_game->buildings[buildingID].SetProductionTimeCost(temporaryFloatingNumber);
+						
+						buildingsFile >> temporaryFloatingNumber;
+						_game->buildings[buildingID].SetPickupingTimeCost(temporaryFloatingNumber);
+
+						buildingsFile >> temporaryFloatingNumber;
+						_game->buildings[buildingID].SetDepositingTimeCost(temporaryFloatingNumber);
 					}
 					else if (temporaryString == "WORKERS")
 					{

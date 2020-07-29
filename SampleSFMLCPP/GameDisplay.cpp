@@ -73,10 +73,16 @@ void DisplayUIBuildingMode(struct Game *_game)
 			BlitSprite(_game->blackFilter, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (1080 - _game->buildingUI.getGlobalBounds().height) + 80 + 130 * (i / 2), 0, *_game->window);
 		}
 	}
-
-	// Display of the contour when a building is selected to be built
-	BlitSprite(_game->contour, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->IDChosenBuilding % 2) * 109 - 4, (1080 - _game->buildingUI.getGlobalBounds().height) + 80 + 130 * (_game->IDChosenBuilding / 2) - 4, 0, *_game->window);
 	
+	// Display of the destroy button
+	BlitSprite(_game->buildingUIdestroyBuildings, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->numberOfBuilding % 2) * 109, (1080 - _game->buildingUI.getGlobalBounds().height) + 80 + 130 * (_game->numberOfBuilding / 2), 0, *_game->window);
+	
+	if (_game->IDChosenBuilding <= _game->numberOfBuilding)
+	{
+		// Display of the contour when a building is selected to be built
+		BlitSprite(_game->contour, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->IDChosenBuilding % 2) * 109 - 4, (1080 - _game->buildingUI.getGlobalBounds().height) + 80 + 130 * (_game->IDChosenBuilding / 2) - 4, 0, *_game->window);
+	
+	}
 
 	// Display of the building chosen
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);

@@ -27,7 +27,7 @@ void TimeManagement::UpdateGeneralTime()
 {
 	this->timer += this->frameTime;
 	
-	std::cout << "Time : " << this->timer.asSeconds() << std::endl;
+	//std::cout << "Time : " << this->timer.asSeconds() << std::endl;
 
 	// Actualisation of the years
 	// X MINUTES * X MOIS
