@@ -471,6 +471,11 @@ void GameInput(struct Game *_game)
 		}
 	}
 
+	if (_game->actualGameState == SELLING_WINDOW)
+	{
+		_game->stall->InputSellingWindow(_game, &_game->stall->isOfferAccepted);
+	}
+
 
 	CameraInputs(&_game->camera, _game->time.GetFrameTime());
 

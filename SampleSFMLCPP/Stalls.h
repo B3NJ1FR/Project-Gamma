@@ -52,11 +52,14 @@ private:
 
 public:
 	
+	bool isOfferAccepted;
+
 	Stalls(sf::Font *_font);
 	~Stalls();
 
 	void InitialisationStall(Buildings *_specificBuildingConcerned);
 	void DisplaySellingWindow(struct Game *_game);
+	void InputSellingWindow(struct Game *_game, bool *_isOfferAccepted);
 	//void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);

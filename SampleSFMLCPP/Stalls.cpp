@@ -66,6 +66,46 @@ void Stalls::DisplaySellingWindow(struct Game *_game)
 
 }
 
+
+void Stalls::InputSellingWindow(struct Game *_game, bool *_isOfferAccepted)
+{
+	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
+
+	// Button Accept
+	if (mousePosition.x > 1920 / 2 + 200 - (this->sellingWindowAcceptButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < 1920 / 2 + 200 + (this->sellingWindowAcceptButton.getGlobalBounds().width / 2)
+		&& mousePosition.y > 1080 / 2 + 125 - (this->sellingWindowAcceptButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < 1080 / 2 + 125 + (this->sellingWindowAcceptButton.getGlobalBounds().height / 2))
+	{
+		std::cout << "Marchant offer accepted !\n\n";
+		*(_isOfferAccepted) = true;
+	}
+
+	// Button Refuse	
+	if (mousePosition.x > 1920 / 2 - 200 - (this->sellingWindowRejectButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < 1920 / 2 - 200 + (this->sellingWindowRejectButton.getGlobalBounds().width / 2)
+		&& mousePosition.y > 1080 / 2 + 125 - (this->sellingWindowRejectButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < 1080 / 2 + 125 + (this->sellingWindowRejectButton.getGlobalBounds().height / 2))
+	{
+		std::cout << "Marchant offer refused !\n\n";
+		*(_isOfferAccepted) = false;
+	}
+
+
+	// Click and Drag
+	// Click à un endroit de la ligne sur la hauteur du curseur
+
+	// Cursor movement
+	if (mousePosition.x > 1920 / 2 - (this->sellingWindowScrollButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < 1920 / 2 + (this->sellingWindowScrollButton.getGlobalBounds().width / 2)
+		&& mousePosition.y > 1080 / 2 - (this->sellingWindowScrollButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < 1080 / 2 + (this->sellingWindowScrollButton.getGlobalBounds().height / 2))
+	{
+		
+	}
+
+}
+
 //void Stalls::AddNewBuildingToList(sf::Vector2f _mapPosition)
 //{
 //	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
