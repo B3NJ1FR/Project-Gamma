@@ -150,6 +150,12 @@
     <ClCompile Include="WorkersList.cpp">
       <Filter>Fichiers sources\Game\Entities\Workers</Filter>
     </ClCompile>
+    <ClCompile Include="Stalls.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Purchasers.cpp">
+      <Filter>Fichiers sources\Game\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -220,6 +226,12 @@
     </ClInclude>
     <ClInclude Include="WorkersList.h">
       <Filter>Fichiers d%27en-tête\Game\Entities\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="Stalls.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Purchasers.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

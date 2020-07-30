@@ -52,7 +52,6 @@ public:
 	~SpecificsBuildings();
 
 	void InitialisationSpeBuilding(Buildings *_specificBuildingConcerned);
-	//void ReadVineLinkedList();
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource, Ressources *_ressourceProduced);

@@ -171,6 +171,7 @@ void DisplayDebugger(struct Game *_game)
 }
 
 
+
 void GameDisplay(struct Game *_game)
 {
 	_game->window->clear();
@@ -188,6 +189,10 @@ void GameDisplay(struct Game *_game)
 	else if (_game->actualGameState == TEST_PATHFINDING_MODE)
 	{
 		_game->path.DisplayPathfinding(*_game->window);
+	}
+	else if (_game->actualGameState == SELLING_WINDOW)
+	{
+		_game->stall->DisplaySellingWindow(_game);
 	}
 	
 	DisplayUIGeneral(_game);

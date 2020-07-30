@@ -22,16 +22,6 @@ void Vines::InitialisationVines(Buildings *_vine)
 
 	this->list = LinkedListInitialisation();
 
-
-	// Temporaire :
-	//this->list = new sLinkedList;
-
-	//// We init the first and the last element of the linked list
-	//this->list->first = nullptr;
-	//this->list->last = nullptr;
-
-	//this->list->size = RESET;
-
 	std::cout << "List " << this->list << " Size : " << this->list->size << " Real First : " << this->list->first << " & Last : " << this->list->last << std::endl;
 
 	this->vineBuilding = _vine;

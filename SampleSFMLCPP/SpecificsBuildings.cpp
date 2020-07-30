@@ -24,27 +24,6 @@ void SpecificsBuildings::InitialisationSpeBuilding(Buildings *_specificBuildingC
 }
 
 
-//void Vines::ReadVineLinkedList()
-//{
-//	if (this->list != nullptr)
-//	{
-//		if (this->list->first != nullptr)
-//		{
-//			LinkedListClass::sElement *currentElement = this->list->first;
-//
-//			int positionCounter(1);
-//
-//			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
-//			{
-//				std::cout << "Vine : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
-//				positionCounter++;
-//			}
-//
-//			std::cout << std::endl << std::endl << std::endl;
-//		}
-//	}
-//}
-
 void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 {
 	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;

@@ -166,8 +166,10 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Money.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
+    <ClCompile Include="Purchasers.cpp" />
     <ClCompile Include="Ressources.cpp" />
     <ClCompile Include="SpecificsBuildings.cpp" />
+    <ClCompile Include="Stalls.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="Vines.cpp" />
     <ClCompile Include="Workers.cpp" />
@@ -191,8 +193,10 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Money.h" />
     <ClInclude Include="Pathfinding.h" />
+    <ClInclude Include="Purchasers.h" />
     <ClInclude Include="Ressources.h" />
     <ClInclude Include="SpecificsBuildings.h" />
+    <ClInclude Include="Stalls.h" />
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="Vines.h" />
     <ClInclude Include="Workers.h" />

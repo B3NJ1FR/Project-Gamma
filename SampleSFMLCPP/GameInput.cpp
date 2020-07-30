@@ -296,8 +296,18 @@ void GameInput(struct Game *_game)
 			// TEST
 			if (event.key.code == sf::Keyboard::I)
 			{
-				std::cout << _game->buildings[3].GetRessourceIDProduced() << " " << _game->buildings[3].GetRessourceQuantityProduced() << std::endl;
+				//std::cout << _game->buildings[3].GetRessourceIDProduced() << " " << _game->buildings[3].GetRessourceQuantityProduced() << std::endl;
 				//std::cout << _game->buildings[3].GetRessourceIDNeeded() << " " << _game->buildings[3].GetRessourceIDNeeded(2) << std::endl;
+				
+				if (_game->actualGameState == SELLING_WINDOW)
+				{
+					_game->actualGameState = NORMAL_MODE;
+				}
+				else
+				{
+					std::cout << "Window de vente\n";
+					_game->actualGameState = SELLING_WINDOW;
+				}
 			}
 			// TEST
 			if (event.key.code == sf::Keyboard::Add)
@@ -340,12 +350,18 @@ void GameInput(struct Game *_game)
 				_game->IDChosenBuilding = 4;
 				std::cout << "You've choose the destroying item\n";
 			}
-			/*else if (_game->actualGameState == BUILD_MODE
+			else if (_game->actualGameState == BUILD_MODE
 				&& event.key.code == sf::Keyboard::Num6)
 			{
 				_game->IDChosenBuilding = 5;
 				std::cout << "You've choose the fouloir\n";
-			}*/
+			}
+			else if (_game->actualGameState == BUILD_MODE
+				&& event.key.code == sf::Keyboard::Num7)
+			{
+				_game->IDChosenBuilding = 6;
+				std::cout << "You've choose the fouloir\n";
+			}
 
 		}
 

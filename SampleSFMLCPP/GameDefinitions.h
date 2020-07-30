@@ -5,8 +5,10 @@
 #include "TimeManagement.h"
 #include "Vines.h"
 #include "SpecificsBuildings.h"
+#include "Stalls.h"
 #include "Pathfinding.h"
 #include "WorkersList.h"
+#include "Purchasers.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -44,6 +46,7 @@ enum GameState
 	NORMAL_MODE,
 	BUILD_MODE,
 	TEST_PATHFINDING_MODE,
+	SELLING_WINDOW,
 };
 
 
@@ -60,7 +63,7 @@ struct Game
 	SpecificsBuildings stompingVats;
 	SpecificsBuildings winePress;
 	SpecificsBuildings wineStorehouse;
-	
+	Stalls *stall;
 
 	sf::Sprite *spriteArray;
 
@@ -114,10 +117,10 @@ struct Game
 	sf::Sprite workerTest;
 	sf::Sprite workersIcons[5];
 	WorkersList *workersList;
+	Purchasers *purchasers;
 
 
 	// Temporary
-
 	Pathfinding path;
 };
 

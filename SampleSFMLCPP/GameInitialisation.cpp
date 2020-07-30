@@ -351,6 +351,8 @@ void GameInitialisation(struct Game *_game)
 	RessourcesInitialisation(_game);
 
 	_game->workersList = new WorkersList;
+	_game->purchasers = new Purchasers;
+	_game->stall = new Stalls(&_game->generalFont);
 
 	
 	_game->camera.x = -15;
