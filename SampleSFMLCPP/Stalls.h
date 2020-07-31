@@ -13,7 +13,7 @@ enum StallStatus
 	STALL_FILLING,
 	STALL_SEND_REQUEST_PURCHASER,
 	STALL_PURCHASER_IS_PRESENT,
-	STALL_OFFER_ACCEPTED,
+	STALL_OFFER_HANDLED,
 };
 
 
@@ -48,7 +48,11 @@ private:
 	sf::Sprite sellingWindowScrollLine;
 	sf::Text sellingWindowProvenance;
 	sf::Text sellingWindowPrice[3];
-	sf::Text sellingWindowRessourceQuantity[3];
+	sf::Text sellingWindowRessourceQuantity[4];
+	int sellingWindowScrollButtonPosition;
+	int quantityConvertedToSell;
+	int priceAccepted;
+	bool wasCursorPressed;
 
 public:
 	
@@ -57,12 +61,16 @@ public:
 	Stalls(sf::Font *_font);
 	~Stalls();
 
+	void SetStatus(const enum StallStatus &_newStatus);
+	enum StallStatus GetStatus();
 	void InitialisationStall(Buildings *_specificBuildingConcerned);
+	void UpdateQuantityConvertedToSell(Purchasers *_purchasers);
+	void UpdateSellingWindowTexts(struct Game *_game, Purchasers *_purchasers);
 	void DisplaySellingWindow(struct Game *_game);
-	void InputSellingWindow(struct Game *_game, bool *_isOfferAccepted);
+	void InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum GameState *_state);
 	//void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
+	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
 	//void UpdateBuildingSprite(unsigned short ***_map);
 	//void UpdateBuildingProduction(Ressources *_ressource);
 

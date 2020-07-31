@@ -469,12 +469,10 @@ void GameInput(struct Game *_game)
 
 			}
 		}
+
+
 	}
 
-	if (_game->actualGameState == SELLING_WINDOW)
-	{
-		_game->stall->InputSellingWindow(_game, &_game->stall->isOfferAccepted);
-	}
 
 
 	CameraInputs(&_game->camera, _game->time.GetFrameTime());
@@ -676,7 +674,10 @@ void GameInput(struct Game *_game)
 				}
 			}			
 		}
-		
+		else if (_game->actualGameState == SELLING_WINDOW)
+		{
+			_game->stall->InputSellingWindow(_game, &_game->stall->isOfferAccepted, &_game->actualGameState);
+		}
 	}
 	
  

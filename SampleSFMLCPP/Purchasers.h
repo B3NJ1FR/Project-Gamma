@@ -53,8 +53,8 @@ public:
 	~Purchasers();
 
 	int TimeToTravel();
-	sf::Vector2i UnitPriceScope();
-	sf::Vector2i UnitQuantityRessourceScope();
+	sf::Vector2i GetUnitPriceScope();
+	sf::Vector2i GetUnitQuantityRessourceScope();
 
 	//void InitPathfinding(struct Game *_game);
 

@@ -37,12 +37,12 @@ int Purchasers::TimeToTravel()
 }
 
 
-sf::Vector2i Purchasers::UnitPriceScope()
+sf::Vector2i Purchasers::GetUnitPriceScope()
 {
 	return sf::Vector2i(this->minimalMoneyValueForRessource, this->maximalMoneyValueForRessource);
 }
 
-sf::Vector2i Purchasers::UnitQuantityRessourceScope()
+sf::Vector2i Purchasers::GetUnitQuantityRessourceScope()
 {
 	return sf::Vector2i(this->minimalRessourceQuantity, this->maximalRessourceQuantity);
 }

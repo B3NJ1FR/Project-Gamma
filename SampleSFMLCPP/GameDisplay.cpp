@@ -46,6 +46,8 @@ void DisplayDecor(struct Game *_game)
 			}
 		}
 	}
+
+	_game->workersList->DisplayWorkersSprite(_game->camera, &_game->workerTest, *_game->window, _game->workersIcons);
 }
 
 
@@ -137,7 +139,6 @@ void DisplayUIGeneral(struct Game *_game)
 	//			(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _game->camera.z),
 	//			0, *_game->window);
 
-	_game->workersList->DisplayWorkersSprite(_game->camera, &_game->workerTest, *_game->window, _game->workersIcons);
 }
 
 

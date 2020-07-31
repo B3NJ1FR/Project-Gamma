@@ -122,6 +122,11 @@ void GameUpdate(struct Game *_game)
 	{		
 		//_game->path.MainPathfinding();
 	}
+	else if (_game->actualGameState == SELLING_WINDOW)
+	{
+		_game->stall->UpdateQuantityConvertedToSell(_game->purchasers);
+		_game->stall->UpdateSellingWindowTexts(_game, _game->purchasers);
+	}
 	else
 	{
 		_game->workersList->UpdateWorkersLife(_game);
