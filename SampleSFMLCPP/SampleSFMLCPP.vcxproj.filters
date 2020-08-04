@@ -156,6 +156,9 @@
     <ClCompile Include="Purchasers.cpp">
       <Filter>Fichiers sources\Game\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Storehouse.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -232,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="Purchasers.h">
       <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Storehouse.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

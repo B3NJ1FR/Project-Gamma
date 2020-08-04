@@ -55,6 +55,7 @@ public:
 	int TimeToTravel();
 	sf::Vector2i GetUnitPriceScope();
 	sf::Vector2i GetUnitQuantityRessourceScope();
+	void IsOfferHasBeenRefused();
 
 	//void InitPathfinding(struct Game *_game);
 

@@ -170,6 +170,7 @@
     <ClCompile Include="Ressources.cpp" />
     <ClCompile Include="SpecificsBuildings.cpp" />
     <ClCompile Include="Stalls.cpp" />
+    <ClCompile Include="Storehouse.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="Vines.cpp" />
     <ClCompile Include="Workers.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Ressources.h" />
     <ClInclude Include="SpecificsBuildings.h" />
     <ClInclude Include="Stalls.h" />
+    <ClInclude Include="Storehouse.h" />
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="Vines.h" />
     <ClInclude Include="Workers.h" />

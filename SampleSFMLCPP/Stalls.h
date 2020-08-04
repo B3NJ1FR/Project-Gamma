@@ -3,7 +3,6 @@
 
 #include "Ressources.h"
 #include "Buildings.h"
-#include "LinkedList.h"
 #include "Purchasers.h"
 
 
@@ -17,7 +16,7 @@ enum StallStatus
 };
 
 
-class Stalls : public LinkedListClass
+class Stalls
 {
 private:
 	Buildings *building;
@@ -58,7 +57,7 @@ public:
 	
 	bool isOfferAccepted;
 
-	Stalls(sf::Font *_font);
+	Stalls(sf::Font *_font, Buildings *_specificBuildingConcerned);
 	~Stalls();
 
 	void SetStatus(const enum StallStatus &_newStatus);
@@ -68,13 +67,13 @@ public:
 	void UpdateSellingWindowTexts(struct Game *_game, Purchasers *_purchasers);
 	void DisplaySellingWindow(struct Game *_game);
 	void InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum GameState *_state);
-	//void AddNewBuildingToList(sf::Vector2f _mapPosition);
+	void AddNewBuilding(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
 	//void UpdateBuildingSprite(unsigned short ***_map);
 	//void UpdateBuildingProduction(Ressources *_ressource);
 
-	//bool ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
 	//bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
 	//int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
 	//sf::Vector2i SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition);

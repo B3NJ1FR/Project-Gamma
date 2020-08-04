@@ -350,9 +350,10 @@ void GameInitialisation(struct Game *_game)
 	TextsInit(_game);
 	RessourcesInitialisation(_game);
 
+	_game->time = new TimeManagement(&_game->generalFont);
 	_game->workersList = new WorkersList;
 	_game->purchasers = new Purchasers;
-	_game->stall = new Stalls(&_game->generalFont);
+	_game->stall = new Stalls(&_game->generalFont, &_game->buildings[BUILDING_STALL]);
 
 	
 	_game->camera.x = -15;
@@ -368,10 +369,10 @@ void GameInitialisation(struct Game *_game)
 
 	_game->isBuildingCaseOccupied = false;
 
-	_game->vines.InitialisationVines(&_game->buildings[0]);
-	_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[1]);
-	_game->winePress.InitialisationSpeBuilding(&_game->buildings[2]);
-	_game->wineStorehouse.InitialisationSpeBuilding(&_game->buildings[3]);
+	_game->vines.InitialisationVines(&_game->buildings[BUILDING_VINES]);
+	_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[BUILDING_GRAPE_STOMPING_VATS]);
+	_game->winePress.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_PRESS]);
+	_game->wineStorehouse.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_STOREHOUSE]);
 
 	_game->workersList->InitialisationWorkersList();
 

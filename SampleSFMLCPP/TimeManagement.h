@@ -39,18 +39,26 @@ private:
 	sf::Time frameTime;
 	sf::Time timer;
 
-public:
-	TimeManagement();
-	~TimeManagement();
-	
+	bool isMonthHasChanged;
+
 	enum MonthsInOneYear actualMonth;
 	int numberOfYears;
 
+	sf::Text monthText;
+	sf::Text yearText;
+
+public:
+	TimeManagement(sf::Font *_font);
+	~TimeManagement();
+	
 	void UpdateFrameTime();
 	void UpdateGeneralTime();
 
 	float GetFrameTime();
 	float GetGeneralTime();
+
+	void UpdateMonthToDisplay();
+	void DisplayUITime(sf::RenderWindow &_window);
 };
 
 

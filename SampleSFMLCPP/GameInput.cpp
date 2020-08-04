@@ -1,7 +1,7 @@
 #include "GameInput.h"
 #include "GameDefinitions.h"
 
-void CameraInputs(sf::Vector3f *_camera, const float &_frametime)
+void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _mapSize)
 {
 	// Camera Inputs
 
@@ -10,79 +10,91 @@ void CameraInputs(sf::Vector3f *_camera, const float &_frametime)
 	// - prendre en compte la taille de la map qui peut fluctuer
 	// - prendre en compte que soit x soit y peut être atteint et pas les deux en mm temps
 
-	/*sf::Vector2i coordinates = { (int)((_x + _y * 2) / (TILE_WIDTH * _scale.x)),
-								 (int)((_y * 2 - _x) / (TILE_WIDTH * _scale.x)) };*/
-	//std::cout << "Camx : " << (_camera->x + _camera->y * 2) << std::endl;
-	//std::cout << "Camy : " << (_camera->y * 2 - _camera->x) << std::endl << std::endl;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		if (_camera->y + CAMERA_SPEED * _frametime < 0)
+		{
+			_camera->y += CAMERA_SPEED * _frametime;
+		}
 
-	////if (_camera->y + CAMERA_SPEED * _frametime < -12
-	//if ((_camera->x + CAMERA_SPEED * _frametime + (_camera->y + CAMERA_SPEED * _frametime) * 2) < -12
-	//	&& ((_camera->y + CAMERA_SPEED * _frametime) * 2 - (_camera->x + CAMERA_SPEED * _frametime)) < -10)
-	//{
-	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	//	{
-	//		_camera->x += CAMERA_SPEED * _frametime;
-	//		_camera->y += CAMERA_SPEED * _frametime;
-	//	}
-	//}
+		if (_camera->x + CAMERA_SPEED * _frametime < 0)
+		{
+			_camera->x += CAMERA_SPEED * _frametime;
+		}
+	}
 
-	//if ((_camera->x - CAMERA_SPEED * _frametime + (_camera->y - CAMERA_SPEED * _frametime) * 2) > -135
-	//	&& ((_camera->y - CAMERA_SPEED * _frametime) * 2 - (_camera->x - CAMERA_SPEED * _frametime)) > -60)
-	//{
-	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	//	{
-	//		_camera->x -= CAMERA_SPEED * _frametime;
-	//		_camera->y -= CAMERA_SPEED * _frametime;
-	//	}
-	//}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		if (_camera->y - CAMERA_SPEED * _frametime > -_mapSize.y)
+		{
+			_camera->y -= CAMERA_SPEED * _frametime;
+		}
 
-	//if ((_camera->x + CAMERA_SPEED * _frametime + (_camera->y - CAMERA_SPEED * _frametime) * 2) > -70
-	//	&& ((_camera->y - CAMERA_SPEED * _frametime) * 2 - (_camera->x + CAMERA_SPEED * _frametime)) > -70)
-	//{
-	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	//	{
-	//		_camera->x += CAMERA_SPEED * _frametime;
-	//		_camera->y -= CAMERA_SPEED * _frametime;
-	//	}
-	//}
+		if (_camera->x - CAMERA_SPEED * _frametime > -_mapSize.x)
+		{
+			_camera->x -= CAMERA_SPEED * _frametime;
+		}
+	}
 
-	//if ((_camera->x - CAMERA_SPEED * _frametime + (_camera->y + CAMERA_SPEED * _frametime) * 2) < -100
-	//	&& ((_camera->y + CAMERA_SPEED * _frametime) * 2 - (_camera->x - CAMERA_SPEED * _frametime)) > -30)
-	//{
-	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	//	{
-	//		_camera->x -= CAMERA_SPEED * _frametime;
-	//		_camera->y += CAMERA_SPEED * _frametime;
-	//	}
-	//}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		if (_camera->x + CAMERA_SPEED * _frametime < 0)
+		{
+			_camera->x += CAMERA_SPEED * _frametime;
+		}
 
+		if (_camera->y - CAMERA_SPEED * _frametime > -_mapSize.y)
+		{
+			_camera->y -= CAMERA_SPEED * _frametime;
+		}
+	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		if (_camera->x - CAMERA_SPEED * _frametime > -_mapSize.x)
+		{
+			_camera->x -= CAMERA_SPEED * _frametime;
+		}
+
+		if (_camera->y + CAMERA_SPEED * _frametime < 0)
+		{
+			_camera->y += CAMERA_SPEED * _frametime;
+		}
+	}
+	
+
+	   
 
 	// ****************************************************
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		_camera->x += CAMERA_SPEED * _frametime;
 		_camera->y += CAMERA_SPEED * _frametime;
+
+		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
 		_camera->x -= CAMERA_SPEED * _frametime;
 		_camera->y -= CAMERA_SPEED * _frametime;
+		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		_camera->x += CAMERA_SPEED * _frametime;
 		_camera->y -= CAMERA_SPEED * _frametime;
+		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		_camera->x -= CAMERA_SPEED * _frametime;
 		_camera->y += CAMERA_SPEED * _frametime;
-	}
+		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
+	}*/
 
 }
 
@@ -475,7 +487,7 @@ void GameInput(struct Game *_game)
 
 
 
-	CameraInputs(&_game->camera, _game->time.GetFrameTime());
+	CameraInputs(&_game->camera, _game->time->GetFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
 
 
 	// Case clicked in build mode
@@ -580,6 +592,15 @@ void GameInput(struct Game *_game)
 						else if (_game->IDChosenBuilding == 3)
 						{
 							_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
+						}
+						else if (_game->IDChosenBuilding == 4)
+						{
+							// Entrepot
+							//_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
+						}
+						else if (_game->IDChosenBuilding == 5)
+						{
+							_game->stall->AddNewBuilding((sf::Vector2f)_game->buildingCaseSelected);
 						}
 
 						// We remove the money needed to construct the building

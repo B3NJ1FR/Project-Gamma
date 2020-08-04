@@ -133,24 +133,28 @@ void GameUpdate(struct Game *_game)
 	}
 
 
-	_game->time.UpdateFrameTime();
+	_game->time->UpdateFrameTime();
+	_game->time->UpdateMonthToDisplay();
 
 	if (_game->actualGameState != BUILD_MODE)
 	{
-		_game->time.UpdateGeneralTime();
+		_game->time->UpdateGeneralTime();
 
-		_game->vines.UpdateVineLife(_game->time.GetFrameTime());
+		_game->vines.UpdateVineLife(_game->time->GetFrameTime());
 		_game->vines.UpdateVineSprite(_game->map);
 		_game->vines.UpdateVineProduction(&_game->ressources[BUNCH_OF_GRAPE]);
 
-		_game->stompingVats.UpdateBuildingConstruction(_game->time.GetFrameTime());
-		_game->stompingVats.UpdateInternalCycles(_game->time.GetFrameTime(), &_game->ressources[BUNCH_OF_GRAPE], &_game->ressources[GRAPES_MUST]);
+		_game->stompingVats.UpdateBuildingConstruction(_game->time->GetFrameTime());
+		_game->stompingVats.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[BUNCH_OF_GRAPE], &_game->ressources[GRAPES_MUST]);
 
-		_game->winePress.UpdateBuildingConstruction(_game->time.GetFrameTime());
-		_game->winePress.UpdateInternalCycles(_game->time.GetFrameTime(), &_game->ressources[GRAPES_MUST], &_game->ressources[GRAPE_JUICE]);
+		_game->winePress.UpdateBuildingConstruction(_game->time->GetFrameTime());
+		_game->winePress.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPES_MUST], &_game->ressources[GRAPE_JUICE]);
 
-		_game->wineStorehouse.UpdateBuildingConstruction(_game->time.GetFrameTime());
-		_game->wineStorehouse.UpdateInternalCycles(_game->time.GetFrameTime(), &_game->ressources[GRAPE_JUICE], &_game->ressources[AMPHORA_OF_WINE]);
+		_game->wineStorehouse.UpdateBuildingConstruction(_game->time->GetFrameTime());
+		_game->wineStorehouse.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPE_JUICE], &_game->ressources[AMPHORA_OF_WINE]);
+
+		_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
+		_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);;
 	}
 
 	UpdateTexts(_game);

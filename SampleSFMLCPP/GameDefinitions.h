@@ -110,7 +110,7 @@ struct Game
 	Ressources *ressources;
 	
 	// Time management
-	TimeManagement time;
+	TimeManagement *time;
 
 
 	// Workers

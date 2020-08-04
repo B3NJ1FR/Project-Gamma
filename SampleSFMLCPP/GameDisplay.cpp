@@ -129,6 +129,7 @@ void DisplayUIGeneral(struct Game *_game)
 	BlitString(_game->UITexts[8], *_game->window);
 	BlitString(_game->UITexts[9], *_game->window);
 
+
 	//BlitSprite(_game->workerTest, (150 + (_game->workerPosition.x * (TILE_SIZE + 3))) + 16, (50 + (_game->workerPosition.y * (TILE_SIZE + 3))) + 16, 0, *_game->window);
 	
 	//sf::Vector2f tileCoordinates = WorldToScreen(_game->workers->GetWorkerPosition().x, _game->workers->GetWorkerPosition().y); // Faire une version stack
@@ -197,7 +198,7 @@ void GameDisplay(struct Game *_game)
 	}
 	
 	DisplayUIGeneral(_game);
-
+	_game->time->DisplayUITime(*_game->window);
 
 	if (_game->isDebuggerModeActive == true)
 	{

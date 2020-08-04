@@ -3,7 +3,7 @@
 
 
 
-Stalls::Stalls(sf::Font *_font)
+Stalls::Stalls(sf::Font *_font, Buildings *_specificBuildingConcerned)
 {
 	this->sellingWindowBackground = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_background.png", 1);
 
@@ -24,10 +24,12 @@ Stalls::Stalls(sf::Font *_font)
 	LoadTextString(&this->sellingWindowRessourceQuantity[2], "Quantity to sell :", _font, 30, sf::Color::Black, sf::Vector2f(1920/2 - 250, 1080/2 + 20));
 	LoadTextString(&this->sellingWindowRessourceQuantity[3], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2, 1080 / 2 + 20));
 
-	this->sellingWindowScrollButtonPosition = ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
+	this->sellingWindowScrollButtonPosition = (int)((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
 	this->wasCursorPressed = false;
 	this->quantityConvertedToSell = this->sellingWindowScrollButtonPosition;
 	this->priceAccepted = RESET;
+	
+	this->building = _specificBuildingConcerned;
 }
 
 
@@ -73,7 +75,7 @@ void Stalls::UpdateQuantityConvertedToSell(Purchasers *_purchasers)
 	}
 	else
 	{
-		int percentage = (((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) * 100) / (((1920 / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2)) - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))));
+		int percentage = (int)(((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) * 100) / (((1920 / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2)) - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))));
 		this->quantityConvertedToSell = (int)((percentage * (_purchasers->GetUnitQuantityRessourceScope().y - _purchasers->GetUnitQuantityRessourceScope().x)) / 100) + _purchasers->GetUnitQuantityRessourceScope().x;
 
 		this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
@@ -130,7 +132,9 @@ void Stalls::InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum
 		&& mousePosition.y < 1080 / 2 + 125 + (this->sellingWindowAcceptButton.getGlobalBounds().height / 2))
 	{
 		std::cout << "Marchant offer accepted !\n\n";
+
 		*(_isOfferAccepted) = true;
+
 		*(_state) = NORMAL_MODE;
 		_game->stall->SetStatus(STALL_OFFER_HANDLED);
 	}
@@ -142,7 +146,9 @@ void Stalls::InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum
 		&& mousePosition.y < 1080 / 2 + 125 + (this->sellingWindowRejectButton.getGlobalBounds().height / 2))
 	{
 		std::cout << "Marchant offer refused !\n\n";
+
 		*(_isOfferAccepted) = false;
+
 		*(_state) = NORMAL_MODE;
 		_game->stall->SetStatus(STALL_OFFER_HANDLED);
 	}
@@ -192,41 +198,30 @@ void Stalls::InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum
 
 }
 
-//void Stalls::AddNewBuildingToList(sf::Vector2f _mapPosition)
-//{
-//	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
-//	newBuilding->data = new SpecificsBuildings::sBuildingData;
-//
-//	// Save the position in map
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->mapPosition = _mapPosition;
-//
-//	// Init of the building construction status after being placed on map
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->constructionState = PLANNED;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualState = BUILDING_READY_TO_PRODUCE;
-//
-//	// A MODIFIER PAR VALEUR SEUIL
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
-//	// A CONFIGURER
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->maximalQuantity = 5;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalImportRessourceCounter = RESET;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalExportRessourceCounter = RESET;
-//
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->lifeTime = RESET;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualProductionTime = RESET;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->secondaryTime = RESET;
-//
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isChangingSprite = false;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isProduced = false;
-//	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isWorkerThere = false;
-//
-//	newBuilding->status = ELEMENT_ACTIVE;
-//
-//	// Add this new vine at the end of the list
-//	this->AddElementToLinkedList(this->list, newBuilding, -1);
-//
-//	//this->ReadVineLinkedList();
-//	this->ReadLinkedList(this->list);
-//}
+void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
+{
+	// Save the position in map
+	this->mapPosition = _mapPosition;
+
+	// Init of the building construction status after being placed on map
+	this->constructionState = PLANNED;
+	this->actualState = STALL_READY_TO_WORKS;
+
+	// A MODIFIER PAR VALEUR SEUIL
+	this->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
+
+	// A CONFIGURER + RELIER AU BATIMENT
+	this->maximalQuantity = 100;
+	this->internalImportRessourceCounter = RESET;
+	this->internalExportRessourceCounter = RESET;
+
+	this->lifeTime = RESET;
+	this->actualProductionTime = RESET;
+
+	this->isChangingSprite = false;
+	this->isWorkerThere = false;
+	this->isPurchaserThere = false;
+}
 
 
 void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressourceSent, Purchasers *_purchasers)
@@ -236,7 +231,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 		switch (this->actualState)
 		{
 		case STALL_READY_TO_WORKS:
-
+			
 			if (_ressourceSent->GetQuantityOwned() > 0
 				&& internalImportRessourceCounter == 0)
 			{
@@ -246,8 +241,8 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			break;
 
 		case STALL_FILLING:
-
-			if (_ressourceSent->GetQuantityOwned() - 1 > 0
+			
+			if (_ressourceSent->GetQuantityOwned() - 1 >= 0
 				&& this->internalImportRessourceCounter + 1 <= this->maximalQuantity)
 			{
 				_ressourceSent->SubtractQuantityOwned(1);
@@ -262,7 +257,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			break;
 
 		case STALL_SEND_REQUEST_PURCHASER:
-
+			
 			// Importer depuis un fichier les caractéristiques des vendeurs
 			//
 			// - origine / provenance
@@ -278,6 +273,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			if (this->actualProductionTime >= _purchasers->TimeToTravel())
 			{
 				this->actualState = STALL_PURCHASER_IS_PRESENT;
+				*(_state) = SELLING_WINDOW;
 				this->actualProductionTime = RESET;
 			}
 
@@ -317,7 +313,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			break;
 
 		case STALL_OFFER_HANDLED:
-
+			
 			// - Animation de vente des amphores
 			// - Vente des amphores en échange de sesterces
 			
@@ -335,12 +331,16 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			}
 			else
 			{
-				this->actualState = STALL_READY_TO_WORKS;
+				_purchasers->IsOfferHasBeenRefused();
+
+				this->actualState = STALL_SEND_REQUEST_PURCHASER;
 			}
 
 			break;
 
 		default:
+			// ERROR LOG
+			this->actualState = STALL_READY_TO_WORKS;
 			break;
 		}
 	}
@@ -461,56 +461,24 @@ void Stalls::UpdateBuildingConstruction(const float &_frametime)
 //		}
 //	}
 //}
-//
-//bool Stalls::ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
-//{
-//	if (this->list != nullptr)
-//	{
-//		if (this->list->first != nullptr)
-//		{
-//			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
-//			{
-//				// If the building has produced the ressources, we manage it
-//				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
-//				{
-//					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-//					return true;
-//				}
-//				else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - 1 == _mapPosition.x
-//					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y == _mapPosition.y)
-//				{
-//					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-//					return true;
-//				}
-//				else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - 1 == _mapPosition.x
-//					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - 1 == _mapPosition.y)
-//				{
-//					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-//					return true;
-//				}
-//				else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x == _mapPosition.x
-//					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - 1 == _mapPosition.y)
-//				{
-//					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-//					return true;
-//				}
-//			}
-//
-//			return false;
-//
-//		}
-//		else
-//		{
-//			return false;
-//		}
-//	}
-//	else
-//	{
-//		return false;
-//	}
-//}
-//
-//
+
+bool Stalls::ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
+{
+	// If the building has produced the ressources, we manage it
+	if (this->mapPosition == _mapPosition)
+	{
+		this->isWorkerThere = true;
+		return true;
+	}
+	else
+	{
+		this->isWorkerThere = false;
+		return false;
+	}
+
+}
+
+
 //bool Stalls::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
 //{
 //	if (this->list != nullptr)

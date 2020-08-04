@@ -189,19 +189,19 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		// Speed modification depending on the type of soil
 		if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == PATH)
 		{
-			speed = _game->time.GetFrameTime() * 2.25f;
+			speed = _game->time->GetFrameTime() * 2.25f;
 		}
 		else if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == STONE_PATH)
 		{
-			speed = _game->time.GetFrameTime() * 3.5f;
+			speed = _game->time->GetFrameTime() * 3.5f;
 		}
 		else if(_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] == ROAD)
 		{
-			speed = _game->time.GetFrameTime() * 5;
+			speed = _game->time->GetFrameTime() * 5;
 		}
 		else
 		{
-			speed = _game->time.GetFrameTime() * 1.5f;
+			speed = _game->time->GetFrameTime() * 1.5f;
 		}
 
 		//std::cout << "MOVEMENT\n";
@@ -345,6 +345,37 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 
 		}
+		else if (this->actualBuilding == BUILDING_STOREHOUSE)
+		{
+			//// We send at the wine storehouse building the confirmation that a worker is there
+			//if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			//{
+			//	//std::cout << "Working ...\n";
+
+			//	if (_game->wineStorehouse.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == true)
+			//	{
+			//		this->SetWorkerStatus(PICKUP_RESSOURCES);
+			//	}
+			//}
+			//else
+			//{
+
+			//}
+
+		}
+		else if (this->actualBuilding == BUILDING_STALL)
+		{
+			// We send at the wine storehouse building the confirmation that a worker is there
+			if (_game->stall->ConfirmPresenceAtWorkerPosition(this->mapPosition) == true)
+			{
+				std::cout << "Working ...\n";
+			}
+			else
+			{
+
+			}
+
+		}
 		else
 		{
 			std::cout << "ERROR, the worker don't find a building where works\n";
@@ -364,16 +395,22 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == BUNCH_OF_GRAPE)
 				{
-					int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+					int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
 					
 					this->isItWorkingPlace = false;
 					
-					this->SetEndingPosition(_game->stompingVats.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+					sf::Vector2i targetedPosition = _game->stompingVats.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
+
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 				}
@@ -385,7 +422,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+				int ressourceProduced = _game->vines.VinesSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -400,11 +437,16 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 
 					this->isItWorkingPlace = false;
 
+					
+					sf::Vector2i targetedPosition = _game->stompingVats.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
 
-					// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve le fouloir le plus proche
-					this->SetEndingPosition(_game->stompingVats.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 				}
@@ -433,16 +475,22 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == GRAPES_MUST)
 				{
-					int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+					int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_WINE_PRESS;
 
 					this->isItWorkingPlace = false;
 
-					this->SetEndingPosition(_game->winePress.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+					sf::Vector2i targetedPosition = _game->winePress.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
+
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 				}
@@ -454,7 +502,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+				int ressourceProduced = _game->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -468,11 +516,16 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					*(this->targetedBuilding) = BUILDING_WINE_PRESS;
 
 					this->isItWorkingPlace = false;
+					
+					sf::Vector2i targetedPosition = _game->winePress.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
 
-					// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve la presse la plus proche
-					this->SetEndingPosition(_game->winePress.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 				}
@@ -500,16 +553,22 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == GRAPE_JUICE)
 				{
-					int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+					int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_WINE_STOREHOUSE;
 					
 					this->isItWorkingPlace = false;
-					
-					this->SetEndingPosition(_game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+
+					sf::Vector2i targetedPosition = _game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
+
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 
@@ -523,7 +582,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+				int ressourceProduced = _game->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -538,10 +597,15 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 
 					this->isItWorkingPlace = false;
 
-					// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve le fouloir le plus proche
-					this->SetEndingPosition(_game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+					sf::Vector2i targetedPosition = _game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
+
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 				}
@@ -569,16 +633,22 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(this->ressourceHeld) == AMPHORA_OF_WINE)
 				{
-					int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+					int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 					*(this->quantityRessourceHeld) += ressourceProduced;
 					*(this->targetedBuilding) = BUILDING_WINE_STOREHOUSE;
 					
 					this->isItWorkingPlace = false;
-					
-					this->SetEndingPosition(_game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map);
+
+					sf::Vector2i targetedPosition = _game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
+
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 
@@ -592,7 +662,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time.GetFrameTime());
+				int ressourceProduced = _game->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(this->mapPosition, _game->time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -607,10 +677,15 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 
 					this->isItWorkingPlace = false;
 
-					// TEMPORAIRE - Map position a modifier pour la remplacer par une fonction qui trouve le fouloir le plus proche
-					this->SetEndingPosition(_game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition), _game->map); // TEMPORAIRE A REMPLACER PAR UN ENTREPOT
+					sf::Vector2i targetedPosition = _game->wineStorehouse.SpecificsBuildingsFindNearestBuilding(this->mapPosition);
+
+					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					{
+						this->SetEndingPosition(targetedPosition, _game->map);
+						this->ActiveLauchingMovement();
+					}
+
 					this->SetWorkerStatus(IDLE);
-					this->ActiveLauchingMovement();
 
 					std::cout << "Worker, picked up ressources\n";
 				}
@@ -649,7 +724,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case BUNCH_OF_GRAPE:
 
-				this->AddTimeToDeposit(_game->time.GetFrameTime());
+				this->AddTimeToDeposit(_game->time->GetFrameTime());
 
 				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
 				{
@@ -674,7 +749,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case GRAPES_MUST:
 				
-				this->AddTimeToDeposit(_game->time.GetFrameTime());
+				this->AddTimeToDeposit(_game->time->GetFrameTime());
 
 				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
 				{
@@ -699,7 +774,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case GRAPE_JUICE:
 
-				this->AddTimeToDeposit(_game->time.GetFrameTime());
+				this->AddTimeToDeposit(_game->time->GetFrameTime());
 
 				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
 				{
@@ -733,7 +808,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case AMPHORAS:
 
-				this->AddTimeToDeposit(_game->time.GetFrameTime());
+				this->AddTimeToDeposit(_game->time->GetFrameTime());
 
 				if (this->GetTimeToDeposit() >= _game->buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
 				{
