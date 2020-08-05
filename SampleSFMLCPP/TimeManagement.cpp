@@ -11,10 +11,12 @@ TimeManagement::TimeManagement(sf::Font *_font)
 	this->actualMonth = IANUARIUS;
 	this->numberOfYears = RESET;
 	
+	this->isMonthHasChanged = false;
+	this->isYearHasChanged = true;
 
-	LoadTextString(&this->monthText, "IANUARIUS", _font, 50, sf::Color::Black, sf::Vector2f(1920 - 200, 50));
+	LoadTextString(&this->monthText, "IANUARIUS", _font, 40, sf::Color::Red, sf::Vector2f(1920 - 190, 20));
 
-	LoadTextString(&this->yearText, "", _font, 30, sf::Color::Black, sf::Vector2f(1920 - 50, 50));
+	LoadTextString(&this->yearText, "", _font, 40, sf::Color::Red, sf::Vector2f(1920 - 130, 70));
 }
 
 
@@ -36,20 +38,23 @@ void TimeManagement::UpdateGeneralTime()
 
 	// Actualisation of the years
 	// X MINUTES * X MOIS
-	if (this->timer.asSeconds() >= (2 * 3600) * (12))
+	if (this->timer.asSeconds() >= TEMPORARY_TIME * (12)
+		&& this->actualMonth == DECEMBER)
 	{
+		this->isYearHasChanged = true;
+
 		this->numberOfYears++;
 
-		this->timer -= sf::seconds((2 * 3600) * (12));
+		this->timer -= sf::seconds(TEMPORARY_TIME * (12));
 	}
 	
 	// Actualisation of the current month if he has changed
-	/*if (this->actualMonth != (enum MonthsInOneYear)(this->timer.asSeconds() / (2 * 3600)))
+	if (this->actualMonth != (int)(this->timer.asSeconds() / TEMPORARY_TIME))
 	{
 		this->isMonthHasChanged = true;
 
-		this->actualMonth = (enum MonthsInOneYear)(this->timer.asSeconds() / (2 * 3600));
-	}*/
+		this->actualMonth = (enum MonthsInOneYear)(int)(this->timer.asSeconds() / TEMPORARY_TIME);
+	}
 }
 
 float TimeManagement::GetFrameTime()
@@ -63,11 +68,15 @@ float TimeManagement::GetGeneralTime()
 }
 
 
+enum MonthsInOneYear TimeManagement::GetActualMonth()
+{
+	return this->actualMonth;
+}
 
 
 void TimeManagement::UpdateMonthToDisplay()
 {
-	/*if (this->isMonthHasChanged == true)
+	if (this->isMonthHasChanged == true)
 	{
 		this->isMonthHasChanged = false;
 
@@ -112,11 +121,18 @@ void TimeManagement::UpdateMonthToDisplay()
 		default:
 			break;
 		}
-	}*/
+	}
+
+	if (this->isYearHasChanged == true)
+	{
+		this->isYearHasChanged = false;
+
+		UpdateDynamicsTexts(&this->yearText, this->numberOfYears);
+	}
 }
 
 void TimeManagement::DisplayUITime(sf::RenderWindow &_window)
 {
-	//BlitString(this->monthText, _window);
-	//BlitString(this->yearText, _window);
+	BlitString(this->monthText, _window);
+	BlitString(this->yearText, _window);
 }

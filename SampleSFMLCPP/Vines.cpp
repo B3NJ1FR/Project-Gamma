@@ -71,6 +71,12 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	((Vines::sVines *)newVine->data)->isProduced = false;
 	((Vines::sVines *)newVine->data)->isWorkerThere = false;
 
+
+	((Vines::sVines *)newVine->data)->isPruned = false;
+	((Vines::sVines *)newVine->data)->isPloughed = false;
+	((Vines::sVines *)newVine->data)->isWeeded = false;
+	((Vines::sVines *)newVine->data)->isCared = false;
+
 	newVine->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
@@ -80,7 +86,7 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	this->ReadLinkedList(this->list);
 }
 
-void Vines::UpdateVineLife(const float &_frametime)
+void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &_actualMonth)
 {
 	if (this->list != nullptr)
 	{
@@ -131,6 +137,46 @@ void Vines::UpdateVineLife(const float &_frametime)
 
 					((Vines::sVines *)currentElement->data)->lifeTime += _frametime;
 
+					switch (_actualMonth)
+					{
+					case IANUARIUS:
+						((Vines::sVines *)currentElement->data)->annualState = NEED_PRUNE;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+						break;
+					case FEBRUARIUS:
+						break;
+					case MARTIUS:
+						((Vines::sVines *)currentElement->data)->annualState = NEED_PLOUGHING;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+						break;
+					case APRILIS:
+						break;
+					case MAïUS:
+						((Vines::sVines *)currentElement->data)->annualState = NEED_WEEDING;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+						break;
+					case IUNIUS:
+						break;
+					case QUINTILIS:
+						((Vines::sVines *)currentElement->data)->annualState = NEED_CARE;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+						break;
+					case SEXTILIS:
+						break;
+					case SEPTEMBER:
+						((Vines::sVines *)currentElement->data)->annualState = NEED_HARVEST;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+						break;
+					case OCTOBER:
+						break;
+					case NOVEMBER:
+						break;
+					case DECEMBER:
+						break;
+					default:
+						break;
+					}
+
 
 					if (((Vines::sVines *)currentElement->data)->annualState == NEED_PRUNE
 						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
@@ -138,13 +184,14 @@ void Vines::UpdateVineLife(const float &_frametime)
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
 
-						// Changer de sprite
+						// Changer de status
 						((Vines::sVines *)currentElement->data)->annualState = PRUNED;
+						((Vines::sVines *)currentElement->data)->isPruned = true;
 					}
 
 					if (((Vines::sVines *)currentElement->data)->annualState == PRUNED)
 					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+
 					}
 
 
@@ -154,13 +201,14 @@ void Vines::UpdateVineLife(const float &_frametime)
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
 
-						// Changer de sprite
+						// Changer de status
 						((Vines::sVines *)currentElement->data)->annualState = PLOUGHED;
+						((Vines::sVines *)currentElement->data)->isPloughed = true;
 					}
 
 					if (((Vines::sVines *)currentElement->data)->annualState == PLOUGHED)
 					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+
 					}
 
 
@@ -170,13 +218,14 @@ void Vines::UpdateVineLife(const float &_frametime)
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
 
-						// Changer de sprite
+						// Changer de status
 						((Vines::sVines *)currentElement->data)->annualState = WEEDED;
+						((Vines::sVines *)currentElement->data)->isWeeded = true;
 					}
 
 					if (((Vines::sVines *)currentElement->data)->annualState == WEEDED)
 					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+
 					}
 
 
@@ -186,13 +235,14 @@ void Vines::UpdateVineLife(const float &_frametime)
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
 
-						// Changer de sprite
+						// Changer de status
 						((Vines::sVines *)currentElement->data)->annualState = CARED;
+						((Vines::sVines *)currentElement->data)->isCared = true;
 					}
 
 					if (((Vines::sVines *)currentElement->data)->annualState == CARED)
 					{
-						((Vines::sVines *)currentElement->data)->actualProductionTime += _frametime;
+						/*((Vines::sVines *)currentElement->data)->actualProductionTime += _frametime;
 						
 						if (((Vines::sVines *)currentElement->data)->actualProductionTime >= this->vineBuilding->GetProductionTimeCost())
 						{
@@ -203,7 +253,7 @@ void Vines::UpdateVineLife(const float &_frametime)
 						else
 						{
 							((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-						}
+						}*/
 					}
 
 
@@ -223,8 +273,15 @@ void Vines::UpdateVineLife(const float &_frametime)
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
 
-						// Changer de sprite
-						((Vines::sVines *)currentElement->data)->annualState = CARED; // Temporaire
+						// Changer de status
+						//((Vines::sVines *)currentElement->data)->annualState = CARED; // Temporaire
+
+
+						// Reset of the monthly states
+						((Vines::sVines *)currentElement->data)->isPruned = false;
+						((Vines::sVines *)currentElement->data)->isPloughed = false;
+						((Vines::sVines *)currentElement->data)->isWeeded = false;
+						((Vines::sVines *)currentElement->data)->isCared = false;
 					}
 
 
@@ -271,7 +328,7 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 						{
 						case NEED_PRUNE:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 12;
 							break;
 						case PRUNED:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
@@ -279,7 +336,7 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 							break;
 						case NEED_PLOUGHING:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 13;
 							break;
 						case PLOUGHED:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
@@ -287,7 +344,7 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 							break;
 						case NEED_WEEDING:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 14;
 							break;
 						case WEEDED:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
@@ -295,7 +352,7 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 							break;
 						case NEED_CARE:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 15;
 							break;
 						case CARED:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]

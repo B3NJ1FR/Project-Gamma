@@ -110,6 +110,10 @@ void Workers::SetEndingPosition(sf::Vector2i _mapPosition, unsigned short ***_ma
 		this->mapEndPosition = (sf::Vector2f)_mapPosition;
 	}
 
+	//
+	// CRASH SORTIE DE TABLEAU A CAUSE DE X > 100000
+	//
+
 	// If this place is a building
 	if (_map[FIRST_FLOOR + COLLISIONS_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] != 0)
 	{
@@ -223,11 +227,6 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					{
 						this->SetWorkerStatus(DEPOSIT_RESSOURCES);
 					}
-					// Temporaire pour tester sans bâtiment
-					else if (this->ressourceHeld != nullptr)
-					{
-						this->SetWorkerStatus(DEPOSIT_RESSOURCES);
-					}
 					else
 					{
 						this->SetWorkerStatus(WORKING);
@@ -238,12 +237,12 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					// Temporaire
 					if (this->ressourceHeld != nullptr)
 					{
+						// A REVOIR CAR IL DEPOSE LES RESSOURCES AU SOL
 						this->SetWorkerStatus(DEPOSIT_RESSOURCES);
 					}
 					else
 					{
 						this->SetWorkerStatus(WORKING);
-
 					}
 				}				
 			}
@@ -252,6 +251,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			{
 				if (this->ressourceHeld != nullptr)
 				{
+					// A REVOIR CAR IL DEPOSE LES RESSOURCES AU SOL
 					this->SetWorkerStatus(DEPOSIT_RESSOURCES);
 				}
 				else
@@ -456,7 +456,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					this->SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else
+				else if (_game->vines.CheckVineHasProducedRessource(this->mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					this->SetWorkerStatus(WORKING);
@@ -535,7 +535,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					this->SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else
+				else if (_game->stompingVats.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					this->SetWorkerStatus(WORKING);
@@ -615,7 +615,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					this->SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else
+				else if (_game->winePress.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					this->SetWorkerStatus(WORKING);
@@ -695,7 +695,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					this->SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else
+				else if (_game->wineStorehouse.CheckSpecificBuildingHasProducedRessource(this->mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					this->SetWorkerStatus(WORKING);

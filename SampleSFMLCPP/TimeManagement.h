@@ -3,6 +3,9 @@
 
 #include "Common.hpp"
 
+#define TEMPORARY_TIME 5
+#define OLD_TIME (2 * 3600)
+
 enum MonthsInOneYear
 {
 	IANUARIUS,
@@ -40,6 +43,7 @@ private:
 	sf::Time timer;
 
 	bool isMonthHasChanged;
+	bool isYearHasChanged;
 
 	enum MonthsInOneYear actualMonth;
 	int numberOfYears;
@@ -56,6 +60,7 @@ public:
 
 	float GetFrameTime();
 	float GetGeneralTime();
+	enum MonthsInOneYear GetActualMonth();
 
 	void UpdateMonthToDisplay();
 	void DisplayUITime(sf::RenderWindow &_window);

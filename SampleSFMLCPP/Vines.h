@@ -41,8 +41,8 @@ enum VineStateOfAnnualLife
 //		Avril - Planter et palisser
 //	-	Mai - Désherber et Protéger du Mildiou et de l'oïdium 
 //		Juin - Floraison
-//		Juillet - Surveillance
-//	-	Août - Entretien
+//	-	Juillet - Entretien
+//		Août - Surveillance
 //	-	Septembre - Vendanges
 //	-	Octobre - Mise en Chai
 //		Novembre - Préparer l'hiver
@@ -67,6 +67,11 @@ public:
 		bool isChangingSprite;
 		bool isProduced;
 		bool isWorkerThere;
+
+		bool isPruned;
+		bool isPloughed;
+		bool isWeeded;
+		bool isCared;
 	};
 	typedef struct VinesData sVines;
 
@@ -76,7 +81,7 @@ public:
 	void InitialisationVines(Buildings *_vine);
 	void ReadVineLinkedList();
 	void AddNewVineToList(sf::Vector2f _mapPosition);
-	void UpdateVineLife(const float &_frametime);
+	void UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &_actualMonth);
 	void UpdateVineSprite(unsigned short ***_map);
 	void UpdateVineProduction(Ressources *_ressource);
 

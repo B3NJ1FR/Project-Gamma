@@ -4,6 +4,7 @@
 
 void UpdateTexts(struct Game *_game)
 {
+	// Text displayed only when the debugger mode is active
 	if (_game->isDebuggerModeActive == true)
 	{
 		sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
@@ -24,6 +25,7 @@ void UpdateTexts(struct Game *_game)
 		}
 	}
 
+	// UI Texts concerning sesterces and ressources
 	UpdateDynamicsTexts(&_game->UITexts[1], _game->money.GetMoneyQuantity());
 	UpdateDynamicsTexts(&_game->UITexts[3], _game->ressources[BUNCH_OF_GRAPE].GetQuantityOwned());
 	UpdateDynamicsTexts(&_game->UITexts[5], _game->ressources[GRAPES_MUST].GetQuantityOwned());
@@ -140,7 +142,7 @@ void GameUpdate(struct Game *_game)
 	{
 		_game->time->UpdateGeneralTime();
 
-		_game->vines.UpdateVineLife(_game->time->GetFrameTime());
+		_game->vines.UpdateVineLife(_game->time->GetFrameTime(), _game->time->GetActualMonth());
 		_game->vines.UpdateVineSprite(_game->map);
 		_game->vines.UpdateVineProduction(&_game->ressources[BUNCH_OF_GRAPE]);
 
@@ -154,7 +156,7 @@ void GameUpdate(struct Game *_game)
 		_game->wineStorehouse.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPE_JUICE], &_game->ressources[AMPHORA_OF_WINE]);
 
 		_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
-		_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);;
+		_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);
 	}
 
 	UpdateTexts(_game);
