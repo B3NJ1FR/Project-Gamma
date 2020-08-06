@@ -35,14 +35,16 @@ SellingWindow::~SellingWindow()
 
 }
 
-void SellingWindow::UpdateQuantityConvertedToSell(Purchasers *_purchasers)
+void SellingWindow::UpdateQuantityConvertedToSell(Purchasers *_purchasers, const int &_quantityStocked)
 {
 	// If the cursor is at the end of the line
-	if ((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) >= this->sellingWindowScrollLine.getGlobalBounds().width - 2)
+	if (_quantityStocked >= _purchasers->GetUnitQuantityRessourceScope().y
+		&& (this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) >= this->sellingWindowScrollLine.getGlobalBounds().width - 2)
 	{
 		this->quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().y;
 		this->priceAccepted = _purchasers->GetUnitPriceScope().x;
 	}
+	// If the cursor is at the begin of the line
 	else if ((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) == 0)
 	{
 		this->quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().x;
@@ -51,9 +53,29 @@ void SellingWindow::UpdateQuantityConvertedToSell(Purchasers *_purchasers)
 	else
 	{
 		int percentage = (int)(((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) * 100) / (((1920 / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2)) - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))));
-		this->quantityConvertedToSell = (int)((percentage * (_purchasers->GetUnitQuantityRessourceScope().y - _purchasers->GetUnitQuantityRessourceScope().x)) / 100) + _purchasers->GetUnitQuantityRessourceScope().x;
+		
+		int temporaryQuantityConverted = (int)((percentage * (_purchasers->GetUnitQuantityRessourceScope().y - _purchasers->GetUnitQuantityRessourceScope().x)) / 100) + _purchasers->GetUnitQuantityRessourceScope().x;
 
-		this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
+		if (_quantityStocked < _purchasers->GetUnitQuantityRessourceScope().y)
+		{
+			// Bloquer le curseur à la quantité stockée
+
+			if (temporaryQuantityConverted >= _quantityStocked)
+			{
+				this->quantityConvertedToSell = _quantityStocked;
+				//this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
+			}
+			else
+			{
+				this->quantityConvertedToSell = temporaryQuantityConverted;
+				this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
+
+			}
+			
+		}
+		this->quantityConvertedToSell = 
+
+
 	}
 
 	//std::cout << "Quantity : " << (this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollButton.getGlobalBounds().width / 2))) << std::endl;

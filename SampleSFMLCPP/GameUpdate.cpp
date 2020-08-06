@@ -127,7 +127,7 @@ void GameUpdate(struct Game *_game)
 	else if (_game->actualGameState == SELLING_WINDOW
 		&& _game->purchasers != nullptr)
 	{
-		_game->sellingWindow->UpdateQuantityConvertedToSell(_game->purchasers);
+		_game->sellingWindow->UpdateQuantityConvertedToSell(_game->purchasers, _game->stall->GetActualRessourcesStocked());
 		_game->sellingWindow->UpdateSellingWindowTexts(_game->purchasers);
 	}
 	else
