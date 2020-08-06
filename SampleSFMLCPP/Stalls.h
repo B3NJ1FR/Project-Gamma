@@ -40,34 +40,23 @@ private:
 	bool isWorkerThere;
 	bool isPurchaserThere;
 
-	sf::Sprite sellingWindowBackground;
-	sf::Sprite sellingWindowAcceptButton;
-	sf::Sprite sellingWindowRejectButton;
-	sf::Sprite sellingWindowScrollButton;
-	sf::Sprite sellingWindowScrollLine;
-	sf::Text sellingWindowProvenance;
-	sf::Text sellingWindowPrice[3];
-	sf::Text sellingWindowRessourceQuantity[4];
-	int sellingWindowScrollButtonPosition;
-	int quantityConvertedToSell;
 	int priceAccepted;
-	bool wasCursorPressed;
-
+	bool isNewMerchantNeeded;
 public:
 	
 	bool isOfferAccepted;
 
-	Stalls(sf::Font *_font, Buildings *_specificBuildingConcerned);
+	Stalls(Buildings *_specificBuildingConcerned);
 	~Stalls();
 
 	void SetStatus(const enum StallStatus &_newStatus);
 	enum StallStatus GetStatus();
+	int GetActualRessourcesStocked();
+	bool GetIsNewMerchantNeeded();
+	void SetIsNewMerchantNeeded(const bool &_newStatus);
 	void InitialisationStall(Buildings *_specificBuildingConcerned);
-	void UpdateQuantityConvertedToSell(Purchasers *_purchasers);
-	void UpdateSellingWindowTexts(struct Game *_game, Purchasers *_purchasers);
-	void DisplaySellingWindow(struct Game *_game);
-	void InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum GameState *_state);
 	void AddNewBuilding(sf::Vector2f _mapPosition);
+	void PickUpPriceAccepted(const int &_price);
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
 	//void UpdateBuildingSprite(unsigned short ***_map);

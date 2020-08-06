@@ -9,6 +9,7 @@
 #include "Pathfinding.h"
 #include "WorkersList.h"
 #include "Purchasers.h"
+#include "SellingWindow.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -84,6 +85,8 @@ struct Game
 
 	sf::Font generalFont;
 
+	// Selling Window
+	SellingWindow *sellingWindow;
 	
 	// Construction Mode
 	int IDChosenBuilding;

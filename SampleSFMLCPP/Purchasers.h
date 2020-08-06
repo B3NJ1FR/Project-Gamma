@@ -28,6 +28,7 @@ private:
 	int maximalMoneyValueForRessource;
 
 	int minimalRessourceQuantity;
+	int actualRessourceQuantity;
 	int maximalRessourceQuantity;
 
 	enum TypesOfRessources ressourceID;
@@ -52,33 +53,14 @@ public:
 	Purchasers();
 	~Purchasers();
 
+	void Initialisation(const int &_actualQuantity);
+	int RandomiseData(const sf::Vector2i &_data);
+
 	int TimeToTravel();
+	void SetActualQuantityStored(const int &_quantity);
 	sf::Vector2i GetUnitPriceScope();
 	sf::Vector2i GetUnitQuantityRessourceScope();
 	void IsOfferHasBeenRefused();
-
-	//void InitPathfinding(struct Game *_game);
-
-	//void SetWorkerPosition(const sf::Vector2f &_mapPosition);
-	//void SetWorkerStatus(const enum WorkerStatus &_newStatus);
-	//void SetWorkerMoneyValue(const int &_moneyValue);
-	//void SetWorkerMoneyCostPerMonth(const int &_moneyCostPerMonth);
-	//void SetTimeToDeposit(const float &_time);
-	//void AddTimeToDeposit(const float &_frametime);
-
-	//void SetEndingPosition(sf::Vector2i _mapPosition, unsigned short ***_map);
-	//sf::Vector2f GetWorkerPosition();
-	//int GetWorkerMoneyValue();
-	//int GetWorkerMoneyCostPerMonth();
-	//enum WorkerStatus GetWorkerStatus();
-	//float GetTimeToDeposit();
-
-	//void DisplayWorker();
-	//void UpdatePathAndActivities(struct Game *_game);
-
-	//void ActiveLauchingMovement(); // TEMPORAIRE
-	//bool isPressingStart; // Temporaire
-	//bool isPressingEnd; // Temporaire
 };
 
 

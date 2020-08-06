@@ -368,7 +368,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			// We send at the wine storehouse building the confirmation that a worker is there
 			if (_game->stall->ConfirmPresenceAtWorkerPosition(this->mapPosition) == true)
 			{
-				std::cout << "Working ...\n";
+				//std::cout << "Working ...\n";
 			}
 			else
 			{

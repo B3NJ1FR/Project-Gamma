@@ -352,8 +352,9 @@ void GameInitialisation(struct Game *_game)
 
 	_game->time = new TimeManagement(&_game->generalFont);
 	_game->workersList = new WorkersList;
-	_game->purchasers = new Purchasers;
-	_game->stall = new Stalls(&_game->generalFont, &_game->buildings[BUILDING_STALL]);
+	_game->stall = new Stalls(&_game->buildings[BUILDING_STALL]);
+	_game->sellingWindow = new SellingWindow(&_game->generalFont);
+	_game->purchasers = nullptr;
 
 	
 	_game->camera.x = -15;

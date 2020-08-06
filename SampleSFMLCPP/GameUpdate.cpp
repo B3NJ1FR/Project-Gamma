@@ -124,10 +124,11 @@ void GameUpdate(struct Game *_game)
 	{		
 		//_game->path.MainPathfinding();
 	}
-	else if (_game->actualGameState == SELLING_WINDOW)
+	else if (_game->actualGameState == SELLING_WINDOW
+		&& _game->purchasers != nullptr)
 	{
-		_game->stall->UpdateQuantityConvertedToSell(_game->purchasers);
-		_game->stall->UpdateSellingWindowTexts(_game, _game->purchasers);
+		_game->sellingWindow->UpdateQuantityConvertedToSell(_game->purchasers);
+		_game->sellingWindow->UpdateSellingWindowTexts(_game->purchasers);
 	}
 	else
 	{
@@ -157,6 +158,36 @@ void GameUpdate(struct Game *_game)
 
 		_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
 		_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);
+
+		if (_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+			&& _game->stall->GetIsNewMerchantNeeded() == true)
+		{
+			if (_game->purchasers != nullptr)
+			{
+				delete _game->purchasers;
+				_game->purchasers = nullptr;
+
+				std::cout << "Suppression of this actual merchant\n\n";
+			}
+
+			_game->stall->SetIsNewMerchantNeeded(false);
+
+			_game->purchasers = new Purchasers;
+			_game->purchasers->Initialisation(_game->stall->GetActualRessourcesStocked());
+		}
+		else if (_game->stall->GetStatus() == STALL_OFFER_HANDLED
+			&& _game->stall->GetIsNewMerchantNeeded() == true)
+		{
+			if (_game->purchasers != nullptr)
+			{
+				delete _game->purchasers;
+				_game->purchasers = nullptr;
+
+				std::cout << "Suppression of this merchant\n\n";
+			}
+
+			_game->stall->SetIsNewMerchantNeeded(false);
+		}
 	}
 
 	UpdateTexts(_game);

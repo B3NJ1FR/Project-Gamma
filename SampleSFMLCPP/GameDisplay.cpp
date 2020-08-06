@@ -194,7 +194,7 @@ void GameDisplay(struct Game *_game)
 	}
 	else if (_game->actualGameState == SELLING_WINDOW)
 	{
-		_game->stall->DisplaySellingWindow(_game);
+		_game->sellingWindow->DisplaySellingWindow(*_game->window);
 	}
 	
 	DisplayUIGeneral(_game);

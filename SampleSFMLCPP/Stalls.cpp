@@ -3,32 +3,8 @@
 
 
 
-Stalls::Stalls(sf::Font *_font, Buildings *_specificBuildingConcerned)
-{
-	this->sellingWindowBackground = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_background.png", 1);
-
-	this->sellingWindowAcceptButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_acceptButton.png", 1);
-	this->sellingWindowRejectButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_refuseButton.png", 1);
-
-	this->sellingWindowScrollButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollButton.png", 1);
-	this->sellingWindowScrollLine = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollLine.png", 1);
-	
-	LoadTextString(&this->sellingWindowProvenance, "Nemausus", _font, 50, sf::Color::Black, sf::Vector2f(1920/2, 1080/2 - 150));
-
-	LoadTextString(&this->sellingWindowPrice[0], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 + 270, 1080 / 2 - 50));
-	LoadTextString(&this->sellingWindowPrice[1], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 - 300, 1080 / 2 - 50));
-	LoadTextString(&this->sellingWindowPrice[2], "", _font, 50, sf::Color::Black, sf::Vector2f(1920 / 2, 1080 / 2 - 80));
-
-	LoadTextString(&this->sellingWindowRessourceQuantity[0], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 - 300, 1080 / 2 - 20));
-	LoadTextString(&this->sellingWindowRessourceQuantity[1], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 + 270, 1080 / 2 - 20));
-	LoadTextString(&this->sellingWindowRessourceQuantity[2], "Quantity to sell :", _font, 30, sf::Color::Black, sf::Vector2f(1920/2 - 250, 1080/2 + 20));
-	LoadTextString(&this->sellingWindowRessourceQuantity[3], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2, 1080 / 2 + 20));
-
-	this->sellingWindowScrollButtonPosition = (int)((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
-	this->wasCursorPressed = false;
-	this->quantityConvertedToSell = this->sellingWindowScrollButtonPosition;
-	this->priceAccepted = RESET;
-	
+Stalls::Stalls(Buildings *_specificBuildingConcerned)
+{	
 	this->building = _specificBuildingConcerned;
 }
 
@@ -49,154 +25,29 @@ enum StallStatus Stalls::GetStatus()
 	return this->actualState;
 }
 
+int Stalls::GetActualRessourcesStocked()
+{
+	return this->internalImportRessourceCounter;
+}
+
+
+bool Stalls::GetIsNewMerchantNeeded()
+{
+	return this->isNewMerchantNeeded;
+}
+
+
+void Stalls::SetIsNewMerchantNeeded(const bool &_newStatus)
+{
+	this->isNewMerchantNeeded = _newStatus;
+}
+
+
 void Stalls::InitialisationStall(Buildings *_stallBuildingConcerned)
 {
-	/*std::cout << "List before : " << this->list << std::endl;
-
-	this->list = LinkedListInitialisation();
-
-	std::cout << "List " << this->list << " Size : " << this->list->size << " Real First : " << this->list->first << " & Last : " << this->list->last << std::endl << std::endl;*/
-
 	this->building = _stallBuildingConcerned;
 }
 
-void Stalls::UpdateQuantityConvertedToSell(Purchasers *_purchasers)
-{
-	// If the cursor is at the end of the line
-	if ((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) >= this->sellingWindowScrollLine.getGlobalBounds().width - 2 )
-	{
-		this->quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().y;
-		this->priceAccepted = _purchasers->GetUnitPriceScope().x;
-	}
-	else if ((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2)) ) == 0)
-	{
-		this->quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().x;
-		this->priceAccepted = _purchasers->GetUnitPriceScope().y;
-	}
-	else
-	{
-		int percentage = (int)(((this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) * 100) / (((1920 / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2)) - ((1920 / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))));
-		this->quantityConvertedToSell = (int)((percentage * (_purchasers->GetUnitQuantityRessourceScope().y - _purchasers->GetUnitQuantityRessourceScope().x)) / 100) + _purchasers->GetUnitQuantityRessourceScope().x;
-
-		this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
-	}
-		
-	//std::cout << "Quantity : " << (this->sellingWindowScrollButtonPosition - ((1920 / 2) - (this->sellingWindowScrollButton.getGlobalBounds().width / 2))) << std::endl;
-	//std::cout << "Quantity : " << this->quantityConvertedToSell << std::endl;
-}
-
-void Stalls::UpdateSellingWindowTexts(struct Game *_game, Purchasers *_purchasers)
-{
-	UpdateDynamicsTexts(&this->sellingWindowPrice[0], _purchasers->GetUnitPriceScope().x);
-	UpdateDynamicsTexts(&this->sellingWindowPrice[1], _purchasers->GetUnitPriceScope().y);
-	UpdateDynamicsTexts(&this->sellingWindowPrice[2], this->priceAccepted);
-
-	UpdateDynamicsTexts(&this->sellingWindowRessourceQuantity[0], _purchasers->GetUnitQuantityRessourceScope().x);
-	UpdateDynamicsTexts(&this->sellingWindowRessourceQuantity[1], _purchasers->GetUnitQuantityRessourceScope().y);
-	UpdateDynamicsTexts(&this->sellingWindowRessourceQuantity[3], this->quantityConvertedToSell);
-}
-
-void Stalls::DisplaySellingWindow(struct Game *_game)
-{
-	// Display of the background
-	BlitSprite(this->sellingWindowBackground, 1920 / 2, 1080 / 2, 0, *_game->window);
-
-	BlitSprite(this->sellingWindowAcceptButton, 1920 / 2 + 200, 1080 / 2 + 125, 0, *_game->window);
-	BlitSprite(this->sellingWindowRejectButton, 1920 / 2 - 200, 1080 / 2 + 125, 0, *_game->window);
-
-	BlitSprite(this->sellingWindowScrollLine, 1920 / 2, 1080 / 2, 0, *_game->window);
-	BlitSprite(this->sellingWindowScrollButton, this->sellingWindowScrollButtonPosition, 1080 / 2, 0, *_game->window);
-
-
-	BlitString(this->sellingWindowProvenance, *_game->window);
-
-	BlitString(this->sellingWindowPrice[0], *_game->window);
-	BlitString(this->sellingWindowPrice[1], *_game->window);
-	BlitString(this->sellingWindowPrice[2], *_game->window);
-
-	BlitString(this->sellingWindowRessourceQuantity[0], *_game->window);
-	BlitString(this->sellingWindowRessourceQuantity[1], *_game->window);
-	BlitString(this->sellingWindowRessourceQuantity[2], *_game->window);
-	BlitString(this->sellingWindowRessourceQuantity[3], *_game->window);
-}
-
-
-void Stalls::InputSellingWindow(struct Game *_game, bool *_isOfferAccepted, enum GameState *_state)
-{
-	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
-
-	// Button Accept
-	if (mousePosition.x > 1920 / 2 + 200 - (this->sellingWindowAcceptButton.getGlobalBounds().width / 2)
-		&& mousePosition.x < 1920 / 2 + 200 + (this->sellingWindowAcceptButton.getGlobalBounds().width / 2)
-		&& mousePosition.y > 1080 / 2 + 125 - (this->sellingWindowAcceptButton.getGlobalBounds().height / 2)
-		&& mousePosition.y < 1080 / 2 + 125 + (this->sellingWindowAcceptButton.getGlobalBounds().height / 2))
-	{
-		std::cout << "Marchant offer accepted !\n\n";
-
-		*(_isOfferAccepted) = true;
-
-		*(_state) = NORMAL_MODE;
-		_game->stall->SetStatus(STALL_OFFER_HANDLED);
-	}
-
-	// Button Refuse	
-	if (mousePosition.x > 1920 / 2 - 200 - (this->sellingWindowRejectButton.getGlobalBounds().width / 2)
-		&& mousePosition.x < 1920 / 2 - 200 + (this->sellingWindowRejectButton.getGlobalBounds().width / 2)
-		&& mousePosition.y > 1080 / 2 + 125 - (this->sellingWindowRejectButton.getGlobalBounds().height / 2)
-		&& mousePosition.y < 1080 / 2 + 125 + (this->sellingWindowRejectButton.getGlobalBounds().height / 2))
-	{
-		std::cout << "Marchant offer refused !\n\n";
-
-		*(_isOfferAccepted) = false;
-
-		*(_state) = NORMAL_MODE;
-		_game->stall->SetStatus(STALL_OFFER_HANDLED);
-	}
-
-
-	// Click and Drag
-	// Click à un endroit de la ligne sur la hauteur du curseur
-
-	// Cursor movement
-	if (mousePosition.x > this->sellingWindowScrollButtonPosition - (this->sellingWindowScrollButton.getGlobalBounds().width / 2)
-		&& mousePosition.x < this->sellingWindowScrollButtonPosition + (this->sellingWindowScrollButton.getGlobalBounds().width / 2)
-		&& mousePosition.x > 1920 / 2 - this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.x < 1920 / 2 + this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.y > 1080 / 2 - (this->sellingWindowScrollButton.getGlobalBounds().height / 2)
-		&& mousePosition.y < 1080 / 2 + (this->sellingWindowScrollButton.getGlobalBounds().height / 2))
-	{
-		if (this->wasCursorPressed == true)
-		{
-			this->sellingWindowScrollButtonPosition = mousePosition.x;
-		}
-
-		this->wasCursorPressed = true;
-
-
-		std::cout << "Drag cursor\n";
-	}
-	else if (mousePosition.x > 1920 / 2 - this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.x < 1920 / 2 + this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.y > 1080 / 2 - (this->sellingWindowScrollButton.getGlobalBounds().height / 2) - 10
-		&& mousePosition.y < 1080 / 2 + (this->sellingWindowScrollButton.getGlobalBounds().height / 2) + 10)
-	{
-		if (this->wasCursorPressed == true)
-		{
-			this->sellingWindowScrollButtonPosition = mousePosition.x;
-		}
-
-		this->wasCursorPressed = true;
-
-
-		std::cout << "Drag cursor\n";
-	}
-	else
-	{
-		std::cout << "Dont drag cursor\n";
-		this->wasCursorPressed = false;
-	}
-
-}
 
 void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 {
@@ -221,6 +72,12 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 	this->isChangingSprite = false;
 	this->isWorkerThere = false;
 	this->isPurchaserThere = false;
+	this->isNewMerchantNeeded = false;
+}
+
+void Stalls::PickUpPriceAccepted(const int &_price)
+{
+	this->priceAccepted = _price;
 }
 
 
@@ -249,8 +106,13 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 				this->internalImportRessourceCounter += 1;
 			}
 
-			if (internalImportRessourceCounter >= this->quantitativeThreshold)
+
+			if (internalImportRessourceCounter >= this->quantitativeThreshold
+				&& (_ressourceSent->GetQuantityOwned() == 0
+					|| this->internalImportRessourceCounter == this->maximalQuantity))
 			{
+				this->isNewMerchantNeeded = true;
+
 				this->actualState = STALL_SEND_REQUEST_PURCHASER;
 			}
 			
@@ -319,6 +181,11 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			
 			if (this->isOfferAccepted == true)
 			{
+				if (_purchasers != nullptr)
+				{
+					this->isNewMerchantNeeded = true;
+				}
+
 				if (this->internalImportRessourceCounter - 1 >= 0)
 				{
 					_money->AddMoney(this->priceAccepted);
@@ -331,7 +198,12 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			}
 			else
 			{
-				_purchasers->IsOfferHasBeenRefused();
+				if (_purchasers != nullptr)
+				{
+					this->isNewMerchantNeeded = true;
+				}
+
+				//_purchasers->IsOfferHasBeenRefused();
 
 				this->actualState = STALL_SEND_REQUEST_PURCHASER;
 			}

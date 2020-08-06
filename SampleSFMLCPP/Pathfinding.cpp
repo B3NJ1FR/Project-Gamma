@@ -3,14 +3,14 @@
 
 Pathfinding::Pathfinding()
 {
-	this->blackBackground = LoadSprite("Data/Assets/Sprites/Menu/blackbackground.png", 0);
+	/*this->blackBackground = LoadSprite("Data/Assets/Sprites/Menu/blackbackground.png", 0);
 	this->tile[NORMAL_TILE] = LoadSprite("Data/Assets/Sprites/Menu/tile.png", 0);
 	this->tile[STARTING_TILE] = LoadSprite("Data/Assets/Sprites/Menu/tile2.png", 0);
 	this->tile[ENDING_TILE] = LoadSprite("Data/Assets/Sprites/Menu/tile3.png", 0);
 	this->tile[PATH_TILE] = LoadSprite("Data/Assets/Sprites/Menu/tile4.png", 0);
 	this->tile[OBSTACLE_TILE] = LoadSprite("Data/Assets/Sprites/Menu/tile5.png", 0);
 	this->tile[5] = LoadSprite("Data/Assets/Sprites/Menu/tile6.png", 0);
-	this->tile[6] = LoadSprite("Data/Assets/Sprites/Menu/tile7.png", 0);
+	this->tile[6] = LoadSprite("Data/Assets/Sprites/Menu/tile7.png", 0);*/
 
 	this->currentNode = nullptr;
 

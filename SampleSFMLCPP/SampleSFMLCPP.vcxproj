@@ -168,6 +168,7 @@
     <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="Purchasers.cpp" />
     <ClCompile Include="Ressources.cpp" />
+    <ClCompile Include="SellingWindow.cpp" />
     <ClCompile Include="SpecificsBuildings.cpp" />
     <ClCompile Include="Stalls.cpp" />
     <ClCompile Include="Storehouse.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="Purchasers.h" />
     <ClInclude Include="Ressources.h" />
+    <ClInclude Include="SellingWindow.h" />
     <ClInclude Include="SpecificsBuildings.h" />
     <ClInclude Include="Stalls.h" />
     <ClInclude Include="Storehouse.h" />

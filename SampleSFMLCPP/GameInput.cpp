@@ -697,7 +697,7 @@ void GameInput(struct Game *_game)
 		}
 		else if (_game->actualGameState == SELLING_WINDOW)
 		{
-			_game->stall->InputSellingWindow(_game, &_game->stall->isOfferAccepted, &_game->actualGameState);
+			_game->sellingWindow->InputSellingWindow(&_game->stall->isOfferAccepted, &_game->actualGameState, _game->stall, *_game->window);
 		}
 	}
 	
