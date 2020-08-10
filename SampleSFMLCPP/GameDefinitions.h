@@ -98,6 +98,7 @@ struct Game
 	sf::Sprite buildingUIdestroyBuildings;
 	sf::Sprite blackFilter;
 	sf::Sprite contour;
+	float scrollBuildingList;
 
 	// General UI
 	sf::Text UITexts[10];

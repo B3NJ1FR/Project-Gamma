@@ -204,7 +204,7 @@ void InputPickUpCaseClicked(struct Game *_game, bool _isBuildingUINeeded)
 }
 
 // Building Mode : Inputs management to select the building wanted in the "old scroll" UI
-void InputBuildingModeOldScrollUI(int *_IDChosenBuilding, sf::Vector2i _sizeOldScrollUI, const sf::RenderWindow &_window)
+void InputBuildingModeOldScrollUI(int *_IDChosenBuilding, sf::Vector2i _sizeOldScrollUI, const float &_scrollDelta, const sf::RenderWindow &_window)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
@@ -215,17 +215,37 @@ void InputBuildingModeOldScrollUI(int *_IDChosenBuilding, sf::Vector2i _sizeOldS
 		// Only 0 or 1 can be get because we just display two icons
 
 		// Management of the vertical click to get the number of the case selected, if the player has selected a case and not outside
-		if ((mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) % 130 > 0	
+		if ((mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) % 130 > 0
 			&& (mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) % 130 < 64)
 		{
 			bool numberCaseWidth = (mousePosition.x - (1920 - _sizeOldScrollUI.x + 143)) / 109;
-			int numberCaseHeight = (mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) / 130;
+			int numberCaseHeight = (mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) / 130 + abs(_scrollDelta) / 130;
 
 			*_IDChosenBuilding = numberCaseWidth + (numberCaseHeight * 2);
 		}
 	}
 }
 
+
+// Building Mode : Inputs management to scroll the list of building in the "old scroll" UI
+void InputScrollBuildingModeOldScrollUI(float *_scrollDelta, sf::Vector2i _sizeOldScrollUI, const sf::RenderWindow &_window)
+{
+	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
+
+	if (mousePosition.x > 1920 - _sizeOldScrollUI.x
+		&& mousePosition.x < 1920
+		&& mousePosition.y > 1080 - _sizeOldScrollUI.y
+		&& mousePosition.y < 1080)
+	{
+		std::cout << "HEREEE\n";
+	}
+
+
+	/*if (_scrollDelta + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
+	{
+		_scrollDelta += event.mouseWheelScroll.delta / 20;
+	}*/
+}
 
 void GameInput(struct Game *_game)
 {
@@ -388,6 +408,33 @@ void GameInput(struct Game *_game)
 				_game->scale.x = 1 / (profondeur - _game->camera.z);
 				_game->scale.y = 1 / (profondeur - _game->camera.z);
 			}
+
+
+			if (_game->actualGameState == BUILD_MODE)
+			{
+				//InputScrollBuildingModeOldScrollUI(&_game->scrollBuildingList, sf::Vector2i((int)_game->buildingUI.getGlobalBounds().width, (int)_game->buildingUI.getGlobalBounds().height), *_game->window);
+
+				sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
+
+				if (mousePosition.x > 1920 - _game->buildingUI.getGlobalBounds().width
+					&& mousePosition.x < 1920
+					&& mousePosition.y > 1080 - _game->buildingUI.getGlobalBounds().height
+					&& mousePosition.y < 1080)
+				{
+
+					// A FAIRE -> Rendre le max (-500) dynamique en fonction du nombre de bâtiment présent dans la liste
+					// et donc du nombre de ligne devant être affichée
+					if (_game->scrollBuildingList - (event.mouseWheelScroll.delta * 5) >= - 500
+						&& (_game->scrollBuildingList - (event.mouseWheelScroll.delta * 5) <= 0))
+					{
+						_game->scrollBuildingList -= event.mouseWheelScroll.delta * 5;
+					}
+				}
+
+
+				
+			}
+
 		}
 
 		if (event.type == sf::Event::MouseButtonPressed)
@@ -409,7 +456,7 @@ void GameInput(struct Game *_game)
 				}
 				else if (_game->actualGameState == BUILD_MODE)
 				{
-					InputBuildingModeOldScrollUI(&_game->IDChosenBuilding, sf::Vector2i((int)_game->buildingUI.getGlobalBounds().width, (int)_game->buildingUI.getGlobalBounds().height), *_game->window);
+					InputBuildingModeOldScrollUI(&_game->IDChosenBuilding, sf::Vector2i((int)_game->buildingUI.getGlobalBounds().width, (int)_game->buildingUI.getGlobalBounds().height), _game->scrollBuildingList, *_game->window);
 				}
 				else if (_game->actualGameState == TEST_PATHFINDING_MODE)
 				{				
@@ -484,7 +531,6 @@ void GameInput(struct Game *_game)
 
 
 	}
-
 
 
 	CameraInputs(&_game->camera, _game->time->GetFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
