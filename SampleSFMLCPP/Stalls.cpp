@@ -64,7 +64,6 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 	// A CONFIGURER + RELIER AU BATIMENT
 	this->maximalQuantity = 100;
 	this->internalImportRessourceCounter = RESET;
-	this->internalExportRessourceCounter = RESET;
 
 	this->lifeTime = RESET;
 	this->actualProductionTime = RESET;
@@ -73,6 +72,9 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 	this->isWorkerThere = false;
 	this->isPurchaserThere = false;
 	this->isNewMerchantNeeded = false;
+
+	this->internalImportRessourceCounterSaved = RESET;
+	this->ressourceQuantityToSell = RESET;
 }
 
 void Stalls::PickUpPriceAccepted(const int &_price)
@@ -90,7 +92,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 		case STALL_READY_TO_WORKS:
 			
 			if (_ressourceSent->GetQuantityOwned() > 0
-				&& internalImportRessourceCounter == 0)
+				&& internalImportRessourceCounter >= 0)
 			{
 				this->actualState = STALL_FILLING;
 			}
@@ -107,11 +109,13 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			}
 
 
-			if (internalImportRessourceCounter >= this->quantitativeThreshold
+			if (this->internalImportRessourceCounter >= this->quantitativeThreshold
 				&& (_ressourceSent->GetQuantityOwned() == 0
 					|| this->internalImportRessourceCounter == this->maximalQuantity))
 			{
 				this->isNewMerchantNeeded = true;
+
+				this->internalImportRessourceCounterSaved = this->internalImportRessourceCounter;
 
 				this->actualState = STALL_SEND_REQUEST_PURCHASER;
 			}
@@ -186,7 +190,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 					this->isNewMerchantNeeded = true;
 				}
 
-				if (this->internalImportRessourceCounter - 1 >= 0)
+				if (this->internalImportRessourceCounter - 1 >= this->internalImportRessourceCounterSaved - this->ressourceQuantityToSell)
 				{
 					_money->AddMoney(this->priceAccepted);
 					this->internalImportRessourceCounter -= 1;
@@ -202,9 +206,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 				{
 					this->isNewMerchantNeeded = true;
 				}
-
-				//_purchasers->IsOfferHasBeenRefused();
-
+				
 				this->actualState = STALL_SEND_REQUEST_PURCHASER;
 			}
 
@@ -536,3 +538,9 @@ bool Stalls::ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
 //		return false;
 //	}
 //}
+
+
+void Stalls::SetRessourceQuantityToSell(const int &_quantity)
+{
+	this->ressourceQuantityToSell = _quantity;
+}

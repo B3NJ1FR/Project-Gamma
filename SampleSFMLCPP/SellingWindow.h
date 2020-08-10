@@ -20,6 +20,7 @@ private:
 	sf::Text sellingWindowRessourceQuantity[4];
 
 	int sellingWindowScrollButtonPosition;
+	int sellingWindowScrollButtonMax;
 	int quantityConvertedToSell;
 	int priceAccepted;
 	bool wasCursorPressed;
@@ -28,6 +29,7 @@ public:
 	SellingWindow(sf::Font *_font);
 	~SellingWindow();
 
+	// Function that manages the cursor data (quantity selected, minimals, maximals and current price)
 	void UpdateQuantityConvertedToSell(Purchasers *_purchasers, const int &_quantityStocked);
 	void UpdateSellingWindowTexts(Purchasers *_purchasers);
 	void DisplaySellingWindow(sf::RenderWindow &_window);

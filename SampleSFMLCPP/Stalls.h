@@ -29,7 +29,6 @@ private:
 	int quantitativeThreshold; // Seuil minimum de lancement
 	int maximalQuantity; // Seuil maximal
 	int internalImportRessourceCounter;
-	int internalExportRessourceCounter;
 
 	float lifeTime;
 	float actualProductionTime;
@@ -41,6 +40,8 @@ private:
 	bool isPurchaserThere;
 
 	int priceAccepted;
+	int internalImportRessourceCounterSaved;
+	int ressourceQuantityToSell;
 	bool isNewMerchantNeeded;
 public:
 	
@@ -69,6 +70,7 @@ public:
 
 	//bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
+	void SetRessourceQuantityToSell(const int &_quantity = RESET);
 };
 
 #endif // !STALLS__H

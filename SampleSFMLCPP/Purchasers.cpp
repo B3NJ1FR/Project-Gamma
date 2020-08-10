@@ -3,7 +3,7 @@
 
 Purchasers::Purchasers()
 {
-	/*this->actualStatus = IDLE;
+	this->actualStatus = IDLE;
 	this->path = nullptr;
 	
 	this->minimalMoneyValueForRessource = RESET;
@@ -18,7 +18,7 @@ Purchasers::Purchasers()
 	this->minimalMovementTime = RESET;
 	this->maximalMovementTime = RESET;
 
-	this->isPreviousOfferHasBeenRefused = RESET;*/
+	this->isPreviousOfferHasBeenRefused = false;
 }
 
 Purchasers::~Purchasers()
@@ -50,16 +50,19 @@ void Purchasers::Initialisation(const int &_actualQuantity)
 	{
 		purchaserFile >> temporaryString;
 
+		// Reading of his provenance
 		if (temporaryString == "PROVENANCE")
 		{
 			purchaserFile >> this->provenance;
 		}
 
+		// Reading of the price which he would sells
 		if (temporaryString == "MONEY")
 		{
 			purchaserFile >> this->minimalMoneyValueForRessource >> this->maximalMoneyValueForRessource;
 		}
 
+		// Reading of the quantities which he would sells
 		if (temporaryString == "QUANTITY")
 		{
 			sf::Vector2i temporaryMinimalRessourcesQuantity;
@@ -68,7 +71,6 @@ void Purchasers::Initialisation(const int &_actualQuantity)
 			this->minimalRessourceQuantity = RESET;
 			this->maximalRessourceQuantity = RESET;
 
-			//purchaserFile >> this->minimalRessourceQuantity >> this->maximalRessourceQuantity;
 			purchaserFile >> temporaryMinimalRessourcesQuantity.x >> temporaryMinimalRessourcesQuantity.y >> temporaryMaximalRessourcesQuantity.x >> temporaryMaximalRessourcesQuantity.y;
 
 			this->minimalRessourceQuantity = RandomiseData(temporaryMinimalRessourcesQuantity);

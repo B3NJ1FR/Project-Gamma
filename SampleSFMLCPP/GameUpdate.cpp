@@ -135,13 +135,13 @@ void GameUpdate(struct Game *_game)
 		_game->workersList->UpdateWorkersLife(_game);
 	}
 
-
 	_game->time->UpdateFrameTime();
-	_game->time->UpdateMonthToDisplay();
+
 
 	if (_game->actualGameState != BUILD_MODE)
 	{
 		_game->time->UpdateGeneralTime();
+		_game->time->UpdateMonthToDisplay();
 
 		_game->vines.UpdateVineLife(_game->time->GetFrameTime(), _game->time->GetActualMonth());
 		_game->vines.UpdateVineSprite(_game->map);
