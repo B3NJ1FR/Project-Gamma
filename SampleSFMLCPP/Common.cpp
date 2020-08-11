@@ -120,7 +120,43 @@ void LoadTextString(sf::Text *_textToInitialise, const char * _string, sf::Font 
 	_textToInitialise->setFillColor(_color);
 }
 
+void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *_font, int _characterSize, sf::Color _color, int _originPosition)
+{
+	_textToInitialise->setFont(*_font);
+
+	_textToInitialise->setString(_string);
+
+	_textToInitialise->setCharacterSize(_characterSize);
+
+	_textToInitialise->setFillColor(_color);
+
+	if (_originPosition == 1)
+	{
+		sf::Vector2f origin = { (float)_textToInitialise->getGlobalBounds().width, (float)_textToInitialise->getGlobalBounds().height };
+
+		origin.x = origin.x / 2;
+		origin.y = origin.y / 2;
+
+		_textToInitialise->setOrigin(origin);
+	}
+}
+
+
 void LoadTextString(sf::Text *_textToInitialise, const char * _string, sf::Font *_font, int _characterSize, sf::Color _color, sf::Vector2f _position)
+{
+	_textToInitialise->setFont(*_font);
+
+	_textToInitialise->setString(_string);
+
+	_textToInitialise->setCharacterSize(_characterSize);
+
+	_textToInitialise->setFillColor(_color);
+
+	_textToInitialise->setPosition(_position);
+}
+
+
+void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *_font, int _characterSize, sf::Color _color, sf::Vector2f _position)
 {
 	_textToInitialise->setFont(*_font);
 

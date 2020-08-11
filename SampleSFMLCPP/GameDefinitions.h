@@ -65,6 +65,7 @@ struct Game
 	SpecificsBuildings winePress;
 	SpecificsBuildings wineStorehouse;
 	Stalls *stall;
+	sf::Text *buildingsNameTexts;
 
 	sf::Sprite *spriteArray;
 
@@ -84,6 +85,7 @@ struct Game
 	sf::Text debbugTexts[12];
 
 	sf::Font generalFont;
+	sf::Font charlemagneFont;
 
 	// Selling Window
 	SellingWindow *sellingWindow;

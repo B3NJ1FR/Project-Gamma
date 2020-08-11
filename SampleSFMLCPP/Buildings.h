@@ -71,6 +71,7 @@ public :
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char _numberRessources = 1);
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
 
+	std::string GetName();
 	sf::Sprite GetSprite();
 	sf::Sprite GetIcon();
 	sf::Vector2i GetSize();

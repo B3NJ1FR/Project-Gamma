@@ -116,7 +116,11 @@ void Buildings::SetRessourceQuantityProduced(int *_resssourceQuantity)
 	this->ressourceQuantityProduced = _resssourceQuantity;
 }
 
-
+std::string Buildings::GetName()
+{
+	// Get the building name
+	return this->name;
+}
 sf::Sprite Buildings::GetSprite()
 {
 	// Get the building sprite

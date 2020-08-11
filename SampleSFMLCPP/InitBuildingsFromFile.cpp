@@ -47,6 +47,12 @@ void InitBuildingsFromFile(struct Game *_game)
 			if (buildingID <= (_game->numberOfBuilding - 1))
 			{
 				buildingsFile >> temporaryString;
+				
+				if (temporaryString.find("_") != -1)
+				{
+					temporaryString.replace(temporaryString.find("_"), 1, "\n", 1);
+				}
+
 				_game->buildings[buildingID].SetName(temporaryString);
 
 				// Pickup the ID and the name of the building

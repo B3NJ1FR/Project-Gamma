@@ -213,6 +213,7 @@ void TextsInit(struct Game *_game)
 	//_game->generalFont.loadFromFile("Data/Fonts/Roman SD.ttf");
 	//_game->generalFont.loadFromFile("Data/Fonts/CharlemagneStd-Bold.otf");
 	_game->generalFont.loadFromFile("Data/Fonts/arial.ttf");
+	_game->charlemagneFont.loadFromFile("Data/Fonts/CharlemagneStd-Bold.otf");
 	
 	// ---------------- DEBUGGER TEXTS ---------------- 
 	LoadTextString(&_game->debbugTexts[0], "Mouse position :", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(0, 85));
@@ -377,11 +378,11 @@ void GameInitialisation(struct Game *_game)
 
 	_game->workersList->InitialisationWorkersList();
 
-	_game->buildingUI = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_test.png", 0);
+	_game->buildingUI = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll_test.png", 0);
 	_game->buildingUIclosed = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_closed.png", 0);
-	_game->buildingUIdestroyBuildings = LoadSprite("Data/Assets/Sprites/Menu/destroy_buildings.png", 0);
-	_game->blackFilter = LoadSprite("Data/Assets/Sprites/Menu/black_layer.png", 0);
-	_game->contour = LoadSprite("Data/Assets/Sprites/Menu/contour_selection.png", 0);
+	_game->buildingUIdestroyBuildings = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/destroy_buildings.png", 0);
+	_game->contour = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/contour_selection.png", 0);
+	_game->blackFilter = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/black_layer.png", 0);
 	_game->workerTest = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
 
 	_game->workersIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
@@ -390,5 +391,9 @@ void GameInitialisation(struct Game *_game)
 	_game->workersIcons[3] = LoadSprite("Data/Assets/Sprites/Entities/worker_pickuping.png", 1);
 	_game->workersIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
 
+
+	// BuildMode
+	_game->scrollBuildingList = 80;
+	_game->buildingsNameTexts = nullptr;
 }
 

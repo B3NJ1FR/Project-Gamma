@@ -61,41 +61,6 @@ void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _
 			_camera->y += CAMERA_SPEED * _frametime;
 		}
 	}
-	
-
-	   
-
-	// ****************************************************
-
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		_camera->x += CAMERA_SPEED * _frametime;
-		_camera->y += CAMERA_SPEED * _frametime;
-
-		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		_camera->x -= CAMERA_SPEED * _frametime;
-		_camera->y -= CAMERA_SPEED * _frametime;
-		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		_camera->x += CAMERA_SPEED * _frametime;
-		_camera->y -= CAMERA_SPEED * _frametime;
-		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		_camera->x -= CAMERA_SPEED * _frametime;
-		_camera->y += CAMERA_SPEED * _frametime;
-		std::cout << "Cam : " << _camera->x << " " << _camera->y << std::endl;
-	}*/
-
 }
 
 void SetOrRemoveBuildingOnMap(struct Game *_game, bool _isConstructing, enum Floors _floorFocused, int _typeOfBuilding, sf::Vector3i _statsToApply)
@@ -196,9 +161,7 @@ void InputPickUpCaseClicked(struct Game *_game, bool _isBuildingUINeeded)
 		{
 			_game->buildingCaseSelected = { -1, -1 };
 		}
-	}
-
-	
+	}	
 
 	//std::cout << "Case : " << _game->buildingCaseSelected.x << " & " << _game->buildingCaseSelected.y << std::endl << std::endl;
 }
@@ -215,37 +178,17 @@ void InputBuildingModeOldScrollUI(int *_IDChosenBuilding, sf::Vector2i _sizeOldS
 		// Only 0 or 1 can be get because we just display two icons
 
 		// Management of the vertical click to get the number of the case selected, if the player has selected a case and not outside
-		if ((mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) % 130 > 0
-			&& (mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) % 130 < 64)
+		if ((mousePosition.y - (1080 - _sizeOldScrollUI.y + (int)_scrollDelta)) % 130 > 0
+			&& (mousePosition.y - (1080 - _sizeOldScrollUI.y + (int)_scrollDelta)) % 130 < 64)
 		{
 			bool numberCaseWidth = (mousePosition.x - (1920 - _sizeOldScrollUI.x + 143)) / 109;
-			int numberCaseHeight = (mousePosition.y - (1080 - _sizeOldScrollUI.y + 80)) / 130 + abs(_scrollDelta) / 130;
+			int numberCaseHeight = (mousePosition.y - (1080 - _sizeOldScrollUI.y + (int)_scrollDelta)) / 130;
 
 			*_IDChosenBuilding = numberCaseWidth + (numberCaseHeight * 2);
 		}
 	}
 }
 
-
-// Building Mode : Inputs management to scroll the list of building in the "old scroll" UI
-void InputScrollBuildingModeOldScrollUI(float *_scrollDelta, sf::Vector2i _sizeOldScrollUI, const sf::RenderWindow &_window)
-{
-	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
-
-	if (mousePosition.x > 1920 - _sizeOldScrollUI.x
-		&& mousePosition.x < 1920
-		&& mousePosition.y > 1080 - _sizeOldScrollUI.y
-		&& mousePosition.y < 1080)
-	{
-		std::cout << "HEREEE\n";
-	}
-
-
-	/*if (_scrollDelta + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
-	{
-		_scrollDelta += event.mouseWheelScroll.delta / 20;
-	}*/
-}
 
 void GameInput(struct Game *_game)
 {
@@ -271,9 +214,30 @@ void GameInput(struct Game *_game)
 			if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
 			{
 				_game->actualGameState = BUILD_MODE;
+				
+				if (_game->buildingsNameTexts != nullptr)
+				{
+					delete _game->buildingsNameTexts;
+					_game->buildingsNameTexts = nullptr;
+				}
+
+				_game->buildingsNameTexts = new sf::Text[_game->numberOfBuilding];
+
+				for (int i = 0; i < _game->numberOfBuilding; i++)
+				{
+					LoadTextString(&_game->buildingsNameTexts[i], _game->buildings[i].GetName(), &_game->charlemagneFont, 20, sf::Color::Black);
+				}
+
+
 			}
 			else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
 			{
+				if (_game->buildingsNameTexts != nullptr)
+				{
+					delete _game->buildingsNameTexts;
+					_game->buildingsNameTexts = nullptr;
+				}
+
 				_game->actualGameState = NORMAL_MODE;
 			}
 
@@ -323,7 +287,9 @@ void GameInput(struct Game *_game)
 			// TEST
 			if (event.key.code == sf::Keyboard::U)
 			{
-				std::cout << _game->ressources[BUNCH_OF_GRAPE].GetName() << " : " << _game->ressources[BUNCH_OF_GRAPE].GetQuantityOwned() << std::endl;
+				//std::cout << _game->ressources[BUNCH_OF_GRAPE].GetName() << " : " << _game->ressources[BUNCH_OF_GRAPE].GetQuantityOwned() << std::endl;
+
+
 			}
 			// TEST
 			if (event.key.code == sf::Keyboard::I)
@@ -399,40 +365,48 @@ void GameInput(struct Game *_game)
 
 		if (event.type == sf::Event::MouseWheelScrolled)
 		{
-			if (_game->camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
+			if (_game->actualGameState != BUILD_MODE)
 			{
-				int profondeur = 1;
+				if (_game->camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
+				{
+					int profondeur = 1;
 
-				_game->camera.z += event.mouseWheelScroll.delta / 20;
+					_game->camera.z += event.mouseWheelScroll.delta / 20;
 
-				_game->scale.x = 1 / (profondeur - _game->camera.z);
-				_game->scale.y = 1 / (profondeur - _game->camera.z);
+					_game->scale.x = 1 / (profondeur - _game->camera.z);
+					_game->scale.y = 1 / (profondeur - _game->camera.z);
+				}
 			}
-
-
-			if (_game->actualGameState == BUILD_MODE)
+			else
 			{
-				//InputScrollBuildingModeOldScrollUI(&_game->scrollBuildingList, sf::Vector2i((int)_game->buildingUI.getGlobalBounds().width, (int)_game->buildingUI.getGlobalBounds().height), *_game->window);
-
 				sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
 
+				// We verify that mouse is in the building UI area
 				if (mousePosition.x > 1920 - _game->buildingUI.getGlobalBounds().width
 					&& mousePosition.x < 1920
 					&& mousePosition.y > 1080 - _game->buildingUI.getGlobalBounds().height
 					&& mousePosition.y < 1080)
 				{
-
-					// A FAIRE -> Rendre le max (-500) dynamique en fonction du nombre de bâtiment présent dans la liste
-					// et donc du nombre de ligne devant être affichée
-					if (_game->scrollBuildingList - (event.mouseWheelScroll.delta * 5) >= - 500
-						&& (_game->scrollBuildingList - (event.mouseWheelScroll.delta * 5) <= 0))
+					// We check if the scrolling doesn't leave the area
+					// The max is dynamically calculated in function of the number of building present in the game
+					if (_game->scrollBuildingList - (event.mouseWheelScroll.delta * 5) >= -130 * (_game->numberOfBuilding / 2) + 80
+						&& (_game->scrollBuildingList - (event.mouseWheelScroll.delta * 5) <= 80))
 					{
 						_game->scrollBuildingList -= event.mouseWheelScroll.delta * 5;
 					}
 				}
+				else
+				{
+					if (_game->camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
+					{
+						int profondeur = 1;
 
+						_game->camera.z += event.mouseWheelScroll.delta / 20;
 
-				
+						_game->scale.x = 1 / (profondeur - _game->camera.z);
+						_game->scale.y = 1 / (profondeur - _game->camera.z);
+					}
+				}
 			}
 
 		}
