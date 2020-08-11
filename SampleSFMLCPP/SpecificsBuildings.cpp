@@ -86,7 +86,7 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						break;
 					case BUILDING_FILLING:
 
-						if (_ressourceSent->GetQuantityOwned() - 1 > 0)
+						if (_ressourceSent->GetQuantityOwned() - 1 >= 0)
 						{
 							_ressourceSent->SubtractQuantityOwned(1);
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
@@ -111,26 +111,19 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						break;
 					case BUILDING_COLLECTING_PRODUCTION:
 						
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter > 0)
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter > 0
+							&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 						{
-							_ressourceProduced->AddQuantityOwned(1);
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter -= 1;
-						}
-						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter == 0)
-						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
-
-						}
-						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter < 0)
-						{
-							// ERROR LOG
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = true;
 						}
 
 						break;
 					case BUILDING_NEED_TO_BE_CLEANED:
+
+						((SpecificsBuildings::sBuildingData  *)currentElement->data)->isChangingSprite = true;
+						((SpecificsBuildings::sBuildingData  *)currentElement->data)->isWorkerThere = false;
+
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
 
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_READY_TO_PRODUCE;
 
@@ -266,13 +259,13 @@ void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
 				// If the building has produced the ressources, we manage it
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
 				{
-					// Add quantity produced to the ressource targeted
-					_ressource->AddQuantityOwned(this->building->GetRessourceQuantityProduced());
+					//// Add quantity produced to the ressource targeted
+					//_ressource->AddQuantityOwned(this->building->GetRessourceQuantityProduced());
 
-					// Launch the feedback animation of producing
+					//// Launch the feedback animation of producing
 
 
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
+					//((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
 				}
 			}
 		}
@@ -287,6 +280,11 @@ bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtWorkerPosition(const s
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
+
+				// Vérifier d'abord si le joueur se situe entre l'origine + size max du bâtiment, si c'est le cas, faire la boucle for
+				// sinon, passer à la suite (pour gagner en vitesse d'exécution)
+
+				// A REVOIR POUR LE FAIRE DE MANIERE DYNAMIQUE
 				// If the building has produced the ressources, we manage it
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -383,11 +381,14 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 						{
 							// Launch the feedback animation of producing
 
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
 
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime = RESET;
 
-							return this->building->GetRessourceQuantityProduced();
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
+
+							return this->building->GetRessourceQuantityProduced() * ((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter;
 						}
 						else
 						{

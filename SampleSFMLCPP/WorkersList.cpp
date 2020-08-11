@@ -216,21 +216,21 @@ void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, uns
 }
 
 
-bool WorkersList::CheckWorkersPresenceAtPosition(const sf::Vector2f &_mapPosition)
-{
-	/*if (this->list != nullptr)
-	{
-		if (this->list->first != nullptr)
-		{
-			LinkedListClass::sElement *currentElement = this->list->first;
-
-			int positionCounter(1);
-
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				std::cout << "Worker : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
-				positionCounter++;
-			}
-		}
-	}*/
-}
+//bool WorkersList::CheckWorkersPresenceAtPosition(const sf::Vector2f &_mapPosition)
+//{
+//	/*if (this->list != nullptr)
+//	{
+//		if (this->list->first != nullptr)
+//		{
+//			LinkedListClass::sElement *currentElement = this->list->first;
+//
+//			int positionCounter(1);
+//
+//			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+//			{
+//				std::cout << "Worker : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
+//				positionCounter++;
+//			}
+//		}
+//	}*/
+//}

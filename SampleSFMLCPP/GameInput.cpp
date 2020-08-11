@@ -217,8 +217,8 @@ void GameInput(struct Game *_game)
 				
 				if (_game->buildingsNameTexts != nullptr)
 				{
-					delete _game->buildingsNameTexts;
-					_game->buildingsNameTexts = nullptr;
+					//delete _game->buildingsNameTexts;
+					//_game->buildingsNameTexts = nullptr;
 				}
 
 				_game->buildingsNameTexts = new sf::Text[_game->numberOfBuilding];
@@ -234,8 +234,8 @@ void GameInput(struct Game *_game)
 			{
 				if (_game->buildingsNameTexts != nullptr)
 				{
-					delete _game->buildingsNameTexts;
-					_game->buildingsNameTexts = nullptr;
+					//delete _game->buildingsNameTexts;
+					//_game->buildingsNameTexts = nullptr;
 				}
 
 				_game->actualGameState = NORMAL_MODE;
@@ -615,8 +615,7 @@ void GameInput(struct Game *_game)
 						}
 						else if (_game->IDChosenBuilding == 4)
 						{
-							// Entrepot
-							//_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
+							_game->storehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
 						}
 						else if (_game->IDChosenBuilding == 5)
 						{

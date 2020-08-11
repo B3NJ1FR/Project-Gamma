@@ -149,7 +149,7 @@ void Pathfinding::AddFirstNodeToList(sf::Vector2i _mapPosition)
 	((Pathfinding::sPathfindingData *)firstNode->data)->status = PATH_OPEN;
 
 	firstNode->status = ELEMENT_ACTIVE;
-	std::cout << "First Pos : " << ((Pathfinding::sPathfindingData *)firstNode->data)->mapPosition.x << " " << ((Pathfinding::sPathfindingData *)firstNode->data)->mapPosition.y << std::endl;
+	//std::cout << "First Pos : " << ((Pathfinding::sPathfindingData *)firstNode->data)->mapPosition.x << " " << ((Pathfinding::sPathfindingData *)firstNode->data)->mapPosition.y << std::endl;
 
 	// Add this new vine at the end of the list
 	this->AddElementToLinkedList(this->openList, firstNode, 1);
@@ -277,7 +277,7 @@ void Pathfinding::FindNodeArounds()
 											&& this->testMap[(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y + 1][(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x] != 0)
 										{
 											isDiagIsFree = false;
-											std::cout << "Direction principales libres\n";
+											//std::cout << "Direction principales libres\n";
 										}
 									}
 									else
@@ -286,7 +286,7 @@ void Pathfinding::FindNodeArounds()
 											&& this->testMap[(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y - 1][(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x] != 0)
 										{
 											isDiagIsFree = false;
-											std::cout << "Direction principales libres\n";
+											//std::cout << "Direction principales libres\n";
 										}
 									}
 								}
@@ -298,7 +298,7 @@ void Pathfinding::FindNodeArounds()
 											&& this->testMap[(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y + 1][(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x] != 0)
 										{
 											isDiagIsFree = false;
-											std::cout << "Direction principales libres\n";
+											//std::cout << "Direction principales libres\n";
 										}
 									}
 									else
@@ -307,7 +307,7 @@ void Pathfinding::FindNodeArounds()
 											&& this->testMap[(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y - 1][(int)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x] != 0)
 										{
 											isDiagIsFree = false;
-											std::cout << "Direction principales libres\n";
+											//std::cout << "Direction principales libres\n";
 										}
 									}
 								}
@@ -331,7 +331,7 @@ void Pathfinding::FindNodeArounds()
 											if (((Pathfinding::sPathfindingData *)currentElement->data)->movementCost >
 												CalculatorMovementCost(((Pathfinding::sPathfindingData *)this->currentNode->data)->movementCost, false))
 											{
-												std::cout << "HEREEEE : " << ((Pathfinding::sPathfindingData *)currentElement->data)->movementCost << " & " << CalculatorMovementCost(((Pathfinding::sPathfindingData *)this->currentNode->data)->movementCost, false) << std::endl;
+												//std::cout << "HEREEEE : " << ((Pathfinding::sPathfindingData *)currentElement->data)->movementCost << " & " << CalculatorMovementCost(((Pathfinding::sPathfindingData *)this->currentNode->data)->movementCost, false) << std::endl;
 
 												ModifyParentLink(currentElement, this->currentNode);
 											}
@@ -342,7 +342,7 @@ void Pathfinding::FindNodeArounds()
 											if (((Pathfinding::sPathfindingData *)currentElement->data)->movementCost >
 												CalculatorMovementCost(((Pathfinding::sPathfindingData *)this->currentNode->data)->movementCost, true))
 											{
-												std::cout << "HEREEEE : " << ((Pathfinding::sPathfindingData *)currentElement->data)->movementCost << " & " << CalculatorMovementCost(((Pathfinding::sPathfindingData *)this->currentNode->data)->movementCost, true) << std::endl;
+												//std::cout << "HEREEEE : " << ((Pathfinding::sPathfindingData *)currentElement->data)->movementCost << " & " << CalculatorMovementCost(((Pathfinding::sPathfindingData *)this->currentNode->data)->movementCost, true) << std::endl;
 
 												ModifyParentLink(currentElement, this->currentNode);
 											}
@@ -401,7 +401,7 @@ void Pathfinding::FindNodeArounds()
 									currentElement = (LinkedListClass::sElement*)((Pathfinding::sPathfindingData *)currentElement->data)->parentLink;
 								}
 
-								std::cout << "Longueur liste : " << counter << " elements \n";
+								//std::cout << "Longueur liste : " << counter << " elements \n";
 
 
 								LinkedListClass::sElement *finalElement = this->openList->first;
@@ -508,7 +508,7 @@ void Pathfinding::WalkProcess(sf::Vector2f *_workerPosition, const float &_speed
 		_workerPosition->x = (float)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x;
 		_workerPosition->y = (float)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y;
 
-		std::cout << "First Pos : " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x << " " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y << std::endl;
+		//std::cout << "First Pos : " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x << " " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y << std::endl;
 		
 		this->actualStatus = PATHFINDING_FIND_WAY;
 	}
@@ -548,7 +548,7 @@ void Pathfinding::WalkProcess(sf::Vector2f *_workerPosition, const float &_speed
 
 				this->currentNode = this->currentNode->next;
 
-				std::cout << "Pos : " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x << " " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y << std::endl;
+				//std::cout << "Pos : " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x << " " << ((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y << std::endl;
 				_workerPosition->x = (float)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.x;
 				_workerPosition->y = (float)((Pathfinding::sPathfindingData *)this->currentNode->data)->mapPosition.y;
 			}

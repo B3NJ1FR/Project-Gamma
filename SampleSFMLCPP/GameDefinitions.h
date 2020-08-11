@@ -6,6 +6,7 @@
 #include "Vines.h"
 #include "SpecificsBuildings.h"
 #include "Stalls.h"
+#include "Storehouse.h"
 #include "Pathfinding.h"
 #include "WorkersList.h"
 #include "Purchasers.h"
@@ -65,6 +66,7 @@ struct Game
 	SpecificsBuildings winePress;
 	SpecificsBuildings wineStorehouse;
 	Stalls *stall;
+	Storehouse storehouse;
 	sf::Text *buildingsNameTexts;
 
 	sf::Sprite *spriteArray;

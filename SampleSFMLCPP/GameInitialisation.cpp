@@ -375,6 +375,7 @@ void GameInitialisation(struct Game *_game)
 	_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[BUILDING_GRAPE_STOMPING_VATS]);
 	_game->winePress.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_PRESS]);
 	_game->wineStorehouse.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_STOREHOUSE]);
+	_game->storehouse.InitialisationStorehouse(&_game->buildings[BUILDING_STOREHOUSE]);
 
 	_game->workersList->InitialisationWorkersList();
 
