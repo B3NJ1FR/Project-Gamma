@@ -276,31 +276,14 @@ bool Storehouse::ConfirmStorehousePresenceAtWorkerPosition(const sf::Vector2f &_
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				// Vérifier d'abord si le joueur se situe entre l'origine + size max du bâtiment, si c'est le cas, faire la boucle for
-				// sinon, passer à la suite (pour gagner en vitesse d'exécution)
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
+				{
+					((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
 
-				// A REVOIR POUR LE FAIRE DE MANIERE DYNAMIQUE
-				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
-				{
-					((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
-					return true;
-				}
-				else if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - 1 == _mapPosition.x
-					&& ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y == _mapPosition.y)
-				{
-					((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
-					return true;
-				}
-				else if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - 1 == _mapPosition.x
-					&& ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - 1 == _mapPosition.y)
-				{
-					((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
-					return true;
-				}
-				else if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x == _mapPosition.x
-					&& ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - 1 == _mapPosition.y)
-				{
-					((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
 					return true;
 				}
 			}

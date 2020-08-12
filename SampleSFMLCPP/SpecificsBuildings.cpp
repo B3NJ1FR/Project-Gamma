@@ -280,33 +280,14 @@ bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtWorkerPosition(const s
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
+				{
+					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
 
-				// Vérifier d'abord si le joueur se situe entre l'origine + size max du bâtiment, si c'est le cas, faire la boucle for
-				// sinon, passer à la suite (pour gagner en vitesse d'exécution)
-
-				// A REVOIR POUR LE FAIRE DE MANIERE DYNAMIQUE
-				// If the building has produced the ressources, we manage it
-				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
-				{
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-					return true;
-				}
-				else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - 1 == _mapPosition.x
-					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y == _mapPosition.y)
-				{
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-					return true;
-				}
-				else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - 1 == _mapPosition.x
-					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - 1 == _mapPosition.y)
-				{
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
-					return true;
-				}
-				else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x == _mapPosition.x
-					&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - 1== _mapPosition.y)
-				{
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
 					return true;
 				}
 			}
