@@ -68,7 +68,7 @@ public:
 	//int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
 	//sf::Vector2i SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition);
 
-	//bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
+	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
 	void SetRessourceQuantityToSell(const int &_quantity = RESET);
 };

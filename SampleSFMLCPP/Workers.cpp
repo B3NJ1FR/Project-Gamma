@@ -737,7 +737,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 						this->quantityRessourceHeld = nullptr;
 						this->targetedBuilding = nullptr;
 
-						this->SetWorkerStatus(IDLE);
+						this->SetWorkerStatus(WORKING);
 					}
 				}
 				else
@@ -769,7 +769,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 						this->quantityRessourceHeld = nullptr;
 						this->targetedBuilding = nullptr;
 
-						this->SetWorkerStatus(IDLE);
+						this->SetWorkerStatus(WORKING);
 					}
 				}
 				else
@@ -801,7 +801,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 						this->quantityRessourceHeld = nullptr;
 						this->targetedBuilding = nullptr;
 
-						this->SetWorkerStatus(IDLE);
+						this->SetWorkerStatus(WORKING);
 					}
 				}
 				else
@@ -840,7 +840,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					this->quantityRessourceHeld = nullptr;
 					this->targetedBuilding = nullptr;
 
-					this->SetWorkerStatus(IDLE);
+					this->SetWorkerStatus(WORKING);
 				}
 
 				break;
@@ -867,7 +867,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 						this->quantityRessourceHeld = nullptr;
 						this->targetedBuilding = nullptr;
 
-						this->SetWorkerStatus(IDLE);
+						this->SetWorkerStatus(WORKING);
 					}
 				}
 				else

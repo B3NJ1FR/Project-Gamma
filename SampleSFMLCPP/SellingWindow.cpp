@@ -13,7 +13,7 @@ SellingWindow::SellingWindow(sf::Font *_font)
 	this->sellingWindowScrollLine = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollLine.png", 1);
 
 
-	LoadTextString(&this->sellingWindowProvenance, "Nemausus", _font, 50, sf::Color::Black, sf::Vector2f(1920 / 2, 1080 / 2 - 150));
+	LoadTextString(&this->sellingWindowProvenance, "", _font, 50, sf::Color::Black, sf::Vector2f(1920 / 2, 1080 / 2 - 150));
 
 	LoadTextString(&this->sellingWindowPrice[0], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 + 270, 1080 / 2 - 50));
 	LoadTextString(&this->sellingWindowPrice[1], "", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 - 300, 1080 / 2 - 50));
@@ -94,6 +94,9 @@ void SellingWindow::UpdateQuantityConvertedToSell(Purchasers *_purchasers, const
 
 void SellingWindow::UpdateSellingWindowTexts(Purchasers *_purchasers)
 {
+	// Update Purchaser's Provenance
+	this->sellingWindowProvenance.setString(_purchasers->GetProvenanceName());
+
 	// Update of the prices texts
 	UpdateDynamicsTexts(&this->sellingWindowPrice[0], _purchasers->GetUnitPriceScope().x);
 	UpdateDynamicsTexts(&this->sellingWindowPrice[1], _purchasers->GetUnitPriceScope().y);

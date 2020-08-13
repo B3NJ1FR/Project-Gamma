@@ -53,7 +53,27 @@ void Purchasers::Initialisation(const int &_actualQuantity)
 		// Reading of his provenance
 		if (temporaryString == "PROVENANCE")
 		{
-			purchaserFile >> this->provenance;
+			int temporaryCounter(RESET);
+			int randomResult(RESET);
+
+			purchaserFile >> temporaryCounter;
+
+			randomResult = rand() % temporaryCounter;
+
+			//std::cout << "Provenance numero : " << randomResult << "/" << temporaryCounter << " ";
+
+			for (int i = 0; i < temporaryCounter; i++)
+			{
+				if (i == randomResult)
+				{
+					purchaserFile >> this->provenance;
+				}
+				else
+				{
+					purchaserFile >> temporaryString;
+				}
+			}
+
 		}
 
 		// Reading of the price which he would sells
@@ -163,6 +183,11 @@ sf::Vector2i Purchasers::GetUnitPriceScope()
 sf::Vector2i Purchasers::GetUnitQuantityRessourceScope()
 {
 	return sf::Vector2i(this->minimalRessourceQuantity, this->maximalRessourceQuantity);
+}
+
+std::string Purchasers::GetProvenanceName()
+{
+	return this->provenance;
 }
 
 void Purchasers::IsOfferHasBeenRefused()

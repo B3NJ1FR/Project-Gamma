@@ -394,12 +394,13 @@ int Storehouse::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf:
 
 sf::Vector2i Storehouse::StorehouseFindNearestBuilding(const sf::Vector2f &_mapPosition)
 {
+	sf::Vector2i buildingPosition = { RESET, RESET };
+
 	if (this->list != nullptr)
 	{
 		if (this->list->first != nullptr)
 		{
 			float lastLowerDistance(RESET);
-			sf::Vector2i buildingPosition = { RESET, RESET };
 
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
@@ -430,10 +431,18 @@ sf::Vector2i Storehouse::StorehouseFindNearestBuilding(const sf::Vector2f &_mapP
 
 				}
 			}
-
+		
 			return buildingPosition;
-
+		
 		}
+		else
+		{
+			return buildingPosition;
+		}
+	}
+	else
+	{
+		return buildingPosition;
 	}
 }
 

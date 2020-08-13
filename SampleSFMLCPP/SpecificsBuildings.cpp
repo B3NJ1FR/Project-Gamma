@@ -86,10 +86,13 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						break;
 					case BUILDING_FILLING:
 
-						if (_ressourceSent->GetQuantityOwned() - 1 >= 0)
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 						{
-							_ressourceSent->SubtractQuantityOwned(1);
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
+							if (_ressourceSent->GetQuantityOwned() - 1 >= 0)
+							{
+								_ressourceSent->SubtractQuantityOwned(1);
+								((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
+							}
 						}
 
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->maximalQuantity)
@@ -100,12 +103,15 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						break;
 					case BUILDING_WORKS:
 
-						((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime += _frametime;
-
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime > this->building->GetProductionTimeCost())
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime = RESET;
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime += _frametime;
+
+							if (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime > this->building->GetProductionTimeCost())
+							{
+								((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
+								((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime = RESET;
+							}
 						}
 
 						break;
@@ -401,12 +407,13 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 
 sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition)
 {
+	sf::Vector2i buildingPosition = { RESET, RESET };
+
 	if (this->list != nullptr)
 	{
 		if (this->list->first != nullptr)
 		{
 			float lastLowerDistance(RESET);
-			sf::Vector2i buildingPosition = { RESET, RESET };
 
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
@@ -439,8 +446,15 @@ sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf:
 			}
 
 			return buildingPosition;
-
 		}
+		else
+		{
+			return buildingPosition;
+		}
+	}
+	else
+	{
+		return buildingPosition;
 	}
 }
 

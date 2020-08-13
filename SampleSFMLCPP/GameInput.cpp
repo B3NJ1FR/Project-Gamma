@@ -627,8 +627,32 @@ void GameInput(struct Game *_game)
 
 
 						// Set the correct sprite ID 
-						_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 3 + _game->IDChosenBuilding;
-						_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 7;
+
+						if (_game->IDChosenBuilding == 2)
+						{
+							_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 17;
+							_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 23;
+						}
+						else if (_game->IDChosenBuilding == 3)
+						{
+							_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 16;
+							_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 24;
+						}
+						else if (_game->IDChosenBuilding == 4)
+						{
+							_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 19;
+							_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 22;
+						}
+						else if (_game->IDChosenBuilding == 5)
+						{
+							_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 18;
+							_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 20;
+						}
+						else
+						{
+							_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 3 + _game->IDChosenBuilding;
+							_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 7;
+						}
 					}
 				}
 				else if (_game->IDChosenBuilding == _game->numberOfBuilding)
@@ -702,6 +726,33 @@ void GameInput(struct Game *_game)
 							}
 
 							break;
+
+						case BUILDING_STOREHOUSE:
+
+							if (_game->storehouse.DestroyedBuildingSelected((sf::Vector2f)_game->buildingCaseSelected) == true)
+							{
+								SetOrRemoveBuildingOnMap(_game, false, FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET));
+							}
+							else
+							{
+								std::cout << "Can't destroyed this building\n\n\n";
+							}
+
+							break;
+
+						case BUILDING_STALL:
+
+							if (_game->stall->DestroyedBuildingSelected((sf::Vector2f)_game->buildingCaseSelected) == true)
+							{
+								SetOrRemoveBuildingOnMap(_game, false, FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET));
+							}
+							else
+							{
+								std::cout << "Can't destroyed this building\n\n\n";
+							}
+
+							break;
+
 						default:
 							break;
 						}

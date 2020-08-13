@@ -486,58 +486,42 @@ bool Stalls::ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
 //		}
 //	}
 //}
-//
-//
-//bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
-//{
-//	if (this->list != nullptr)
-//	{
-//		if (this->list->first != nullptr)
-//		{
-//			int positionCounter(1);
-//			bool isBuildingFind(false);
-//
-//			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
-//			{
-//				//std::cout << "Map : " << positionCounter << "/" << this->list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
-//
-//				// If the building position is identical to which send, we save his position in the linked list
-//				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition
-//					&& isBuildingFind == false)
-//				{
-//					isBuildingFind = true;
-//				}
-//
-//				if (isBuildingFind == false)
-//				{
-//					positionCounter++;
-//				}
-//			}
-//
-//			//std::cout << std::endl;
-//
-//			// After having saved the building's position, we ask to destroy it
-//			if (isBuildingFind == true)
-//			{
-//				RemoveElementsOfLinkedList(this->list, true, positionCounter);
-//
-//				return true;
-//			}
-//			else
-//			{
-//				return false;
-//			}
-//		}
-//		else
-//		{
-//			return false;
-//		}
-//	}
-//	else
-//	{
-//		return false;
-//	}
-//}
+
+
+bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
+{
+	if (this->mapPosition == _mapPosition)
+	{		
+		// Reset of the building construction status after being placed on map
+		this->constructionState = BUILDING_DESTROYED;
+		this->actualState = STALL_READY_TO_WORKS;
+
+		// A MODIFIER PAR VALEUR SEUIL
+		this->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
+
+		// A CONFIGURER + RELIER AU BATIMENT
+		this->maximalQuantity = 100;
+		this->internalImportRessourceCounter = RESET;
+
+		this->lifeTime = RESET;
+		this->actualProductionTime = RESET;
+
+		this->isChangingSprite = false;
+		this->isWorkerThere = false;
+		this->isPurchaserThere = false;
+		this->isNewMerchantNeeded = false;
+
+		this->internalImportRessourceCounterSaved = RESET;
+		this->ressourceQuantityToSell = RESET;
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
 
 
 void Stalls::SetRessourceQuantityToSell(const int &_quantity)

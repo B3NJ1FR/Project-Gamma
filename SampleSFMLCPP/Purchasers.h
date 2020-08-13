@@ -60,6 +60,7 @@ public:
 	void SetActualQuantityStored(const int &_quantity);
 	sf::Vector2i GetUnitPriceScope();
 	sf::Vector2i GetUnitQuantityRessourceScope();
+	std::string GetProvenanceName();
 	void IsOfferHasBeenRefused();
 };
 
