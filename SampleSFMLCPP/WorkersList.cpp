@@ -209,6 +209,7 @@ void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, uns
 			}
 
 			((Workers *)currentElement->data)->SetEndingPosition(_mapPosition, _map);
+			
 			((Workers *)currentElement->data)->SetWorkerStatus(IDLE);
 			((Workers *)currentElement->data)->ActiveLauchingMovement();
 		}
@@ -216,21 +217,31 @@ void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, uns
 }
 
 
-//bool WorkersList::CheckWorkersPresenceAtPosition(const sf::Vector2f &_mapPosition)
-//{
-//	/*if (this->list != nullptr)
-//	{
-//		if (this->list->first != nullptr)
-//		{
-//			LinkedListClass::sElement *currentElement = this->list->first;
-//
-//			int positionCounter(1);
-//
-//			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
-//			{
-//				std::cout << "Worker : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
-//				positionCounter++;
-//			}
-//		}
-//	}*/
-//}
+void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			int positionCounter(1);
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Workers *)currentElement->data)->GetWorkerStatus() == WAITING_MOVEMENT
+					|| ((Workers *)currentElement->data)->GetWorkerStatus() == MOVEMENT)
+				{
+					//std::cout << "The worker number " << positionCounter++ << "/" << this->list->size << " need to change his path\n\n";
+
+					((Workers *)currentElement->data)->SetEndingPosition((sf::Vector2i)((Workers *)currentElement->data)->GetWorkerEndingPosition(), _map);
+					
+					((Workers *)currentElement->data)->SetWorkerStatus(IDLE);
+					((Workers *)currentElement->data)->ActiveLauchingMovement();
+				}
+
+				positionCounter++;
+			}
+		}
+	}
+}

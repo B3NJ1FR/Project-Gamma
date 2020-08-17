@@ -18,7 +18,7 @@ public:
 	void ChangeWorkerNumberSelectedAdd();
 	void ChangeWorkerNumberSelectedSubtract();
 	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map);
-	//bool CheckWorkersPresenceAtPosition(const sf::Vector2f &_mapPosition);
+	void CheckAndUpdateWorkersPath(unsigned short ***_map);
 
 private:
 	LinkedListClass::sLinkedList *list;

@@ -58,6 +58,11 @@ sf::Vector2f Workers::GetWorkerPosition()
 	return this->mapPosition;
 }
 
+sf::Vector2f Workers::GetWorkerEndingPosition()
+{
+	return this->mapEndPosition;
+}
+
 int Workers::GetWorkerMoneyValue()
 {
 	return this->moneyValue;

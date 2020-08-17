@@ -60,6 +60,7 @@ public:
 
 	void SetEndingPosition(sf::Vector2i _mapPosition, unsigned short ***_map);
 	sf::Vector2f GetWorkerPosition();
+	sf::Vector2f GetWorkerEndingPosition();
 	int GetWorkerMoneyValue();
 	int GetWorkerMoneyCostPerMonth();
 	enum WorkerStatus GetWorkerStatus();

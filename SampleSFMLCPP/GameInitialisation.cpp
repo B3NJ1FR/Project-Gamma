@@ -367,9 +367,7 @@ void GameInitialisation(struct Game *_game)
 
 	_game->isDebuggerModeActive = false;
 
-	_game->IDChosenBuilding = RESET;
 
-	_game->isBuildingCaseOccupied = false;
 
 	_game->vines.InitialisationVines(&_game->buildings[BUILDING_VINES]);
 	_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[BUILDING_GRAPE_STOMPING_VATS]);
@@ -394,7 +392,10 @@ void GameInitialisation(struct Game *_game)
 
 
 	// BuildMode
+	_game->IDChosenBuilding = RESET;
 	_game->scrollBuildingList = 80;
 	_game->buildingsNameTexts = nullptr;
+	_game->isBuildingCaseOccupied = false;
+	_game->isNewBuildingHasBeenConstructed = false;
 }
 

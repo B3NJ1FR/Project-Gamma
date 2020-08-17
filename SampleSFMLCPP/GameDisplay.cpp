@@ -20,8 +20,8 @@ void DisplayDecor(struct Game *_game)
 						_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
 
 						BlitSprite(_game->spriteArray[_game->map[z][y][x]],
-							(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _game->camera.z),
-							(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _game->camera.z),
+							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
 							0, *_game->window);
 					}
 
@@ -37,8 +37,8 @@ void DisplayDecor(struct Game *_game)
 						_game->spriteArray[_game->map[z][y][x]].setColor(sf::Color::Red);
 
 						BlitSprite(_game->spriteArray[_game->map[z][y][x]],
-							(1920 / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
-							(1080 / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
 							0, *_game->window);
 						_game->spriteArray[_game->map[z][y][x]].setColor(sf::Color::White);
 					}
@@ -54,7 +54,7 @@ void DisplayDecor(struct Game *_game)
 void DisplayUINormalMode(struct Game *_game)
 {
 	// Display of the building selection UI
-	BlitSprite(_game->buildingUIclosed, 1920 - _game->buildingUIclosed.getGlobalBounds().width, 1080 - _game->buildingUIclosed.getGlobalBounds().height, 0, *_game->window);
+	BlitSprite(_game->buildingUIclosed, SCREEN_WIDTH - _game->buildingUIclosed.getGlobalBounds().width, SCREEN_HEIGHT - _game->buildingUIclosed.getGlobalBounds().height, 0, *_game->window);
 
 }
 
@@ -65,41 +65,41 @@ void DisplayUIBuildingMode(struct Game *_game)
 
 	for (int i = 0; i < _game->numberOfBuilding; i++)
 	{
-		if ((1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList >= (1080 - _game->buildingUI.getGlobalBounds().height + 40)
-			&& (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList <= 1080 - _game->buildings[i].GetIcon().getGlobalBounds().height - 40)
+		if ((SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList >= (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height + 40)
+			&& (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList <= SCREEN_HEIGHT - _game->buildings[i].GetIcon().getGlobalBounds().height - 40)
 		{
-			BlitSprite(_game->buildings[i].GetIcon(), (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList, 0, *_game->window);
+			BlitSprite(_game->buildings[i].GetIcon(), (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList, 0, *_game->window);
 
 			if (_game->money.GetMoneyQuantity() < _game->buildings[i].GetConstructionCost())
 			{
 				sf::Color color = { 255, 255, 255, 150 };
 				_game->blackFilter.setColor(color);
 
-				BlitSprite(_game->blackFilter, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList, 0, *_game->window);
+				BlitSprite(_game->blackFilter, (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList, 0, *_game->window);
 			}
 
 			if (_game->buildingsNameTexts != nullptr)
 			{
-				BlitString(_game->buildingsNameTexts[i], (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 , (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList + 70, *_game->window);
+				BlitString(_game->buildingsNameTexts[i], (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 , (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList + 70, *_game->window);
 			}
 		}
 
 	}
 	
 	// Display of the destroy button
-	if ((1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + _game->scrollBuildingList >= (1080 - _game->buildingUI.getGlobalBounds().height + 40)
-		&& (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + _game->scrollBuildingList <= 1080 - _game->buildingUIdestroyBuildings.getGlobalBounds().height - 40)
+	if ((SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + _game->scrollBuildingList >= (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height + 40)
+		&& (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + _game->scrollBuildingList <= SCREEN_HEIGHT - _game->buildingUIdestroyBuildings.getGlobalBounds().height - 40)
 	{
-		BlitSprite(_game->buildingUIdestroyBuildings, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->numberOfBuilding % 2) * 109, (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + _game->scrollBuildingList, 0, *_game->window);
+		BlitSprite(_game->buildingUIdestroyBuildings, (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->numberOfBuilding % 2) * 109, (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + _game->scrollBuildingList, 0, *_game->window);
 	}
 
 	if (_game->IDChosenBuilding <= _game->numberOfBuilding)
 	{
-		if ((1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->IDChosenBuilding / 2) + _game->scrollBuildingList >= (1080 - _game->buildingUI.getGlobalBounds().height + 40)
-			&& (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->IDChosenBuilding / 2) + _game->scrollBuildingList <= 1080 - _game->contour.getGlobalBounds().height - 40)
+		if ((SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->IDChosenBuilding / 2) + _game->scrollBuildingList >= (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height + 40)
+			&& (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->IDChosenBuilding / 2) + _game->scrollBuildingList <= SCREEN_HEIGHT - _game->contour.getGlobalBounds().height - 40)
 		{
 			// Display of the contour when a building is selected to be built
-			BlitSprite(_game->contour, (1920 - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->IDChosenBuilding % 2) * 109 - 4, (1080 - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->IDChosenBuilding / 2) - 4 + _game->scrollBuildingList, 0, *_game->window);
+			BlitSprite(_game->contour, (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (_game->IDChosenBuilding % 2) * 109 - 4, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (_game->IDChosenBuilding / 2) - 4 + _game->scrollBuildingList, 0, *_game->window);
 		}
 	}
 
@@ -191,11 +191,6 @@ void DisplayUIBuildingMode(struct Game *_game)
 
 		_game->spriteArray[3 + _game->IDChosenBuilding].setColor(sf::Color::White);
 	}
-	
-
-
-
-	
 }
 
 void DisplayUIGeneral(struct Game *_game)
@@ -218,18 +213,6 @@ void DisplayUIGeneral(struct Game *_game)
 	// Display of the amphora of wine quantity owned
 	BlitString(_game->UITexts[8], *_game->window);
 	BlitString(_game->UITexts[9], *_game->window);
-
-
-	//BlitSprite(_game->workerTest, (150 + (_game->workerPosition.x * (TILE_SIZE + 3))) + 16, (50 + (_game->workerPosition.y * (TILE_SIZE + 3))) + 16, 0, *_game->window);
-	
-	//sf::Vector2f tileCoordinates = WorldToScreen(_game->workers->GetWorkerPosition().x, _game->workers->GetWorkerPosition().y); // Faire une version stack
-	//sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y); // Faire une version stack
-	
-	//BlitSprite(_game->workerTest,
-	//			(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _game->camera.z),
-	//			(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _game->camera.z),
-	//			0, *_game->window);
-
 }
 
 

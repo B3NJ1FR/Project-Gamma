@@ -238,6 +238,12 @@ void GameInput(struct Game *_game)
 					//_game->buildingsNameTexts = nullptr;
 				}
 
+				if (_game->isNewBuildingHasBeenConstructed == true)
+				{
+					_game->isNewBuildingHasBeenConstructed = false;
+					_game->workersList->CheckAndUpdateWorkersPath(_game->map);
+				}
+
 				_game->actualGameState = NORMAL_MODE;
 			}
 
@@ -279,7 +285,17 @@ void GameInput(struct Game *_game)
 				if (_game->money.GetMoneyQuantity() - 1000 >= 0)
 				{
 					_game->money.SubtractMoney(1000);
-					_game->workersList->AddNewWorkersToList(sf::Vector2f(rand() % _game->numberColumns, rand() % _game->numberLines));
+
+					sf::Vector2i value = { rand() % _game->numberColumns, rand() % _game->numberLines };
+					
+					// We spawn the workers on the road
+					while (_game->map[ZERO_FLOOR + COLLISIONS_ID][value.y][value.x] != ROAD)
+					{
+						value.x = rand() % _game->numberColumns;
+						value.y = rand() % _game->numberLines;
+					}
+
+					_game->workersList->AddNewWorkersToList(sf::Vector2f(value));
 				}
 			}
 
@@ -588,7 +604,7 @@ void GameInput(struct Game *_game)
 					}
 
 					// If we didn't found an occupied place, we call that is an empty place
-					(isAreaEmpty) ? _game->isBuildingCaseOccupied = false : _game->isBuildingCaseOccupied = true;
+					_game->isBuildingCaseOccupied = (isAreaEmpty) ? false : true;
 
 					// Add the building if the place is empty
 					if (_game->isBuildingCaseOccupied == false)
@@ -653,6 +669,9 @@ void GameInput(struct Game *_game)
 							_game->map[FIRST_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 3 + _game->IDChosenBuilding;
 							_game->map[ZERO_FLOOR + SPRITE_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] = 7;
 						}
+
+						// Update the workers path if there is a modification
+						_game->isNewBuildingHasBeenConstructed = true;
 					}
 				}
 				else if (_game->IDChosenBuilding == _game->numberOfBuilding)
