@@ -234,20 +234,20 @@ void TextsInit(struct Game *_game)
 
 
 	// ---------------- UI TEXTS ---------------- 
-	LoadTextString(&_game->UITexts[0], "Sesterces :", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(130, 33));
-	LoadTextString(&_game->UITexts[1], "", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(280, 33));
+	LoadTextString(&_game->UITexts[0], "Sesterces :", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(130, 33));
+	LoadTextString(&_game->UITexts[1], "", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(305, 33));
 
-	LoadTextString(&_game->UITexts[2], "Bunchs of Grape :", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(400, 33));
-	LoadTextString(&_game->UITexts[3], "", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(630, 33));
+	LoadTextString(&_game->UITexts[2], "Bunchs of Grape :", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(435, 33));
+	LoadTextString(&_game->UITexts[3], "", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(720, 33));
 
-	LoadTextString(&_game->UITexts[4], "Grapes Must :", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(800, 33));
-	LoadTextString(&_game->UITexts[5], "", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(975, 33));
+	LoadTextString(&_game->UITexts[4], "Grapes Must :", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(840, 33));
+	LoadTextString(&_game->UITexts[5], "", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(1055, 33));
 
-	LoadTextString(&_game->UITexts[6], "Grape Juice :", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(1100, 33));
-	LoadTextString(&_game->UITexts[7], "", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(1270, 33));
+	LoadTextString(&_game->UITexts[6], "Grape Juice :", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(1155, 33));
+	LoadTextString(&_game->UITexts[7], "", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(1355, 33));
 
-	LoadTextString(&_game->UITexts[8], "Amphora of Wine :", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(1400, 33));
-	LoadTextString(&_game->UITexts[9], "", &_game->generalFont, 30, sf::Color::White, sf::Vector2f(1640, 33));
+	LoadTextString(&_game->UITexts[8], "Amphora of Wine :", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(1500, 33));
+	LoadTextString(&_game->UITexts[9], "", &_game->charlemagneFont, 25, sf::Color::White, sf::Vector2f(1795, 33));
 
 }
 
@@ -351,7 +351,7 @@ void GameInitialisation(struct Game *_game)
 	TextsInit(_game);
 	RessourcesInitialisation(_game);
 
-	_game->time = new TimeManagement(&_game->generalFont);
+	_game->time = new TimeManagement(&_game->charlemagneFont);
 	_game->workersList = new WorkersList;
 	_game->stall = new Stalls(&_game->buildings[BUILDING_STALL]);
 	_game->sellingWindow = new SellingWindow(&_game->generalFont);
@@ -397,5 +397,9 @@ void GameInitialisation(struct Game *_game)
 	_game->buildingsNameTexts = nullptr;
 	_game->isBuildingCaseOccupied = false;
 	_game->isNewBuildingHasBeenConstructed = false;
+	_game->textBuildingCaseOccupied = nullptr;
+	_game->textBuildingCaseOccupied = new sf::Text[2];
+	LoadTextString(&_game->textBuildingCaseOccupied[0], "Place already occupied", &_game->charlemagneFont, 40, sf::Color::White, 1);
+	LoadTextString(&_game->textBuildingCaseOccupied[1], "Out of territory", &_game->charlemagneFont, 40, sf::Color::White, 1);
 }
 

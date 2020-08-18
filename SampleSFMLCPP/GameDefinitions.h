@@ -97,6 +97,7 @@ struct Game
 	sf::Vector2i buildingCaseSelected;
 	bool isBuildingCaseOccupied;
 	bool isNewBuildingHasBeenConstructed;
+	sf::Text *textBuildingCaseOccupied;
 
 	sf::Sprite buildingUI;
 	sf::Sprite buildingUIclosed;

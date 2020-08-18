@@ -215,29 +215,18 @@ void GameInput(struct Game *_game)
 			{
 				_game->actualGameState = BUILD_MODE;
 				
-				if (_game->buildingsNameTexts != nullptr)
+				if (_game->buildingsNameTexts == nullptr)
 				{
-					//delete _game->buildingsNameTexts;
-					//_game->buildingsNameTexts = nullptr;
+					_game->buildingsNameTexts = new sf::Text[_game->numberOfBuilding];
+
+					for (int i = 0; i < _game->numberOfBuilding; i++)
+					{
+						LoadTextString(&_game->buildingsNameTexts[i], _game->buildings[i].GetName(), &_game->charlemagneFont, 18, sf::Color::Black, 2);
+					}
 				}
-
-				_game->buildingsNameTexts = new sf::Text[_game->numberOfBuilding];
-
-				for (int i = 0; i < _game->numberOfBuilding; i++)
-				{
-					LoadTextString(&_game->buildingsNameTexts[i], _game->buildings[i].GetName(), &_game->charlemagneFont, 20, sf::Color::Black);
-				}
-
-
 			}
 			else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
 			{
-				if (_game->buildingsNameTexts != nullptr)
-				{
-					//delete _game->buildingsNameTexts;
-					//_game->buildingsNameTexts = nullptr;
-				}
-
 				if (_game->isNewBuildingHasBeenConstructed == true)
 				{
 					_game->isNewBuildingHasBeenConstructed = false;

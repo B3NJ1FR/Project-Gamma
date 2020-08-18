@@ -166,6 +166,15 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *
 
 		_textToInitialise->setOrigin(origin);
 	}
+	else if (_originPosition == 2)
+	{
+		sf::Vector2f origin = { (float)_textToInitialise->getGlobalBounds().width, (float)_textToInitialise->getGlobalBounds().height };
+
+		origin.x = origin.x / 2;
+		origin.y = RESET;
+
+		_textToInitialise->setOrigin(origin);
+	}
 }
 
 

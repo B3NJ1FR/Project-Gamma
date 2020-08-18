@@ -53,6 +53,70 @@ void InitBuildingsFromFile(struct Game *_game)
 					temporaryString.replace(temporaryString.find("_"), 1, "\n", 1);
 				}
 
+				if (temporaryString.find("\n") != -1)
+				{
+					int firstWordLengh = temporaryString.find("\n");
+					int secondWordLengh = temporaryString.length() - firstWordLengh - 1;
+
+					if (firstWordLengh == secondWordLengh)
+					{
+						// This two words are equal
+						//std::cout << "CES DEUX MOTS SONT EGAUX !!!\n"; 
+					}
+					else if (firstWordLengh < secondWordLengh)
+					{
+						int differenceBetweenWords = secondWordLengh - firstWordLengh;
+
+						std::string newString;
+						newString.erase();
+
+						for (int i = 0; i < differenceBetweenWords / 2 - 1; i++)
+						{
+							newString.append("\t");
+						}
+
+						if (differenceBetweenWords % 2 == 1
+							&& differenceBetweenWords / 2 != 0)
+						{
+							newString.append(" ");
+						}
+
+						temporaryString = newString + temporaryString;
+
+						std::cout << temporaryString << std::endl;
+					}
+					else if (firstWordLengh > secondWordLengh)
+					{
+						int differenceBetweenWords = firstWordLengh - secondWordLengh;
+
+						std::string newString;
+						newString.erase();
+
+						char buffer[255];
+						char buffer2[255];
+
+						temporaryString.copy(buffer, firstWordLengh + 1, 0);
+						buffer[firstWordLengh + 1] = '\0';
+						temporaryString.copy(buffer2, secondWordLengh, temporaryString.find("\n") + 1);
+						buffer2[secondWordLengh] = '\0';
+
+						for (int i = 0; i < differenceBetweenWords / 2 - 1; i++)
+						{
+							newString.append("\t");
+						}
+
+						if (differenceBetweenWords % 2 == 1)
+						{
+							newString.append(" ");
+						}
+						
+						temporaryString.erase();
+						temporaryString = buffer + newString + buffer2;
+
+						std::cout << temporaryString << std::endl;
+					}
+				}
+
 				_game->buildings[buildingID].SetName(temporaryString);
 
 				// Pickup the ID and the name of the building

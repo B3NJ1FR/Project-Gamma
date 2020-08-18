@@ -14,9 +14,9 @@ TimeManagement::TimeManagement(sf::Font *_font)
 	this->isMonthHasChanged = false;
 	this->isYearHasChanged = true;
 
-	LoadTextString(&this->monthText, "IANUARIUS", _font, 40, sf::Color::Red, sf::Vector2f(1920 - 190, 20));
+	LoadTextString(&this->monthText, "IANUARIUS", _font, 40, sf::Color::Red, sf::Vector2f(1920 - 300, 90));
 
-	LoadTextString(&this->yearText, "", _font, 40, sf::Color::Red, sf::Vector2f(1920 - 130, 70));
+	LoadTextString(&this->yearText, "", _font, 40, sf::Color::Red, sf::Vector2f(1920 - 370, 90));
 }
 
 

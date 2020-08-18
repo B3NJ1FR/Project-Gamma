@@ -27,21 +27,34 @@ void DisplayDecor(struct Game *_game)
 
 
 					if (_game->actualGameState == BUILD_MODE
-						&& _game->map[z][y][x] != 0 && _game->map[z][y][x] > 0
-						&& _game->buildingCaseSelected.x == x && _game->buildingCaseSelected.y == y)
+						&& z == SECOND_FLOOR + SPRITE_ID)
 					{
-						sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
-						sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+						if 	(_game->map[z - SECOND_FLOOR][y][x] != 0 && _game->map[z - SECOND_FLOOR][y][x] > 0
+							&& _game->buildingCaseSelected.x == x && _game->buildingCaseSelected.y == y)
+						{
+							sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+							sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
 
-						_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
-						_game->spriteArray[_game->map[z][y][x]].setColor(sf::Color::Red);
+							_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setScale(_game->scale);
 
-						BlitSprite(_game->spriteArray[_game->map[z][y][x]],
-							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
-							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
-							0, *_game->window);
-						_game->spriteArray[_game->map[z][y][x]].setColor(sf::Color::White);
+							if (_game->isBuildingCaseOccupied == true)
+							{
+								_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::Red);
+							}
+							else
+							{
+								_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::Green);
+							}
+
+							BlitSprite(_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]],
+								(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+								(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+								0, *_game->window);
+
+							_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::White);
+						}
 					}
+					
 				}
 			}
 		}
@@ -80,7 +93,7 @@ void DisplayUIBuildingMode(struct Game *_game)
 
 			if (_game->buildingsNameTexts != nullptr)
 			{
-				BlitString(_game->buildingsNameTexts[i], (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 , (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList + 70, *_game->window);
+				BlitString(_game->buildingsNameTexts[i], (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList + 70, *_game->window);
 			}
 		}
 
@@ -190,6 +203,26 @@ void DisplayUIBuildingMode(struct Game *_game)
 		BlitSprite(_game->spriteArray[3 + _game->IDChosenBuilding], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->window);
 
 		_game->spriteArray[3 + _game->IDChosenBuilding].setColor(sf::Color::White);
+	}
+
+	
+	if (_game->isBuildingCaseOccupied == true
+		&& !(mousePosition.x > 1920 - _game->buildingUI.getGlobalBounds().width
+			&& mousePosition.x < 1920
+			&& mousePosition.y > 1080 - _game->buildingUI.getGlobalBounds().height
+			&& mousePosition.y < 1080))
+	{
+		if (!(_game->buildingCaseSelected.x >= 0
+			&& _game->buildingCaseSelected.x < _game->numberColumns
+			&& _game->buildingCaseSelected.y >= 0
+			&& _game->buildingCaseSelected.y < _game->numberLines))
+		{
+			BlitString(_game->textBuildingCaseOccupied[1], (SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100, *_game->window);
+		}
+		else if (_game->textBuildingCaseOccupied != nullptr)
+		{
+			BlitString(_game->textBuildingCaseOccupied[0], (SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100, *_game->window);
+		}
 	}
 }
 
