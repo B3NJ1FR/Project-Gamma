@@ -59,6 +59,7 @@ public:
 	bool ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
 
 	enum StallStatus GetStatus();
+	enum BuildingStatus GetConstructionStatus();
 	int GetActualRessourcesStocked();
 	bool GetIsNewMerchantNeeded();
 	sf::Vector2i GetMapPosition();

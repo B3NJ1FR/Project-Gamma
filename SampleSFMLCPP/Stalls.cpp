@@ -6,6 +6,8 @@
 Stalls::Stalls(Buildings *_specificBuildingConcerned)
 {	
 	this->building = _specificBuildingConcerned;
+
+	this->constructionState = BUILDING_DESTROYED;
 }
 
 
@@ -17,6 +19,8 @@ Stalls::~Stalls()
 void Stalls::InitialisationStall(Buildings *_stallBuildingConcerned)
 {
 	this->building = _stallBuildingConcerned;
+
+	this->constructionState = BUILDING_DESTROYED;
 }
 
 
@@ -79,7 +83,7 @@ bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 	if (this->mapPosition == _mapPosition)
 	{
 		// Reset of the building construction status after being placed on map
-		this->constructionState = BUILDING_DESTROYED;
+		this->constructionState = PLANNED;
 		this->actualState = STALL_READY_TO_WORKS;
 
 		// A MODIFIER PAR VALEUR SEUIL
@@ -135,6 +139,11 @@ bool Stalls::ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
 enum StallStatus Stalls::GetStatus()
 {
 	return this->actualState;
+}
+
+enum BuildingStatus Stalls::GetConstructionStatus()
+{
+	return this->constructionState;
 }
 
 int Stalls::GetActualRessourcesStocked()

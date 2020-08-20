@@ -8,6 +8,43 @@ MainMenu::MainMenu()
 	this->buttonPlay = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Play.png", 1);
 	this->buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
 	this->buttonQuit = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
+
+	this->font.loadFromFile("Data/Fonts/arial.ttf");
+
+
+	// ***************** VERSION NUMBER LOADING ***************** //
+
+	std::ifstream settingsFile("Data/Configurations/Settings.data", std::ios::in);
+
+	std::string temporaryString;
+	std::string versionString;
+	temporaryString.erase();
+
+	if (!settingsFile.is_open())
+	{
+		std::cout << "Error accessing Settings.data file" << std::endl;
+
+		exit(EXIT_FAILURE);
+	}
+
+	while (!settingsFile.eof())
+	{
+		settingsFile >> temporaryString;
+
+		if (temporaryString == "VERSION")
+		{
+			// Read the version number
+			settingsFile >> versionString;
+
+			versionString = "Version " + versionString;
+
+			std::cout << "Game " << versionString << std::endl;
+		}
+	}
+
+	settingsFile.close();
+
+	LoadTextString(&this->versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
 }
 
 MainMenu::~MainMenu()
@@ -107,6 +144,9 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
 	BlitSprite(this->buttonOptions, 400, 600, 0, _window);
 	BlitSprite(this->buttonQuit, 400, 900, 0, _window);
 
+
+	// Blit the version number
+	BlitString(this->versionNumber, _window);
 
 	_window.display();
 

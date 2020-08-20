@@ -91,6 +91,17 @@ void DisplayUIBuildingMode(struct Game *_game)
 				BlitSprite(_game->blackFilter, (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList, 0, *_game->window);
 			}
 
+			//std::cout << "Stall : " << _game->stall->GetStatus() << std::endl;
+
+			if (i == BUILDING_STALL
+				&& _game->stall->GetConstructionStatus() != BUILDING_DESTROYED)
+			{
+				sf::Color color = { 255, 255, 255, 150 };
+				_game->blackFilter.setColor(color);
+
+				BlitSprite(_game->blackFilter, (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList, 0, *_game->window);
+			}
+
 			if (_game->buildingsNameTexts != nullptr)
 			{
 				BlitString(_game->buildingsNameTexts[i], (SCREEN_WIDTH - _game->buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (SCREEN_HEIGHT - _game->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + _game->scrollBuildingList + 70, *_game->window);

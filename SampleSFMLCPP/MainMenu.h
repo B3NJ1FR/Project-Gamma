@@ -19,6 +19,9 @@ private:
 	sf::Sprite buttonOptions;
 	sf::Sprite buttonQuit;
 
+	sf::Text versionNumber;
+	sf::Font font;
+
 public:
 
 	MainMenu();

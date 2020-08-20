@@ -38,6 +38,8 @@ void MapInitialisation(struct Game *_game)
 		}
 	}
 
+	mapInitialisationFile.close();
+
 
 	// Temporary, to define into a config file in the futur
 	/*_game->numberLayers = THIRD_FLOOR;

@@ -351,13 +351,13 @@ void GameInput(struct Game *_game)
 				&& event.key.code == sf::Keyboard::Num5)
 			{
 				_game->IDChosenBuilding = 4;
-				std::cout << "You've choose the destroying item\n";
+				std::cout << "You've choose the \n";
 			}
 			else if (_game->actualGameState == BUILD_MODE
 				&& event.key.code == sf::Keyboard::Num6)
 			{
 				_game->IDChosenBuilding = 5;
-				std::cout << "You've choose the fouloir\n";
+				std::cout << "You've choose the stall\n";
 			}
 			else if (_game->actualGameState == BUILD_MODE
 				&& event.key.code == sf::Keyboard::Num7)
@@ -534,8 +534,13 @@ void GameInput(struct Game *_game)
 				{
 					bool isAreaEmpty = true;
 
+					// If we've already built the stall, we cant built it again
+					if (_game->IDChosenBuilding == BUILDING_STALL && _game->stall->GetConstructionStatus() != BUILDING_DESTROYED)
+					{
+						isAreaEmpty = false;
+					}
 					// Money verification
-					if (_game->money.GetMoneyQuantity() >= _game->buildings[_game->IDChosenBuilding].GetConstructionCost())
+					else if (_game->money.GetMoneyQuantity() >= _game->buildings[_game->IDChosenBuilding].GetConstructionCost())
 					{
 						// Collisions verifications
 						if (_game->map[ZERO_FLOOR + COLLISIONS_ID][_game->buildingCaseSelected.y][_game->buildingCaseSelected.x] == ROAD)
@@ -602,27 +607,27 @@ void GameInput(struct Game *_game)
 						
 
 						// If the building selected is the vines, we add informations to the concerned linkedlist
-						if (_game->IDChosenBuilding == 0)
+						if (_game->IDChosenBuilding == BUILDING_VINES)
 						{
 							_game->vines.AddNewVineToList((sf::Vector2f)_game->buildingCaseSelected);
 						}
-						else if (_game->IDChosenBuilding == 1)
+						else if (_game->IDChosenBuilding == BUILDING_GRAPE_STOMPING_VATS)
 						{
 							_game->stompingVats.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
 						}
-						else if (_game->IDChosenBuilding == 2)
+						else if (_game->IDChosenBuilding == BUILDING_WINE_PRESS)
 						{
 							_game->winePress.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
 						}
-						else if (_game->IDChosenBuilding == 3)
+						else if (_game->IDChosenBuilding == BUILDING_WINE_STOREHOUSE)
 						{
 							_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
 						}
-						else if (_game->IDChosenBuilding == 4)
+						else if (_game->IDChosenBuilding == BUILDING_STOREHOUSE)
 						{
 							_game->storehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingCaseSelected);
 						}
-						else if (_game->IDChosenBuilding == 5)
+						else if (_game->IDChosenBuilding == BUILDING_STALL)
 						{
 							_game->stall->AddNewBuilding((sf::Vector2f)_game->buildingCaseSelected);
 						}
