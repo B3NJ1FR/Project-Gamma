@@ -83,7 +83,7 @@ void InitBuildingsFromFile(struct Game *_game)
 
 						temporaryString = newString + temporaryString;
 
-						std::cout << temporaryString << std::endl;
+						//std::cout << temporaryString << std::endl;
 					}
 					else if (firstWordLengh > secondWordLengh)
 					{
@@ -113,7 +113,7 @@ void InitBuildingsFromFile(struct Game *_game)
 						temporaryString.erase();
 						temporaryString = buffer + newString + buffer2;
 
-						std::cout << temporaryString << std::endl;
+						//std::cout << temporaryString << std::endl;
 					}
 				}
 

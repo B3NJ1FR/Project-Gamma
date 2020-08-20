@@ -18,9 +18,12 @@ private:
 	sf::Sprite buttonPlay;
 	sf::Sprite buttonOptions;
 	sf::Sprite buttonQuit;
+	sf::Sprite warningMessage;
 
-	sf::Text versionNumber;
+	sf::Text *versionNumber;
 	sf::Font font;
+
+	bool isPlayClicked;
 
 public:
 

@@ -198,7 +198,7 @@ void DisplayUIBuildingMode(struct Game *_game)
 
 		_game->spriteArray[18].setColor(sf::Color::White);
 	}
-	else
+	else if (_game->IDChosenBuilding != _game->numberOfBuilding)
 	{
 		if (_game->isBuildingCaseOccupied == false)
 		{

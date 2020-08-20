@@ -8,6 +8,7 @@ MainMenu::MainMenu()
 	this->buttonPlay = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Play.png", 1);
 	this->buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
 	this->buttonQuit = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
+	this->warningMessage = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Message.png", 0);
 
 	this->font.loadFromFile("Data/Fonts/arial.ttf");
 
@@ -44,7 +45,12 @@ MainMenu::MainMenu()
 
 	settingsFile.close();
 
-	LoadTextString(&this->versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
+	this->versionNumber = nullptr;
+	this->versionNumber = new sf::Text;
+
+	LoadTextString(this->versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
+
+	this->isPlayClicked = false;
 }
 
 MainMenu::~MainMenu()
@@ -54,6 +60,10 @@ MainMenu::~MainMenu()
 	delete (this->buttonPlay.getTexture());
 	delete (this->buttonOptions.getTexture());
 	delete (this->buttonQuit.getTexture());
+	delete (this->warningMessage.getTexture());
+
+	//delete this->versionNumber;
+	this->versionNumber = nullptr;
 }
 
 
@@ -75,6 +85,13 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 			{
 				exit(EXIT_SUCCESS);
 			}
+
+			if (event.key.code == sf::Keyboard::Space && this->isPlayClicked == true)
+			{
+				*(_generalState) = MAIN_STATE_GAME;
+
+				this->~MainMenu();
+			}
 		}
 
 		if (event.type == sf::Event::MouseButtonPressed)
@@ -91,19 +108,17 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 					&& mousePostionAtScreen.y < 300 + (buttonPlay.getGlobalBounds().height / 2))
 				{
 					std::cout << "\n\nGame launching ...\n\n\n";
-					*(_generalState) = MAIN_STATE_GAME;
-
-					this->~MainMenu();					
+					this->isPlayClicked = true;
 				}
 
-				// Button Options
-				if (mousePostionAtScreen.x > 400 - (buttonOptions.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < 400 + (buttonOptions.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y > 600 - (buttonOptions.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < 600 + (buttonOptions.getGlobalBounds().height / 2))
-				{
-					std::cout << "\n\nOptions ...\n\n\n";
-				}
+				//// Button Options
+				//if (mousePostionAtScreen.x > 400 - (buttonOptions.getGlobalBounds().width / 2)
+				//	&& mousePostionAtScreen.x < 400 + (buttonOptions.getGlobalBounds().width / 2)
+				//	&& mousePostionAtScreen.y > 600 - (buttonOptions.getGlobalBounds().height / 2)
+				//	&& mousePostionAtScreen.y < 600 + (buttonOptions.getGlobalBounds().height / 2))
+				//{
+				//	std::cout << "\n\nOptions ...\n\n\n";
+				//}
 
 				// Button Quit
 				if (mousePostionAtScreen.x > 400 - (buttonQuit.getGlobalBounds().width / 2)
@@ -116,7 +131,6 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 				}
 			}
 		}
-		
 	}
 }
 
@@ -141,12 +155,22 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
 
 	// Blit the buttons
 	BlitSprite(this->buttonPlay, 400, 300, 0, _window);
-	BlitSprite(this->buttonOptions, 400, 600, 0, _window);
+	//BlitSprite(this->buttonOptions, 400, 600, 0, _window);
 	BlitSprite(this->buttonQuit, 400, 900, 0, _window);
 
 
 	// Blit the version number
-	BlitString(this->versionNumber, _window);
+	if (this->versionNumber != nullptr)
+	{
+		BlitString(*this->versionNumber, _window);
+	}
+
+
+
+	if (this->isPlayClicked == true)
+	{
+		BlitSprite(this->warningMessage, 0, 0, 0, _window);
+	}
 
 	_window.display();
 
