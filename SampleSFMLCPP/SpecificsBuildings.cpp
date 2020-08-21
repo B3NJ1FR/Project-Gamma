@@ -57,7 +57,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	this->AddElementToLinkedList(this->list, newBuilding, -1);
 
 	//this->ReadVineLinkedList();
-	this->ReadLinkedList(this->list);
+	//this->ReadLinkedList(this->list);
 }
 
 
@@ -172,7 +172,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 						// TEMPORARY
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 						{
-							std::cout << "Building launched ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+							//std::cout << "Building launched ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = CONSTRUCTION;
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime = RESET;
 						}
@@ -189,7 +189,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 						// If the building life is higher than the construction time, we launch it's growthing
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
 						{
-							std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+							//std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = BUILT;
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
 						}

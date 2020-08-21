@@ -47,7 +47,7 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	this->AddElementToLinkedList(this->list, newStorehouse, -1);
 
 	//this->ReadVineLinkedList();
-	this->ReadLinkedList(this->list);
+	//this->ReadLinkedList(this->list);
 }
 
 
@@ -162,7 +162,7 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 
 						if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
 						{
-							std::cout << "Building launched ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+							//std::cout << "Building launched ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
 							((Storehouse::sStorehouseData *)currentElement->data)->constructionState = CONSTRUCTION;
 							((Storehouse::sStorehouseData *)currentElement->data)->lifeTime = RESET;
 						}
@@ -179,7 +179,7 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 						// If the building life is higher than the construction time, we launch it's growthing
 						if (((Storehouse::sStorehouseData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
 						{
-							std::cout << "Building built ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+							//std::cout << "Building built ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
 							((Storehouse::sStorehouseData *)currentElement->data)->constructionState = BUILT;
 							((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
 						}

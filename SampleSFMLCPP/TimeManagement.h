@@ -3,7 +3,7 @@
 
 #include "Common.hpp"
 
-#define TEMPORARY_TIME 5
+#define TEMPORARY_TIME 60
 #define OLD_TIME (2 * 3600)
 
 enum MonthsInOneYear

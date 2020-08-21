@@ -11,6 +11,8 @@
 #include "WorkersList.h"
 #include "Purchasers.h"
 #include "SellingWindow.h"
+#include "SavingGame.h"
+#include "LoadingGame.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -128,6 +130,10 @@ struct Game
 	sf::Sprite workersIcons[5];
 	WorkersList *workersList;
 	Purchasers *purchasers;
+
+	SavingGame save;
+	LoadingGame load;
+
 
 
 	// Temporary

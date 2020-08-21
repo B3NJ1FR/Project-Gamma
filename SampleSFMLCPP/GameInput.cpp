@@ -237,14 +237,14 @@ void GameInput(struct Game *_game)
 			}
 
 			// When the T keybutton is pressed, we change the state of the game
-			if (event.key.code == sf::Keyboard::T && _game->actualGameState == NORMAL_MODE)
+			/*if (event.key.code == sf::Keyboard::T && _game->actualGameState == NORMAL_MODE)
 			{
 				_game->actualGameState = TEST_PATHFINDING_MODE;
 			}
 			else if (event.key.code == sf::Keyboard::T && _game->actualGameState == TEST_PATHFINDING_MODE)
 			{
 				_game->actualGameState = NORMAL_MODE;
-			}
+			}*/
 
 
 			
@@ -267,8 +267,8 @@ void GameInput(struct Game *_game)
 			}*/
 
 			
-			// Touche placé sur Y, mais à changer	
-			if (event.key.code == sf::Keyboard::Y)
+			// Touche placé sur O, mais à changer	
+			if (event.key.code == sf::Keyboard::O)
 			{
 				// Prix temporaire
 				if (_game->money.GetMoneyQuantity() - 1000 >= 0)
@@ -302,7 +302,7 @@ void GameInput(struct Game *_game)
 				//std::cout << _game->buildings[3].GetRessourceIDProduced() << " " << _game->buildings[3].GetRessourceQuantityProduced() << std::endl;
 				//std::cout << _game->buildings[3].GetRessourceIDNeeded() << " " << _game->buildings[3].GetRessourceIDNeeded(2) << std::endl;
 				
-				if (_game->actualGameState == SELLING_WINDOW)
+				/*if (_game->actualGameState == SELLING_WINDOW)
 				{
 					_game->actualGameState = NORMAL_MODE;
 				}
@@ -310,7 +310,7 @@ void GameInput(struct Game *_game)
 				{
 					std::cout << "Window de vente\n";
 					_game->actualGameState = SELLING_WINDOW;
-				}
+				}*/
 			}
 			// TEST
 			if (event.key.code == sf::Keyboard::Add)
@@ -319,6 +319,16 @@ void GameInput(struct Game *_game)
 			}
 			// TEST
 			if (event.key.code == sf::Keyboard::Subtract)
+			{
+				_game->workersList->ChangeWorkerNumberSelectedSubtract();
+			}
+
+
+			if (event.key.code == sf::Keyboard::M)
+			{
+				_game->save.SaveTheGame(_game);
+			}
+			if (event.key.code == sf::Keyboard::L)
 			{
 				_game->workersList->ChangeWorkerNumberSelectedSubtract();
 			}

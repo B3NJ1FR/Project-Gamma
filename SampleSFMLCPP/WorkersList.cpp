@@ -64,7 +64,7 @@ void WorkersList::AddNewWorkersToList(sf::Vector2f _mapPosition)
 	this->AddElementToLinkedList(this->list, newWorker, -1);
 
 	//this->ReadVineLinkedList();
-	this->ReadLinkedList(this->list);
+	//this->ReadLinkedList(this->list);
 }
 
 void WorkersList::UpdateWorkersLife(struct Game *_game)

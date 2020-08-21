@@ -39,7 +39,7 @@ void Vines::ReadVineLinkedList()
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				std::cout << "Vine : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+				//std::cout << "Vine : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
 				positionCounter++;
 			}
 
@@ -83,7 +83,7 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	this->AddElementToLinkedList(this->list, newVine, -1);
 
 	//this->ReadVineLinkedList();
-	this->ReadLinkedList(this->list);
+	//this->ReadLinkedList(this->list);
 }
 
 void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &_actualMonth)
@@ -111,7 +111,7 @@ void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &
 					// If the vine life is higher than the construction time, we launch it's growthing
 					if (((Vines::sVines *)currentElement->data)->lifeTime >= this->vineBuilding->GetConstructionTimeCost())
 					{
-						std::cout << "Vines built ! " << ((Vines::sVines *)currentElement->data)->lifeTime << " " << this->vineBuilding->GetConstructionTimeCost() << std::endl;
+						//std::cout << "Vines built ! " << ((Vines::sVines *)currentElement->data)->lifeTime << " " << this->vineBuilding->GetConstructionTimeCost() << std::endl;
 						((Vines::sVines *)currentElement->data)->generalState = THREE_YEARS_GROWTHING;
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
@@ -125,7 +125,7 @@ void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &
 					// If the vine life is higher than the three years of growthing, we call that this is ready to produce
 					if (((Vines::sVines *)currentElement->data)->lifeTime >= VINE_LIFE_3Y_GROWTHING_TO_READY_TO_PRODUCE)
 					{
-						std::cout << "Vines ready to produce !\n\n";
+						//std::cout << "Vines ready to produce !\n\n";
 						((Vines::sVines *)currentElement->data)->generalState = READY_TO_PRODUCE;
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->annualState = CARED; // Temporaire
