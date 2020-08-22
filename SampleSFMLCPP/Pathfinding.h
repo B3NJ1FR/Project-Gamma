@@ -73,6 +73,9 @@ private :
 public:
 	Pathfinding();
 	~Pathfinding();
+
+	void PathfindingReset();
+
 	void InitMapCopyPathfinding(sf::Vector2i _mapSize, unsigned short ***_map, unsigned short _mapHeight);
 	void AddObstacle(sf::Vector2i _position);
 

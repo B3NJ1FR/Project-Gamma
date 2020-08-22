@@ -120,6 +120,7 @@ struct Game
 
 	// Ressources
 	Ressources *ressources;
+	unsigned int numberTypesOfRessources;
 	
 	// Time management
 	TimeManagement *time;

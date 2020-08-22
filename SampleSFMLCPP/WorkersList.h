@@ -19,6 +19,8 @@ public:
 	void ChangeWorkerNumberSelectedSubtract();
 	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map);
 	void CheckAndUpdateWorkersPath(unsigned short ***_map);
+	void SavingWorkersListFromFile(std::ofstream *_file);
+	void LoadingWorkersListFromFile(std::ifstream *_file);
 
 private:
 	LinkedListClass::sLinkedList *list;

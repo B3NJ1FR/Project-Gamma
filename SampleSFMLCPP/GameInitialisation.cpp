@@ -7,6 +7,8 @@
 
 void MapInitialisation(struct Game *_game)
 {
+	// WARNING : THE MAP IS DEFINED WITH UNSIGNED CHAR -> THE MAP LIMIT WILL BE 255 !
+
 	std::ifstream mapInitialisationFile("Data/Configurations/Settings.data", std::ios::in);
 
 	std::string temporaryString;
@@ -295,8 +297,8 @@ void RessourcesInitialisation(struct Game *_game)
 	}
 
 	// Dynamic allocation of the array sprite's
-	maximalNumberOfRessources += 1;
-	_game->ressources = new Ressources[maximalNumberOfRessources];
+	_game->numberTypesOfRessources = maximalNumberOfRessources + 1;
+	_game->ressources = new Ressources[_game->numberTypesOfRessources];
 
 	// Reset the reading cursor at the begging
 	ressourcesFile.seekg(0, std::ios::beg);
@@ -321,7 +323,7 @@ void RessourcesInitialisation(struct Game *_game)
 			// We pickup the starting quantity
 			ressourcesFile >> temporaryNumber;
 			_game->ressources[temporaryID].SetInitialQuantityOwned(temporaryNumber);
-			std::cout << temporaryID << "/" << maximalNumberOfRessources << " - " << temporaryString << " " << temporaryNumber << std::endl;
+			std::cout << temporaryID << "/" << _game->numberTypesOfRessources << " - " << temporaryString << " " << temporaryNumber << std::endl;
 
 
 			ressourcesFile >> temporaryString;

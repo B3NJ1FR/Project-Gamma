@@ -330,7 +330,7 @@ void GameInput(struct Game *_game)
 			}
 			if (event.key.code == sf::Keyboard::L)
 			{
-				_game->workersList->ChangeWorkerNumberSelectedSubtract();
+				_game->load.LoadTheGame(_game);
 			}
 
 			if (_game->actualGameState == BUILD_MODE

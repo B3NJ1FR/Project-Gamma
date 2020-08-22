@@ -10,6 +10,8 @@ private :
 public :
 	LoadingGame();
 	~LoadingGame();
+
+	void LoadTheGame(struct Game *_game);
 };
 
 #endif // !LOADING_GAME__H

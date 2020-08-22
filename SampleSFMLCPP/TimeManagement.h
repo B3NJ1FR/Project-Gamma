@@ -64,6 +64,9 @@ public:
 
 	void UpdateMonthToDisplay();
 	void DisplayUITime(sf::RenderWindow &_window);
+
+	void SavingTimeFromFile(std::ofstream *_file);
+	void LoadingTimeFromFile(std::ifstream *_file);
 };
 
 

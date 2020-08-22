@@ -31,6 +31,21 @@ Pathfinding::~Pathfinding()
 
 }
 
+void Pathfinding::PathfindingReset()
+{
+	this->currentNode = nullptr;
+
+	this->actualStatus = PATHFINDING_INITIALISATION;
+	this->isActive = false;
+
+	this->elapsedTime = RESET;
+
+	// Init of the linkedList
+	this->openList = LinkedListInitialisation();
+	this->isPressingEnd = false;
+	this->isPressingStart = false;
+}
+
 
 void Pathfinding::InitMapCopyPathfinding(sf::Vector2i _mapSize, unsigned short ***_map, unsigned short _mapHeight)
 {

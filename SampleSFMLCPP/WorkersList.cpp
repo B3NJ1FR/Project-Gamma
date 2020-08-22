@@ -245,3 +245,115 @@ void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 		}
 	}
 }
+
+
+void WorkersList::SavingWorkersListFromFile(std::ofstream *_file)
+{
+	// Save the number of workers
+	_file->write((char *)&this->list->size, sizeof(int));
+
+
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				_file->write((char *) (Workers *)currentElement->data, sizeof(Workers));
+
+				std::cout << "Map position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y;
+				// Save the worker status
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerStatus(), sizeof(enum WorkerStatus));
+
+				//// Save the moneys cost
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerMoneyValue(), sizeof(int));
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerMoneyCostPerMonth(), sizeof(int));
+
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerIsInWorkingPlace(), sizeof(bool));
+				//
+				//// Save the position and ending position in map
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerPosition().x, sizeof(float));
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerPosition().y, sizeof(sf::Vector2f));
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerEndingPosition().x, sizeof(sf::Vector2f));
+				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerEndingPosition().y, sizeof(sf::Vector2f));
+				//
+				//_file->write((char *) ((Workers *)currentElement->data)->GetTimeToDeposit(), sizeof(float));
+
+				
+			}
+
+			std::cout << "Number of workers : " << this->list->size;
+		}
+	}
+
+	_file->write((char *)&this->workerNumberSelected, sizeof(int));
+
+}
+
+
+void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file)
+{
+	// Delete every paths if workers are moving
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Workers *)currentElement->data)->GetWorkerStatus() == MOVEMENT)
+				{
+					if (this->path != nullptr)
+					{
+						delete this->path;
+						this->path = nullptr;
+					}
+				}
+			}
+		}
+
+		this->FreeLinkedList(this->list);
+	}
+	
+
+	// We reinit the workers list
+	this->InitialisationWorkersList();
+
+
+	// Load the number of workers
+	int previousListSize(RESET);
+	_file->read((char *)&previousListSize, sizeof(int));
+	
+	// We add every workers data to the list
+	for (int i = RESET; i < previousListSize; i++)
+	{
+		LinkedListClass::sElement* newWorker = new LinkedListClass::sElement;
+		newWorker->data = new Workers;
+
+		_file->read((char *)(Workers *)newWorker->data, sizeof(Workers));
+		((Workers *)newWorker->data)->PathfindingReset(); // PROBLEME DE PATHFINDING AU CHARGEMENTS
+
+		newWorker->status = ELEMENT_ACTIVE;
+
+		std::cout << "Map position : " << ((Workers *)newWorker->data)->GetWorkerPosition().x << " " << ((Workers *)newWorker->data)->GetWorkerPosition().y;
+
+		if (i == 0)
+		{
+			// Add this worker at the top of the list
+			this->AddElementToLinkedList(this->list, newWorker, 1);
+		}
+		else
+		{
+			// Add this worker at the end of the list
+			this->AddElementToLinkedList(this->list, newWorker, -1);
+		}
+
+		//std::cout << "Map position : " << ((Workers *)newWorker->data)->GetWorkerPosition().x << " " << ((Workers *)newWorker->data)->GetWorkerPosition().y;
+	}
+
+	_file->read((char *)&this->workerNumberSelected, sizeof(int));
+
+}

@@ -14,6 +14,7 @@ public:
 	Money();
 	~Money();
 
+	void SetInitialQuantity(int _quantityToAdd);
 	void AddMoney(int _quantityToAdd = 1);
 	void SubtractMoney(int _quantityToRemove = 1);
 

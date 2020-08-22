@@ -53,6 +53,7 @@ void Workers::SetWorkerMoneyCostPerMonth(const int &_moneyCostPerMonth)
 
 
 
+
 sf::Vector2f Workers::GetWorkerPosition()
 {
 	return this->mapPosition;
@@ -71,6 +72,11 @@ int Workers::GetWorkerMoneyValue()
 int Workers::GetWorkerMoneyCostPerMonth()
 {
 	return this->moneyCostPerMonth;
+}
+
+bool Workers::GetWorkerIsInWorkingPlace()
+{
+	return this->isItWorkingPlace;
 }
 
 enum WorkerStatus Workers::GetWorkerStatus()

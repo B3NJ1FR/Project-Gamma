@@ -12,6 +12,11 @@ Money::~Money()
 
 }
 
+void Money::SetInitialQuantity(int _quantityToAdd)
+{
+	this->playerMoney = _quantityToAdd;
+}
+
 void Money::AddMoney(int _quantityToAdd)
 {
 	this->playerMoney += _quantityToAdd;

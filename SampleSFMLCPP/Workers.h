@@ -63,6 +63,7 @@ public:
 	sf::Vector2f GetWorkerEndingPosition();
 	int GetWorkerMoneyValue();
 	int GetWorkerMoneyCostPerMonth();
+	bool GetWorkerIsInWorkingPlace();
 	enum WorkerStatus GetWorkerStatus();
 	float GetTimeToDeposit();
 
