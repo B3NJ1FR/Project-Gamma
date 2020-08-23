@@ -247,7 +247,7 @@ void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 }
 
 
-void WorkersList::SavingWorkersListFromFile(std::ofstream *_file)
+void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 {
 	// Save the number of workers
 	_file->write((char *)&this->list->size, sizeof(int));
@@ -261,25 +261,39 @@ void WorkersList::SavingWorkersListFromFile(std::ofstream *_file)
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				_file->write((char *) (Workers *)currentElement->data, sizeof(Workers));
+				//_file->write((char *) (Workers *)currentElement->data, sizeof(Workers));
 
-				std::cout << "Map position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y;
+				//std::cout << "Map position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y;
 				// Save the worker status
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerStatus(), sizeof(enum WorkerStatus));
+				enum WorkerStatus status = ((Workers *)currentElement->data)->GetWorkerStatus();
+				_file->write((char *) &status, sizeof(enum WorkerStatus));
+				
+				if (status == MOVEMENT || WAITING_MOVEMENT)
+				{
+					float mapEndingPositionX = ((Workers *)currentElement->data)->GetWorkerEndingPosition().x;
+					float mapEndingPositionY = ((Workers *)currentElement->data)->GetWorkerEndingPosition().y;
 
-				//// Save the moneys cost
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerMoneyValue(), sizeof(int));
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerMoneyCostPerMonth(), sizeof(int));
+					std::cout << "Save : End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
+					_file->write((char *) &mapEndingPositionX, sizeof(float));
+					_file->write((char *) &mapEndingPositionY, sizeof(float));
+				}
 
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerIsInWorkingPlace(), sizeof(bool));
-				//
-				//// Save the position and ending position in map
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerPosition().x, sizeof(float));
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerPosition().y, sizeof(sf::Vector2f));
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerEndingPosition().x, sizeof(sf::Vector2f));
-				//_file->write((char *) ((Workers *)currentElement->data)->GetWorkerEndingPosition().y, sizeof(sf::Vector2f));
-				//
-				//_file->write((char *) ((Workers *)currentElement->data)->GetTimeToDeposit(), sizeof(float));
+				// Save the moneys cost
+				int intNumber = ((Workers *)currentElement->data)->GetWorkerMoneyValue();
+				_file->write((char *) &intNumber, sizeof(int));
+				intNumber = ((Workers *)currentElement->data)->GetWorkerMoneyCostPerMonth();
+				_file->write((char *) &intNumber, sizeof(int));
+
+				bool value = ((Workers *)currentElement->data)->GetWorkerIsInWorkingPlace();
+				_file->write((char *) &value, sizeof(bool));
+				
+				// Save the position in map
+				sf::Vector2f mapPosition = ((Workers *)currentElement->data)->GetWorkerPosition();
+				_file->write((char *)&mapPosition.x, sizeof(float));
+				_file->write((char *)&mapPosition.y, sizeof(float));
+
+				float floatingNumber = ((Workers *)currentElement->data)->GetTimeToDeposit();
+				_file->write((char *) &floatingNumber, sizeof(float));
 
 				
 			}
@@ -293,7 +307,7 @@ void WorkersList::SavingWorkersListFromFile(std::ofstream *_file)
 }
 
 
-void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file)
+void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned short ***_map)
 {
 	// Delete every paths if workers are moving
 	if (this->list != nullptr)
@@ -333,8 +347,55 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file)
 		LinkedListClass::sElement* newWorker = new LinkedListClass::sElement;
 		newWorker->data = new Workers;
 
-		_file->read((char *)(Workers *)newWorker->data, sizeof(Workers));
-		((Workers *)newWorker->data)->PathfindingReset(); // PROBLEME DE PATHFINDING AU CHARGEMENTS
+		//_file->read((char *)(Workers *)newWorker->data, sizeof(Workers));
+		//((Workers *)newWorker->data)->PathfindingReset(); // PROBLEME DE PATHFINDING AU CHARGEMENTS
+
+		// Save the worker status
+		enum WorkerStatus status;
+		_file->read((char *)&status, sizeof(enum WorkerStatus));
+
+		if (status == MOVEMENT || WAITING_MOVEMENT)
+		{
+			float mapEndingPositionX(RESET);
+			float mapEndingPositionY(RESET);
+			_file->read((char *)&mapEndingPositionX, sizeof(float));
+			_file->read((char *)&mapEndingPositionY, sizeof(float));
+
+			std::cout << "End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
+
+			sf::Vector2i mapEndingPosition = { (int)mapEndingPositionX, (int)mapEndingPositionY };
+			((Workers *)newWorker->data)->SetEndingPosition(mapEndingPosition, _map);
+
+			((Workers *)newWorker->data)->SetWorkerStatus(IDLE);
+			((Workers *)newWorker->data)->ActiveLauchingMovement();
+		}
+		else
+		{
+			((Workers *)newWorker->data)->SetWorkerStatus(status);
+		}
+
+		// Save the moneys cost
+		int number(RESET);
+		_file->read((char *)&number, sizeof(int));
+		((Workers *)newWorker->data)->SetWorkerMoneyValue(number);
+		_file->read((char *)&number, sizeof(int));
+		((Workers *)newWorker->data)->SetWorkerMoneyCostPerMonth(number);
+
+		bool value(RESET);
+		_file->read((char *)&value, sizeof(bool));
+		((Workers *)newWorker->data)->SetWorkerIsInWorkingPlace(value);
+
+		// Save the position and ending position in map
+
+		sf::Vector2f mapPosition;
+		_file->read((char *)&mapPosition.x, sizeof(float));
+		_file->read((char *)&mapPosition.y, sizeof(float));
+		((Workers *)newWorker->data)->SetWorkerPosition(mapPosition);
+		
+
+		float floatingNumber(RESET);
+		_file->read((char *)&floatingNumber, sizeof(float));
+		((Workers *)newWorker->data)->SetTimeToDeposit(floatingNumber);
 
 		newWorker->status = ELEMENT_ACTIVE;
 

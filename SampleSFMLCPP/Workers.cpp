@@ -51,6 +51,10 @@ void Workers::SetWorkerMoneyCostPerMonth(const int &_moneyCostPerMonth)
 	this->moneyCostPerMonth = _moneyCostPerMonth;
 }
 
+void Workers::SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace)
+{
+	this->isItWorkingPlace = _isItWorkingPlace;
+}
 
 
 

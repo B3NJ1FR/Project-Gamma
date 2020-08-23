@@ -68,6 +68,8 @@ public:
 	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
 
 
+	void SavingStallForFile(std::ofstream *_file);
+	void LoadingStallFromFile(std::ifstream *_file);
 
 };
 

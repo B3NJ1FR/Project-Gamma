@@ -89,9 +89,21 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	std::cout << "Time loaded !\n";
 
 	// Saving of the workers data
-	_game->workersList->LoadingWorkersListFromFile(&saveFile);
+	_game->workersList->LoadingWorkersListFromFile(&saveFile, _game->map);
 
 	std::cout << "Workers loaded !\n";
+
+	// Saving of the vines data
+
+	// Saving of the specific buildings data
+
+	// Saving of the storehouses data
+
+	// Saving of the stall data
+	_game->stall->LoadingStallFromFile(&saveFile);
+
+	std::cout << "Stall loaded !\n";
+
 
 	std::cout << "\n\nGame loaded successfully !\n\n\n";
 

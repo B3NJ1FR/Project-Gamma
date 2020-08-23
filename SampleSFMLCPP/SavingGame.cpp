@@ -15,11 +15,11 @@ void SavingGame::SaveTheGame(struct Game *_game)
 {
 	// A save :
 	// 
-	// - la map et toutes ces couches
-	// - les ressources
-	// - l'argent
-	// - le temps écoulés / calendrier
-	// - les ouvriers (leurs nombres, leur position, etc)
+	// - la map et toutes ces couches - OK
+	// - les ressources - OK
+	// - l'argent - OK
+	// - le temps écoulés / calendrier - OK
+	// - les ouvriers (leurs nombres, leur position, etc) - OK
 	// - les vignes
 	// - les bâtiments spécifiques
 	// - les entrepots
@@ -81,7 +81,18 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 	// Saving of the workers data
 	//saveFile.write((char *) &_game->workersList, sizeof(WorkersList)); // Marche pas
-	_game->workersList->SavingWorkersListFromFile(&saveFile);
+	_game->workersList->SavingWorkersListForFile(&saveFile);
+
+
+	// Saving of the vines data
+
+	// Saving of the specific buildings data
+
+	// Saving of the storehouses data
+
+	// Saving of the stall data
+	_game->stall->SavingStallForFile(&saveFile);
+
 
 	std::cout << "\n\nGame saved successfully !\n\n\n";
 

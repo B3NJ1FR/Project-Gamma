@@ -55,6 +55,7 @@ public:
 	void SetWorkerStatus(const enum WorkerStatus &_newStatus);
 	void SetWorkerMoneyValue(const int &_moneyValue);
 	void SetWorkerMoneyCostPerMonth(const int &_moneyCostPerMonth);
+	void SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace);
 	void SetTimeToDeposit(const float &_time);
 	void AddTimeToDeposit(const float &_frametime);
 

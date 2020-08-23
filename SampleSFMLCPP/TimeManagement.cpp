@@ -144,10 +144,6 @@ void TimeManagement::SavingTimeFromFile(std::ofstream *_file)
 	// Save the timer
 	_file->write((char *)&this->timer, sizeof(sf::Time));
 
-	// Save the boolean for the calendar
-	_file->write((char *)&this->isMonthHasChanged, sizeof(bool));
-	_file->write((char *)&this->isYearHasChanged, sizeof(bool));
-
 	// Save the calendar
 	_file->write((char *)&this->actualMonth, sizeof(enum MonthsInOneYear));
 	_file->write((char *)&this->numberOfYears, sizeof(int));
@@ -159,11 +155,14 @@ void TimeManagement::LoadingTimeFromFile(std::ifstream *_file)
 	// Load the timer
 	_file->read((char *)&this->timer, sizeof(sf::Time));
 
-	// Load the boolean for the calendar
-	_file->read((char *)&this->isMonthHasChanged, sizeof(bool));
-	_file->read((char *)&this->isYearHasChanged, sizeof(bool));
-
 	// Load the calendar
 	_file->read((char *)&this->actualMonth, sizeof(enum MonthsInOneYear));
 	_file->read((char *)&this->numberOfYears, sizeof(int));
+	
+
+	// We update the months and years display
+	this->isMonthHasChanged = true;
+	this->isYearHasChanged = true;
+
+	this->UpdateMonthToDisplay();
 }

@@ -326,3 +326,76 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 	}
 		
 }
+
+
+
+void Stalls::SavingStallForFile(std::ofstream *_file)
+{
+	_file->write((char *)&this->constructionState, sizeof(enum BuildingStatus));
+
+	if (this->constructionState != BUILDING_DESTROYED)
+	{
+		// Save the map position
+		_file->write((char *)&this->mapPosition.x, sizeof(float));
+		_file->write((char *)&this->mapPosition.y, sizeof(float));
+
+		_file->write((char *)&this->actualState, sizeof(enum StallStatus));
+
+
+		_file->write((char *)&this->quantitativeThreshold, sizeof(int));
+		_file->write((char *)&this->maximalQuantity, sizeof(int));
+		_file->write((char *)&this->internalImportRessourceCounter, sizeof(int));
+
+
+		_file->write((char *)&this->lifeTime, sizeof(float));
+		_file->write((char *)&this->actualProductionTime, sizeof(float));
+
+
+		_file->write((char *)&this->isChangingSprite, sizeof(bool));
+		_file->write((char *)&this->isWorkerThere, sizeof(bool));
+		_file->write((char *)&this->isPurchaserThere, sizeof(bool));
+
+
+		_file->write((char *)&this->priceAccepted, sizeof(int));
+		_file->write((char *)&this->internalImportRessourceCounterSaved, sizeof(int));
+		_file->write((char *)&this->ressourceQuantityToSell, sizeof(int));
+		_file->write((char *)&this->isNewMerchantNeeded, sizeof(bool));
+	}
+}
+
+
+void Stalls::LoadingStallFromFile(std::ifstream *_file)
+{
+	_file->read((char *)&this->constructionState, sizeof(enum BuildingStatus));
+
+	if (this->constructionState != BUILDING_DESTROYED)
+	{
+		// Save the map position
+		_file->read((char *)&this->mapPosition.x, sizeof(float));
+		_file->read((char *)&this->mapPosition.y, sizeof(float));
+			  
+		_file->read((char *)&this->actualState, sizeof(enum StallStatus));
+
+			 
+		_file->read((char *)&this->quantitativeThreshold, sizeof(int));
+		_file->read((char *)&this->maximalQuantity, sizeof(int));
+		_file->read((char *)&this->internalImportRessourceCounter, sizeof(int));
+			  
+			  
+		_file->read((char *)&this->lifeTime, sizeof(float));
+		_file->read((char *)&this->actualProductionTime, sizeof(float));
+			   
+			   
+		_file->read((char *)&this->isChangingSprite, sizeof(bool));
+		_file->read((char *)&this->isWorkerThere, sizeof(bool));
+		_file->read((char *)&this->isPurchaserThere, sizeof(bool));
+			   
+			   
+		_file->read((char *)&this->priceAccepted, sizeof(int));
+		_file->read((char *)&this->internalImportRessourceCounterSaved, sizeof(int));
+		_file->read((char *)&this->ressourceQuantityToSell, sizeof(int));
+		_file->read((char *)&this->isNewMerchantNeeded, sizeof(bool));
+	}
+
+	// MANQUE LE PURCHASER
+}
