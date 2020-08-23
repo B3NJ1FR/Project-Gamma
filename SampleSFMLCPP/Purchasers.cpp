@@ -194,3 +194,56 @@ void Purchasers::IsOfferHasBeenRefused()
 {
 	this->isPreviousOfferHasBeenRefused = true;
 }
+
+
+void Purchasers::SavingPurchasersForFile(std::ofstream *_file)
+{
+	_file->write((char *)&this->actualStatus, sizeof(enum WorkerStatus));
+	
+	_file->write((char *)&this->provenance, sizeof(std::string));
+
+	_file->write((char *)&this->minimalMoneyValueForRessource, sizeof(int));
+	_file->write((char *)&this->maximalMoneyValueForRessource, sizeof(int));
+
+
+	_file->write((char *)&this->minimalRessourceQuantity, sizeof(int));
+	_file->write((char *)&this->actualRessourceQuantity, sizeof(int));
+	_file->write((char *)&this->actualRessourceQuantity, sizeof(int));
+	
+
+	_file->write((char *)&this->ressourceID, sizeof(enum TypesOfRessources));
+
+
+	_file->write((char *)&this->minimalMovementTime, sizeof(int));
+	_file->write((char *)&this->maximalMovementTime, sizeof(int));
+
+
+	_file->write((char *)&this->isPreviousOfferHasBeenRefused, sizeof(bool));
+}
+
+
+
+void Purchasers::LoadingPurchasersFromFile(std::ifstream *_file)
+{
+	_file->read((char *)&this->actualStatus, sizeof(enum WorkerStatus));
+
+	_file->read((char *)&this->provenance, sizeof(std::string));
+
+	_file->read((char *)&this->minimalMoneyValueForRessource, sizeof(int));
+	_file->read((char *)&this->maximalMoneyValueForRessource, sizeof(int));
+
+
+	_file->read((char *)&this->minimalRessourceQuantity, sizeof(int));
+	_file->read((char *)&this->actualRessourceQuantity, sizeof(int));
+	_file->read((char *)&this->actualRessourceQuantity, sizeof(int));
+
+
+	_file->read((char *)&this->ressourceID, sizeof(enum TypesOfRessources));
+
+
+	_file->read((char *)&this->minimalMovementTime, sizeof(int));
+	_file->read((char *)&this->maximalMovementTime, sizeof(int));
+
+
+	_file->read((char *)&this->isPreviousOfferHasBeenRefused, sizeof(bool));
+}

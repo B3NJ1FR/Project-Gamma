@@ -20,12 +20,10 @@ void SavingGame::SaveTheGame(struct Game *_game)
 	// - l'argent - OK
 	// - le temps écoulés / calendrier - OK
 	// - les ouvriers (leurs nombres, leur position, etc) - OK
-	// - les vignes
-	// - les bâtiments spécifiques
-	// - les entrepots
-	// - l'étale
-	// 
-	// 
+	// - les vignes - OK
+	// - les bâtiments spécifiques - OK
+	// - les entrepots - OK
+	// - l'étale - OK
 
 	std::ofstream saveFile("Data/Configurations/Save.data", std::ios::beg | std::ios::trunc | std::ios::binary | std::ios::out);
 
@@ -85,13 +83,26 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 
 	// Saving of the vines data
+	_game->vines.SavingVinesListForFile(&saveFile);
 
 	// Saving of the specific buildings data
+	_game->stompingVats.SavingSpecificsBuildingsListForFile(&saveFile);
+	_game->winePress.SavingSpecificsBuildingsListForFile(&saveFile);
+	_game->wineStorehouse.SavingSpecificsBuildingsListForFile(&saveFile);
 
 	// Saving of the storehouses data
+	_game->storehouse.SavingVinesListForFile(&saveFile);
 
 	// Saving of the stall data
 	_game->stall->SavingStallForFile(&saveFile);
+
+	if (((_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+		&& _game->stall->GetIsNewMerchantNeeded() == false)
+		|| _game->stall->GetStatus() == STALL_PURCHASER_IS_PRESENT)
+		&& _game->purchasers != nullptr)
+	{
+		_game->purchasers->SavingPurchasersForFile(&saveFile);
+	}
 
 
 	std::cout << "\n\nGame saved successfully !\n\n\n";

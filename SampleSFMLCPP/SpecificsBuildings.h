@@ -66,6 +66,8 @@ public:
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
+	void SavingSpecificsBuildingsListForFile(std::ofstream *_file);
+	void LoadingSpecificsBuildingsListFromFile(std::ifstream *_file);
 private:
 	LinkedListClass::sLinkedList *list;
 	Buildings *building;

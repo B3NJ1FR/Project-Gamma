@@ -167,6 +167,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Money.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
+    <ClCompile Include="PauseWindow.cpp" />
     <ClCompile Include="Purchasers.cpp" />
     <ClCompile Include="Ressources.cpp" />
     <ClCompile Include="SavingGame.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Money.h" />
     <ClInclude Include="Pathfinding.h" />
+    <ClInclude Include="PauseWindow.h" />
     <ClInclude Include="Purchasers.h" />
     <ClInclude Include="Ressources.h" />
     <ClInclude Include="SavingGame.h" />

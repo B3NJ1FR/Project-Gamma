@@ -40,9 +40,6 @@
     <Filter Include="Fichiers d%27en-tête\Game\Construction Mode">
       <UniqueIdentifier>{d27ce42b-e070-4dc2-8f62-4a679ae61d1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Game\Workers">
-      <UniqueIdentifier>{d04d97fe-a8b3-4352-8d89-cb7a1a0d69df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers sources\Game\Buildings">
       <UniqueIdentifier>{c3b1edfb-aaac-48df-a72d-4c7d14a7be6d}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,12 @@
     </Filter>
     <Filter Include="Fichiers sources\Game\Entities\Workers">
       <UniqueIdentifier>{e137e9f3-e868-4569-a386-178acda29d07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Internal Game\Save and Load">
+      <UniqueIdentifier>{c48fbcab-068b-4950-b4d5-d0f249a9b3aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Internal Game\Save and Load">
+      <UniqueIdentifier>{5be5b9d3-af50-4dad-9de2-657771f5011b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,10 +165,13 @@
     <ClCompile Include="SellingWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="LoadingGame.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SavingGame.cpp">
+      <Filter>Fichiers sources\Game\Internal Game\Save and Load</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingGame.cpp">
+      <Filter>Fichiers sources\Game\Internal Game\Save and Load</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -252,9 +258,12 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="LoadingGame.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Game\Internal Game\Save and Load</Filter>
     </ClInclude>
     <ClInclude Include="SavingGame.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game\Save and Load</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

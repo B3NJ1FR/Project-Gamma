@@ -497,3 +497,66 @@ bool Storehouse::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 		return false;
 	}
 }
+
+
+
+
+void Storehouse::SavingVinesListForFile(std::ofstream *_file)
+{
+	// Save the number of vines
+	_file->write((char *)&this->list->size, sizeof(int));
+
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				_file->write((char *)(Storehouse::sStorehouseData *)currentElement->data, sizeof(sStorehouseData));
+			}
+		}
+	}
+}
+
+
+void Storehouse::LoadingVinesListFromFile(std::ifstream *_file)
+{
+	// Delete every vines
+	if (this->list != nullptr)
+	{
+		this->FreeLinkedList(this->list);
+	}
+
+
+	// We reinit the vines list
+	this->list = LinkedListInitialisation();
+
+
+	// Save the number of vines
+	int previousListSize(RESET);
+	_file->read((char *)&previousListSize, sizeof(int));
+
+	// We add every workers data to the list
+	for (int i = RESET; i < previousListSize; i++)
+	{
+		LinkedListClass::sElement* newStorehouse = new LinkedListClass::sElement;
+		newStorehouse->data = new Storehouse::sStorehouseData;
+
+		_file->read((char *)(Storehouse::sStorehouseData *)newStorehouse->data, sizeof(sStorehouseData));
+
+		newStorehouse->status = ELEMENT_ACTIVE;
+
+		if (i == 0)
+		{
+			// Add this worker at the top of the list
+			this->AddElementToLinkedList(this->list, newStorehouse, 1);
+		}
+		else
+		{
+			// Add this worker at the end of the list
+			this->AddElementToLinkedList(this->list, newStorehouse, -1);
+		}
+	}
+}

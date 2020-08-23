@@ -509,3 +509,66 @@ bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosit
 		return false;
 	}
 }
+
+
+
+
+void SpecificsBuildings::SavingSpecificsBuildingsListForFile(std::ofstream *_file)
+{
+	// Save the number of vines
+	_file->write((char *)&this->list->size, sizeof(int));
+
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				_file->write((char *)(SpecificsBuildings::sBuildingData *)currentElement->data, sizeof(sBuildingData));
+			}
+		}
+	}
+}
+
+
+void SpecificsBuildings::LoadingSpecificsBuildingsListFromFile(std::ifstream *_file)
+{
+	// Delete every vines
+	if (this->list != nullptr)
+	{
+		this->FreeLinkedList(this->list);
+	}
+
+
+	// We reinit the vines list
+	this->list = LinkedListInitialisation();
+
+
+	// Save the number of vines
+	int previousListSize(RESET);
+	_file->read((char *)&previousListSize, sizeof(int));
+
+	// We add every workers data to the list
+	for (int i = RESET; i < previousListSize; i++)
+	{
+		LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
+		newBuilding->data = new SpecificsBuildings::sBuildingData;
+
+		_file->read((char *)(SpecificsBuildings::sBuildingData *)newBuilding->data, sizeof(sBuildingData));
+
+		newBuilding->status = ELEMENT_ACTIVE;
+
+		if (i == 0)
+		{
+			// Add this worker at the top of the list
+			this->AddElementToLinkedList(this->list, newBuilding, 1);
+		}
+		else
+		{
+			// Add this worker at the end of the list
+			this->AddElementToLinkedList(this->list, newBuilding, -1);
+		}
+	}
+}

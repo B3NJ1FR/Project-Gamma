@@ -590,3 +590,65 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 	}
 }
 
+
+
+
+void Vines::SavingVinesListForFile(std::ofstream *_file)
+{
+	// Save the number of vines
+	_file->write((char *)&this->list->size, sizeof(int));
+	
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				_file->write((char *)(Vines::sVines *)currentElement->data, sizeof(sVines));
+			}
+		}
+	}
+}
+
+
+void Vines::LoadingVinesListFromFile(std::ifstream *_file)
+{
+	// Delete every vines
+	if (this->list != nullptr)
+	{
+		this->FreeLinkedList(this->list);
+	}
+
+
+	// We reinit the vines list
+	this->list = LinkedListInitialisation();
+
+
+	// Save the number of vines
+	int previousListSize(RESET);
+	_file->read((char *)&previousListSize, sizeof(int));
+
+	// We add every workers data to the list
+	for (int i = RESET; i < previousListSize; i++)
+	{
+		LinkedListClass::sElement* newVine = new LinkedListClass::sElement;
+		newVine->data = new Vines::sVines;
+		
+		_file->read((char *)(Vines::sVines *)newVine->data, sizeof(sVines));
+
+		newVine->status = ELEMENT_ACTIVE;
+		
+		if (i == 0)
+		{
+			// Add this worker at the top of the list
+			this->AddElementToLinkedList(this->list, newVine, 1);
+		}
+		else
+		{
+			// Add this worker at the end of the list
+			this->AddElementToLinkedList(this->list, newVine, -1);
+		}
+	}
+}

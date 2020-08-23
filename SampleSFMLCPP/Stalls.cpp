@@ -267,12 +267,16 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 			
 			this->actualProductionTime += _frametime;
 
-			if (this->actualProductionTime >= _purchasers->TimeToTravel())
+			if (_purchasers != nullptr)
 			{
-				this->actualState = STALL_PURCHASER_IS_PRESENT;
-				*(_state) = SELLING_WINDOW;
-				this->actualProductionTime = RESET;
+				if (this->actualProductionTime >= _purchasers->TimeToTravel())
+				{
+					this->actualState = STALL_PURCHASER_IS_PRESENT;
+					*(_state) = SELLING_WINDOW;
+					this->actualProductionTime = RESET;
+				}
 			}
+
 
 			break;
 
@@ -396,6 +400,4 @@ void Stalls::LoadingStallFromFile(std::ifstream *_file)
 		_file->read((char *)&this->ressourceQuantityToSell, sizeof(int));
 		_file->read((char *)&this->isNewMerchantNeeded, sizeof(bool));
 	}
-
-	// MANQUE LE PURCHASER
 }

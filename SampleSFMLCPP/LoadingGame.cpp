@@ -88,22 +88,54 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 
 	std::cout << "Time loaded !\n";
 
-	// Saving of the workers data
+	// Loading of the workers data
 	_game->workersList->LoadingWorkersListFromFile(&saveFile, _game->map);
 
 	std::cout << "Workers loaded !\n";
 
-	// Saving of the vines data
+	// Loading of the vines data
+	_game->vines.LoadingVinesListFromFile(&saveFile);
 
+	std::cout << "Vines loaded !\n";
+	
 	// Saving of the specific buildings data
+	_game->stompingVats.LoadingSpecificsBuildingsListFromFile(&saveFile);
+	std::cout << "Stomping Vats loaded !\n";
+
+	_game->winePress.LoadingSpecificsBuildingsListFromFile(&saveFile);
+	std::cout << "Wine Presses loaded !\n";
+
+	_game->wineStorehouse.LoadingSpecificsBuildingsListFromFile(&saveFile);
+	std::cout << "Wine Storehouses loaded !\n";
 
 	// Saving of the storehouses data
+	_game->storehouse.LoadingVinesListFromFile(&saveFile);
 
-	// Saving of the stall data
+	std::cout << "Storehouses loaded !\n";
+
+	// Loading of the stall data
 	_game->stall->LoadingStallFromFile(&saveFile);
 
 	std::cout << "Stall loaded !\n";
 
+	if ((_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+		|| _game->stall->GetStatus() == STALL_PURCHASER_IS_PRESENT))
+	{
+		if (_game->purchasers != nullptr)
+		{
+			delete _game->purchasers;
+			_game->purchasers = nullptr;
+
+			std::cout << "Suppression of this actual merchant\n\n";
+		}
+
+		_game->stall->SetIsNewMerchantNeeded(false);
+
+		_game->purchasers = new Purchasers;
+		_game->purchasers->LoadingPurchasersFromFile(&saveFile);
+
+		std::cout << "Purchaser loaded !\n";
+	}
 
 	std::cout << "\n\nGame loaded successfully !\n\n\n";
 

@@ -116,79 +116,82 @@ void UpdateBuildingsTimers(struct Game *_game)
 
 void GameUpdate(struct Game *_game)
 {
-	if (_game->actualGameState == BUILD_MODE)
+	if (_game->actualGameState != PAUSE_WINDOW)
 	{
-		UpdateBuildingMode(_game);
-	}
-	else if (_game->actualGameState == TEST_PATHFINDING_MODE)
-	{		
-		//_game->path.MainPathfinding();
-	}
-	else if (_game->actualGameState == SELLING_WINDOW
-		&& _game->purchasers != nullptr)
-	{
-		_game->sellingWindow->UpdateQuantityConvertedToSell(_game->purchasers, _game->stall->GetActualRessourcesStocked());
-		_game->sellingWindow->UpdateSellingWindowTexts(_game->purchasers);
-	}
-	else
-	{
-		_game->workersList->UpdateWorkersLife(_game);
-	}
-
-	_game->time->UpdateFrameTime();
-
-
-	if (_game->actualGameState != BUILD_MODE)
-	{
-		_game->time->UpdateGeneralTime();
-		_game->time->UpdateMonthToDisplay();
-
-		_game->vines.UpdateVineLife(_game->time->GetFrameTime(), _game->time->GetActualMonth());
-		_game->vines.UpdateVineSprite(_game->map);
-		_game->vines.UpdateVineProduction(&_game->ressources[BUNCH_OF_GRAPE]);
-
-		_game->stompingVats.UpdateBuildingConstruction(_game->time->GetFrameTime());
-		_game->stompingVats.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[BUNCH_OF_GRAPE], &_game->ressources[GRAPES_MUST]);
-
-		_game->winePress.UpdateBuildingConstruction(_game->time->GetFrameTime());
-		_game->winePress.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPES_MUST], &_game->ressources[GRAPE_JUICE]);
-
-		_game->wineStorehouse.UpdateBuildingConstruction(_game->time->GetFrameTime());
-		_game->wineStorehouse.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPE_JUICE], &_game->ressources[AMPHORA_OF_WINE]);
-
-		_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
-		_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);
-
-		if (_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
-			&& _game->stall->GetIsNewMerchantNeeded() == true)
+		if (_game->actualGameState == BUILD_MODE)
 		{
-			if (_game->purchasers != nullptr)
-			{
-				delete _game->purchasers;
-				_game->purchasers = nullptr;
-
-				std::cout << "Suppression of this actual merchant\n\n";
-			}
-
-			_game->stall->SetIsNewMerchantNeeded(false);
-
-			_game->purchasers = new Purchasers;
-			_game->purchasers->Initialisation(_game->stall->GetActualRessourcesStocked());
+			UpdateBuildingMode(_game);
 		}
-		else if (_game->stall->GetStatus() == STALL_OFFER_HANDLED
-			&& _game->stall->GetIsNewMerchantNeeded() == true)
+		else if (_game->actualGameState == TEST_PATHFINDING_MODE)
 		{
-			if (_game->purchasers != nullptr)
-			{
-				delete _game->purchasers;
-				_game->purchasers = nullptr;
-
-				std::cout << "Suppression of this merchant\n\n";
-			}
-
-			_game->stall->SetIsNewMerchantNeeded(false);
+			//_game->path.MainPathfinding();
 		}
-	}
+		else if (_game->actualGameState == SELLING_WINDOW
+			&& _game->purchasers != nullptr)
+		{
+			_game->sellingWindow->UpdateQuantityConvertedToSell(_game->purchasers, _game->stall->GetActualRessourcesStocked());
+			_game->sellingWindow->UpdateSellingWindowTexts(_game->purchasers);
+		}
+		else
+		{
+			_game->workersList->UpdateWorkersLife(_game);
+		}
 
-	UpdateTexts(_game);
+		_game->time->UpdateFrameTime();
+
+
+		if (_game->actualGameState != BUILD_MODE)
+		{
+			_game->time->UpdateGeneralTime();
+			_game->time->UpdateMonthToDisplay();
+
+			_game->vines.UpdateVineLife(_game->time->GetFrameTime(), _game->time->GetActualMonth());
+			_game->vines.UpdateVineSprite(_game->map);
+			_game->vines.UpdateVineProduction(&_game->ressources[BUNCH_OF_GRAPE]);
+
+			_game->stompingVats.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->stompingVats.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[BUNCH_OF_GRAPE], &_game->ressources[GRAPES_MUST]);
+
+			_game->winePress.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->winePress.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPES_MUST], &_game->ressources[GRAPE_JUICE]);
+
+			_game->wineStorehouse.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->wineStorehouse.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPE_JUICE], &_game->ressources[AMPHORA_OF_WINE]);
+
+			_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);
+
+			if (_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+				&& _game->stall->GetIsNewMerchantNeeded() == true)
+			{
+				if (_game->purchasers != nullptr)
+				{
+					delete _game->purchasers;
+					_game->purchasers = nullptr;
+
+					std::cout << "Suppression of this actual merchant\n\n";
+				}
+
+				_game->stall->SetIsNewMerchantNeeded(false);
+
+				_game->purchasers = new Purchasers;
+				_game->purchasers->Initialisation(_game->stall->GetActualRessourcesStocked());
+			}
+			else if (_game->stall->GetStatus() == STALL_OFFER_HANDLED
+				&& _game->stall->GetIsNewMerchantNeeded() == true)
+			{
+				if (_game->purchasers != nullptr)
+				{
+					delete _game->purchasers;
+					_game->purchasers = nullptr;
+
+					std::cout << "Suppression of this merchant\n\n";
+				}
+
+				_game->stall->SetIsNewMerchantNeeded(false);
+			}
+		}
+
+		UpdateTexts(_game);
+	}
 }

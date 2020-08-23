@@ -13,6 +13,7 @@
 #include "SellingWindow.h"
 #include "SavingGame.h"
 #include "LoadingGame.h"
+#include "PauseWindow.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -51,6 +52,7 @@ enum GameState
 	BUILD_MODE,
 	TEST_PATHFINDING_MODE,
 	SELLING_WINDOW,
+	PAUSE_WINDOW,
 };
 
 
@@ -59,6 +61,7 @@ struct Game
 	sf::RenderWindow *window;
 
 	enum GameState actualGameState;
+	enum GameState previousGameState;
 
 	// Buildings
 	unsigned short numberOfBuilding;
@@ -132,10 +135,12 @@ struct Game
 	WorkersList *workersList;
 	Purchasers *purchasers;
 
+	// Save and Load
 	SavingGame save;
 	LoadingGame load;
 
-
+	// Pause
+	PauseWindow pauseWindow;
 
 	// Temporary
 	Pathfinding path;

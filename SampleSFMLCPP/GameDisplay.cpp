@@ -300,10 +300,12 @@ void GameDisplay(struct Game *_game)
 	if (_game->actualGameState == NORMAL_MODE)
 	{
 		DisplayUINormalMode(_game);
+		_game->previousGameState = NORMAL_MODE;
 	}
 	else if (_game->actualGameState == BUILD_MODE)
 	{
 		DisplayUIBuildingMode(_game);
+		_game->previousGameState = BUILD_MODE;
 	}
 	else if (_game->actualGameState == TEST_PATHFINDING_MODE)
 	{
@@ -312,14 +314,34 @@ void GameDisplay(struct Game *_game)
 	else if (_game->actualGameState == SELLING_WINDOW)
 	{
 		_game->sellingWindow->DisplaySellingWindow(*_game->window);
+		_game->previousGameState = SELLING_WINDOW;
 	}
 	
+
 	DisplayUIGeneral(_game);
 	_game->time->DisplayUITime(*_game->window);
 
 	if (_game->isDebuggerModeActive == true)
 	{
 		DisplayDebugger(_game);
+	}
+
+	if (_game->actualGameState == PAUSE_WINDOW)
+	{
+		if (_game->previousGameState == NORMAL_MODE)
+		{
+			DisplayUINormalMode(_game);
+		}
+		else if (_game->previousGameState == BUILD_MODE)
+		{
+			DisplayUIBuildingMode(_game);
+		}
+		else if (_game->previousGameState == SELLING_WINDOW)
+		{
+			_game->sellingWindow->DisplaySellingWindow(*_game->window);
+		}
+
+		_game->pauseWindow.DisplayPauseWindow(*_game->window);
 	}
 
 	_game->window->display();

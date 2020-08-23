@@ -62,6 +62,9 @@ public:
 	sf::Vector2i GetUnitQuantityRessourceScope();
 	std::string GetProvenanceName();
 	void IsOfferHasBeenRefused();
+
+	void SavingPurchasersForFile(std::ofstream *_file);
+	void LoadingPurchasersFromFile(std::ifstream *_file);
 };
 
 
