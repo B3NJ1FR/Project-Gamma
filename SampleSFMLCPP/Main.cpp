@@ -20,6 +20,9 @@ int main()
 		case MAIN_STATE_MENU:
 			MainMenuState(&data);
 			break;
+		case MAIN_STATE_LOAD_GAME:
+			GameState(data.game, &data.state);
+			break;
 		case MAIN_STATE_GAME:
 			GameState(data.game, &data.state);
 			break;

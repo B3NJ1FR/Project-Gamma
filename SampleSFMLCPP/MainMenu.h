@@ -15,7 +15,8 @@ private:
 	enum MainMenuState state;
 
 	sf::Sprite background;
-	sf::Sprite buttonPlay;
+	sf::Sprite buttonNewGame;
+	sf::Sprite buttonContinue;
 	sf::Sprite buttonOptions;
 	sf::Sprite buttonQuit;
 	sf::Sprite warningMessage;
@@ -23,7 +24,8 @@ private:
 	sf::Text *versionNumber;
 	sf::Font font;
 
-	bool isPlayClicked;
+	bool isNewGameClicked;
+	bool isLoadGameClicked;
 
 public:
 
@@ -31,7 +33,7 @@ public:
 	~MainMenu();
 
 	void InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_generalState);
-	void UpdateMainMenu();
+	void UpdateMainMenu(enum GeneralState *_generalState);
 	void DisplayMainMenu(sf::RenderWindow &_window);
 
 

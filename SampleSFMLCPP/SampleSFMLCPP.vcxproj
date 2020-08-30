@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Buildings.cpp" />
+    <ClCompile Include="BuildWindow.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="ErrorsLogFile.cpp" />
@@ -182,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buildings.h" />
+    <ClInclude Include="BuildWindow.h" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="Entities.h" />

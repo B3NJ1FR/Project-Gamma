@@ -15,6 +15,7 @@ private:
 	sf::Sprite loadButton;
 	sf::Sprite saveButton;
 	sf::Sprite saveNQuitButton;
+	sf::Sprite quitButton;
 
 
 public:

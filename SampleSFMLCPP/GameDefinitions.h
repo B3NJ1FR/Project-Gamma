@@ -14,6 +14,7 @@
 #include "SavingGame.h"
 #include "LoadingGame.h"
 #include "PauseWindow.h"
+#include "BuildWindow.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -98,6 +99,8 @@ struct Game
 	SellingWindow *sellingWindow;
 	
 	// Construction Mode
+	BuildWindow buildWindow;
+
 	int IDChosenBuilding;
 	sf::Vector2i buildingCaseSelected;
 	bool isBuildingCaseOccupied;
