@@ -101,7 +101,7 @@ struct Game
 	// Construction Mode
 	BuildWindow buildWindow;
 
-	int IDChosenBuilding;
+	/*int IDChosenBuilding;
 	sf::Vector2i buildingCaseSelected;
 	bool isBuildingCaseOccupied;
 	bool isNewBuildingHasBeenConstructed;
@@ -112,7 +112,7 @@ struct Game
 	sf::Sprite buildingUIdestroyBuildings;
 	sf::Sprite blackFilter;
 	sf::Sprite contour;
-	float scrollBuildingList;
+	float scrollBuildingList;*/
 
 	// General UI
 	sf::Text UITexts[10];

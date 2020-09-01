@@ -381,11 +381,6 @@ void GameInitialisation(struct Game *_game)
 
 	_game->workersList->InitialisationWorkersList();
 
-	_game->buildingUI = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll_test.png", 0);
-	_game->buildingUIclosed = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_closed.png", 0);
-	_game->buildingUIdestroyBuildings = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/destroy_buildings.png", 0);
-	_game->contour = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/contour_selection.png", 0);
-	_game->blackFilter = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/black_layer.png", 0);
 	_game->workerTest = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
 
 	_game->workersIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
@@ -395,15 +390,7 @@ void GameInitialisation(struct Game *_game)
 	_game->workersIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
 
 
-	// BuildMode
-	_game->IDChosenBuilding = RESET;
-	_game->scrollBuildingList = 80;
 	_game->buildingsNameTexts = nullptr;
-	_game->isBuildingCaseOccupied = false;
-	_game->isNewBuildingHasBeenConstructed = false;
-	_game->textBuildingCaseOccupied = nullptr;
-	_game->textBuildingCaseOccupied = new sf::Text[2];
-	LoadTextString(&_game->textBuildingCaseOccupied[0], "Place already occupied", &_game->charlemagneFont, 40, sf::Color::White, 1);
-	LoadTextString(&_game->textBuildingCaseOccupied[1], "Out of territory", &_game->charlemagneFont, 40, sf::Color::White, 1);
+	_game->buildWindow.InitTextsBuildWindow(&_game->charlemagneFont);
 }
 
