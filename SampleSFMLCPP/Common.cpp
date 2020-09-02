@@ -175,6 +175,15 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *
 
 		_textToInitialise->setOrigin(origin);
 	}
+	else if (_originPosition == 3)
+	{
+		sf::Vector2f origin = { (float)_textToInitialise->getGlobalBounds().width, (float)_textToInitialise->getGlobalBounds().height };
+
+		origin.x = origin.x;
+		origin.y = RESET;
+
+		_textToInitialise->setOrigin(origin);
+	}
 }
 
 
@@ -203,6 +212,11 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *
 	_textToInitialise->setFillColor(_color);
 
 	_textToInitialise->setPosition(_position);
+}
+
+void LoadTextString(sf::Text *_textToInitialise, std::string _string)
+{
+	_textToInitialise->setString(_string);
 }
 
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable)

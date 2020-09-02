@@ -4,6 +4,7 @@
 BuildWindow::BuildWindow()
 {
 	this->IDChosenBuilding = RESET;
+	this->previousIDChosenBuilding = -1;
 	this->scrollBuildingList = 80;
 	this->isBuildingCaseOccupied = false;
 	this->isNewBuildingHasBeenConstructed = false;
@@ -22,8 +23,20 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 	this->textBuildingCaseOccupied = nullptr;
 	this->textBuildingCaseOccupied = new sf::Text[2];
 
-	LoadTextString(&this->textBuildingCaseOccupied[0], "Place already occupied", _font, 40, sf::Color::White, 1);
-	LoadTextString(&this->textBuildingCaseOccupied[1], "Out of territory", _font, 40, sf::Color::White, 1);
+	LoadTextString(&this->textBuildingCaseOccupied[0], "Place already occupied", _font, 40, sf::Color::White);
+	LoadTextString(&this->textBuildingCaseOccupied[1], "Out of territory", _font, 40, sf::Color::White);
+
+
+	this->textBuildingHelps = nullptr;
+	this->textBuildingHelps = new sf::Text[BUILD_WINDOW_HELP_NB_OF_TEXTS];
+
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_X], "", _font, 40, sf::Color::White, 3);
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 40, sf::Color::White, 0);
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 40, sf::Color::White, 2);
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], "", _font, 40, sf::Color::White);
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_EXITING], "", _font, 40, sf::Color::White);
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 40, sf::Color::White);
+	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 40, sf::Color::White);
 }
 
 void BuildWindow::InitSpritesBuildWindow()
@@ -479,9 +492,9 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 
 	//std::cout << "Mouse Position : " << mousePosition.x << " & " << mousePosition.y << std::endl;
 
-	this->buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (1920 / 2)) - cameraIso.x * _game->scale.x),
-		((mousePosition.y - (1080 / 2)) - cameraIso.y * _game->scale.y),
-		_game->scale);
+	this->buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (SCREEN_WIDTH / 2)) - cameraIso.x * _game->scale.x),
+								((mousePosition.y - (SCREEN_HEIGHT / 2)) - cameraIso.y * _game->scale.y),
+								_game->scale);
 
 	//std::cout << "Case : " << _game->buildingCaseSelected.x << " & " << _game->buildingCaseSelected.y << std::endl << std::endl;
 
@@ -539,11 +552,61 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 	}
 }
 
+void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
+{
+	if (this->previousIDChosenBuilding != this->IDChosenBuilding)
+	{
+		UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_X], _game->buildings[this->IDChosenBuilding].GetSize().x);
+		UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_Y], _game->buildings[this->IDChosenBuilding].GetSize().y);
+		
+		UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_MONEY_COST], _game->buildings[this->IDChosenBuilding].GetConstructionCost());
+
+		// Texts
+		// UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], );
+		// UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_EXITING], );
+		LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_DESCRIPTION], _game->buildings[this->IDChosenBuilding].GetDescription());
+	}
+}
 
 void BuildWindow::DisplayBuildWindow(struct Game *_game)
 {
 	// Display of the building selection UI
-	BlitSprite(this->buildingUI, 1920 - this->buildingUI.getGlobalBounds().width, 1080 - this->buildingUI.getGlobalBounds().height, 0, *_game->window);
+	BlitSprite(this->buildingUI, SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width, SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height, 0, *_game->window);
+	BlitSprite(this->buildingUI, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2), SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height, 0, *_game->window);
+
+	if (this->IDChosenBuilding <= _game->numberOfBuilding)
+	{
+		BlitSprite(_game->buildings[this->IDChosenBuilding].GetIcon(), (SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width * 2) + 135, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 125, 0, *_game->window);
+
+		if (_game->buildingsNameTexts != nullptr)
+		{
+			// Display the name
+			BlitString(_game->buildingsNameTexts[this->IDChosenBuilding], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+
+			// Display the size
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_X], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_Y], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_LIAISON], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+
+			// Display the entering ressource logo
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+
+			// Display the exiting ressource logo
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_EXITING], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+
+			// Display the description
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_DESCRIPTION], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+
+			// Display the money cost of the building
+			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+		}
+	}
+
+
+
+
+
+
 
 	for (int i = 0; i < _game->numberOfBuilding; i++)
 	{
@@ -583,7 +646,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	if ((SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + this->scrollBuildingList >= (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height + 40)
 		&& (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + this->scrollBuildingList <= SCREEN_HEIGHT - this->buildingUIdestroyBuildings.getGlobalBounds().height - 40)
 	{
-		BlitSprite(this->buildingUIdestroyBuildings, (SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width) + 143 + (_game->numberOfBuilding % 2) * 109, (1080 - this->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + this->scrollBuildingList, 0, *_game->window);
+		BlitSprite(this->buildingUIdestroyBuildings, (SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width) + 143 + (_game->numberOfBuilding % 2) * 109, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130 * (_game->numberOfBuilding / 2) + this->scrollBuildingList, 0, *_game->window);
 	}
 
 	if (this->IDChosenBuilding <= _game->numberOfBuilding)
@@ -599,6 +662,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	// Display of the building chosen
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
 
+	// Display the building choosen on the mouse
 	if (this->IDChosenBuilding == 2)
 	{
 		if (this->isBuildingCaseOccupied == false)
@@ -686,11 +750,12 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	}
 
 
+	// Display the "Out of territory" and "Place already occupied" messages
 	if (this->isBuildingCaseOccupied == true
-		&& !(mousePosition.x > 1920 - this->buildingUI.getGlobalBounds().width
-			&& mousePosition.x < 1920
-			&& mousePosition.y > 1080 - this->buildingUI.getGlobalBounds().height
-			&& mousePosition.y < 1080))
+		&& !(mousePosition.x > SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width
+			&& mousePosition.x < SCREEN_WIDTH
+			&& mousePosition.y > SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height
+			&& mousePosition.y < SCREEN_HEIGHT))
 	{
 		if (!_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
 		{

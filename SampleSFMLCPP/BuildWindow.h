@@ -3,15 +3,29 @@
 
 #include "Common.hpp"
 
+#define BUILD_WINDOW_HELP_NB_OF_TEXTS 6
+
+enum BuildWindowTextBuildingHelps
+{
+	BUILD_WINDOW_HELP_SIZE_X,
+	BUILD_WINDOW_HELP_SIZE_Y,
+	BUILD_WINDOW_HELP_SIZE_LIAISON,
+	BUILD_WINDOW_HELP_RESSOURCE_ENTERING,
+	BUILD_WINDOW_HELP_RESSOURCE_EXITING,
+	BUILD_WINDOW_HELP_DESCRIPTION,
+	BUILD_WINDOW_HELP_MONEY_COST,
+};
 
 class BuildWindow
 {
 private:
 	int IDChosenBuilding;
+	int previousIDChosenBuilding;
 	sf::Vector2i buildingCaseSelected;
 	bool isBuildingCaseOccupied;
 	bool isNewBuildingHasBeenConstructed;
 	sf::Text *textBuildingCaseOccupied;
+	sf::Text *textBuildingHelps;
 
 	sf::Sprite buildingUI;
 	sf::Sprite buildingUIclosed;
@@ -44,7 +58,8 @@ public:
 	void InputBuildingModeOldScrollUI(const float &_scrollDelta, const sf::RenderWindow &_window);
 	void InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale);
 	void SetOrRemoveBuildingOnMap(struct Game *_game, bool _isConstructing, enum Floors _floorFocused, int _typeOfBuilding, sf::Vector3i _statsToApply);
-	
+	void UpdateTextsBuildWindow(struct Game *_game);
+
 	void InputBuildWindow(struct Game *_game);
 	void UpdateBuildWindow(struct Game *_game);
 	void DisplayBuildWindow(struct Game *_game);

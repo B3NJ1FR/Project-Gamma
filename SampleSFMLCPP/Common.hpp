@@ -15,6 +15,7 @@ void LoadTextString(sf::Text *_textToInitialise, const char * _string, sf::Font 
 void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *_font, int _characterSize, sf::Color _color, int _originPosition = 0);
 void LoadTextString(sf::Text *_textToInitialise, const char * _string, sf::Font *_font, int _characterSize, sf::Color _color, sf::Vector2f _position);
 void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *_font, int _characterSize, sf::Color _color, sf::Vector2f _position);
+void LoadTextString(sf::Text *_textToInitialise, std::string _string);
 
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable);
 

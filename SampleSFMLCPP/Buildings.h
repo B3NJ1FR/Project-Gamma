@@ -72,6 +72,7 @@ public :
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
 
 	std::string GetName();
+	std::string GetDescription();
 	sf::Sprite GetSprite();
 	sf::Sprite GetIcon();
 	sf::Vector2i GetSize();

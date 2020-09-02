@@ -121,6 +121,13 @@ std::string Buildings::GetName()
 	// Get the building name
 	return this->name;
 }
+
+std::string Buildings::GetDescription()
+{
+	// Get the building description
+	return this->description;
+}
+
 sf::Sprite Buildings::GetSprite()
 {
 	// Get the building sprite
