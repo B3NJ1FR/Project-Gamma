@@ -16,10 +16,13 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *
 void LoadTextString(sf::Text *_textToInitialise, const char * _string, sf::Font *_font, int _characterSize, sf::Color _color, sf::Vector2f _position);
 void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *_font, int _characterSize, sf::Color _color, sf::Vector2f _position);
 void LoadTextString(sf::Text *_textToInitialise, std::string _string);
+void LoadTextString(sf::Text *_textToInitialise, const char * _string);
 
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable);
 
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable1, const int &_variable2);
+
+std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalCharactersLength);
 
 // That function allow to know if the player has clicked on the "button" picture's
 bool IsMouseOnSprite(sf::Vector2i _mousePosition, sf::Sprite *_sprite, int _originPosition);

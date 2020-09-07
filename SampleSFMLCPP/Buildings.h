@@ -54,6 +54,7 @@ public :
 	~Buildings();
 
 	void SetName(const std::string _name);
+	void SetDescription(std::string _description);
 
 	void SetSizeCaracteristics(const sf::Vector2i _buildingSize);
 	void SetEntranceCaracteristics(const sf::Vector2i _enterPosition);

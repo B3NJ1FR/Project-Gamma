@@ -3,7 +3,7 @@
 
 #include "Common.hpp"
 
-#define BUILD_WINDOW_HELP_NB_OF_TEXTS 6
+#define BUILD_WINDOW_HELP_NB_OF_TEXTS 7
 
 enum BuildWindowTextBuildingHelps
 {
@@ -32,6 +32,8 @@ private:
 	sf::Sprite buildingUIdestroyBuildings;
 	sf::Sprite blackFilter;
 	sf::Sprite contour;
+	sf::Sprite enteringArrow;
+	sf::Sprite exitingArrow;
 	float scrollBuildingList;
 
 public:

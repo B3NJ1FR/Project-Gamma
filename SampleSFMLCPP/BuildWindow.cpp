@@ -30,13 +30,13 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 	this->textBuildingHelps = nullptr;
 	this->textBuildingHelps = new sf::Text[BUILD_WINDOW_HELP_NB_OF_TEXTS];
 
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_X], "", _font, 40, sf::Color::White, 3);
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 40, sf::Color::White, 0);
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 40, sf::Color::White, 2);
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], "", _font, 40, sf::Color::White);
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_EXITING], "", _font, 40, sf::Color::White);
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 40, sf::Color::White);
-	LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 40, sf::Color::White);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], "", _font, 20, sf::Color::Black, 3);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 20, sf::Color::Black, 0);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 20, sf::Color::Black, 2);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], "", _font, 18, sf::Color::Black);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_EXITING], "", _font, 18, sf::Color::Black);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 16, sf::Color::Black);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 20, sf::Color::Black, 2);
 }
 
 void BuildWindow::InitSpritesBuildWindow()
@@ -46,6 +46,8 @@ void BuildWindow::InitSpritesBuildWindow()
 	this->buildingUIdestroyBuildings = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/destroy_buildings.png", 0);
 	this->contour = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/contour_selection.png", 0);
 	this->blackFilter = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/black_layer.png", 0);
+	this->enteringArrow = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/left_arrow.png", 1);
+	this->exitingArrow = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/right_arrow.png", 1);
 }
 
 sf::Sprite BuildWindow::GetBuildingUI()
@@ -550,21 +552,30 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 	{
 		this->isBuildingCaseOccupied = true;
 	}
+
+	// Update the texts
+	this->UpdateTextsBuildWindow(_game);
 }
 
 void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 {
-	if (this->previousIDChosenBuilding != this->IDChosenBuilding)
+	if (this->previousIDChosenBuilding != this->IDChosenBuilding
+		&& this->IDChosenBuilding >= 0 
+		&& this->IDChosenBuilding < _game->numberOfBuilding)
 	{
-		UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_X], _game->buildings[this->IDChosenBuilding].GetSize().x);
-		UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_Y], _game->buildings[this->IDChosenBuilding].GetSize().y);
-		
-		UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_MONEY_COST], _game->buildings[this->IDChosenBuilding].GetConstructionCost());
+		// Numerics texts
+		UpdateDynamicsTexts(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], _game->buildings[this->IDChosenBuilding].GetSize().x);
+		UpdateDynamicsTexts(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], _game->buildings[this->IDChosenBuilding].GetSize().y);
 
+		UpdateDynamicsTexts(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], _game->buildings[this->IDChosenBuilding].GetConstructionCost());
+		
 		// Texts
-		// UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], );
-		// UpdateDynamicsTexts(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_EXITING], );
-		LoadTextString(&this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_DESCRIPTION], _game->buildings[this->IDChosenBuilding].GetDescription());
+		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], _game->ressources[BUNCH_OF_GRAPE].GetName());
+		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_EXITING], _game->ressources[GRAPES_MUST].GetName());
+				
+		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->buildings[this->IDChosenBuilding].GetDescription(), 19));
+
+		this->previousIDChosenBuilding = this->IDChosenBuilding;
 	}
 }
 
@@ -572,33 +583,38 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 {
 	// Display of the building selection UI
 	BlitSprite(this->buildingUI, SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width, SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height, 0, *_game->window);
-	BlitSprite(this->buildingUI, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2), SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height, 0, *_game->window);
-
-	if (this->IDChosenBuilding <= _game->numberOfBuilding)
+	
+	// Display of the help scroll that indicates every building info
+	if (this->IDChosenBuilding < _game->numberOfBuilding)
 	{
-		BlitSprite(_game->buildings[this->IDChosenBuilding].GetIcon(), (SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width * 2) + 135, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 125, 0, *_game->window);
+		BlitSprite(this->buildingUI, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2), SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height, 0, *_game->window);
 
+		BlitSprite(_game->buildings[this->IDChosenBuilding].GetIcon(), (SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width * 2) + 135, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 135, 0, *_game->window);
+
+		// Display of the info paper about the building selected
 		if (_game->buildingsNameTexts != nullptr)
 		{
 			// Display the name
 			BlitString(_game->buildingsNameTexts[this->IDChosenBuilding], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
 
 			// Display the size
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_X], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_Y], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_SIZE_LIAISON], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
-
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 290, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
+			
 			// Display the entering ressource logo
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitSprite(this->enteringArrow, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 181, 0, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 170, *_game->window);
 
 			// Display the exiting ressource logo
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_RESSOURCE_EXITING], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitSprite(this->exitingArrow, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 216, 0, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_EXITING], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 205, *_game->window);
 
 			// Display the description
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_DESCRIPTION], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 120, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 260, *_game->window);
 
 			// Display the money cost of the building
-			BlitString(this->textBuildingCaseOccupied[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 400, *_game->window);
 		}
 	}
 
@@ -607,7 +623,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 
 
-
+	// Display of the buildings list
 	for (int i = 0; i < _game->numberOfBuilding; i++)
 	{
 		if ((SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130 * (i / 2) + this->scrollBuildingList >= (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height + 40)

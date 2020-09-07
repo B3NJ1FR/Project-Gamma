@@ -219,6 +219,11 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string)
 	_textToInitialise->setString(_string);
 }
 
+void LoadTextString(sf::Text *_textToInitialise, const char * _string)
+{
+	_textToInitialise->setString(_string);
+}
+
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable)
 {
 	char tabJoueur[64];
@@ -239,6 +244,53 @@ void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable1, const int
 
 	_textString->setString(tabJoueur);
 }
+
+std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalCharactersLength)
+{
+	std::size_t spacesPositions;
+	std::size_t previousSpacesPositions;
+
+	int positionInString(RESET);
+	int maximalCharactersPerLine(_maximalCharactersLength);
+
+	std::string temporaryString;
+	temporaryString.erase();
+
+	temporaryString.append(_string);
+
+	spacesPositions = temporaryString.find_first_of(" ");
+
+	while (positionInString + maximalCharactersPerLine < temporaryString.length())
+	{
+		while (temporaryString.find_first_of(" ", spacesPositions + 1) <= positionInString + maximalCharactersPerLine)
+		{
+			previousSpacesPositions = spacesPositions;
+			spacesPositions = temporaryString.find(" ", spacesPositions + 1);
+		}
+
+		// If the space position is equal to the maximal lengh needed, we can put a return at this current position
+		if (spacesPositions == positionInString + maximalCharactersPerLine)
+		{
+			positionInString = temporaryString.find(" ", spacesPositions);
+		}
+		// If the space position is higher than the maximal lengh needed, we take the previous position to put it a return
+		else if (spacesPositions > positionInString + maximalCharactersPerLine)
+		{
+			positionInString = temporaryString.find(" ", previousSpacesPositions);
+		}
+		// If the space position is less than the maximal lengh needed, we can put a return at this current position
+		else if (spacesPositions < positionInString + maximalCharactersPerLine
+			&& spacesPositions > positionInString)
+		{
+			positionInString = temporaryString.find(" ", spacesPositions);
+		}
+
+		temporaryString.replace(positionInString, 1, "\n", 1);
+	}
+
+	return temporaryString;
+}
+
 
 // That function permit to print the picture at screen to some position (x and y), and if wanted, rotating it
 void BlitSprite(sf::Sprite _sprite, const float _posX, const float _posY, const float _angle, sf::RenderWindow &_window)

@@ -29,6 +29,12 @@ void Buildings::SetName(const std::string _name)
 	this->name = _name;
 }
 
+void Buildings::SetDescription(std::string _description)
+{
+	// Get the building description
+	this->description = _description;
+}
+
 void Buildings::SetSizeCaracteristics(const sf::Vector2i _buildingSize)
 {
 	// Set the building size in term of width and lengh

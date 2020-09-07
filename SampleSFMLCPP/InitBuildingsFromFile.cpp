@@ -119,6 +119,7 @@ void InitBuildingsFromFile(struct Game *_game)
 
 				_game->buildings[buildingID].SetName(temporaryString);
 
+
 				// Pickup the ID and the name of the building
 				std::cout << "Building " << buildingID << " - " << temporaryString << " - " ;
 				
@@ -126,7 +127,18 @@ void InitBuildingsFromFile(struct Game *_game)
 				{
 					buildingsFile >> temporaryString;
 
-					if (temporaryString == "SIZE")
+					if (temporaryString == "DESCRIPTION")
+					{
+						buildingsFile >> temporaryString;
+
+						while (temporaryString.find("_") != -1)
+						{
+							temporaryString.replace(temporaryString.find("_"), 1, " ", 1);
+						}
+						
+						_game->buildings[buildingID].SetDescription(temporaryString);
+					}
+					else if (temporaryString == "SIZE")
 					{
 						sf::Vector2i temporarySize = { RESET, RESET };
 
