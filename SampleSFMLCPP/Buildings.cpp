@@ -14,6 +14,12 @@ Buildings::Buildings()
 
 	this->numberRessourceNeeded = RESET;
 	this->numberRessourceProduced = RESET;
+
+	this->ressourceIDNeeded = nullptr;
+	this->ressourceQuantityNeeded = nullptr;
+
+	this->ressourceIDProduced = nullptr;
+	this->ressourceQuantityProduced = nullptr;
 }
 
 
@@ -100,25 +106,51 @@ void Buildings::SetDepositingTimeCost(const float &_timeCost)
 	this->timeToDeposeRessources = _timeCost;
 }
 
-void Buildings::SetRessourceIDNeeded(int *_resssourceID, const unsigned char _numberRessources)
+void Buildings::SetRessourceIDNeeded(int *_resssourceID, const unsigned char &_numberRessources)
 {
-	this->ressourceIDNeeded = _resssourceID;
+	if (this->ressourceIDNeeded != nullptr)
+	{
+		delete this->ressourceIDNeeded;
+		this->ressourceIDNeeded = nullptr;
+	}
+
 	this->numberRessourceNeeded = _numberRessources;
+
+	this->ressourceIDNeeded = _resssourceID;
 }
 
 void Buildings::SetRessourceQuantityNeeded(int *_resssourceQuantity)
 {
+	if (this->ressourceQuantityNeeded != nullptr)
+	{
+		delete this->ressourceQuantityNeeded;
+		this->ressourceQuantityNeeded = nullptr;
+	}
+
 	this->ressourceQuantityNeeded = _resssourceQuantity;
 }
 
-void Buildings::SetRessourceIDProduced(int *_resssourceID, const unsigned char _numberRessources)
+void Buildings::SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources)
 {
-	this->ressourceIDProduced = _resssourceID;
+	if (this->ressourceIDProduced != nullptr)
+	{
+		delete this->ressourceIDProduced;
+		this->ressourceIDProduced = nullptr;
+	}
+
 	this->numberRessourceProduced = _numberRessources;
+
+	this->ressourceIDProduced = _resssourceID;
 }
 
 void Buildings::SetRessourceQuantityProduced(int *_resssourceQuantity)
 {
+	if (this->ressourceQuantityProduced != nullptr)
+	{
+		delete this->ressourceQuantityProduced;
+		this->ressourceQuantityProduced = nullptr;
+	}
+
 	this->ressourceQuantityProduced = _resssourceQuantity;
 }
 
@@ -181,6 +213,17 @@ float Buildings::GetPickupingTimeCost()
 {
 	// Get the pickuping cost in term of time necessary
 	return this->timeToPickUpRessources;
+}
+
+unsigned int Buildings::GetRessourceNumberNeeded()
+{
+	return this->numberRessourceNeeded;
+}
+
+
+unsigned int Buildings::GetRessourceNumberProduced()
+{
+	return this->numberRessourceProduced;
 }
 
 int Buildings::GetRessourceIDNeeded(const unsigned char &_value)

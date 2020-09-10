@@ -40,11 +40,11 @@ protected :
 	float timeToPickUpRessources;
 	float timeToDeposeRessources;
 
-	unsigned char numberRessourceNeeded;
+	unsigned int numberRessourceNeeded;
 	int *ressourceIDNeeded;
 	int *ressourceQuantityNeeded;
 
-	unsigned char numberRessourceProduced;
+	unsigned int numberRessourceProduced;
 	int *ressourceIDProduced;
 	int *ressourceQuantityProduced;
 
@@ -67,9 +67,9 @@ public :
 	void SetProductionTimeCost(const float &_timeCost);
 	void SetPickupingTimeCost(const float &_timeCost = 0);
 	void SetDepositingTimeCost(const float &_timeCost = 0);
-	void SetRessourceIDNeeded(int *_resssourceID, const unsigned char _numberRessources = 1);
+	void SetRessourceIDNeeded(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityNeeded(int *_resssourceQuantity = 0);
-	void SetRessourceIDProduced(int *_resssourceID, const unsigned char _numberRessources = 1);
+	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
 
 	std::string GetName();
@@ -82,6 +82,8 @@ public :
 	float GetProductionTimeCost();
 	float GetDepositingTimeCost();
 	float GetPickupingTimeCost();
+	unsigned int GetRessourceNumberNeeded();
+	unsigned int GetRessourceNumberProduced();
 	int GetRessourceIDNeeded(const unsigned char &_value = 1);
 	int GetRessourceQuantityNeeded(const unsigned char &_value = 1);
 	int GetRessourceIDProduced(const unsigned char &_value = 1);

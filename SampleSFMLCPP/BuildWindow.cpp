@@ -32,9 +32,7 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], "", _font, 20, sf::Color::Black, 3);
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 20, sf::Color::Black, 0);
-	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 20, sf::Color::Black, 2);
-	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], "", _font, 18, sf::Color::Black);
-	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_EXITING], "", _font, 18, sf::Color::Black);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 16, sf::Color::Black, 2);
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 16, sf::Color::Black);
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 20, sf::Color::Black, 2);
 }
@@ -569,10 +567,7 @@ void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 
 		UpdateDynamicsTexts(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], _game->buildings[this->IDChosenBuilding].GetConstructionCost());
 		
-		// Texts
-		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], _game->ressources[BUNCH_OF_GRAPE].GetName());
-		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_EXITING], _game->ressources[GRAPES_MUST].GetName());
-				
+		// Texts				
 		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->buildings[this->IDChosenBuilding].GetDescription(), 19));
 
 		this->previousIDChosenBuilding = this->IDChosenBuilding;
@@ -599,16 +594,31 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 			// Display the size
 			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
-			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 134, *_game->window);
 			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 290, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
 			
 			// Display the entering ressource logo
-			BlitSprite(this->enteringArrow, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 181, 0, *_game->window);
-			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_ENTERING], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 170, *_game->window);
-
+			BlitSprite(this->enteringArrow, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 181, 0, *_game->window);
+			
+			if (_game->buildings[this->IDChosenBuilding].GetRessourceNumberNeeded() > 0)
+			{
+				for (int i = 0; i < _game->buildings[this->IDChosenBuilding].GetRessourceNumberNeeded(); i++)
+				{
+					BlitSprite(_game->ressources[_game->buildings[this->IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 165, 0, *_game->window);
+				}
+			}
+			
 			// Display the exiting ressource logo
-			BlitSprite(this->exitingArrow, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 216, 0, *_game->window);
-			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_RESSOURCE_EXITING], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 205, *_game->window);
+			BlitSprite(this->exitingArrow, SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 216, 0, *_game->window);
+			
+			if (_game->buildings[this->IDChosenBuilding].GetRessourceNumberProduced() > 0)
+			{
+				for (int i = 0; i < _game->buildings[this->IDChosenBuilding].GetRessourceNumberProduced(); i++)
+				{
+					BlitSprite(_game->ressources[_game->buildings[this->IDChosenBuilding].GetRessourceIDProduced(i + 1)].GetSprite(), SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 200, 0, *_game->window);
+				}
+			}
+
 
 			// Display the description
 			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 120, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 260, *_game->window);
