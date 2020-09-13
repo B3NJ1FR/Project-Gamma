@@ -44,6 +44,7 @@ public:
 		float secondaryTime;
 
 		bool isChangingSprite;
+		bool hasBeenBuilt;
 		bool isProduced;
 		bool isWorkerThere;
 	};
@@ -56,7 +57,7 @@ public:
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource, Ressources *_ressourceProduced);
-	void UpdateBuildingSprite(unsigned short ***_map);
+	void UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building);
 	void UpdateBuildingProduction(Ressources *_ressource);
 
 	bool ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);

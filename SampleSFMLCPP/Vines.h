@@ -65,6 +65,7 @@ public:
 		float secondaryTime;
 
 		bool isChangingSprite;
+		bool hasBeenBuilt;
 		bool isProduced;
 		bool isWorkerThere;
 

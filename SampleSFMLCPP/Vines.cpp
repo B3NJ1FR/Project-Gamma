@@ -1,4 +1,5 @@
 #include "Vines.h"
+#include "GameDefinitions.h"
 #include "ErrorsLogFile.h"
 #include "TimeManagement.h"
 
@@ -313,76 +314,90 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 			{
 				if (((Vines::sVines *)currentElement->data)->isChangingSprite == true)
 				{
-					switch (((Vines::sVines *)currentElement->data)->generalState)
+					if (((Vines::sVines *)currentElement->data)->generalState == THREE_YEARS_GROWTHING
+						&& ((Vines::sVines *)currentElement->data)->hasBeenBuilt == false)
 					{
-					case PLANTED:
-						break;
-					case THREE_YEARS_GROWTHING:
-						_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-							[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 8;
-						break;
-					case READY_TO_PRODUCE:
+						((Vines::sVines *)currentElement->data)->hasBeenBuilt = true;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = false;
 
-
-						switch (((Vines::sVines *)currentElement->data)->annualState)
+						_map[FIRST_FLOOR + SPRITE_ID][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 3;
+					}
+					else
+					{
+						switch (((Vines::sVines *)currentElement->data)->generalState)
 						{
-						case NEED_PRUNE:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 12;
+						case PLANTED:
 							break;
-						case PRUNED:
+						case THREE_YEARS_GROWTHING:
 							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 8;
 							break;
-						case NEED_PLOUGHING:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 13;
+						case READY_TO_PRODUCE:
+
+
+							switch (((Vines::sVines *)currentElement->data)->annualState)
+							{
+							case NEED_PRUNE:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 12;
+								break;
+							case PRUNED:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								break;
+							case NEED_PLOUGHING:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 13;
+								break;
+							case PLOUGHED:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								break;
+							case NEED_WEEDING:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 14;
+								break;
+							case WEEDED:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								break;
+							case NEED_CARE:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 15;
+								break;
+							case CARED:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								break;
+							case NEED_HARVEST:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 10;
+								break;
+							case HARVESTED:
+								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								break;
+							case PUTTING_IN_WINE_STOREHOUSE:
+								break;
+							default:
+								break;
+							}
+
+
 							break;
-						case PLOUGHED:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+						case NOT_MAINTAINED:
 							break;
-						case NEED_WEEDING:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 14;
-							break;
-						case WEEDED:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
-							break;
-						case NEED_CARE:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 15;
-							break;
-						case CARED:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
-							break;
-						case NEED_HARVEST:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 10;
-							break;
-						case HARVESTED:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
-							break;
-						case PUTTING_IN_WINE_STOREHOUSE:
+						case TOO_OLD:
 							break;
 						default:
 							break;
 						}
-					
 
-						break;
-					case NOT_MAINTAINED:
-						break;
-					case TOO_OLD:
-						break;
-					default:
-						break;
+						((Vines::sVines *)currentElement->data)->isChangingSprite = false;
 					}
 
-					((Vines::sVines *)currentElement->data)->isChangingSprite = false;
+					
 				}
 			}
 		}

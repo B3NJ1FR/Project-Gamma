@@ -6,9 +6,11 @@ BuildWindow::BuildWindow()
 	this->IDChosenBuilding = RESET;
 	this->previousIDChosenBuilding = -1;
 	this->scrollBuildingList = 80;
+
 	this->isBuildingCaseOccupied = false;
 	this->isNewBuildingHasBeenConstructed = false;
 
+	// Initialisation of the sprites
 	this->InitSpritesBuildWindow();
 }
 
@@ -23,8 +25,8 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 	this->textBuildingCaseOccupied = nullptr;
 	this->textBuildingCaseOccupied = new sf::Text[2];
 
-	LoadTextString(&this->textBuildingCaseOccupied[0], "Place already occupied", _font, 40, sf::Color::White);
-	LoadTextString(&this->textBuildingCaseOccupied[1], "Out of territory", _font, 40, sf::Color::White);
+	LoadTextString(&this->textBuildingCaseOccupied[0], "Place already occupied", _font, 40, sf::Color::White, 2);
+	LoadTextString(&this->textBuildingCaseOccupied[1], "Out of territory", _font, 40, sf::Color::White, 2);
 
 
 	this->textBuildingHelps = nullptr;
@@ -33,8 +35,8 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], "", _font, 20, sf::Color::Black, 3);
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 20, sf::Color::Black, 0);
 	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 16, sf::Color::Black, 2);
-	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 16, sf::Color::Black);
-	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 20, sf::Color::Black, 2);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 13, sf::Color::Black);
+	LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 20, sf::Color::Black, 3);
 }
 
 void BuildWindow::InitSpritesBuildWindow()
@@ -46,6 +48,7 @@ void BuildWindow::InitSpritesBuildWindow()
 	this->blackFilter = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/black_layer.png", 0);
 	this->enteringArrow = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/left_arrow.png", 1);
 	this->exitingArrow = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/right_arrow.png", 1);
+	this->separationLine = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/separation.png", 1);
 }
 
 sf::Sprite BuildWindow::GetBuildingUI()
@@ -201,6 +204,45 @@ void BuildWindow::SetOrRemoveBuildingOnMap(struct Game *_game, bool _isConstruct
 
 					// Set the correct building ID
 					_game->map[_floorFocused + BUILDING_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] = _statsToApply.y;
+					_game->map[ZERO_FLOOR + BUILDING_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] = _statsToApply.y;
+
+
+
+					// Set the correct sprite ID
+					if (this->IDChosenBuilding == BUILDING_VINES)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 7;
+						_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 32;
+					}
+					if (this->IDChosenBuilding == BUILDING_GRAPE_STOMPING_VATS)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 25;
+						_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 26;
+					}
+					else if (this->IDChosenBuilding == BUILDING_WINE_PRESS)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 23;
+						_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 30;
+					}
+					else if (this->IDChosenBuilding == BUILDING_WINE_STOREHOUSE)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 24;
+						_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 31;
+					}
+					else if (this->IDChosenBuilding == BUILDING_STOREHOUSE)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 22;
+						_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 29;
+					}
+					else if (this->IDChosenBuilding == BUILDING_STALL)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 20;
+						_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 27;
+					}
+					else
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 7;
+					}
 				}
 				else
 				{
@@ -314,6 +356,16 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 			// Add the building if the place is empty
 			if (this->isBuildingCaseOccupied == false)
 			{
+				// Clear the ground by putting sand floor
+				for (int y = 0; y < _game->buildings[this->IDChosenBuilding].GetSize().y; y++)
+				{
+					for (int x = 0; x < _game->buildings[this->IDChosenBuilding].GetSize().x; x++)
+					{
+						_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] = 1;
+					}
+				}
+
+
 				this->SetOrRemoveBuildingOnMap(_game, true, FIRST_FLOOR, this->IDChosenBuilding, sf::Vector3i(COLLISION, this->IDChosenBuilding, RESET));
 
 
@@ -345,36 +397,8 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 
 				// We remove the money needed to construct the building
 				_game->money.SubtractMoney(_game->buildings[this->IDChosenBuilding].GetConstructionCost());
-
-
-				// Set the correct sprite ID 
-
-				if (this->IDChosenBuilding == 2)
-				{
-					_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 17;
-					_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 23;
-				}
-				else if (this->IDChosenBuilding == 3)
-				{
-					_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 16;
-					_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 24;
-				}
-				else if (this->IDChosenBuilding == 4)
-				{
-					_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 19;
-					_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 22;
-				}
-				else if (this->IDChosenBuilding == 5)
-				{
-					_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 18;
-					_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 20;
-				}
-				else
-				{
-					_game->map[FIRST_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 3 + this->IDChosenBuilding;
-					_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] = 7;
-				}
-
+				
+				
 				// Update the workers path if there is a modification
 				this->isNewBuildingHasBeenConstructed = true;
 			}
@@ -568,7 +592,7 @@ void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 		UpdateDynamicsTexts(&this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], _game->buildings[this->IDChosenBuilding].GetConstructionCost());
 		
 		// Texts				
-		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->buildings[this->IDChosenBuilding].GetDescription(), 19));
+		LoadTextString(&this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->buildings[this->IDChosenBuilding].GetDescription(), 25));
 
 		this->previousIDChosenBuilding = this->IDChosenBuilding;
 	}
@@ -590,7 +614,10 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 		if (_game->buildingsNameTexts != nullptr)
 		{
 			// Display the name
-			BlitString(_game->buildingsNameTexts[this->IDChosenBuilding], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 75, *_game->window);
+			BlitString(_game->buildingsNameTexts[this->IDChosenBuilding], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 70, *_game->window);
+			
+			BlitSprite(this->separationLine, (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 120, 0, *_game->window);
+
 
 			// Display the size
 			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 130, *_game->window);
@@ -619,12 +646,21 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 				}
 			}
 
+			BlitSprite(this->separationLine, (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 250, 0, *_game->window);
+
 
 			// Display the description
 			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + 120, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 260, *_game->window);
 
+			BlitSprite(this->separationLine, (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 385, 0, *_game->window);
+
+
 			// Display the money cost of the building
-			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 400, *_game->window);
+			BlitString(this->textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)) - 30, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 400, *_game->window);
+			
+			_game->money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
+			BlitSprite(_game->money.GetSprite(), (SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2) + (this->buildingUI.getGlobalBounds().width / 2)) + 30, (SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height) + 412, 0, *_game->window);
+			_game->money.SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}
 
@@ -778,18 +814,18 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 	// Display the "Out of territory" and "Place already occupied" messages
 	if (this->isBuildingCaseOccupied == true
-		&& !(mousePosition.x > SCREEN_WIDTH - this->buildingUI.getGlobalBounds().width
+		&& !(mousePosition.x > SCREEN_WIDTH - (this->buildingUI.getGlobalBounds().width * 2)
 			&& mousePosition.x < SCREEN_WIDTH
-			&& mousePosition.y > SCREEN_HEIGHT - this->buildingUI.getGlobalBounds().height
+			&& mousePosition.y > SCREEN_HEIGHT - (this->buildingUI.getGlobalBounds().height * 2)
 			&& mousePosition.y < SCREEN_HEIGHT))
 	{
 		if (!_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
 		{
-			BlitString(this->textBuildingCaseOccupied[1], (SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100, *_game->window);
+			BlitString(this->textBuildingCaseOccupied[1], 500, SCREEN_HEIGHT - 100, *_game->window);
 		}
 		else if (this->textBuildingCaseOccupied != nullptr)
 		{
-			BlitString(this->textBuildingCaseOccupied[0], (SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100, *_game->window);
+			BlitString(this->textBuildingCaseOccupied[0], 500, SCREEN_HEIGHT - 100, *_game->window);
 		}
 	}
 }

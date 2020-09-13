@@ -31,7 +31,7 @@ public :
 	~Ressources();
 
 	void SetSprite(const std::string _spriteFileName, int _spriteOriginPosition = 0);
-	void SetName(const std::string _name);
+	void SetName	(const std::string _name);
 	void SetInitialQuantityOwned(int _quantityOwned = 0);
 	void AddQuantityOwned(int _quantityToAdd);
 	void SubtractQuantityOwned(int _quantityToSubtract);

@@ -1,4 +1,5 @@
 #include "SpecificsBuildings.h"
+#include "GameDefinitions.h"
 
 
 
@@ -48,6 +49,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->secondaryTime = RESET;
 
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isChangingSprite = false;
+	((SpecificsBuildings::sBuildingData *)newBuilding->data)->hasBeenBuilt = false;
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isProduced = false;
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isWorkerThere = false;
 
@@ -191,11 +193,17 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 						{
 							//std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = BUILT;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
+							//((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
 						}
 
 						break;
 					case BUILT:
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
+						{
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
+							std::cout << "Building successfully constructed ! " << std::endl;
+
+						}
 
 						break;
 					case BUILDING_NOT_MAINTAINED:
@@ -216,7 +224,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 }
 
 
-void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map)
+void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building)
 {
 	if (this->list != nullptr)
 	{
@@ -224,30 +232,34 @@ void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map)
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				/*if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite == true)
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite == true)
 				{
-					switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->generalState)
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT
+						&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
 					{
-					case PLANTED:
-						break;
-					case THREE_YEARS_GROWTHING:
-						_map[3 + 2][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-							[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 8;
-						break;
-					case READY_TO_PRODUCE:
-						_map[3 + 2][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-							[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 9;
-						break;
-					case NOT_MAINTAINED:
-						break;
-					case TOO_OLD:
-						break;
-					default:
-						break;
-					}
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt = true;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = false;
 
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = false;
-				}*/
+						switch (_building)
+						{
+						case BUILDING_GRAPE_STOMPING_VATS:
+
+							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
+								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 4;
+							break;
+						case BUILDING_WINE_PRESS:
+							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
+								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 17;
+							break;
+						case BUILDING_WINE_STOREHOUSE:
+							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
+								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 16;
+							break;
+						default:
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

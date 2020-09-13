@@ -75,16 +75,24 @@ void GameUpdate(struct Game *_game)
 			_game->vines.UpdateVineProduction(&_game->ressources[BUNCH_OF_GRAPE]);
 
 			_game->stompingVats.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->stompingVats.UpdateBuildingSprite(_game->map, BUILDING_GRAPE_STOMPING_VATS);
 			_game->stompingVats.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[BUNCH_OF_GRAPE], &_game->ressources[GRAPES_MUST]);
 
 			_game->winePress.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->winePress.UpdateBuildingSprite(_game->map, BUILDING_WINE_PRESS);
 			_game->winePress.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPES_MUST], &_game->ressources[GRAPE_JUICE]);
 
 			_game->wineStorehouse.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->wineStorehouse.UpdateBuildingSprite(_game->map, BUILDING_WINE_STOREHOUSE);
 			_game->wineStorehouse.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[GRAPE_JUICE], &_game->ressources[AMPHORA_OF_WINE]);
 
 			_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->stall->UpdateBuildingSprite(_game->map);
 			_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);
+
+			_game->storehouse.UpdateBuildingConstruction(_game->time->GetFrameTime());
+			_game->storehouse.UpdateBuildingSprite(_game->map);
+			
 
 			if (_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 				&& _game->stall->GetIsNewMerchantNeeded() == true)

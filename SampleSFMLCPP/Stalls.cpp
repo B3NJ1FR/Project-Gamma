@@ -8,6 +8,7 @@ Stalls::Stalls(Buildings *_specificBuildingConcerned)
 	this->building = _specificBuildingConcerned;
 
 	this->constructionState = BUILDING_DESTROYED;
+	this->hasBeenBuilt = false;
 }
 
 
@@ -21,6 +22,7 @@ void Stalls::InitialisationStall(Buildings *_stallBuildingConcerned)
 	this->building = _stallBuildingConcerned;
 
 	this->constructionState = BUILDING_DESTROYED;
+	this->hasBeenBuilt = false;
 }
 
 
@@ -57,6 +59,7 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 	this->actualProductionTime = RESET;
 
 	this->isChangingSprite = false;
+	this->hasBeenBuilt = false;
 	this->isWorkerThere = false;
 	this->isPurchaserThere = false;
 	this->isNewMerchantNeeded = false;
@@ -97,6 +100,7 @@ bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 		this->actualProductionTime = RESET;
 
 		this->isChangingSprite = false;
+		this->hasBeenBuilt = false;
 		this->isWorkerThere = false;
 		this->isPurchaserThere = false;
 		this->isNewMerchantNeeded = false;
@@ -208,6 +212,11 @@ void Stalls::UpdateBuildingConstruction(const float &_frametime)
 
 			break;
 		case BUILT:
+			if (this->hasBeenBuilt == false)
+			{
+				this->isChangingSprite = true;
+				std::cout << "Building successfully constructed ! " << std::endl;
+			}
 
 			break;
 		case BUILDING_NOT_MAINTAINED:
@@ -331,6 +340,21 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 		
 }
 
+void Stalls::UpdateBuildingSprite(unsigned short ***_map)
+{
+	if (this->isChangingSprite == true)
+	{
+		if (this->constructionState == BUILT
+			&& this->hasBeenBuilt == false
+			&& this->isChangingSprite == true)
+		{
+			this->hasBeenBuilt = true;
+			this->isChangingSprite = false;
+
+			_map[FIRST_FLOOR + SPRITE_ID][(int)this->mapPosition.y][(int)this->mapPosition.x] = 18;
+		}
+	}
+}
 
 
 void Stalls::SavingStallForFile(std::ofstream *_file)

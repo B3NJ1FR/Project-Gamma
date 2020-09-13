@@ -11,6 +11,10 @@ Money::~Money()
 {
 
 }
+void Money::SetSpriteScale(const sf::Vector2f &_scale)
+{
+	this->sprite.setScale(_scale);
+}
 
 void Money::SetInitialQuantity(int _quantityToAdd)
 {

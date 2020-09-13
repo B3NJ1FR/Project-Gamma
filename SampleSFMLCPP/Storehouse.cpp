@@ -39,6 +39,7 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((Storehouse::sStorehouseData *)newStorehouse->data)->lifeTime = RESET;
 
 	((Storehouse::sStorehouseData *)newStorehouse->data)->isChangingSprite = false;
+	((Storehouse::sStorehouseData *)newStorehouse->data)->hasBeenBuilt = false;
 	((Storehouse::sStorehouseData *)newStorehouse->data)->isWorkerThere = false;
 
 	newStorehouse->status = ELEMENT_ACTIVE;
@@ -186,6 +187,11 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 
 						break;
 					case BUILT:
+						if (((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt == false)
+						{
+							((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
+							std::cout << "Building successfully constructed ! " << std::endl;
+						}
 
 						break;
 					case BUILDING_NOT_MAINTAINED:
@@ -214,30 +220,18 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				/*if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite == true)
+				if (((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite == true)
 				{
-					switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->generalState)
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT
+						&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
 					{
-					case PLANTED:
-						break;
-					case THREE_YEARS_GROWTHING:
-						_map[3 + 2][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-							[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 8;
-						break;
-					case READY_TO_PRODUCE:
-						_map[3 + 2][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-							[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 9;
-						break;
-					case NOT_MAINTAINED:
-						break;
-					case TOO_OLD:
-						break;
-					default:
-						break;
-					}
+						((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt = true;
+						((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = false;
 
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = false;
-				}*/
+						_map[3 + 2][(int)((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y]
+							[(int)((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x] = 19;
+					}
+				}
 			}
 		}
 	}

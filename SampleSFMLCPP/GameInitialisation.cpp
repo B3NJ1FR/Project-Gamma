@@ -73,6 +73,11 @@ void MapInitialisation(struct Game *_game)
 				{
 					_game->map[z][y][x] = RESET;
 
+					if (z % 3 == BUILDING_ID)
+					{
+						_game->map[z][y][x] = -1;
+					}
+
 					if (z == (ZERO_FLOOR + COLLISIONS_ID) && z % 3 == COLLISIONS_ID)
 					{
 						// Collisions of the road

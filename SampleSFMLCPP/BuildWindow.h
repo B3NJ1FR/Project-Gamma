@@ -32,6 +32,7 @@ private:
 	sf::Sprite contour;
 	sf::Sprite enteringArrow;
 	sf::Sprite exitingArrow;
+	sf::Sprite separationLine;
 	float scrollBuildingList;
 
 public:

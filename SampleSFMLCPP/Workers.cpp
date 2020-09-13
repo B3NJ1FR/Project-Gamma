@@ -130,11 +130,19 @@ void Workers::SetEndingPosition(sf::Vector2i _mapPosition, unsigned short ***_ma
 	//
 
 	// If this place is a building
-	if (_map[FIRST_FLOOR + COLLISIONS_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] != 0)
+	if (_map[FIRST_FLOOR + BUILDING_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] >= 0)
 	{
 		// We change the worker's status to working
 		this->isItWorkingPlace = true;
 		this->actualBuilding = (enum TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x];
+
+		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] << std::endl;
+	}
+	else if (_map[ZERO_FLOOR + BUILDING_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] >= 0)
+	{
+		// We change the worker's status to working
+		this->isItWorkingPlace = true;
+		this->actualBuilding = (enum TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)this->mapEndPosition.y][(int)this->mapEndPosition.x] << std::endl;
 	}

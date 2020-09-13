@@ -17,6 +17,7 @@ public:
 		float lifeTime;
 
 		bool isChangingSprite;
+		bool hasBeenBuilt;
 		bool isWorkerThere;
 	};
 	typedef struct StorehouseData sStorehouseData;

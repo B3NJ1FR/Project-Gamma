@@ -34,6 +34,7 @@ private:
 	float actualProductionTime;
 
 	bool isChangingSprite;
+	bool hasBeenBuilt;
 	bool isWorkerThere;
 	bool isPurchaserThere;
 
@@ -66,6 +67,7 @@ public:
 
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
+	void UpdateBuildingSprite(unsigned short ***_map);
 
 
 	void SavingStallForFile(std::ofstream *_file);
