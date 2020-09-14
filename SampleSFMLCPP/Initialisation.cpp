@@ -1,5 +1,6 @@
 #include "Initialisation.hpp"
 #include "MainMenu.h"
+#include "LoadingScreen.h"
 #include "GameDefinitions.h"
 
 void randomTime()
@@ -39,6 +40,7 @@ void Init(Data *_data)
 	// Allocation of every parts
 	_data->system = new struct System;
 	_data->mainMenu = new struct Menu;
+	_data->loadingScreen = new struct LoadingScreen;
 
 
 	// Part to move after having pressed the play button's

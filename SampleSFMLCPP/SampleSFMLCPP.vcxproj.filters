@@ -177,6 +177,9 @@
     <ClCompile Include="BuildWindow.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
+    <ClCompile Include="LoadingScreen.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="BuildWindow.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScreen.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -39,6 +39,7 @@ struct Data
 	struct System *system;
 	struct Game *game;
 	struct Menu *mainMenu;
+	struct LoadingScreen *loadingScreen;
 
 	enum GeneralState state;
 };

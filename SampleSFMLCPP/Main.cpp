@@ -21,10 +21,10 @@ int main()
 			MainMenuState(&data);
 			break;
 		case MAIN_STATE_LOAD_GAME:
-			GameState(data.game, &data.state);
+			GameState(data.game, data.loadingScreen, &data.state);
 			break;
 		case MAIN_STATE_GAME:
-			GameState(data.game, &data.state);
+			GameState(data.game, data.loadingScreen, &data.state);
 			break;
 		case MAIN_STATE_EXIT:
 			break;

@@ -10,10 +10,10 @@
 
 
 
-void GameState(struct Game *_game, enum GeneralState *_generalState)
+void GameState(struct Game *_game, struct LoadingScreen *_loadingScreen, enum GeneralState *_generalState)
 {
 	// Initialisation
-	GameInitialisation(_game);
+	GameInitialisation(_game, _loadingScreen);
 
 	if (*(_generalState) == MAIN_STATE_LOAD_GAME)
 	{

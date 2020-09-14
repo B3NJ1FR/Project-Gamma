@@ -1,5 +1,6 @@
 #include "GameInitialisation.h"
 #include "GameDefinitions.h"
+#include "LoadingScreen.h"
 #include "InitBuildingsFromFile.h"
 #include "LinkedList.h"
 #include "Pathfinding.h" // Temporaire
@@ -348,8 +349,12 @@ void RessourcesInitialisation(struct Game *_game)
 }
 
 
-void GameInitialisation(struct Game *_game)
+void GameInitialisation(struct Game *_game, struct LoadingScreen *_loadingScreen)
 {
+	// Display the loading screen during the game loading
+	_loadingScreen->loadingScreen.DisplayLoadingScreen(*_game->window);
+
+
 	_game->actualGameState = NORMAL_MODE;
 
 	_game->numberOfBuilding = RESET;
