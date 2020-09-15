@@ -166,6 +166,7 @@
     <ClCompile Include="LoadingGame.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Money.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Stalls.cpp" />
     <ClCompile Include="Storehouse.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
+    <ClCompile Include="VillaManagement.cpp" />
     <ClCompile Include="Vines.cpp" />
     <ClCompile Include="Workers.cpp" />
     <ClCompile Include="WorkersList.cpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="LoadingGame.h" />
     <ClInclude Include="LoadingScreen.h" />
+    <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Money.h" />
     <ClInclude Include="Pathfinding.h" />
@@ -212,6 +215,7 @@
     <ClInclude Include="Stalls.h" />
     <ClInclude Include="Storehouse.h" />
     <ClInclude Include="TimeManagement.h" />
+    <ClInclude Include="VillaManagement.h" />
     <ClInclude Include="Vines.h" />
     <ClInclude Include="Workers.h" />
     <ClInclude Include="WorkersList.h" />

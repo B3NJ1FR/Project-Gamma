@@ -13,7 +13,7 @@ public:
 	void ReadWorkersLinkedList();
 	void AddNewWorkersToList(sf::Vector2f _mapPosition);
 	void UpdateWorkersLife(struct Game *_game);
-	void DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::Sprite *_sprite, sf::RenderWindow &_window, sf::Sprite *_iconsSprite);
+	void DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, sf::RenderWindow &_window);
 	void UpdateWorkersProduction(Ressources *_ressource);
 	void ChangeWorkerNumberSelectedAdd();
 	void ChangeWorkerNumberSelectedSubtract();
@@ -25,6 +25,9 @@ public:
 private:
 	LinkedListClass::sLinkedList *list;
 	int workerNumberSelected;
+
+	sf::Sprite sprite;
+	sf::Sprite actionsIcons[5];
 };
 
 #endif // !WORKERS_LIST__H

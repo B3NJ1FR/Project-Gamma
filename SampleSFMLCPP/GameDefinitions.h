@@ -10,7 +10,9 @@
 #include "Pathfinding.h"
 #include "WorkersList.h"
 #include "Purchasers.h"
+#include "MainCharacter.h"
 #include "SellingWindow.h"
+#include "VillaManagement.h"
 #include "SavingGame.h"
 #include "LoadingGame.h"
 #include "PauseWindow.h"
@@ -54,6 +56,8 @@ enum GameState
 	TEST_PATHFINDING_MODE,
 	SELLING_WINDOW,
 	PAUSE_WINDOW,
+	VILLA_MANAGEMENT,
+	ESTATE_DATA_N_STATISTICS,
 };
 
 
@@ -100,19 +104,8 @@ struct Game
 	
 	// Construction Mode
 	BuildWindow buildWindow;
+	VillaManagement villaManagement;
 
-	/*int IDChosenBuilding;
-	sf::Vector2i buildingCaseSelected;
-	bool isBuildingCaseOccupied;
-	bool isNewBuildingHasBeenConstructed;
-	sf::Text *textBuildingCaseOccupied;
-
-	sf::Sprite buildingUI;
-	sf::Sprite buildingUIclosed;
-	sf::Sprite buildingUIdestroyBuildings;
-	sf::Sprite blackFilter;
-	sf::Sprite contour;
-	float scrollBuildingList;*/
 
 	// General UI
 	sf::Text UITexts[10];
@@ -133,10 +126,10 @@ struct Game
 
 
 	// Workers
-	sf::Sprite workerTest;
-	sf::Sprite workersIcons[5];
 	WorkersList *workersList;
 	Purchasers *purchasers;
+	MainCharacter *mainCharacter;
+
 
 	// Save and Load
 	SavingGame save;

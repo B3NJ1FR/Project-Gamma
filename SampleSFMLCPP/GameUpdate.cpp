@@ -59,7 +59,12 @@ void GameUpdate(struct Game *_game)
 		}
 		else
 		{
+			// Update the workers
 			_game->workersList->UpdateWorkersLife(_game);
+			
+			// Update the main character
+			_game->mainCharacter->InitPathfinding(_game);			
+			_game->mainCharacter->UpdatePathAndActivities(_game);
 		}
 
 		_game->time->UpdateFrameTime();

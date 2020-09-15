@@ -5,6 +5,7 @@
 
 #define BUILD_WINDOW_HELP_NB_OF_TEXTS 5
 
+
 enum BuildWindowTextBuildingHelps
 {
 	BUILD_WINDOW_HELP_SIZE_X,

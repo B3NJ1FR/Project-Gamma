@@ -125,6 +125,13 @@ void MapInitialisation(struct Game *_game)
 								_game->map[z][y][x] = 0;
 							}
 						}
+
+						if (x == 5 && y == 8)
+						{
+							_game->map[z][y][x] = 33;
+							_game->map[z - 2][y][x] = COLLISION;
+							_game->map[z - 1][y][x] = BUILDING_VILLA;
+						}
 						
 					}
 
@@ -367,6 +374,7 @@ void GameInitialisation(struct Game *_game, struct LoadingScreen *_loadingScreen
 
 	_game->time = new TimeManagement(&_game->charlemagneFont);
 	_game->workersList = new WorkersList;
+	_game->mainCharacter = new MainCharacter;
 	_game->stall = new Stalls(&_game->buildings[BUILDING_STALL]);
 	_game->sellingWindow = new SellingWindow(&_game->generalFont);
 	_game->purchasers = nullptr;
@@ -390,14 +398,6 @@ void GameInitialisation(struct Game *_game, struct LoadingScreen *_loadingScreen
 	_game->storehouse.InitialisationStorehouse(&_game->buildings[BUILDING_STOREHOUSE]);
 
 	_game->workersList->InitialisationWorkersList();
-
-	_game->workerTest = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
-
-	_game->workersIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
-	_game->workersIcons[1] = LoadSprite("Data/Assets/Sprites/Entities/worker_waiting.png", 1);
-	_game->workersIcons[2] = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
-	_game->workersIcons[3] = LoadSprite("Data/Assets/Sprites/Entities/worker_pickuping.png", 1);
-	_game->workersIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
 
 
 	_game->buildingsNameTexts = nullptr;

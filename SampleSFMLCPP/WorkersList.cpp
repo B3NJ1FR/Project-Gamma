@@ -5,6 +5,15 @@
 WorkersList::WorkersList()
 {
 	this->workerNumberSelected = 1;
+
+
+	this->sprite = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
+
+	this->actionsIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
+	this->actionsIcons[1] = LoadSprite("Data/Assets/Sprites/Entities/worker_waiting.png", 1);
+	this->actionsIcons[2] = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
+	this->actionsIcons[3] = LoadSprite("Data/Assets/Sprites/Entities/worker_pickuping.png", 1);
+	this->actionsIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
 }
 
 WorkersList::~WorkersList()
@@ -84,7 +93,7 @@ void WorkersList::UpdateWorkersLife(struct Game *_game)
 	}
 }
 
-void WorkersList::DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::Sprite *_sprite, sf::RenderWindow &_window, sf::Sprite *_iconsSprite)
+void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, sf::RenderWindow &_window)
 {
 	if (this->list != nullptr)
 	{
@@ -96,49 +105,54 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector3f &_cameraPosition, sf::
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				sf::Vector2f tileCoordinates = WorldToScreen(((Workers *)currentElement->data)->GetWorkerPosition()); // Faire une version stack
-				sf::Vector2f cameraIso = WorldToScreen(_cameraPosition.x, _cameraPosition.y); // Faire une version stack
+				if (_actualPosition == sf::Vector2i(((Workers *)currentElement->data)->GetWorkerPosition()))
+				{
+					sf::Vector2f tileCoordinates = WorldToScreen(((Workers *)currentElement->data)->GetWorkerPosition()); // Faire une version stack
+					sf::Vector2f cameraIso = WorldToScreen(_cameraPosition.x, _cameraPosition.y); // Faire une version stack
 
-				BlitSprite(*_sprite,
-					(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
-					(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z),
-					0, _window);
+					this->sprite.setScale(_gameScale);
 
-				if (((Workers *)currentElement->data)->GetWorkerStatus() == IDLE)
-				{
-					BlitSprite(_iconsSprite[1],
+					BlitSprite(this->sprite,
 						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
-						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z),
 						0, _window);
-				}
-				else if (((Workers *)currentElement->data)->GetWorkerStatus() == WORKING)
-				{
-					BlitSprite(_iconsSprite[2],
-						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
-						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
-						0, _window);
-				}
-				else if (((Workers *)currentElement->data)->GetWorkerStatus() == PICKUP_RESSOURCES)
-				{
-					BlitSprite(_iconsSprite[3],
-						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
-						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
-						0, _window);
-				}
-				else if (((Workers *)currentElement->data)->GetWorkerStatus() == DEPOSIT_RESSOURCES)
-				{
-					BlitSprite(_iconsSprite[4],
-						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
-						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
-						0, _window);
-				}
 
-				if (positionCounter == this->workerNumberSelected)
-				{
-					BlitSprite(_iconsSprite[0],
-						(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
-						(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 90,
-						0, _window);
+					if (((Workers *)currentElement->data)->GetWorkerStatus() == IDLE)
+					{
+						BlitSprite(this->actionsIcons[1],
+							(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+							(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+							0, _window);
+					}
+					else if (((Workers *)currentElement->data)->GetWorkerStatus() == WORKING)
+					{
+						BlitSprite(this->actionsIcons[2],
+							(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+							(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+							0, _window);
+					}
+					else if (((Workers *)currentElement->data)->GetWorkerStatus() == PICKUP_RESSOURCES)
+					{
+						BlitSprite(this->actionsIcons[3],
+							(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+							(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+							0, _window);
+					}
+					else if (((Workers *)currentElement->data)->GetWorkerStatus() == DEPOSIT_RESSOURCES)
+					{
+						BlitSprite(this->actionsIcons[4],
+							(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+							(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
+							0, _window);
+					}
+
+					if (positionCounter == this->workerNumberSelected)
+					{
+						BlitSprite(this->actionsIcons[0],
+							(1920 / 2) + (tileCoordinates.x + cameraIso.x /*- ((z / 5) * DIMENSION_THREE_POS_X)*/) / (1 - _cameraPosition.z),
+							(1080 / 2) + (tileCoordinates.y + cameraIso.y /*- ((z / 5) * DIMENSION_THREE_POS_X)*/ + TILE_HEIGHT) / (1 - _cameraPosition.z) - 90,
+							0, _window);
+					}
 				}
 
 				positionCounter++;

@@ -23,44 +23,66 @@ void DisplayDecor(struct Game *_game)
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
 							0, *_game->window);
+					}				
+
+
+					if (_game->actualGameState == BUILD_MODE)
+					{
+						if (z == SECOND_FLOOR + SPRITE_ID)
+						{
+							// Display of the buildings ghost in the Build Mode
+							if (_game->map[z - SECOND_FLOOR][y][x] != 0 && _game->map[z - SECOND_FLOOR][y][x] > 0
+								&& _game->buildWindow.GetBuildingCheckboxSelected().x == x && _game->buildWindow.GetBuildingCheckboxSelected().y == y)
+							{
+								sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+								sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+
+								_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setScale(_game->scale);
+
+								if (_game->buildWindow.GetIsBuildingCaseOccupied() == true)
+								{
+									_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::Red);
+								}
+								else
+								{
+									_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::Green);
+								}
+
+								BlitSprite(_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]],
+									(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+									(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+									0, *_game->window);
+
+								_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::White);
+							}
+						}
 					}
 
 
-					if (_game->actualGameState == BUILD_MODE
-						&& z == SECOND_FLOOR + SPRITE_ID)
+					
+					if (z == FIRST_FLOOR + SPRITE_ID)
 					{
-						if 	(_game->map[z - SECOND_FLOOR][y][x] != 0 && _game->map[z - SECOND_FLOOR][y][x] > 0
-							&& _game->buildWindow.GetBuildingCheckboxSelected().x == x && _game->buildWindow.GetBuildingCheckboxSelected().y == y)
+						// Display of the main character
+						if (_game->mainCharacter->IsMainCharacterPosition(sf::Vector2i(x, y)) == true)
 						{
-							sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+							sf::Vector2f tileCoordinates = WorldToScreen(_game->mainCharacter->GetMainCharacterPosition());
 							sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
 
-							_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setScale(_game->scale);
+							_game->mainCharacter->SetSpriteScale(_game->scale);
 
-							if (_game->buildWindow.GetIsBuildingCaseOccupied() == true)
-							{
-								_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::Red);
-							}
-							else
-							{
-								_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::Green);
-							}
-
-							BlitSprite(_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]],
+							BlitSprite(_game->mainCharacter->GetSprite(),
 								(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
 								(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
 								0, *_game->window);
-
-							_game->spriteArray[_game->map[z - SECOND_FLOOR][y][x]].setColor(sf::Color::White);
 						}
+
+						// Display of the workers
+						_game->workersList->DisplayWorkersSprite(sf::Vector2i(x, y), _game->camera, _game->scale, *_game->window);
 					}
-					
 				}
 			}
 		}
 	}
-
-	_game->workersList->DisplayWorkersSprite(_game->camera, &_game->workerTest, *_game->window, _game->workersIcons);
 }
 
 
@@ -151,7 +173,16 @@ void GameDisplay(struct Game *_game)
 		_game->sellingWindow->DisplaySellingWindow(*_game->window);
 		_game->previousGameState = SELLING_WINDOW;
 	}
-	
+	else if (_game->actualGameState == VILLA_MANAGEMENT)
+	{
+		_game->villaManagement.DisplayVillaManagement(*_game->window);
+		_game->previousGameState = VILLA_MANAGEMENT;
+	}
+	else if (_game->actualGameState == ESTATE_DATA_N_STATISTICS)
+	{
+		//_game->villaManagement.DisplayVillaManagement(*_game->window);
+		_game->previousGameState = ESTATE_DATA_N_STATISTICS;
+	}
 
 	DisplayUIGeneral(_game);
 	_game->time->DisplayUITime(*_game->window);
@@ -175,6 +206,14 @@ void GameDisplay(struct Game *_game)
 		else if (_game->previousGameState == SELLING_WINDOW)
 		{
 			_game->sellingWindow->DisplaySellingWindow(*_game->window);
+		}
+		else if (_game->previousGameState == VILLA_MANAGEMENT)
+		{
+			_game->villaManagement.DisplayVillaManagement(*_game->window);
+		}
+		else if (_game->previousGameState == ESTATE_DATA_N_STATISTICS)
+		{
+			//_game->villaManagement.DisplayVillaManagement(*_game->window);
 		}
 
 		_game->pauseWindow.DisplayPauseWindow(*_game->window);

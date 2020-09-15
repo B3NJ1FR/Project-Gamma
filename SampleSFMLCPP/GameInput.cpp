@@ -81,11 +81,14 @@ void GameInput(struct Game *_game)
 			if (event.type == sf::Event::KeyPressed)
 			{
 				// If we pressed the escape key, we close the game
-				if (event.key.code == sf::Keyboard::Escape)
+				/*if (event.key.code == sf::Keyboard::Escape && (_game->actualGameState == VILLA_MANAGEMENT || _game->actualGameState == ESTATE_DATA_N_STATISTICS))
+				{
+					_game->actualGameState = NORMAL_MODE;
+				}
+				else */if (event.key.code == sf::Keyboard::Escape)
 				{
 					_game->actualGameState = PAUSE_WINDOW;
 				}
-
 
 				// When the B keybutton is pressed, we change the state of the game
 				if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
@@ -310,7 +313,16 @@ void GameInput(struct Game *_game)
 						// Security to avoid an array exit
 						if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
 						{
-							_game->workersList->WorkerListSetEndPosition(_game->buildWindow.GetBuildingCheckboxSelected(), _game->map);
+							if (_game->mainCharacter->GetIsMainCharacterSelected() == true)
+							{
+								_game->mainCharacter->SetMainCharacterEndingPosition(_game->buildWindow.GetBuildingCheckboxSelected(), _game->map);
+
+								_game->mainCharacter->SetMainCharacterStatus(IDLE, true);
+							}
+							else
+							{
+								_game->workersList->WorkerListSetEndPosition(_game->buildWindow.GetBuildingCheckboxSelected(), _game->map);
+							}
 						}
 					}
 					else if (_game->actualGameState == BUILD_MODE)
@@ -384,7 +396,10 @@ void GameInput(struct Game *_game)
 						//	}
 						//}					
 					}
-
+					else if (_game->actualGameState == VILLA_MANAGEMENT)
+					{
+						_game->villaManagement.InputVillaManagement(&_game->actualGameState, *_game->window);
+					}
 				}
 			}
 

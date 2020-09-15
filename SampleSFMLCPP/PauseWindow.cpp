@@ -62,6 +62,14 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 				{
 					_game->actualGameState = SELLING_WINDOW;
 				}
+				else if (_game->previousGameState == VILLA_MANAGEMENT)
+				{
+					_game->actualGameState = VILLA_MANAGEMENT;
+				}
+				else if (_game->previousGameState == ESTATE_DATA_N_STATISTICS)
+				{
+					_game->actualGameState = ESTATE_DATA_N_STATISTICS;
+				}
 			}
 		}
 
@@ -89,6 +97,14 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 					else if (_game->previousGameState == SELLING_WINDOW)
 					{
 						_game->actualGameState = SELLING_WINDOW;
+					}
+					else if (_game->previousGameState == VILLA_MANAGEMENT)
+					{
+						_game->actualGameState = VILLA_MANAGEMENT;
+					}
+					else if (_game->previousGameState == ESTATE_DATA_N_STATISTICS)
+					{
+						_game->actualGameState = ESTATE_DATA_N_STATISTICS;
 					}
 				}
 
