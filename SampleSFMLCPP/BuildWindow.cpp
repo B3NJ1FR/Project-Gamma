@@ -575,6 +575,18 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 		this->isBuildingCaseOccupied = true;
 	}
 
+
+	// Text creation if they don't exist
+	if (_game->buildingsNameTexts == nullptr)
+	{
+		_game->buildingsNameTexts = new sf::Text[_game->numberOfBuilding];
+
+		for (int i = 0; i < _game->numberOfBuilding; i++)
+		{
+			LoadTextString(&_game->buildingsNameTexts[i], _game->buildings[i].GetName(), &_game->charlemagneFont, 18, sf::Color::Black, 2);
+		}
+	}
+
 	// Update the texts
 	this->UpdateTextsBuildWindow(_game);
 }

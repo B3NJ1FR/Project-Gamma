@@ -5,6 +5,7 @@
 
 SpecificsBuildings::SpecificsBuildings()
 {
+	this->workerIsThereSprite = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
 }
 
 
@@ -290,7 +291,8 @@ void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
 	}
 }
 
-bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
+
+bool SpecificsBuildings::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 {
 	if (this->list != nullptr)
 	{
@@ -304,9 +306,68 @@ bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtWorkerPosition(const s
 					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y
 					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
 				{
-					((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
+					return ((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere;
+				}
+			}
 
-					return true;
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+sf::Sprite SpecificsBuildings::GetSpriteWorkerIsThere()
+{
+	return this->workerIsThereSprite;
+}
+
+bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
+				{
+					if (_isPreciseCoordinates)
+					{
+						if (_mapPosition == ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition)
+						{
+							if (_thisIsAWorker)
+							{
+								((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
+							}
+
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						if (_thisIsAWorker)
+						{
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = true;
+						}
+
+						return true;
+					}
 				}
 			}
 

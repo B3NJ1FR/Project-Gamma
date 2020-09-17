@@ -86,7 +86,8 @@ public:
 	void UpdateVineSprite(unsigned short ***_map);
 	void UpdateVineProduction(Ressources *_ressource);
 
-	bool ConfirmVinePresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_thisIsAWorker = false);
+	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
 	int VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
 

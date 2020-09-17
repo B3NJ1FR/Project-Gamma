@@ -7,6 +7,8 @@ class VillaManagement
 {
 private:
 	sf::Sprite backgroundSprite;
+	sf::Sprite tableSprite;
+	sf::Sprite bookshelfSprite;
 
 	
 

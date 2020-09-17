@@ -295,7 +295,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		if (this->actualBuilding == BUILDING_VINES)
 		{
 			// We send at the vines building the confirmation that a worker is there
-			if (_game->vines.ConfirmVinePresenceAtWorkerPosition(this->mapPosition) == true)
+			if (_game->vines.ConfirmVinePresenceAtPosition(this->mapPosition, true) == true)
 			{
 				//std::cout << "Working ...\n";
 
@@ -314,7 +314,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		else if (this->actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
 		{
 			// We send at the stomping vats building the confirmation that a worker is there
-			if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true) == true)
 			{
 				//std::cout << "Working ...\n";
 
@@ -326,14 +326,14 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-
+				std::cout << "There\n\n\n\n";
 			}
 
 		}
 		else if (this->actualBuilding == BUILDING_WINE_PRESS)
 		{
 			// We send at the wine press building the confirmation that a worker is there
-			if (_game->winePress.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			if (_game->winePress.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true) == true)
 			{
 				//std::cout << "Working ...\n";
 
@@ -353,7 +353,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		else if (this->actualBuilding == BUILDING_WINE_STOREHOUSE)
 		{
 			// We send at the wine storehouse building the confirmation that a worker is there
-			if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition) == true)
+			if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true) == true)
 			{
 				//std::cout << "Working ...\n";
 							   				 
@@ -371,7 +371,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		else if (this->actualBuilding == BUILDING_STOREHOUSE)
 		{
 			// We send at the storehouse building the confirmation that a worker is there
-			if (_game->storehouse.ConfirmStorehousePresenceAtWorkerPosition(this->mapPosition) == true)
+			if (_game->storehouse.ConfirmStorehousePresenceAtPosition(this->mapPosition, false, true) == true)
 			{
 				//std::cout << "Working ...\n";
 			}
@@ -384,7 +384,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		else if (this->actualBuilding == BUILDING_STALL)
 		{
 			// We send at the wine storehouse building the confirmation that a worker is there
-			if (_game->stall->ConfirmPresenceAtWorkerPosition(this->mapPosition) == true)
+			if (_game->stall->ConfirmPresenceAtPosition(this->mapPosition, false, true) == true)
 			{
 				//std::cout << "Working ...\n";
 			}
@@ -739,7 +739,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case BUNCH_OF_GRAPE:
 
-				if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition))
+				if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true))
 				{
 					this->AddTimeToDeposit(_game->time->GetFrameTime());
 
@@ -771,7 +771,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case GRAPES_MUST:
 
-				if (_game->winePress.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition))
+				if (_game->winePress.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true))
 				{
 					this->AddTimeToDeposit(_game->time->GetFrameTime());
 
@@ -803,7 +803,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case GRAPE_JUICE:
 
-				if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtWorkerPosition(this->mapPosition))
+				if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true))
 				{
 					this->AddTimeToDeposit(_game->time->GetFrameTime());
 
@@ -869,7 +869,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 				break;
 			case AMPHORA_OF_WINE:
 				
-				if (_game->storehouse.ConfirmStorehousePresenceAtWorkerPosition(this->mapPosition))
+				if (_game->storehouse.ConfirmStorehousePresenceAtPosition(this->mapPosition, false, true))
 				{
 					this->AddTimeToDeposit(_game->time->GetFrameTime());
 

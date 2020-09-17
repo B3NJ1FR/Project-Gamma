@@ -33,7 +33,8 @@ public:
 	void UpdateBuildingSprite(unsigned short ***_map);
 	//void UpdateBuildingProduction(Ressources *_ressource);
 
-	bool ConfirmStorehousePresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	//bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
 	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
 	sf::Vector2i StorehouseFindNearestBuilding(const sf::Vector2f &_mapPosition);

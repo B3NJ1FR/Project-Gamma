@@ -243,7 +243,14 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 
 		if (this->actualBuilding == BUILDING_VILLA)
 		{
-			_game->actualGameState = VILLA_MANAGEMENT;
+			if (_game->actualGameState != VILLA_MANAGEMENT)
+			{
+				_game->actualGameState = VILLA_MANAGEMENT;
+			}
+			else
+			{
+				this->SetMainCharacterStatus(IDLE);
+			}
 		}
 		//else if (this->actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
 		//{

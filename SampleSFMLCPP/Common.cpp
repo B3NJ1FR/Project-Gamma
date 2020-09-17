@@ -91,6 +91,97 @@ sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition = 0
 	return temporarySprite;
 }
 
+sf::Sprite LoadSprite(const std::string _stringFileName, const sf::Vector2f &_screenPosition, int _originPosition = 0)
+{
+	sf::Texture* temporaryTexture = new sf::Texture;
+	temporaryTexture->loadFromFile(_stringFileName);
+
+	sf::Sprite temporarySprite;
+	temporarySprite.setTexture(*temporaryTexture);
+
+	temporarySprite.setPosition(_screenPosition);
+
+	// Centré verticalement et horizontalement
+	if (_originPosition == 1)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = origin.x / 2;
+		origin.y = origin.y / 2;
+
+		temporarySprite.setOrigin(origin);
+	}
+	// Centré verticalement gauche
+	else if (_originPosition == 2)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = 0;
+		origin.y = (origin.y / 2);
+
+		temporarySprite.setOrigin(origin);
+	}
+	// Centré verticalement droite
+	else if (_originPosition == 3)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = origin.x;
+		origin.y = (origin.y / 2);
+
+		temporarySprite.setOrigin(origin);
+	}
+	// Centré horizontalement haut
+	else if (_originPosition == 4)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = (origin.x / 2);
+		origin.y = 0;
+
+		temporarySprite.setOrigin(origin);
+	}
+	// Centré horizontalement bas
+	else if (_originPosition == 5)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = (origin.x / 2);
+		origin.y = origin.y;
+
+		temporarySprite.setOrigin(origin);
+	}
+	else if (_originPosition == 6)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = origin.x - TILE_WIDTH;
+		origin.y = origin.y;
+
+		temporarySprite.setOrigin(origin);
+	}
+	else if (_originPosition == 7)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = origin.x - TILE_WIDTH / 2;
+		origin.y = origin.y;
+
+		temporarySprite.setOrigin(origin);
+	}
+	else if (_originPosition == 8)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = TILE_WIDTH;
+		origin.y = origin.y;
+
+		temporarySprite.setOrigin(origin);
+	}
+
+	return temporarySprite;
+}
+
 
 
 // That function allow to know if the player has clicked on the "button" picture's
@@ -293,11 +384,30 @@ std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalC
 
 
 // That function permit to print the picture at screen to some position (x and y), and if wanted, rotating it
-void BlitSprite(sf::Sprite _sprite, const float _posX, const float _posY, const float _angle, sf::RenderWindow &_window)
+void BlitSprite(sf::Sprite _sprite, const float &_posX, const float &_posY, const float &_angle, sf::RenderWindow &_window)
 {
 	// Assignment of the position to the sprite
 	_sprite.setPosition((float)_posX, (float)_posY);
 
+	// Rotating the sprite if wanted
+	_sprite.setRotation(_angle);
+
+	_window.draw(_sprite);
+}
+
+void BlitSprite(sf::Sprite _sprite, const sf::Vector2f &_position, const float &_angle, sf::RenderWindow &_window)
+{
+	// Assignment of the position to the sprite
+	_sprite.setPosition(_position);
+
+	// Rotating the sprite if wanted
+	_sprite.setRotation(_angle);
+
+	_window.draw(_sprite);
+}
+
+void BlitSprite(sf::Sprite _sprite, const float &_angle, sf::RenderWindow &_window)
+{
 	// Rotating the sprite if wanted
 	_sprite.setRotation(_angle);
 

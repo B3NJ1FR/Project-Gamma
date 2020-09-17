@@ -262,7 +262,7 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 //	}
 //}
 
-bool Storehouse::ConfirmStorehousePresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
+bool Storehouse::ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
 	if (this->list != nullptr)
 	{
@@ -270,15 +270,37 @@ bool Storehouse::ConfirmStorehousePresenceAtWorkerPosition(const sf::Vector2f &_
 		{
 			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				// We verify if the player location is between the origin and the max size of the building concerned
+				// We verify if the player location is between the origin and the max size of the building
 				if (_mapPosition.x <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x
 					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
 					&& _mapPosition.y <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y
 					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
 				{
-					((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
+					if (_isPreciseCoordinates)
+					{
+						if (_mapPosition == ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition)
+						{
+							if (_thisIsAWorker)
+							{
+								((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
+							}
 
-					return true;
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						if (_thisIsAWorker)
+						{
+							((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = true;
+						}
+
+						return true;
+					}
 				}
 			}
 
@@ -296,6 +318,37 @@ bool Storehouse::ConfirmStorehousePresenceAtWorkerPosition(const sf::Vector2f &_
 	}
 }
 
+bool Storehouse::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
+				{
+					return ((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere;
+				}
+			}
+
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
 
 //bool Storehouse::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
 //{

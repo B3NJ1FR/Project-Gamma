@@ -23,6 +23,73 @@ void DisplayDecor(struct Game *_game)
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
 							0, *_game->window);
+
+						// Display of the gear which is rotating when a worker is in a building
+						if (z == FIRST_FLOOR + SPRITE_ID)
+						{
+							if (_game->vines.ConfirmVinePresenceAtPosition(sf::Vector2f(x, y)))
+							{
+								if (_game->vines.GetWorkerIsThere(sf::Vector2f(x, y)))
+								{
+									BlitSprite(_game->stompingVats.GetSpriteWorkerIsThere(),
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 110,
+										(int)(_game->time->GetGeneralTime() * 100) % 180, *_game->window);
+								}
+							}
+							else if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(sf::Vector2f(x, y), true))
+							{
+								if (_game->stompingVats.GetWorkerIsThere(sf::Vector2f(x, y)))
+								{
+									BlitSprite(_game->stompingVats.GetSpriteWorkerIsThere(),
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 110,
+										(int)(_game->time->GetGeneralTime() * 100) % 180, *_game->window);
+								}
+							}
+							else if (_game->winePress.ConfirmSpecificBuildingPresenceAtPosition(sf::Vector2f(x, y), true))
+							{
+								if (_game->winePress.GetWorkerIsThere(sf::Vector2f(x, y)))
+								{
+									BlitSprite(_game->winePress.GetSpriteWorkerIsThere(),
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 110,
+										(int)(_game->time->GetGeneralTime() * 100) % 180, *_game->window);
+								}
+
+							}
+							else if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(sf::Vector2f(x, y), true))
+							{
+								if (_game->wineStorehouse.GetWorkerIsThere(sf::Vector2f(x, y)))
+								{
+									BlitSprite(_game->wineStorehouse.GetSpriteWorkerIsThere(),
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 110,
+										(int)(_game->time->GetGeneralTime() * 100) % 180, *_game->window);
+								}
+							}
+							else if (_game->stall->ConfirmPresenceAtPosition(sf::Vector2f(x, y), true))
+							{
+								if (_game->stall->GetWorkerIsThere(sf::Vector2f(x, y)))
+								{
+									BlitSprite(_game->wineStorehouse.GetSpriteWorkerIsThere(),
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 110,
+										(int)(_game->time->GetGeneralTime() * 100) % 180, *_game->window);
+								}
+							}
+							else if (_game->storehouse.ConfirmStorehousePresenceAtPosition(sf::Vector2f(x, y), true))
+							{
+								if (_game->storehouse.GetWorkerIsThere(sf::Vector2f(x, y)))
+								{
+									BlitSprite(_game->wineStorehouse.GetSpriteWorkerIsThere(),
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 110,
+										(int)(_game->time->GetGeneralTime() * 100) % 180, *_game->window);
+								}
+							}
+						}
+
 					}				
 
 

@@ -118,23 +118,58 @@ bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 }
 
 
-bool Stalls::ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition)
+bool Stalls::ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
-	// If the building has produced the ressources, we manage it
-	if (this->mapPosition == _mapPosition)
+	if (_mapPosition.x <= this->mapPosition.x
+		&& _mapPosition.x >= this->mapPosition.x - this->building->GetSize().x
+		&& _mapPosition.y <= this->mapPosition.y
+		&& _mapPosition.y >= this->mapPosition.y - this->building->GetSize().y)
 	{
-		this->isWorkerThere = true;
-		return true;
+		if (_isPreciseCoordinates)
+		{
+			if (_mapPosition == this->mapPosition)
+			{
+				if (_thisIsAWorker)
+				{
+					this->isWorkerThere = true;
+				}
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (_thisIsAWorker)
+			{
+				this->isWorkerThere = true;
+			}
+
+			return true;
+		}
 	}
 	else
 	{
-		this->isWorkerThere = false;
 		return false;
 	}
-
 }
 
 
+bool Stalls::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
+{
+	// We verify if the player location is between the origin and the max size of the building concerned
+	if (_mapPosition == this->mapPosition)
+	{
+		return this->isWorkerThere;
+	}
+	else
+	{
+		return false;
+	}			
+}
 
 
 

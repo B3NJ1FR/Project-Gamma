@@ -57,7 +57,8 @@ public:
 	void SetRessourceQuantityToSell(const int &_quantity = RESET);
 	void PickUpPriceAccepted(const int &_price);
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
-	bool ConfirmPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 
 	enum StallStatus GetStatus();
 	enum BuildingStatus GetConstructionStatus();

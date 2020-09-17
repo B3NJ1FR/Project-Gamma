@@ -60,7 +60,10 @@ public:
 	void UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building);
 	void UpdateBuildingProduction(Ressources *_ressource);
 
-	bool ConfirmSpecificBuildingPresenceAtWorkerPosition(const sf::Vector2f &_mapPosition);
+	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
+	sf::Sprite GetSpriteWorkerIsThere();
+
+	bool ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
 	bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
 	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
 	sf::Vector2i SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition);
@@ -72,6 +75,7 @@ public:
 private:
 	LinkedListClass::sLinkedList *list;
 	Buildings *building;
+	sf::Sprite workerIsThereSprite;
 };
 
 #endif // !SPECIFICS_BUILDINGS__H

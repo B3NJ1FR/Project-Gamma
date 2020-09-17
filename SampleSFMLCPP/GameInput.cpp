@@ -81,17 +81,36 @@ void GameInput(struct Game *_game)
 			if (event.type == sf::Event::KeyPressed)
 			{
 				// If we pressed the escape key, we close the game
-				/*if (event.key.code == sf::Keyboard::Escape && (_game->actualGameState == VILLA_MANAGEMENT || _game->actualGameState == ESTATE_DATA_N_STATISTICS))
+				if (event.key.code == sf::Keyboard::Escape && _game->actualGameState == VILLA_MANAGEMENT)
 				{
 					_game->actualGameState = NORMAL_MODE;
 				}
-				else */if (event.key.code == sf::Keyboard::Escape)
+				else if (event.key.code == sf::Keyboard::Escape)
 				{
 					_game->actualGameState = PAUSE_WINDOW;
 				}
 
 				// When the B keybutton is pressed, we change the state of the game
-				if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
+				if (event.key.code == sf::Keyboard::B && _game->actualGameState == VILLA_MANAGEMENT)
+				{
+					_game->actualGameState = BUILD_MODE;
+				}
+				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
+				{
+					if (_game->buildWindow.GetIsNewBuildingHasBeenConstructed() == true)
+					{
+						_game->buildWindow.SetIsNewBuildingHasBeenConstructed(false);
+						_game->workersList->CheckAndUpdateWorkersPath(_game->map);
+					}
+
+					_game->actualGameState = NORMAL_MODE;
+				}
+				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
+				{
+					_game->mainCharacter->SetIsMainCharacterSelected(_game->mainCharacter->GetIsMainCharacterSelected() ? false : true);
+				}
+
+				/*if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
 				{
 					_game->actualGameState = BUILD_MODE;
 
@@ -104,17 +123,7 @@ void GameInput(struct Game *_game)
 							LoadTextString(&_game->buildingsNameTexts[i], _game->buildings[i].GetName(), &_game->charlemagneFont, 18, sf::Color::Black, 2);
 						}
 					}
-				}
-				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
-				{
-					if (_game->buildWindow.GetIsNewBuildingHasBeenConstructed() == true)
-					{
-						_game->buildWindow.SetIsNewBuildingHasBeenConstructed(false);
-						_game->workersList->CheckAndUpdateWorkersPath(_game->map);
-					}
-
-					_game->actualGameState = NORMAL_MODE;
-				}
+				}*/
 
 				// When the T keybutton is pressed, we change the state of the game
 				/*if (event.key.code == sf::Keyboard::T && _game->actualGameState == NORMAL_MODE)
@@ -148,7 +157,8 @@ void GameInput(struct Game *_game)
 
 
 				// Touche placé sur O, mais à changer	
-				if (event.key.code == sf::Keyboard::O)
+				if (event.key.code == sf::Keyboard::O
+					&& _game->actualGameState == NORMAL_MODE)
 				{
 					// Prix temporaire
 					if (_game->money.GetMoneyQuantity() - 1000 >= 0)
