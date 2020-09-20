@@ -162,58 +162,57 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState != BUILT)
+				switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState)
 				{
-					switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState)
+				case PLANNED:
+					// Plannification of the building construction
+
+					// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
+					//std::cout << "Planned ! " << std::endl;
+
+					// TEMPORARY
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 					{
-					case PLANNED:
-						// Plannification of the building construction
-
-						// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
-						//std::cout << "Planned ! " << std::endl;
-
-						// TEMPORARY
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
-						{
-							//std::cout << "Building launched ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = CONSTRUCTION;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime = RESET;
-						}
-
-						break;
-					case CONSTRUCTION:
-
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
-						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime += _frametime;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = false;
-						}
-
-						// If the building life is higher than the construction time, we launch it's growthing
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
-						{
-							//std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = BUILT;
-							//((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
-						}
-
-						break;
-					case BUILT:
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
-						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
-							std::cout << "Building successfully constructed ! " << std::endl;
-
-						}
-
-						break;
-					case BUILDING_NOT_MAINTAINED:
-						break;
-
-					default:
-						// ERROR LOG
-						break;
+						//std::cout << "Building launched ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = CONSTRUCTION;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime = RESET;
 					}
+
+					break;
+				case CONSTRUCTION:
+
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
+					{
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime += _frametime;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = false;
+					}
+
+					//std::cout << "Constructing ...\n";
+
+					// If the building life is higher than the construction time, we launch it's growthing
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
+					{
+						//std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = BUILT;
+						//((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
+					}
+
+					break;
+				case BUILT:
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
+					{
+						std::cout << "Building successfully constructed ! " << std::endl;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
+
+					}
+
+					break;
+				case BUILDING_NOT_MAINTAINED:
+					break;
+
+				default:
+					// ERROR LOG
+					break;
 				}
 			}
 		}
@@ -421,6 +420,42 @@ bool SpecificsBuildings::CheckSpecificBuildingHasProducedRessource(const sf::Vec
 	}
 }
 
+
+bool SpecificsBuildings::CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == PLANNED
+						 || ((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == CONSTRUCTION)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+			}
+
+			return true;
+
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
 
 int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
 {

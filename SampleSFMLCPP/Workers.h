@@ -11,6 +11,7 @@ enum WorkerStatus
 	IDLE,
 	WAITING_MOVEMENT,
 	MOVEMENT,
+	BUILDING,
 	WORKING,
 	PICKUP_RESSOURCES,
 	DEPOSIT_RESSOURCES,
@@ -67,6 +68,7 @@ public:
 	bool GetWorkerIsInWorkingPlace();
 	enum WorkerStatus GetWorkerStatus();
 	float GetTimeToDeposit();
+	enum TypeOfBuilding GetWorkerActualBuilding();
 
 	void DisplayWorker();
 	void UpdatePathAndActivities(struct Game *_game);

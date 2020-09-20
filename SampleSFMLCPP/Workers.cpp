@@ -88,6 +88,11 @@ enum WorkerStatus Workers::GetWorkerStatus()
 	return this->actualStatus;
 }
 
+enum TypeOfBuilding Workers::GetWorkerActualBuilding()
+{
+	return this->actualBuilding;
+}
+
 void Workers::DisplayWorker()
 {
 
@@ -252,7 +257,44 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					}
 					else
 					{
-						this->SetWorkerStatus(WORKING);
+						switch (this->actualBuilding)
+						{
+						case BUILDING_VINES:
+							this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_GRAPE_STOMPING_VATS:
+							this->SetWorkerStatus((_game->stompingVats.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_WINE_PRESS:
+							this->SetWorkerStatus((_game->winePress.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_WINE_STOREHOUSE:
+							this->SetWorkerStatus((_game->wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_STOREHOUSE:
+							this->SetWorkerStatus((_game->storehouse.CheckStorehouseHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_STALL:
+							this->SetWorkerStatus((_game->stall->GetConstructionStatus() == PLANNED || _game->stall->GetConstructionStatus() == CONSTRUCTION) ? BUILDING : WORKING);
+
+							break;
+							/*case BUILDING_VILLA:
+								this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+								break;*/
+							/*case BUILDING_DORMITORY:
+								this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+								break;*/
+						default:
+							this->SetWorkerStatus(IDLE);
+							break;
+						}
 					}
 				}
 				else
@@ -265,7 +307,44 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 					}
 					else
 					{
-						this->SetWorkerStatus(WORKING);
+						switch (this->actualBuilding)
+						{
+						case BUILDING_VINES:
+							this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_GRAPE_STOMPING_VATS:
+							this->SetWorkerStatus((_game->stompingVats.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_WINE_PRESS:
+							this->SetWorkerStatus((_game->winePress.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_WINE_STOREHOUSE:
+							this->SetWorkerStatus((_game->wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_STOREHOUSE:
+							this->SetWorkerStatus((_game->storehouse.CheckStorehouseHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;
+						case BUILDING_STALL:
+							this->SetWorkerStatus((_game->stall->GetConstructionStatus() == PLANNED || _game->stall->GetConstructionStatus() == CONSTRUCTION) ? BUILDING : WORKING);
+
+							break;
+						/*case BUILDING_VILLA:
+							this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;*/
+						/*case BUILDING_DORMITORY:
+							this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+							break;*/
+						default:
+							this->SetWorkerStatus(IDLE);
+							break;
+						}
 					}
 				}				
 			}
@@ -289,6 +368,117 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 		}
 
 		break;
+		
+	case BUILDING:
+
+		//std::cout << "Building ..\n";
+
+		switch (this->actualBuilding)
+		{
+		case BUILDING_VINES:
+			if (_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false)
+			{
+				// If the result is false, that mean the building isn't there or has been destroyed
+				if (_game->vines.ConfirmVinePresenceAtPosition(this->mapPosition, true) == false)
+				{
+					this->SetWorkerStatus(IDLE);
+				}
+			}
+			else
+			{
+				this->SetWorkerStatus(WORKING);
+			}
+
+			break;
+		case BUILDING_GRAPE_STOMPING_VATS:
+			if (_game->stompingVats.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false)
+			{
+				// If the result is false, that mean the building isn't there or has been destroyed
+				if (_game->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true) == false)
+				{
+					this->SetWorkerStatus(IDLE);
+				}
+			}
+			else
+			{
+				this->SetWorkerStatus(WORKING);
+			}
+
+			break;
+		case BUILDING_WINE_PRESS:
+			if (_game->winePress.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false)
+			{
+				// If the result is false, that mean the building isn't there or has been destroyed
+				if (_game->winePress.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true) == false)
+				{
+					this->SetWorkerStatus(IDLE);
+				}
+			}
+			else
+			{
+				this->SetWorkerStatus(WORKING);
+			}
+
+			break;
+		case BUILDING_WINE_STOREHOUSE:
+			if (_game->wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(this->mapPosition) == false)
+			{
+				// If the result is false, that mean the building isn't there or has been destroyed
+				if (_game->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(this->mapPosition, false, true) == false)
+				{
+					this->SetWorkerStatus(IDLE);
+				}
+			}
+			else
+			{
+				this->SetWorkerStatus(WORKING);
+			}
+
+			break;
+		case BUILDING_STOREHOUSE:
+			if (_game->storehouse.CheckStorehouseHasBeenBuilt(this->mapPosition) == false)
+			{
+				// If the result is false, that mean the building isn't there or has been destroyed
+				if (_game->storehouse.ConfirmStorehousePresenceAtPosition(this->mapPosition, false, true) == false)
+				{
+					this->SetWorkerStatus(IDLE);
+				}
+			}
+			else
+			{
+				this->SetWorkerStatus(WORKING);
+			}
+
+			break;
+		case BUILDING_STALL:
+			if (_game->stall->GetConstructionStatus() == PLANNED || _game->stall->GetConstructionStatus() == CONSTRUCTION)
+			{
+				// If the result is false, that mean the building isn't there or has been destroyed
+				if (_game->stall->ConfirmPresenceAtPosition(this->mapPosition, false, true) == false)
+				{
+					this->SetWorkerStatus(IDLE);
+				}
+			}
+			else
+			{
+				this->SetWorkerStatus(WORKING);
+			}
+
+			break;
+			/*case BUILDING_VILLA:
+				this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+				break;*/
+			/*case BUILDING_DORMITORY:
+				this->SetWorkerStatus((_game->vines.CheckVineHasBeenBuilt(this->mapPosition) == false) ? BUILDING : WORKING);
+
+				break;*/
+		default:
+			this->SetWorkerStatus(IDLE);
+			break;
+		}
+
+		break;
 
 	case WORKING:
 		
@@ -307,7 +497,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			// If the result is false, that mean the building isn't there or has been destroyed
 			else
 			{
-
+				this->SetWorkerStatus(IDLE);
 			}
 
 		}
@@ -326,7 +516,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-				std::cout << "There\n\n\n\n";
+				this->SetWorkerStatus(IDLE);
 			}
 
 		}
@@ -346,7 +536,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-
+				this->SetWorkerStatus(IDLE);
 			}
 
 		}
@@ -364,7 +554,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-
+				this->SetWorkerStatus(IDLE);
 			}
 
 		}
@@ -377,7 +567,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-
+				this->SetWorkerStatus(IDLE);
 			}
 
 		}
@@ -390,7 +580,7 @@ void Workers::UpdatePathAndActivities(struct Game *_game)
 			}
 			else
 			{
-
+				this->SetWorkerStatus(IDLE);
 			}
 
 		}

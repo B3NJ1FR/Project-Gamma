@@ -151,56 +151,53 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 
 			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState != BUILT)
+				switch (((Storehouse::sStorehouseData *)currentElement->data)->constructionState)
 				{
-					switch (((Storehouse::sStorehouseData *)currentElement->data)->constructionState)
+				case PLANNED:
+					// Plannification of the building construction
+
+					// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
+					//std::cout << "Planned ! " << std::endl;
+
+					if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
 					{
-					case PLANNED:
-						// Plannification of the building construction
-
-						// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
-						//std::cout << "Planned ! " << std::endl;
-
-						if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
-						{
-							//std::cout << "Building launched ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
-							((Storehouse::sStorehouseData *)currentElement->data)->constructionState = CONSTRUCTION;
-							((Storehouse::sStorehouseData *)currentElement->data)->lifeTime = RESET;
-						}
-
-						break;
-					case CONSTRUCTION:
-
-						if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
-						{
-							((Storehouse::sStorehouseData *)currentElement->data)->lifeTime += _frametime;
-							((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = false;
-						}
-
-						// If the building life is higher than the construction time, we launch it's growthing
-						if (((Storehouse::sStorehouseData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
-						{
-							//std::cout << "Building built ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
-							((Storehouse::sStorehouseData *)currentElement->data)->constructionState = BUILT;
-							((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
-						}
-
-						break;
-					case BUILT:
-						if (((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt == false)
-						{
-							((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
-							std::cout << "Building successfully constructed ! " << std::endl;
-						}
-
-						break;
-					case BUILDING_NOT_MAINTAINED:
-						break;
-
-					default:
-						// ERROR LOG
-						break;
+						//std::cout << "Building launched ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						((Storehouse::sStorehouseData *)currentElement->data)->constructionState = CONSTRUCTION;
+						((Storehouse::sStorehouseData *)currentElement->data)->lifeTime = RESET;
 					}
+
+					break;
+				case CONSTRUCTION:
+
+					if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
+					{
+						((Storehouse::sStorehouseData *)currentElement->data)->lifeTime += _frametime;
+						((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = false;
+					}
+
+					// If the building life is higher than the construction time, we launch it's growthing
+					if (((Storehouse::sStorehouseData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
+					{
+						//std::cout << "Building built ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						((Storehouse::sStorehouseData *)currentElement->data)->constructionState = BUILT;
+						((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
+					}
+
+					break;
+				case BUILT:
+					if (((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt == false)
+					{
+						((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
+						std::cout << "Building successfully constructed ! " << std::endl;
+					}
+
+					break;
+				case BUILDING_NOT_MAINTAINED:
+					break;
+
+				default:
+					// ERROR LOG
+					break;
 				}
 			}
 		}
@@ -350,6 +347,41 @@ bool Storehouse::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 	}
 }
 
+bool Storehouse::CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState == PLANNED
+						|| ((Storehouse::sStorehouseData *)currentElement->data)->constructionState == CONSTRUCTION)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+			}
+
+			return true;
+
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
 //bool Storehouse::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
 //{
 //	if (this->list != nullptr)

@@ -210,59 +210,55 @@ sf::Vector2i Stalls::GetMapPosition()
 
 void Stalls::UpdateBuildingConstruction(const float &_frametime)
 {
-	if (this->constructionState != BUILT)
+	switch (this->constructionState)
 	{
-		switch (this->constructionState)
+	case PLANNED:
+		// Plannification of the building construction
+
+		// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
+		//std::cout << "Planned ! " << std::endl;
+
+		// TEMPORARY
+		if (this->isWorkerThere == true)
 		{
-		case PLANNED:
-			// Plannification of the building construction
-
-			// If we've the workers accredited to the building construction, we can pass the state to CONSTRUCTION
-			//std::cout << "Planned ! " << std::endl;
-
-			// TEMPORARY
-			if (this->isWorkerThere == true)
-			{
-				std::cout << "Building launched ! " << this->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
-				this->constructionState = CONSTRUCTION;
-				this->lifeTime = RESET;
-			}
-
-			break;
-		case CONSTRUCTION:
-
-			if (this->isWorkerThere == true)
-			{
-				this->lifeTime += _frametime;
-				this->isWorkerThere = false;
-			}
-
-			// If the building life is higher than the construction time, we launch it's growthing
-			if (this->lifeTime >= this->building->GetConstructionTimeCost())
-			{
-				std::cout << "Building built ! " << this->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
-				this->constructionState = BUILT;
-				this->isChangingSprite = true;
-			}
-
-			break;
-		case BUILT:
-			if (this->hasBeenBuilt == false)
-			{
-				this->isChangingSprite = true;
-				std::cout << "Building successfully constructed ! " << std::endl;
-			}
-
-			break;
-		case BUILDING_NOT_MAINTAINED:
-			break;
-
-		default:
-			// ERROR LOG
-			break;
+			std::cout << "Building launched ! " << this->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+			this->constructionState = CONSTRUCTION;
+			this->lifeTime = RESET;
 		}
-	}
 
+		break;
+	case CONSTRUCTION:
+
+		if (this->isWorkerThere == true)
+		{
+			this->lifeTime += _frametime;
+			this->isWorkerThere = false;
+		}
+
+		// If the building life is higher than the construction time, we launch it's growthing
+		if (this->lifeTime >= this->building->GetConstructionTimeCost())
+		{
+			std::cout << "Building built ! " << this->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+			this->constructionState = BUILT;
+			this->isChangingSprite = true;
+		}
+
+		break;
+	case BUILT:
+		if (this->hasBeenBuilt == false)
+		{
+			this->isChangingSprite = true;
+			std::cout << "Building successfully constructed ! " << std::endl;
+		}
+
+		break;
+	case BUILDING_NOT_MAINTAINED:
+		break;
+
+	default:
+		// ERROR LOG
+		break;
+	}
 }
 
 

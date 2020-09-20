@@ -495,6 +495,41 @@ bool Vines::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 	}
 }
 
+bool Vines::CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Vines::sVines *)currentElement->data)->generalState == PLANTED)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+			}
+
+			return true;
+
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
+
 bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 {
 	if (this->list != nullptr)
