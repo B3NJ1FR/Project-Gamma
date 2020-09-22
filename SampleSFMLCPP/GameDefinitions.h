@@ -17,6 +17,7 @@
 #include "LoadingGame.h"
 #include "PauseWindow.h"
 #include "BuildWindow.h"
+#include "BuildingsListPlanned.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -44,6 +45,7 @@ enum TypesOfCollisions
 	COLLISION,
 	BUILDING_ENTRANCE,
 	BUILDING_EXIT,
+	BUILDING_GHOST,
 	PATH,
 	STONE_PATH,
 	ROAD,
@@ -104,6 +106,7 @@ struct Game
 	
 	// Construction Mode
 	BuildWindow buildWindow;
+	BuildingsListPlanned buildingsListPlanned;
 	VillaManagement villaManagement;
 
 

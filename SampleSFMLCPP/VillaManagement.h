@@ -3,14 +3,20 @@
 
 #include "Common.hpp"
 
+#define SCENE_BASIC_RESOLUTION_WIDTH 960
+#define SCENE_BASIC_RESOLUTION_HEIGHT 540
+
 class VillaManagement
 {
 private:
 	sf::Sprite backgroundSprite;
 	sf::Sprite tableSprite;
 	sf::Sprite bookshelfSprite;
+	sf::Sprite entranceSprite;
 
-	
+	sf::Image imageTable;
+	sf::Image imageBookshelf;
+	sf::Image imageEntrance;
 
 public:
 	VillaManagement();

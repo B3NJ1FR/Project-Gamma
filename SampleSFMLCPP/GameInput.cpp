@@ -97,11 +97,10 @@ void GameInput(struct Game *_game)
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
 				{
-					if (_game->buildWindow.GetIsNewBuildingHasBeenConstructed() == true)
-					{
-						_game->buildWindow.SetIsNewBuildingHasBeenConstructed(false);
-						_game->workersList->CheckAndUpdateWorkersPath(_game->map);
-					}
+					_game->buildingsListPlanned.ReadBuildingsPlannedToList();
+
+					_game->mainCharacter->SetMainCharacterEndingPosition(_game->buildingsListPlanned.GetBuildingPositionInMap(), _game->map);
+					_game->mainCharacter->SetMainCharacterStatus(IDLE, true);
 
 					_game->actualGameState = NORMAL_MODE;
 				}

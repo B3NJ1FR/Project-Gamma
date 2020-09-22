@@ -20,6 +20,7 @@ private:
 	//float timeToDeposit;
 
 	bool isMainCharacterSelected;
+	bool isCurrentlyBuilding;
 
 public:
 	MainCharacter();
@@ -33,6 +34,7 @@ public:
 	void SetMainCharacterStatus(const enum WorkerStatus &_newStatus, const bool &_isLaunchingMovement = false);
 	void SetIsMainCharacterSelected(const bool &_isMainCharacterSelected);
 	void SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace);
+	void SetIsCurrentlyBuilding(const bool &_isCurrentlyBuilding);
 
 	sf::Vector2f GetMainCharacterPosition();
 	bool IsMainCharacterPosition(const sf::Vector2i &_mapPosition);
@@ -41,6 +43,7 @@ public:
 	bool GetIsMainCharacterSelected();
 	//bool GetWorkerIsInWorkingPlace();
 	enum WorkerStatus GetWorkerStatus();
+	bool GetIsCurrentlyBuilding();
 
 	void UpdatePathAndActivities(struct Game *_game);
 

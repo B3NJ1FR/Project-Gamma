@@ -6,7 +6,9 @@ void DisplayDecor(struct Game *_game)
 {
 	for (int z = 0; z < _game->numberLayers; z++)
 	{
-		if (z % 3 == SPRITE_ID)
+		if (z % 3 == SPRITE_ID
+			|| (_game->actualGameState == BUILD_MODE
+				&& z % 3 == COLLISION))
 		{
 			for (int y = 0; y < _game->numberLines; y++)
 			{
@@ -14,19 +16,45 @@ void DisplayDecor(struct Game *_game)
 				{
 					if (_game->map[z][y][x] != 0 && _game->map[z][y][x] > 0)
 					{
-						sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
-						sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+						if (z % 3 == SPRITE_ID)
+						{
+							if (_game->actualGameState != BUILD_MODE
+								&& _game->map[z - 2][y][x] != BUILDING_GHOST)
+							{
+								sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+								sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
 
-						_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
+								_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
 
-						BlitSprite(_game->spriteArray[_game->map[z][y][x]],
-							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
-							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
-							0, *_game->window);
+								BlitSprite(_game->spriteArray[_game->map[z][y][x]],
+									(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+									(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+									0, *_game->window);
+							}
+							else if (_game->actualGameState == BUILD_MODE)
+							{
+								sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+								sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+
+								_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
+
+								BlitSprite(_game->spriteArray[_game->map[z][y][x]],
+									(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+									(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+									0, *_game->window);
+							}
+						}
+
+
+						
+
 
 						// Display of the gear which is rotating when a worker is in a building
 						if (z == FIRST_FLOOR + SPRITE_ID)
 						{
+							sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+							sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+
 							if (_game->vines.ConfirmVinePresenceAtPosition(sf::Vector2f(x, y)))
 							{
 								if (_game->vines.GetWorkerIsThere(sf::Vector2f(x, y)))

@@ -186,6 +186,9 @@
     <ClCompile Include="VillaManagement.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="BuildingsListPlanned.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -288,6 +291,9 @@
       <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="VillaManagement.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingsListPlanned.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

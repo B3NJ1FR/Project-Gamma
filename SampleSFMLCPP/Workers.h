@@ -6,17 +6,6 @@
 #include "SpecificsBuildings.h"
 
 
-enum WorkerStatus
-{
-	IDLE,
-	WAITING_MOVEMENT,
-	MOVEMENT,
-	BUILDING,
-	WORKING,
-	PICKUP_RESSOURCES,
-	DEPOSIT_RESSOURCES,
-};
-
 enum WorkerCaste
 {
 	NORMAL_WORKER,
