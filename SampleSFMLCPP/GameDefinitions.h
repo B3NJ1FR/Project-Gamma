@@ -17,6 +17,7 @@
 #include "LoadingGame.h"
 #include "PauseWindow.h"
 #include "BuildWindow.h"
+#include "TutorialWindow.h"
 #include "BuildingsListPlanned.h"
 
 #define MAX_ZOOMING 0.3f
@@ -53,6 +54,7 @@ enum TypesOfCollisions
 
 enum GameState
 {
+	TUTORIAL_MODE,
 	NORMAL_MODE,
 	BUILD_MODE,
 	TEST_PATHFINDING_MODE,
@@ -69,6 +71,8 @@ struct Game
 
 	enum GameState actualGameState;
 	enum GameState previousGameState;
+
+	TutorialWindow *tutorialWindow;
 
 	// Buildings
 	unsigned short numberOfBuilding;
@@ -106,7 +110,7 @@ struct Game
 	
 	// Construction Mode
 	BuildWindow buildWindow;
-	BuildingsListPlanned buildingsListPlanned;
+	BuildingsListPlanned *buildingsListPlanned;
 	VillaManagement villaManagement;
 
 

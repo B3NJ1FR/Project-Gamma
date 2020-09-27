@@ -35,6 +35,14 @@ enum MonthsInOneYear
 //	November : (novembre) 30 jours
 //	December : (décembre) 31 jours
 
+enum TypeOfTimeAcceleration
+{
+	GAME_PAUSE,
+	GAME_NORMAL_SPEED,
+	GAME_DOUBLE_SPEED,
+	GAME_TRIPLE_SPEED,
+};
+
 class TimeManagement
 {
 private:
@@ -51,6 +59,11 @@ private:
 	sf::Text monthText;
 	sf::Text yearText;
 
+	short int accelerator;
+	enum TypeOfTimeAcceleration typeOfAcceleration;
+
+	sf::Sprite timesSprite[4];
+
 public:
 	TimeManagement(sf::Font *_font);
 	~TimeManagement();
@@ -58,10 +71,17 @@ public:
 	void UpdateFrameTime();
 	void UpdateGeneralTime();
 
+	short int GetAccelerator();
+	enum TypeOfTimeAcceleration GetTypeOfAcceleration();
 	float GetFrameTime();
+	float GetContinuousFrameTime();
 	float GetGeneralTime();
 	enum MonthsInOneYear GetActualMonth();
 
+	void SetAccelerator(const short int &_accelerator);
+	void SetTypeOfAcceleration(const enum TypeOfTimeAcceleration &_typeOfAcceleration);
+
+	void InputTimeManagement(sf::RenderWindow &_window);
 	void UpdateMonthToDisplay();
 	void DisplayUITime(sf::RenderWindow &_window);
 

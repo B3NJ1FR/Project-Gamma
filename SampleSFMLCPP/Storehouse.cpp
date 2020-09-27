@@ -42,6 +42,9 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((Storehouse::sStorehouseData *)newStorehouse->data)->hasBeenBuilt = false;
 	((Storehouse::sStorehouseData *)newStorehouse->data)->isWorkerThere = false;
 
+	((Storehouse::sStorehouseData *)newStorehouse->data)->maximalQuantity = this->building->GetRessourceQuantityNeeded();
+	((Storehouse::sStorehouseData *)newStorehouse->data)->internalRessourceCounter = RESET;
+
 	newStorehouse->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
@@ -52,92 +55,30 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 }
 
 
-//void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ressourceSent, Ressources *_ressourceProduced)
-//{
-//	if (this->list != nullptr)
-//	{
-//		if (this->list->first != nullptr)
-//		{
-//			LinkedListClass::sElement *currentElement = this->list->first;
-//
-//			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
-//			{
-//				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT)
-//				{
-//					switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState)
-//					{
-//					case BUILDING_READY_TO_PRODUCE:
-//
-//						// If the workers are there, we launch the next state
-//						if (_ressourceSent->GetQuantityOwned() > ((SpecificsBuildings::sBuildingData *)currentElement->data)->quantitativeThreshold)
-//						{
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_FILLING;
-//						}
-//
-//						break;
-//					case BUILDING_FILLING:
-//
-//						if (_ressourceSent->GetQuantityOwned() - 1 > 0)
-//						{
-//							_ressourceSent->SubtractQuantityOwned(1);
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
-//						}
-//
-//						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->maximalQuantity)
-//						{
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_WORKS;
-//						}
-//
-//						break;
-//					case BUILDING_WORKS:
-//
-//						((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime += _frametime;
-//
-//						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime > this->building->GetProductionTimeCost())
-//						{
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime = RESET;
-//						}
-//
-//						break;
-//					case BUILDING_COLLECTING_PRODUCTION:
-//
-//						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter > 0)
-//						{
-//							_ressourceProduced->AddQuantityOwned(1);
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter -= 1;
-//						}
-//						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter == 0)
-//						{
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
-//
-//						}
-//						else if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter < 0)
-//						{
-//							// ERROR LOG
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-//							((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
-//						}
-//
-//						break;
-//					case BUILDING_NEED_TO_BE_CLEANED:
-//
-//						((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_READY_TO_PRODUCE;
-//
-//						break;
-//					default:
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		else
-//		{
-//			//std::cout << "List : " << this->list->first << std::endl;
-//		}
-//	}
-//}
+void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ressourceSent)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState == BUILT)
+				{
+					// Filling of the building
+					if (_ressourceSent->GetQuantityOwned() - 1 >= 0
+						&& ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter + 1 <= ((Storehouse::sStorehouseData *)currentElement->data)->maximalQuantity)
+					{
+						_ressourceSent->SubtractQuantityOwned(1);
+						((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += 1;
+					}
+				}
+			}
+		}
+	}
+}
 
 void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 {
@@ -219,8 +160,8 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 			{
 				if (((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite == true)
 				{
-					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT
-						&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
+					if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState == BUILT
+						&& ((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt == false)
 					{
 						((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt = true;
 						((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = false;
@@ -234,6 +175,55 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 	}
 }
 
+
+int Storehouse::GetNumberResourcesStocked(const sf::Vector2f &_mapPosition)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					// Filling of the building
+					return ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter;
+				}
+			}
+
+			return 0;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity)
+{
+	if (this->list != nullptr)
+	{
+		if (this->list->first != nullptr)
+		{
+			LinkedListClass::sElement *currentElement = this->list->first;
+
+			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
+				{
+					((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += _quantity;
+				}
+			}
+		}
+	}
+}
 
 //void Storehouse::UpdateBuildingProduction(Ressources *_ressource)
 //{

@@ -19,14 +19,14 @@ void PrimaryWindowInitialisation(Data *_data)
 	_data->system->window.setFramerateLimit(60);
 
 	// 1920 x 1080 window size's
-	_data->system->window.create(sf::VideoMode(1920, 1080, 32), "Project Gamma", sf::Style::Fullscreen);
+	_data->system->window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Vindemia Antiquus", sf::Style::Fullscreen);
 
 	// 1280 x 720 window size's
-	//_data->system.window.create(sf::VideoMode(1280, 720, 32), "Project Gamma");
+	//_data->system.window.create(sf::VideoMode(1280, 720, 32), "Vindemia Antiquus");
 	
 	// Set the game's icon
 	sf::Image gameIcon;
-	gameIcon.loadFromFile("Data/Assets/Project_Gamma_Icon.png"); 
+	gameIcon.loadFromFile("Data/Assets/Vindemia Antiquus_Icon.png"); 
 	_data->system->window.setIcon(gameIcon.getSize().x, gameIcon.getSize().y, gameIcon.getPixelsPtr());
 
 	std::cout << "Window's creation succeeded\n";
@@ -35,6 +35,7 @@ void PrimaryWindowInitialisation(Data *_data)
 
 void Init(Data *_data)
 {
+	// A activer
 	//randomTime();
 
 	// Allocation of every parts

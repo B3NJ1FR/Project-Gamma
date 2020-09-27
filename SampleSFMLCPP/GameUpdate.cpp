@@ -14,7 +14,7 @@ void UpdateTexts(struct Game *_game)
 		UpdateDynamicsTexts(&_game->debbugTexts[5], _game->buildWindow.GetBuildingCheckboxSelected().x, _game->buildWindow.GetBuildingCheckboxSelected().y);
 
 		// Security to avoid an array exit
-		if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+		if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->buildWindow.GetBuildingCheckboxSelected()))
 		{
 			UpdateDynamicsTexts(&_game->debbugTexts[7], _game->map[FIRST_FLOOR + COLLISIONS_ID][_game->buildWindow.GetBuildingCheckboxSelected().y][_game->buildWindow.GetBuildingCheckboxSelected().x]);
 			UpdateDynamicsTexts(&_game->debbugTexts[9], _game->map[FIRST_FLOOR + BUILDING_ID][_game->buildWindow.GetBuildingCheckboxSelected().y][_game->buildWindow.GetBuildingCheckboxSelected().x]);
@@ -46,6 +46,10 @@ void GameUpdate(struct Game *_game)
 		if (_game->actualGameState == BUILD_MODE)
 		{
 			_game->buildWindow.UpdateBuildWindow(_game);
+		}
+		else if (_game->actualGameState == TUTORIAL_MODE)
+		{
+			_game->tutorialWindow->UpdateTutorialWindow(&_game->charlemagneFont);
 		}
 		else if (_game->actualGameState == TEST_PATHFINDING_MODE)
 		{
@@ -93,10 +97,11 @@ void GameUpdate(struct Game *_game)
 
 			_game->stall->UpdateBuildingConstruction(_game->time->GetFrameTime());
 			_game->stall->UpdateBuildingSprite(_game->map);
-			_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers);
+			_game->stall->UpdateInternalCycles(&_game->money, &_game->actualGameState, _game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE], _game->purchasers, &_game->storehouse);
 
 			_game->storehouse.UpdateBuildingConstruction(_game->time->GetFrameTime());
 			_game->storehouse.UpdateBuildingSprite(_game->map);
+			_game->storehouse.UpdateInternalCycles(_game->time->GetFrameTime(), &_game->ressources[AMPHORA_OF_WINE]);
 			
 
 			if (_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER

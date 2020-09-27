@@ -67,7 +67,8 @@ void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _
 
 void GameInput(struct Game *_game)
 {
-	if (_game->actualGameState != PAUSE_WINDOW)
+	if (_game->actualGameState != PAUSE_WINDOW
+		&& _game->actualGameState != TUTORIAL_MODE)
 	{
 		sf::Event event;
 		while (_game->window->pollEvent(event))
@@ -97,12 +98,11 @@ void GameInput(struct Game *_game)
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
 				{
-					_game->buildingsListPlanned.ReadBuildingsPlannedToList();
-
-					_game->mainCharacter->SetMainCharacterEndingPosition(_game->buildingsListPlanned.GetBuildingPositionInMap(), _game->map);
+					_game->mainCharacter->SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->map);
 					_game->mainCharacter->SetMainCharacterStatus(IDLE, true);
 
 					_game->actualGameState = NORMAL_MODE;
+					_game->time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
 				{
@@ -133,13 +133,13 @@ void GameInput(struct Game *_game)
 				{
 					_game->actualGameState = NORMAL_MODE;
 				}*/
-
-
+				
 
 				if (event.key.code == sf::Keyboard::F3)
 				{
 					_game->isDebuggerModeActive = !_game->isDebuggerModeActive;
 				}
+
 
 				/*if (event.key.code == sf::Keyboard::Y && _game->actualGameState == TEST_PATHFINDING_MODE)
 				{
@@ -153,6 +153,26 @@ void GameInput(struct Game *_game)
 				{
 					_game->path.isPressingEnd = true;
 				}*/
+
+
+				/*if (event.key.code == sf::Keyboard::K)
+				{
+					_game->time->SetTypeOfAcceleration(enum TypeOfTimeAcceleration(_game->time->GetTypeOfAcceleration() + 1));
+				}*/
+				
+
+				// Set the game at the Pause State	
+				if (event.key.code == sf::Keyboard::P)
+				{
+					if (_game->time->GetTypeOfAcceleration() != GAME_PAUSE)
+					{
+						_game->time->SetTypeOfAcceleration(GAME_PAUSE);
+					}
+					else
+					{
+						_game->time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+					}
+				}
 
 
 				// Touche placé sur O, mais à changer	
@@ -320,7 +340,7 @@ void GameInput(struct Game *_game)
 						_game->buildWindow.InputPickUpCaseClicked(*_game->window, false, sf::Vector2f(_game->camera.x, _game->camera.y), _game->scale);
 
 						// Security to avoid an array exit
-						if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+						if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->buildWindow.GetBuildingCheckboxSelected()))
 						{
 							if (_game->mainCharacter->GetIsMainCharacterSelected() == true)
 							{
@@ -333,6 +353,8 @@ void GameInput(struct Game *_game)
 								_game->workersList->WorkerListSetEndPosition(_game->buildWindow.GetBuildingCheckboxSelected(), _game->map);
 							}
 						}
+
+						_game->time->InputTimeManagement(*_game->window);
 					}
 					else if (_game->actualGameState == BUILD_MODE)
 					{
@@ -407,7 +429,7 @@ void GameInput(struct Game *_game)
 					}
 					else if (_game->actualGameState == VILLA_MANAGEMENT)
 					{
-						_game->villaManagement.InputVillaManagement(&_game->actualGameState, *_game->window);
+						_game->villaManagement.InputVillaManagement(&_game->actualGameState, _game->time, *_game->window);
 					}
 				}
 			}
@@ -416,7 +438,7 @@ void GameInput(struct Game *_game)
 		}
 
 
-		CameraInputs(&_game->camera, _game->time->GetFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
+		CameraInputs(&_game->camera, _game->time->GetContinuousFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
 
 
 		// Case clicked in build mode
@@ -432,8 +454,12 @@ void GameInput(struct Game *_game)
 			}
 		}
 	}
-	else
+	else if (_game->actualGameState == PAUSE_WINDOW)
 	{
 		_game->pauseWindow.InputPauseWindow(_game, &_game->save, &_game->load);
+	}
+	else if (_game->actualGameState == TUTORIAL_MODE)
+	{
+		_game->tutorialWindow->InputTutorialWindow(&_game->actualGameState, *_game->window);
 	}
 }

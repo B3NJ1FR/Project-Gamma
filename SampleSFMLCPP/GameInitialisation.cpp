@@ -362,7 +362,8 @@ void GameInitialisation(struct Game *_game, struct LoadingScreen *_loadingScreen
 	_loadingScreen->loadingScreen.DisplayLoadingScreen(*_game->window);
 
 
-	_game->actualGameState = NORMAL_MODE;
+	_game->actualGameState = TUTORIAL_MODE;
+	//_game->actualGameState = NORMAL_MODE;
 
 	_game->numberOfBuilding = RESET;
 	
@@ -373,10 +374,12 @@ void GameInitialisation(struct Game *_game, struct LoadingScreen *_loadingScreen
 	RessourcesInitialisation(_game);
 
 	_game->time = new TimeManagement(&_game->charlemagneFont);
+	_game->tutorialWindow = new TutorialWindow(&_game->charlemagneFont);
 	_game->workersList = new WorkersList;
 	_game->mainCharacter = new MainCharacter;
 	_game->stall = new Stalls(&_game->buildings[BUILDING_STALL]);
 	_game->sellingWindow = new SellingWindow(&_game->generalFont);
+	_game->buildingsListPlanned = new BuildingsListPlanned();
 	_game->purchasers = nullptr;
 
 	

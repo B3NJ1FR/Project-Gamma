@@ -53,7 +53,7 @@ LinkedListClass::sLinkedList *LinkedListClass::LinkedListInitialisation()
 
 	newList->size = RESET;
 
-	std::cout << "First : " << newList->first << " & Last : " << newList->last << std::endl;
+	//std::cout << "First : " << newList->first << " & Last : " << newList->last << std::endl;
 
 	return newList;
 }

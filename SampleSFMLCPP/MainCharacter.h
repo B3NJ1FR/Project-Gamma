@@ -14,6 +14,9 @@ private:
 	bool isLauchingMovement; // Temporaire
 	bool isItWorkingPlace;
 
+	float buildingTimer;
+	float waitingTimer;
+
 	enum TypeOfBuilding actualBuilding;
 	enum TypeOfBuilding *targetedBuilding;
 

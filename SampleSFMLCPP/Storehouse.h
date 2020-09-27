@@ -19,6 +19,9 @@ public:
 		bool isChangingSprite;
 		bool hasBeenBuilt;
 		bool isWorkerThere;
+		
+		int maximalQuantity; // Maximal threshold
+		int internalRessourceCounter;
 	};
 	typedef struct StorehouseData sStorehouseData;
 
@@ -29,9 +32,12 @@ public:
 	
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
-	//void UpdateInternalCycles(const float &_frametime, Ressources *_ressource, Ressources *_ressourceProduced);
+	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource);
 	void UpdateBuildingSprite(unsigned short ***_map);
 	//void UpdateBuildingProduction(Ressources *_ressource);
+
+	int GetNumberResourcesStocked(const sf::Vector2f &_mapPosition);
+	void AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity);
 
 	bool ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);

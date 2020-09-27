@@ -23,8 +23,8 @@ public:
 	~PauseWindow();
 
 
-	void DisplayPauseWindow(sf::RenderWindow &_window);
 	void InputPauseWindow(struct Game *_game, SavingGame *_save, LoadingGame *_load);
+	void DisplayPauseWindow(sf::RenderWindow &_window);
 };
 
 

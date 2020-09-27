@@ -52,12 +52,13 @@ public:
 	void SetScrollBuildingList(const float &_scrollBuildingList);
 	void SetIDChosenBuilding(const int &_buildingID);
 
-	bool IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize);
+	bool IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize, const sf::Vector2i &_mapPosition);
 
 	void InputBuildingModeOldScrollUI(const float &_scrollDelta, const sf::RenderWindow &_window);
 	void InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale);
 	
-	void SetBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition, const bool &_setGround = true);
+	void SetBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const enum TypesOfCollisions &_collisionID, const sf::Vector2i &_mapPosition);
+	void SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
 	void RemoveBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition);
 	
 	void UpdateTextsBuildWindow(struct Game *_game);

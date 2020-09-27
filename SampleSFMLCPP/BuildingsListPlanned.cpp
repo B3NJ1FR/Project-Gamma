@@ -112,6 +112,7 @@ void BuildingsListPlanned::AddBuildingPlannedToList(const sf::Vector2i &_mapPosi
 
 	// Add this new building at the end of the list
 	this->AddElementToLinkedList(this->listOfBuildingsPlanned, newBuilding, -1);
+	//this->ReadBuildingsPlannedToList();
 }
 
 

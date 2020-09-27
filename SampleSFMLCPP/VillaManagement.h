@@ -1,7 +1,7 @@
 #ifndef VILLA_MANAGEMENT__H
 #define VILLA_MANAGEMENT__H
 
-#include "Common.hpp"
+#include "TimeManagement.h"
 
 #define SCENE_BASIC_RESOLUTION_WIDTH 960
 #define SCENE_BASIC_RESOLUTION_HEIGHT 540
@@ -22,7 +22,7 @@ public:
 	VillaManagement();
 	~VillaManagement();
 
-	void InputVillaManagement(enum GameState *_state, sf::RenderWindow &_window);
+	void InputVillaManagement(enum GameState *_state, TimeManagement *_time, sf::RenderWindow &_window);
 	void DisplayVillaManagement(sf::RenderWindow &_window);
 };
 

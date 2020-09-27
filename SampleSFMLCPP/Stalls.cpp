@@ -9,6 +9,7 @@ Stalls::Stalls(Buildings *_specificBuildingConcerned)
 
 	this->constructionState = BUILDING_DESTROYED;
 	this->hasBeenBuilt = false;
+	this->storehousesCoordinates = nullptr;
 }
 
 
@@ -25,6 +26,12 @@ void Stalls::InitialisationStall(Buildings *_stallBuildingConcerned)
 	this->hasBeenBuilt = false;
 }
 
+
+
+void Stalls::SetConstructionStatus(const enum BuildingStatus &_newStatus)
+{
+	this->constructionState = _newStatus;
+}
 
 
 void Stalls::SetStatus(const enum StallStatus &_newStatus)
@@ -46,14 +53,14 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 
 	// Init of the building construction status after being placed on map
 	this->constructionState = PLANNED;
-	this->actualState = STALL_READY_TO_WORKS;
+	this->actualState = STALL_WAITING;
 
 	// A MODIFIER PAR VALEUR SEUIL
 	this->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
 
 	// A CONFIGURER + RELIER AU BATIMENT
 	this->maximalQuantity = 100;
-	this->internalImportRessourceCounter = RESET;
+	this->internalRessourceCounter = RESET;
 
 	this->lifeTime = RESET;
 	this->actualProductionTime = RESET;
@@ -66,6 +73,46 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 
 	this->internalImportRessourceCounterSaved = RESET;
 	this->ressourceQuantityToSell = RESET;
+}
+
+void Stalls::AddStorehousePosition(const sf::Vector2f &_mapPosition)
+{
+	if (this->storehousesCoordinates == nullptr)
+	{
+		this->numberStorehousesCoordinates = 1;
+
+		this->storehousesCoordinates = new sf::Vector2f;
+		*this->storehousesCoordinates = _mapPosition;
+
+		std::cout << this->storehousesCoordinates[0].x << " " << this->storehousesCoordinates[0].y << std::endl;
+	}
+	else
+	{
+		// We create a new list
+		sf::Vector2f *newListOfCoordinates = new sf::Vector2f[this->numberStorehousesCoordinates + 1];
+
+		// We copy the old data
+		for (int i = 0; i < this->numberStorehousesCoordinates; i++)
+		{
+			newListOfCoordinates[i] = this->storehousesCoordinates[i];
+		}
+
+		// We add the new position at the end of the list
+		newListOfCoordinates[this->numberStorehousesCoordinates + 1] = _mapPosition;
+
+		this->numberStorehousesCoordinates += 1;
+
+		// We delete the actual memory location of the "storehousesCoordinates" variable, and add the adress of the new list
+		delete this->storehousesCoordinates;
+		this->storehousesCoordinates = nullptr;
+		this->storehousesCoordinates = newListOfCoordinates;
+
+
+		for (int i = 0; i < this->numberStorehousesCoordinates; i++)
+		{
+			std::cout << this->storehousesCoordinates[i].x << " " << this->storehousesCoordinates[i].y << std::endl;
+		}
+	}
 }
 
 
@@ -87,14 +134,14 @@ bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 	{
 		// Reset of the building construction status after being placed on map
 		this->constructionState = PLANNED;
-		this->actualState = STALL_READY_TO_WORKS;
+		this->actualState = STALL_WAITING;
 
 		// A MODIFIER PAR VALEUR SEUIL
 		this->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
 
 		// A CONFIGURER + RELIER AU BATIMENT
 		this->maximalQuantity = 100;
-		this->internalImportRessourceCounter = RESET;
+		this->internalRessourceCounter = RESET;
 
 		this->lifeTime = RESET;
 		this->actualProductionTime = RESET;
@@ -187,7 +234,7 @@ enum BuildingStatus Stalls::GetConstructionStatus()
 
 int Stalls::GetActualRessourcesStocked()
 {
-	return this->internalImportRessourceCounter;
+	return this->internalRessourceCounter;
 }
 
 
@@ -264,41 +311,30 @@ void Stalls::UpdateBuildingConstruction(const float &_frametime)
 
 
 
-void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressourceSent, Purchasers *_purchasers)
+void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressourceSent, Purchasers *_purchasers, Storehouse *_storehouse)
 {
 	if (this->constructionState == BUILT)
 	{
 		switch (this->actualState)
 		{
-		case STALL_READY_TO_WORKS:
+		case STALL_WAITING:
 			
-			if (_ressourceSent->GetQuantityOwned() > 0
-				&& internalImportRessourceCounter >= 0)
+			if (this->storehousesCoordinates != nullptr)
 			{
-				this->actualState = STALL_FILLING;
-			}
-			
-			break;
+				for (int i = 0; i < this->numberStorehousesCoordinates; i++)
+				{
+					std::cout << _storehouse->GetNumberResourcesStocked(this->storehousesCoordinates[i]) << std::endl;
 
-		case STALL_FILLING:
-			
-			if (_ressourceSent->GetQuantityOwned() - 1 >= 0
-				&& this->internalImportRessourceCounter + 1 <= this->maximalQuantity)
-			{
-				_ressourceSent->SubtractQuantityOwned(1);
-				this->internalImportRessourceCounter += 1;
-			}
+					if (_storehouse->GetNumberResourcesStocked(this->storehousesCoordinates[i]) >= this->quantitativeThreshold)
+					{
+						this->isNewMerchantNeeded = true;
 
+						this->internalImportRessourceCounterSaved = _storehouse->GetNumberResourcesStocked(this->storehousesCoordinates[i]);
 
-			if (this->internalImportRessourceCounter >= this->quantitativeThreshold
-				&& (_ressourceSent->GetQuantityOwned() == 0
-					|| this->internalImportRessourceCounter == this->maximalQuantity))
-			{
-				this->isNewMerchantNeeded = true;
-
-				this->internalImportRessourceCounterSaved = this->internalImportRessourceCounter;
-
-				this->actualState = STALL_SEND_REQUEST_PURCHASER;
+						this->actualState = STALL_SEND_REQUEST_PURCHASER;
+					}
+				}
+				
 			}
 			
 			break;
@@ -316,7 +352,6 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 					this->actualProductionTime = RESET;
 				}
 			}
-
 
 			break;
 
@@ -337,15 +372,18 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 					this->isNewMerchantNeeded = true;
 				}
 
-				// We exchange the amphoras of wine against sesterce money
-				if (this->internalImportRessourceCounter - 1 >= this->internalImportRessourceCounterSaved - this->ressourceQuantityToSell)
+				if (this->storehousesCoordinates != nullptr)
 				{
-					_money->AddMoney(this->priceAccepted);
-					this->internalImportRessourceCounter -= 1;
-				}
-				else
-				{
-					this->actualState = STALL_READY_TO_WORKS;
+					// We exchange the amphoras of wine against sesterce money
+					if (_storehouse->GetNumberResourcesStocked(*this->storehousesCoordinates) - 1 >= this->internalImportRessourceCounterSaved - this->ressourceQuantityToSell)
+					{
+						_money->AddMoney(this->priceAccepted);
+						_storehouse->AddNumberResourcesStocked(*this->storehousesCoordinates, -1);
+					}
+					else
+					{
+						this->actualState = STALL_WAITING;
+					}
 				}
 			}
 			else
@@ -354,7 +392,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 				if (_purchasers != nullptr)
 				{
 					this->isNewMerchantNeeded = true;
-				}
+				}	
 				
 				this->actualState = STALL_SEND_REQUEST_PURCHASER;
 			}
@@ -364,7 +402,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, c
 		default:
 
 			// ERROR LOG
-			this->actualState = STALL_READY_TO_WORKS;
+			this->actualState = STALL_WAITING;
 			break;
 		}
 	}
@@ -403,7 +441,7 @@ void Stalls::SavingStallForFile(std::ofstream *_file)
 
 		_file->write((char *)&this->quantitativeThreshold, sizeof(int));
 		_file->write((char *)&this->maximalQuantity, sizeof(int));
-		_file->write((char *)&this->internalImportRessourceCounter, sizeof(int));
+		_file->write((char *)&this->internalRessourceCounter, sizeof(int));
 
 
 		_file->write((char *)&this->lifeTime, sizeof(float));
@@ -438,7 +476,7 @@ void Stalls::LoadingStallFromFile(std::ifstream *_file)
 			 
 		_file->read((char *)&this->quantitativeThreshold, sizeof(int));
 		_file->read((char *)&this->maximalQuantity, sizeof(int));
-		_file->read((char *)&this->internalImportRessourceCounter, sizeof(int));
+		_file->read((char *)&this->internalRessourceCounter, sizeof(int));
 			  
 			  
 		_file->read((char *)&this->lifeTime, sizeof(float));

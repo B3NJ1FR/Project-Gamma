@@ -50,7 +50,11 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 			// If we pressed the escape key, we close the game
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				if (_game->previousGameState == NORMAL_MODE)
+				if (_game->previousGameState == TUTORIAL_MODE)
+				{
+					_game->actualGameState = TUTORIAL_MODE;
+				}
+				else if (_game->previousGameState == NORMAL_MODE)
 				{
 					_game->actualGameState = NORMAL_MODE;
 				}
@@ -86,7 +90,11 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 					&& mousePostionAtScreen.y > SCREEN_HEIGHT / 6 - (this->resumeButton.getGlobalBounds().height / 2)
 					&& mousePostionAtScreen.y < SCREEN_HEIGHT / 6 + (this->resumeButton.getGlobalBounds().height / 2))
 				{
-					if (_game->previousGameState == NORMAL_MODE)
+					if (_game->previousGameState == TUTORIAL_MODE)
+					{
+						_game->actualGameState = TUTORIAL_MODE;
+					}
+					else if (_game->previousGameState == NORMAL_MODE)
 					{
 						_game->actualGameState = NORMAL_MODE;
 					}

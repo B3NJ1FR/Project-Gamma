@@ -13,6 +13,9 @@ MainCharacter::MainCharacter()
 	this->isLauchingMovement = false;
 	this->isItWorkingPlace = false;
 
+	this->buildingTimer = RESET;
+	this->waitingTimer = RESET;
+
 	this->isPressingEnd = false;
 	this->isPressingStart = false;
 
@@ -165,15 +168,41 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 	{
 	case IDLE:
 
-		//std::cout << "Idle\n";
-
 		if (this->isLauchingMovement == true)
 		{
-			std::cout << "Changement de status vers Waiting Movement\n";
+			//std::cout << "Changement de status vers Waiting Movement\n";
 
 			this->SetMainCharacterStatus(WAITING_MOVEMENT);
 			this->isLauchingMovement = false;
 		}
+		else
+		{
+			this->waitingTimer += _game->time->GetFrameTime();
+
+			// If the main character is waiting, but have buildings planned to be built, we check and launch his movement
+			if (this->isCurrentlyBuilding)
+			{
+				// Test if the list is empty or not
+				if (_game->buildingsListPlanned->IsBuildingListIsEmpty())
+				{
+					this->isCurrentlyBuilding = false;
+					this->waitingTimer = RESET;
+				}
+				else
+				{
+					if (this->waitingTimer > 3)
+					{
+						// Set the position of the next building plannified
+						this->SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->map);
+
+						this->SetMainCharacterStatus(IDLE, true);
+
+						this->waitingTimer = RESET;
+					}
+				}
+			}
+		}
+		
 
 		break;
 
@@ -223,7 +252,7 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 
 
 
-		// If the path ask to be deleted, that mean that the worker has reached his destination
+		// If the path ask to be deleted, that mean that the character has reached his destination
 		if (this->path->GetActualStatus() == PATHFINDING_NEED_TO_BE_DELETED)
 		{
 			// If at the initialisation we find that location is a working place, we change the status of the worker to WORKING
@@ -235,18 +264,10 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 				}
 				else
 				{
-					// If that place is what which were targeted and the worker carry some ressource, he need to deposit them
-					if (this->targetedBuilding != nullptr)
-					{
-						this->SetMainCharacterStatus(WORKING);
-					}
-					else
-					{
-						this->SetMainCharacterStatus(WORKING);
-					}
+					this->SetMainCharacterStatus(WORKING);
 				}
 			}
-			// Else, the worker just wait at the IDLE status
+			// Else, the character just wait at the IDLE status
 			else
 			{
 				this->SetMainCharacterStatus(IDLE);
@@ -260,75 +281,93 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 		break;
 
 	case BUILDING:
-		
-		if (this->isCurrentlyBuilding == true)
+		if (this->isCurrentlyBuilding == true
+			&& _game->buildingsListPlanned->GetBuildingPositionInMap() == (sf::Vector2i)this->mapPosition)
 		{
-			// Security
-			if (_game->buildingsListPlanned.GetBuildingID() != -1
-				&& _game->buildingsListPlanned.GetBuildingPositionInMap() != sf::Vector2i(-1, -1)
-				&& _game->buildingsListPlanned.GetBuildingSize() != sf::Vector2i(-1, -1))
+			this->buildingTimer += _game->time->GetFrameTime();
+
+			if (this->buildingTimer >= 2)
 			{
-				// Clear the ground by putting sand floor
-				for (int y = 0; y < _game->buildingsListPlanned.GetBuildingSize().y; y++)
+				// Security
+				if (_game->buildingsListPlanned->GetBuildingID() != -1
+					&& _game->buildingsListPlanned->GetBuildingPositionInMap() != sf::Vector2i(-1, -1)
+					&& _game->buildingsListPlanned->GetBuildingSize() != sf::Vector2i(-1, -1))
 				{
-					for (int x = 0; x < _game->buildingsListPlanned.GetBuildingSize().x; x++)
+					// Clear the ground by putting sand floor
+					for (int y = 0; y < _game->buildingsListPlanned->GetBuildingSize().y; y++)
 					{
-						_game->map[ZERO_FLOOR + SPRITE_ID]
-							[_game->buildingsListPlanned.GetBuildingPositionInMap().y - y]
-							[_game->buildingsListPlanned.GetBuildingPositionInMap().x - x] = 1;
+						for (int x = 0; x < _game->buildingsListPlanned->GetBuildingSize().x; x++)
+						{
+							_game->map[ZERO_FLOOR + SPRITE_ID]
+								[_game->buildingsListPlanned->GetBuildingPositionInMap().y - y]
+							[_game->buildingsListPlanned->GetBuildingPositionInMap().x - x] = 1;
+						}
 					}
-				}
 
-				// Modifier couche pour ID
-				_game->buildWindow.SetBuildingOnMap(_game, FIRST_FLOOR, _game->buildingsListPlanned.GetBuildingID(), sf::Vector3i(COLLISION, _game->buildingsListPlanned.GetBuildingID(), RESET), _game->buildingsListPlanned.GetBuildingPositionInMap());
-
-
-				// If the building selected is the vines, we add informations to the concerned linkedlist
-				if (_game->buildingsListPlanned.GetBuildingID() == BUILDING_VINES)
-				{
-					_game->vines.AddNewVineToList((sf::Vector2f)_game->buildingsListPlanned.GetBuildingPositionInMap());
-				}
-				else if (_game->buildingsListPlanned.GetBuildingID() == BUILDING_GRAPE_STOMPING_VATS)
-				{
-					_game->stompingVats.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned.GetBuildingPositionInMap());
-				}
-				else if (_game->buildingsListPlanned.GetBuildingID() == BUILDING_WINE_PRESS)
-				{
-					_game->winePress.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned.GetBuildingPositionInMap());
-				}
-				else if (_game->buildingsListPlanned.GetBuildingID() == BUILDING_WINE_STOREHOUSE)
-				{
-					_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned.GetBuildingPositionInMap());
-				}
-				else if (_game->buildingsListPlanned.GetBuildingID() == BUILDING_STOREHOUSE)
-				{
-					_game->storehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned.GetBuildingPositionInMap());
-				}
-				else if (_game->buildingsListPlanned.GetBuildingID() == BUILDING_STALL)
-				{
-					_game->stall->AddNewBuilding((sf::Vector2f)_game->buildingsListPlanned.GetBuildingPositionInMap());
-				}
+					// Modifier couche pour ID
+					_game->buildWindow.SetBuildingOnMap(_game, FIRST_FLOOR, _game->buildingsListPlanned->GetBuildingID(), COLLISION, _game->buildingsListPlanned->GetBuildingPositionInMap());
 
 
-				// Deletion of the current first building in the list
-				_game->buildingsListPlanned.DeleteCurrentFirstBuildingInList();
-				_game->buildingsListPlanned.ReadBuildingsPlannedToList();
 
-				//Update the workers's paths
-				_game->workersList->CheckAndUpdateWorkersPath(_game->map);
-					
 
-				// Test if the list is empty or not
-				if (_game->buildingsListPlanned.IsBuildingListIsEmpty())
-				{
-					this->isCurrentlyBuilding =	 false;
+					// We add informations to the concerned linkedlist
+					switch (_game->buildingsListPlanned->GetBuildingID())
+					{
+					case BUILDING_VINES:
+						_game->vines.AddNewVineToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						break;
+					case BUILDING_GRAPE_STOMPING_VATS:
+						_game->stompingVats.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						break;
+					case BUILDING_WINE_PRESS:
+						_game->winePress.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						break;
+					case BUILDING_WINE_STOREHOUSE:
+						_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						break;
+					case BUILDING_STOREHOUSE:
+						_game->storehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->stall->AddStorehousePosition((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						break;
+					case BUILDING_STALL:
+						_game->stall->AddNewBuilding((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						break;
+						/*case BUILDING_VILLA:
+							break;
+						case BUILDING_DORMITORY:
+							break;*/
+					default:
+						break;
+					}
+
+
+					// Deletion of the current first building in the list
+					_game->buildingsListPlanned->DeleteCurrentFirstBuildingInList();
+
+					//Update the workers's paths
+					_game->workersList->CheckAndUpdateWorkersPath(_game->map);
+
+
+					// Test if the list is empty or not
+					if (_game->buildingsListPlanned->IsBuildingListIsEmpty())
+					{
+						this->isCurrentlyBuilding = false;
+						this->SetMainCharacterStatus(IDLE);
+					}
+					else
+					{
+						// Set the position of the next building plannified
+						this->SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->map);
+
+						this->SetMainCharacterStatus(IDLE, true);
+					}
+
+					// Reset the builder timer of the main character
+					this->buildingTimer -= 2;
 				}
 				else
 				{
-					// Set the position of the next building plannified
-					this->SetMainCharacterEndingPosition(_game->buildingsListPlanned.GetBuildingPositionInMap(), _game->map);
-
-					this->SetMainCharacterStatus(IDLE, true);
+					this->SetMainCharacterStatus(IDLE);
 				}
 			}
 			
@@ -351,6 +390,10 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 			{
 				this->SetMainCharacterStatus(IDLE);
 			}
+		}
+		else
+		{
+			this->SetMainCharacterStatus(IDLE);
 		}
 		//else if (this->actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
 		//{

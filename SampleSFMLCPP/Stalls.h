@@ -3,13 +3,13 @@
 
 #include "Ressources.h"
 #include "Buildings.h"
+#include "Storehouse.h"
 #include "Purchasers.h"
 
 
 enum StallStatus
 {
-	STALL_READY_TO_WORKS,
-	STALL_FILLING,
+	STALL_WAITING,
 	STALL_SEND_REQUEST_PURCHASER,
 	STALL_PURCHASER_IS_PRESENT,
 	STALL_OFFER_HANDLED,
@@ -28,7 +28,7 @@ private:
 
 	int quantitativeThreshold; // Minimal threshold of launching
 	int maximalQuantity; // Maximal threshold
-	int internalImportRessourceCounter;
+	int internalRessourceCounter;
 
 	float lifeTime;
 	float actualProductionTime;
@@ -42,6 +42,10 @@ private:
 	int internalImportRessourceCounterSaved;
 	int ressourceQuantityToSell;
 	bool isNewMerchantNeeded;
+
+	sf::Vector2f *storehousesCoordinates;
+	int numberStorehousesCoordinates;
+
 public:
 	
 	bool isOfferAccepted;
@@ -51,15 +55,19 @@ public:
 
 	void InitialisationStall(Buildings *_specificBuildingConcerned);
 
+	void SetConstructionStatus(const enum BuildingStatus &_newStatus);
 	void SetStatus(const enum StallStatus &_newStatus);
 	void SetIsNewMerchantNeeded(const bool &_newStatus);
 	void AddNewBuilding(sf::Vector2f _mapPosition);
+	void AddStorehousePosition(const sf::Vector2f &_mapPosition);
 	void SetRessourceQuantityToSell(const int &_quantity = RESET);
+
 	void PickUpPriceAccepted(const int &_price);
+
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 	bool ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
-	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 
+	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	enum StallStatus GetStatus();
 	enum BuildingStatus GetConstructionStatus();
 	int GetActualRessourcesStocked();
@@ -67,7 +75,7 @@ public:
 	sf::Vector2i GetMapPosition();
 
 	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers);
+	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers, Storehouse *_storehouse);
 	void UpdateBuildingSprite(unsigned short ***_map);
 
 

@@ -6,6 +6,7 @@ VillaManagement::VillaManagement()
 {
 	// Initialisation of the sprites
 	this->backgroundSprite = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/salle plannification test.png", sf::Vector2f(0, 0), 0);
+	//this->backgroundSprite = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Benjamain_Project_Vignioble.png", sf::Vector2f(0, 0), 0);
 
 	this->tableSprite = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/salle plannification table.png", sf::Vector2f(0, 0), 0);
 	this->bookshelfSprite = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/salle plannification bibliotheque.png", sf::Vector2f(0, 0), 0);
@@ -29,7 +30,7 @@ VillaManagement::~VillaManagement()
 }
 
 
-void VillaManagement::InputVillaManagement(enum GameState *_state, sf::RenderWindow &_window)
+void VillaManagement::InputVillaManagement(enum GameState *_state, TimeManagement *_time, sf::RenderWindow &_window)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 	
@@ -44,6 +45,8 @@ void VillaManagement::InputVillaManagement(enum GameState *_state, sf::RenderWin
 		{
 			std::cout << "Table cliqued\n";
 			*(_state) = BUILD_MODE;
+
+			_time->SetTypeOfAcceleration(GAME_PAUSE);
 		}
 		else if(this->imageBookshelf.getPixel(mousePosition.x / 2, mousePosition.y / 2).a != 0)
 		{

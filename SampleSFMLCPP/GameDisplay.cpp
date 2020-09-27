@@ -6,9 +6,7 @@ void DisplayDecor(struct Game *_game)
 {
 	for (int z = 0; z < _game->numberLayers; z++)
 	{
-		if (z % 3 == SPRITE_ID
-			|| (_game->actualGameState == BUILD_MODE
-				&& z % 3 == COLLISION))
+		if (z % 3 == SPRITE_ID)
 		{
 			for (int y = 0; y < _game->numberLines; y++)
 			{
@@ -18,30 +16,140 @@ void DisplayDecor(struct Game *_game)
 					{
 						if (z % 3 == SPRITE_ID)
 						{
-							if (_game->actualGameState != BUILD_MODE
-								&& _game->map[z - 2][y][x] != BUILDING_GHOST)
+							if (_game->actualGameState != BUILD_MODE)
 							{
-								sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
-								sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+								if (!(z == FIRST_FLOOR + SPRITE_ID
+									&& _game->map[FIRST_FLOOR + COLLISIONS_ID][y][x] == BUILDING_GHOST))
+								{
+									sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+									sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
 
-								_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
+									_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
 
-								BlitSprite(_game->spriteArray[_game->map[z][y][x]],
-									(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
-									(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
-									0, *_game->window);
+									BlitSprite(_game->spriteArray[_game->map[z][y][x]],
+										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+										0, *_game->window);
+								}
 							}
 							else if (_game->actualGameState == BUILD_MODE)
 							{
-								sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
-								sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+								if (z == ZERO_FLOOR + SPRITE_ID)
+								{
+									if (_game->map[z - 2][y][x] == BUILDING_GHOST)
+									{
+										sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+										sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+										
+										int groundToDisplay(RESET);
 
-								_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
+										// We get the ground of the building concerned
+										switch (_game->map[z - 1][y][x])
+										{
+										case BUILDING_VINES:
+											groundToDisplay = 7;
+											break;
+										case BUILDING_GRAPE_STOMPING_VATS:
+											groundToDisplay = 25;
+											break;
+										case BUILDING_WINE_PRESS:
+											groundToDisplay = 23;
+											break;
+										case BUILDING_WINE_STOREHOUSE:
+											groundToDisplay = 24;
+											break;
+										case BUILDING_STOREHOUSE:
+											groundToDisplay = 22;
+											break;
+										case BUILDING_STALL:
+											groundToDisplay = 20;
+											break;
+											/*case BUILDING_VILLA:
+												break;
+											case BUILDING_DORMITORY:
+												break;*/
+										default:
+											break;
+										}
 
-								BlitSprite(_game->spriteArray[_game->map[z][y][x]],
-									(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
-									(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
-									0, *_game->window);
+										_game->spriteArray[groundToDisplay].setScale(_game->scale);
+
+										BlitSprite(_game->spriteArray[groundToDisplay],
+											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+											0, *_game->window);
+									}
+									else
+									{
+										sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+										sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+
+										_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
+
+										BlitSprite(_game->spriteArray[_game->map[z][y][x]],
+											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+											0, *_game->window);
+									}
+								}
+								else if (z == FIRST_FLOOR + SPRITE_ID)
+								{
+									if (_game->map[FIRST_FLOOR + COLLISIONS_ID][y][x] == BUILDING_GHOST)
+									{
+										sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+										sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+
+										int buildingToDisplay(RESET);
+
+										// We get the building concerned
+										switch (_game->map[z - 1][y][x])
+										{
+										case BUILDING_VINES:
+											buildingToDisplay = 32;
+											break;
+										case BUILDING_GRAPE_STOMPING_VATS:
+											buildingToDisplay = 26;
+											break;
+										case BUILDING_WINE_PRESS:
+											buildingToDisplay = 30;
+											break;
+										case BUILDING_WINE_STOREHOUSE:
+											buildingToDisplay = 31;
+											break;
+										case BUILDING_STOREHOUSE:
+											buildingToDisplay = 29;
+											break;
+										case BUILDING_STALL:
+											buildingToDisplay = 27;
+											break;
+											/*case BUILDING_VILLA:
+												break;
+											case BUILDING_DORMITORY:
+												break;*/
+										default:
+											break;
+										}
+
+										_game->spriteArray[buildingToDisplay].setScale(_game->scale);
+
+										BlitSprite(_game->spriteArray[buildingToDisplay],
+											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+											0, *_game->window);
+									}
+									else
+									{
+										sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
+										sf::Vector2f cameraIso = WorldToScreen(_game->camera.x, _game->camera.y);
+
+										_game->spriteArray[_game->map[z][y][x]].setScale(_game->scale);
+
+										BlitSprite(_game->spriteArray[_game->map[z][y][x]],
+											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
+											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+											0, *_game->window);
+									}
+								}
 							}
 						}
 
@@ -167,7 +275,7 @@ void DisplayDecor(struct Game *_game)
 
 							BlitSprite(_game->mainCharacter->GetSprite(),
 								(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _game->camera.z),
-								(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z),
+								(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _game->camera.z) - 16,
 								0, *_game->window);
 						}
 
@@ -184,7 +292,7 @@ void DisplayDecor(struct Game *_game)
 void DisplayUINormalMode(struct Game *_game)
 {
 	// Display of the building selection UI
-	BlitSprite(_game->buildWindow.GetBuildingUIClosed(), SCREEN_WIDTH - _game->buildWindow.GetBuildingUIClosed().getGlobalBounds().width, SCREEN_HEIGHT - _game->buildWindow.GetBuildingUIClosed().getGlobalBounds().height, 0, *_game->window);
+//	BlitSprite(_game->buildWindow.GetBuildingUIClosed(), SCREEN_WIDTH - _game->buildWindow.GetBuildingUIClosed().getGlobalBounds().width, SCREEN_HEIGHT - _game->buildWindow.GetBuildingUIClosed().getGlobalBounds().height, 0, *_game->window);
 }
 
 
@@ -195,19 +303,6 @@ void DisplayUIGeneral(struct Game *_game)
 	// Display of the sesterces quantity owned
 	BlitString(_game->UITexts[0], *_game->window);
 	BlitString(_game->UITexts[1], *_game->window);
-
-	// Display of the bunchs of grape quantity owned
-	BlitString(_game->UITexts[2], *_game->window);
-	BlitString(_game->UITexts[3], *_game->window);
-	// Display of the grape must quantity owned
-	BlitString(_game->UITexts[4], *_game->window);
-	BlitString(_game->UITexts[5], *_game->window);
-	// Display of the grape juice quantity owned
-	BlitString(_game->UITexts[6], *_game->window);
-	BlitString(_game->UITexts[7], *_game->window);
-	// Display of the amphora of wine quantity owned
-	BlitString(_game->UITexts[8], *_game->window);
-	BlitString(_game->UITexts[9], *_game->window);
 }
 
 
@@ -237,6 +332,20 @@ void DisplayDebugger(struct Game *_game)
 	// Display of the last case sprite id
 	BlitString(_game->debbugTexts[10], *_game->window);
 	BlitString(_game->debbugTexts[11], *_game->window);
+
+
+	// Display of the bunchs of grape quantity owned
+	BlitString(_game->UITexts[2], *_game->window);
+	BlitString(_game->UITexts[3], *_game->window);
+	// Display of the grape must quantity owned
+	BlitString(_game->UITexts[4], *_game->window);
+	BlitString(_game->UITexts[5], *_game->window);
+	// Display of the grape juice quantity owned
+	BlitString(_game->UITexts[6], *_game->window);
+	BlitString(_game->UITexts[7], *_game->window);
+	// Display of the amphora of wine quantity owned
+	BlitString(_game->UITexts[8], *_game->window);
+	BlitString(_game->UITexts[9], *_game->window);
 
 }
 
@@ -279,6 +388,12 @@ void GameDisplay(struct Game *_game)
 		_game->previousGameState = ESTATE_DATA_N_STATISTICS;
 	}
 
+	if (_game->actualGameState == TUTORIAL_MODE)
+	{
+		_game->tutorialWindow->DisplayTutorialWindow(*_game->window);
+		_game->previousGameState = TUTORIAL_MODE;
+	}
+
 	DisplayUIGeneral(_game);
 	_game->time->DisplayUITime(*_game->window);
 
@@ -309,6 +424,11 @@ void GameDisplay(struct Game *_game)
 		else if (_game->previousGameState == ESTATE_DATA_N_STATISTICS)
 		{
 			//_game->villaManagement.DisplayVillaManagement(*_game->window);
+		}
+
+		if (_game->previousGameState == TUTORIAL_MODE)
+		{
+			_game->tutorialWindow->DisplayTutorialWindow(*_game->window);
 		}
 
 		_game->pauseWindow.DisplayPauseWindow(*_game->window);

@@ -95,12 +95,12 @@ void BuildWindow::SetIDChosenBuilding(const int &_buildingID)
 
 
 
-bool BuildWindow::IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize)
+bool BuildWindow::IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize, const sf::Vector2i &_mapPosition)
 {
-	if (this->buildingCaseSelected.x >= 0
-		&& this->buildingCaseSelected.x < _mapSize.x
-		&& this->buildingCaseSelected.y >= 0
-		&& this->buildingCaseSelected.y < _mapSize.y)
+	if (_mapPosition.x >= 0
+		&& _mapPosition.x < _mapSize.x
+		&& _mapPosition.y >= 0
+		&& _mapPosition.y < _mapSize.y)
 	{
 		return true;
 	}
@@ -179,17 +179,17 @@ void BuildWindow::InputBuildingModeOldScrollUI(const float &_scrollDelta, const 
 	}
 }
 
-void BuildWindow::SetBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition, const bool &_setGround)
+void BuildWindow::SetBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const enum TypesOfCollisions &_collisionID, const sf::Vector2i &_mapPosition)
 {
 	for (int y = 0; y < _game->buildings[_typeOfBuilding].GetSize().y; y++)
 	{
 		for (int x = 0; x < _game->buildings[_typeOfBuilding].GetSize().x; x++)
 		{
-			if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+			if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _mapPosition))
 			{
 				// Set the collisions and buildings id for the building
-				_game->map[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.x;
-				_game->map[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.y;
+				_game->map[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
+				_game->map[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
 				
 				// Set the building sprite
 				switch (_typeOfBuilding)
@@ -219,43 +219,76 @@ void BuildWindow::SetBuildingOnMap(struct Game *_game, const enum Floors &_floor
 				default:
 					break;
 				}
+				
 
+				// Set the collisions and buildings id for the ground
+				_game->map[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
+				_game->map[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
 
-				if (_setGround)
+				// Set the ground sprite adapted to the building selected
+				switch (_typeOfBuilding)
 				{
-					// Set the collisions and buildings id for the ground
-					_game->map[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.x;
-					_game->map[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.y;
-
-					// Set the ground sprite adapted to the building selected
-					switch (_typeOfBuilding)
-					{
-					case BUILDING_VINES:
-						_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 7;
+				case BUILDING_VINES:
+					_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 7;
+					break;
+				case BUILDING_GRAPE_STOMPING_VATS:
+					_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 25;
+					break;
+				case BUILDING_WINE_PRESS:
+					_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 23;
+					break;
+				case BUILDING_WINE_STOREHOUSE:
+					_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 24;
+					break;
+				case BUILDING_STOREHOUSE:
+					_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 22;
+					break;
+				case BUILDING_STALL:
+					_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 20;
+					break;
+					/*case BUILDING_VILLA:
 						break;
-					case BUILDING_GRAPE_STOMPING_VATS:
-						_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 25;
-						break;
-					case BUILDING_WINE_PRESS:
-						_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 23;
-						break;
-					case BUILDING_WINE_STOREHOUSE:
-						_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 24;
-						break;
-					case BUILDING_STOREHOUSE:
-						_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 22;
-						break;
-					case BUILDING_STALL:
-						_game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 20;
-						break;
-						/*case BUILDING_VILLA:
-							break;
-						case BUILDING_DORMITORY:
-							break;*/
-					default:
-						break;
-					}
+					case BUILDING_DORMITORY:
+						break;*/
+				default:
+					break;
 				}
+
+			}
+			else
+			{
+				std::cout << "\n\n\n\tError during building placement\n\n\n";
+			}
+		}
+	}
+}
+
+
+void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition)
+{
+	for (int y = 0; y < _game->buildings[_typeOfBuilding].GetSize().y; y++)
+	{
+		for (int x = 0; x < _game->buildings[_typeOfBuilding].GetSize().x; x++)
+		{
+			if (x == 0 && y == 0)
+			{
+				// Set the collisions and buildings id for the building
+				_game->map[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
+				_game->map[FIRST_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = _typeOfBuilding;
+				_game->map[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _game->map[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x];
+
+
+				// Set the collisions and buildings id for the ground
+				_game->map[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
+				_game->map[ZERO_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = _typeOfBuilding;
+			}
+			else if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _mapPosition))
+			{
+				// Set the collisions and buildings id for the building
+				_game->map[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
+				
+				// Set the collisions and buildings id for the ground
+				_game->map[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
 			}
 			else
 			{
@@ -274,7 +307,7 @@ void BuildWindow::RemoveBuildingOnMap(struct Game *_game, const enum Floors &_fl
 	{
 		for (int x = 0; x < _game->buildings[_typeOfBuilding].GetSize().x; x++)
 		{
-			if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+			if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _mapPosition))
 			{
 				// Set the correct collision
 				_game->map[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.x;
@@ -298,7 +331,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 	this->InputPickUpCaseClicked(*_game->window, true, sf::Vector2f(_game->camera.x, _game->camera.y), _game->scale);
 
 	// Security to avoid an array exit
-	if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+	if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), this->buildingCaseSelected))
 	{
 		if (this->IDChosenBuilding >= 0
 			&& this->IDChosenBuilding < _game->numberOfBuilding)
@@ -314,7 +347,9 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 			else if (_game->money.GetMoneyQuantity() >= _game->buildings[this->IDChosenBuilding].GetConstructionCost())
 			{
 				// Collisions verifications
-				if (_game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] == ROAD)
+				if (_game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] == PATH
+					|| _game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] == STONE_PATH
+					|| _game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y][this->buildingCaseSelected.x] == ROAD)
 				{
 					isAreaEmpty = false;
 				}
@@ -324,10 +359,10 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 					{
 						for (int x = 0; x < _game->buildings[this->IDChosenBuilding].GetSize().x; x++)
 						{
-							if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+							if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), this->buildingCaseSelected))
 							{
 								// Check case occupation concerning collisions
-								if (_game->map[FIRST_FLOOR][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] != NO_COLLISION)
+								if (_game->map[FIRST_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] != NO_COLLISION)
 								{
 									// The case is occupied
 									isAreaEmpty = false;
@@ -337,7 +372,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 									x = _game->buildings[this->IDChosenBuilding].GetSize().x;
 								}
 								// Check case occupation concerning roads
-								else if (_game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] == ROAD)
+								else if (_game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] != NO_COLLISION)
 								{
 									// The case is occupied
 									isAreaEmpty = false;
@@ -425,58 +460,22 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 
 				//----------------------------------------------------------------------------------------------
 
-				_game->buildingsListPlanned.AddBuildingPlannedToList(this->buildingCaseSelected, (enum TypeOfBuilding)this->IDChosenBuilding, _game->buildings[this->IDChosenBuilding].GetSize());
+				if (this->IDChosenBuilding == BUILDING_STALL)
+				{
+					_game->stall->SetConstructionStatus(PLANNED);
+				}
+
+				// We add the current building to the planned list
+				_game->buildingsListPlanned->AddBuildingPlannedToList(this->buildingCaseSelected, (enum TypeOfBuilding)this->IDChosenBuilding, _game->buildings[this->IDChosenBuilding].GetSize());
 				
-				_game->buildWindow.SetBuildingOnMap(_game, FIRST_FLOOR, (enum TypeOfBuilding)this->IDChosenBuilding, sf::Vector3i(BUILDING_GHOST, (enum TypeOfBuilding)this->IDChosenBuilding, RESET), this->buildingCaseSelected);
-
-				//// Deplacer
-				//// Clear the ground by putting sand floor
-				//for (int y = 0; y < _game->buildings[this->IDChosenBuilding].GetSize().y; y++)
-				//{
-				//	for (int x = 0; x < _game->buildings[this->IDChosenBuilding].GetSize().x; x++)
-				//	{
-				//		_game->map[ZERO_FLOOR + SPRITE_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] = 1;
-				//	}
-				//}
-
-				//// Modifier couche pour ID
-				//this->SetOrRemoveBuildingOnMap(_game, true, FIRST_FLOOR, this->IDChosenBuilding, sf::Vector3i(COLLISION, this->IDChosenBuilding, RESET));
-
-				//// Deplacer
-				//// If the building selected is the vines, we add informations to the concerned linkedlist
-				//if (this->IDChosenBuilding == BUILDING_VINES)
-				//{
-				//	_game->vines.AddNewVineToList((sf::Vector2f)this->buildingCaseSelected);
-				//}
-				//else if (this->IDChosenBuilding == BUILDING_GRAPE_STOMPING_VATS)
-				//{
-				//	_game->stompingVats.AddNewBuildingToList((sf::Vector2f)this->buildingCaseSelected);
-				//}
-				//else if (this->IDChosenBuilding == BUILDING_WINE_PRESS)
-				//{
-				//	_game->winePress.AddNewBuildingToList((sf::Vector2f)this->buildingCaseSelected);
-				//}
-				//else if (this->IDChosenBuilding == BUILDING_WINE_STOREHOUSE)
-				//{
-				//	_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)this->buildingCaseSelected);
-				//}
-				//else if (this->IDChosenBuilding == BUILDING_STOREHOUSE)
-				//{
-				//	_game->storehouse.AddNewBuildingToList((sf::Vector2f)this->buildingCaseSelected);
-				//}
-				//else if (this->IDChosenBuilding == BUILDING_STALL)
-				//{
-				//	_game->stall->AddNewBuilding((sf::Vector2f)this->buildingCaseSelected);
-				//}
-
+				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
+				_game->buildWindow.SetGhostBuildingOnMap(_game, (enum TypeOfBuilding)this->IDChosenBuilding, this->buildingCaseSelected);
+				
 
 				// We remove the money needed to construct the building
 				_game->money.SubtractMoney(_game->buildings[this->IDChosenBuilding].GetConstructionCost());
-
-				// Deplacer
-				//// Update the workers path if there is a modification
-				//this->isNewBuildingHasBeenConstructed = true;
-
+				
+				// We change the main character status
 				_game->mainCharacter->SetIsCurrentlyBuilding(true);
 
 				//----------------------------------------------------------------------------------------------
@@ -603,7 +602,7 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 	//std::cout << "Case : " << _game->buildingCaseSelected.x << " & " << _game->buildingCaseSelected.y << std::endl << std::endl;
 
 	// Security to avoid an array exit
-	if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+	if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), this->buildingCaseSelected))
 	{
 		if (this->IDChosenBuilding >= 0
 			&& this->IDChosenBuilding < _game->numberOfBuilding)
@@ -614,10 +613,19 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 			{
 				for (int x = 0; x < _game->buildings[this->IDChosenBuilding].GetSize().x; x++)
 				{
-					if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+					if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), this->buildingCaseSelected))
 					{
 						// Check case occupation concerning collisions
-						if (_game->map[FIRST_FLOOR][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] != NO_COLLISION)
+						if (_game->map[FIRST_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] != NO_COLLISION)
+						{
+							// The case is occupied
+							isAreaEmpty = false;
+
+							// We cut the for loop
+							y = _game->buildings[this->IDChosenBuilding].GetSize().y;
+							x = _game->buildings[this->IDChosenBuilding].GetSize().x;
+						}
+						else if(_game->map[ZERO_FLOOR + COLLISIONS_ID][this->buildingCaseSelected.y - y][this->buildingCaseSelected.x - x] != NO_COLLISION)
 						{
 							// The case is occupied
 							isAreaEmpty = false;
@@ -911,7 +919,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			&& mousePosition.y > SCREEN_HEIGHT - (this->buildingUI.getGlobalBounds().height * 2)
 			&& mousePosition.y < SCREEN_HEIGHT))
 	{
-		if (!_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines)))
+		if (!_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), this->buildingCaseSelected))
 		{
 			BlitString(this->textBuildingCaseOccupied[1], 500, SCREEN_HEIGHT - 100, *_game->window);
 		}
