@@ -72,22 +72,23 @@ public :
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
 
-	std::string GetName();
-	std::string GetDescription();
-	sf::Sprite GetSprite();
-	sf::Sprite GetIcon();
-	sf::Vector2i GetSize();
-	int GetConstructionCost();
-	float GetConstructionTimeCost();
-	float GetProductionTimeCost();
-	float GetDepositingTimeCost();
-	float GetPickupingTimeCost();
-	unsigned int GetRessourceNumberNeeded();
-	unsigned int GetRessourceNumberProduced();
-	int GetRessourceIDNeeded(const unsigned char &_value = 1);
-	int GetRessourceQuantityNeeded(const unsigned char &_value = 1);
-	int GetRessourceIDProduced(const unsigned char &_value = 1);
-	int GetRessourceQuantityProduced(const unsigned char &_value = 1);
+	inline std::string GetName() const { return name; };
+	inline std::string GetDescription() const { return description; };
+	inline sf::Sprite GetSprite() const { return sprite; };
+	inline sf::Sprite GetIcon() const { return icon; };
+	inline sf::Vector2i GetSize() const { return size; };
+	inline int GetConstructionCost() const { return moneyCostToBuild; };
+	inline float GetConstructionTimeCost() const { return timeToBuild; };
+	inline float GetProductionTimeCost() const { return timeToProduce; };
+	inline float GetDepositingTimeCost() const { return timeToDeposeRessources; };
+	inline float GetPickupingTimeCost() const { return timeToPickUpRessources; };
+	inline unsigned int GetRessourceNumberNeeded() const { return numberRessourceNeeded; };
+	inline unsigned int GetRessourceNumberProduced() const { return numberRessourceProduced; };
+	
+	int GetRessourceIDNeeded(const unsigned char &_value = 1) const;
+	int GetRessourceQuantityNeeded(const unsigned char &_value = 1) const;
+	int GetRessourceIDProduced(const unsigned char &_value = 1) const;
+	int GetRessourceQuantityProduced(const unsigned char &_value = 1) const;
 };
 
 

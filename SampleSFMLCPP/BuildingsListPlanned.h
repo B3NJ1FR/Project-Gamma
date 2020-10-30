@@ -13,7 +13,7 @@ private:
 		sf::Vector2i mapPosition;
 
 		sf::Vector2i buildingSize;
-		enum TypeOfBuilding buildingID;
+		int buildingID; // enum TypeOfBuilding
 	};
 
 	LinkedListClass::sLinkedList *listOfBuildingsPlanned;
@@ -31,7 +31,7 @@ public:
 	void AddBuildingPlannedToList(const sf::Vector2i &_mapPosition, const enum TypeOfBuilding &_buildingID, const sf::Vector2i &_buildingSize);
 
 	void DeleteCurrentFirstBuildingInList();
-	bool IsBuildingListIsEmpty();
+	inline bool IsBuildingListIsEmpty();
 };
 
 

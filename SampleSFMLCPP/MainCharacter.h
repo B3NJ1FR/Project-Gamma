@@ -2,6 +2,7 @@
 #define MAIN_CHARACTER__H
 
 #include "Entities.h"
+#include "BuildingsListPlanned.h"
 
 
 class MainCharacter : public Entities

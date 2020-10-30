@@ -4,22 +4,27 @@
 Buildings::Buildings()
 {
 	// Default initialisation
-	this->size = { 0, 0 };
-	this->enterPosition = { 0, 0 };
-	this->exitPosition = { 0, 0 };
+	size = { 0, 0 };
+	enterPosition = { 0, 0 };
+	exitPosition = { 0, 0 };
 
-	this->moneyCostToBuild = RESET;
-	this->timeToBuild = RESET;
-	this->timeToProduce = RESET;
+	id = RESET;
 
-	this->numberRessourceNeeded = RESET;
-	this->numberRessourceProduced = RESET;
+	moneyCostToBuild = RESET;
+	timeToBuild = RESET;
+	timeToProduce = RESET;
 
-	this->ressourceIDNeeded = nullptr;
-	this->ressourceQuantityNeeded = nullptr;
+	timeToPickUpRessources = RESET;
+	timeToDeposeRessources = RESET;
 
-	this->ressourceIDProduced = nullptr;
-	this->ressourceQuantityProduced = nullptr;
+	numberRessourceNeeded = RESET;
+	numberRessourceProduced = RESET;
+
+	ressourceIDNeeded = nullptr;
+	ressourceQuantityNeeded = nullptr;
+
+	ressourceIDProduced = nullptr;
+	ressourceQuantityProduced = nullptr;
 }
 
 
@@ -32,205 +37,135 @@ Buildings::~Buildings()
 void Buildings::SetName(const std::string _name)
 {
 	// Set the building name
-	this->name = _name;
+	name = _name;
 }
 
 void Buildings::SetDescription(std::string _description)
 {
 	// Get the building description
-	this->description = _description;
+	description = _description;
 }
 
 void Buildings::SetSizeCaracteristics(const sf::Vector2i _buildingSize)
 {
 	// Set the building size in term of width and lengh
-	this->size = _buildingSize;
+	size = _buildingSize;
 }
 
 
 void Buildings::SetEntranceCaracteristics(const sf::Vector2i _enterPosition)
 {
 	// Set the building entry position
-	this->enterPosition = _enterPosition;
+	enterPosition = _enterPosition;
 }
 
 
 void Buildings::SetExitCaracteristics(const sf::Vector2i _exitPosition)
 {
 	// Set the building exit position
-	this->exitPosition = _exitPosition;
+	exitPosition = _exitPosition;
 }
 
 
 void Buildings::SetSprite(const std::string _spriteFileName, int _spriteOriginPosition)
 {
 	// Set the building sprite
-	this->sprite = LoadSprite(_spriteFileName, _spriteOriginPosition);
+	sprite = LoadSprite(_spriteFileName, _spriteOriginPosition);
 }
 
 
 void Buildings::SetIcon(const std::string _iconFileName, int _iconOriginPosition)
 {
 	// Set the icon sprite
-	this->icon = LoadSprite(_iconFileName, _iconOriginPosition);
+	icon = LoadSprite(_iconFileName, _iconOriginPosition);
 }
 
 void Buildings::SetConstructionMoneyCost(const int _moneyCost)
 {
 	// Set the construction cost in term of money
-	this->moneyCostToBuild = _moneyCost;
+	moneyCostToBuild = _moneyCost;
 }
 
 
 void Buildings::SetConstructionTimeCost(const float &_timeCost)
 {
 	// Set the construction cost in term of time necessary
-	this->timeToBuild = _timeCost;
+	timeToBuild = _timeCost;
 }
 
 void Buildings::SetProductionTimeCost(const float &_timeCost)
 {
 	// Set the production cost in term of time for each ressource produced
-	this->timeToProduce = _timeCost;
+	timeToProduce = _timeCost;
 }
 
 void Buildings::SetPickupingTimeCost(const float &_timeCost)
 {
 	// Set the construction cost in term of time necessary
-	this->timeToPickUpRessources = _timeCost;
+	timeToPickUpRessources = _timeCost;
 }
 
 void Buildings::SetDepositingTimeCost(const float &_timeCost)
 {
 	// Set the production cost in term of time for each ressource produced
-	this->timeToDeposeRessources = _timeCost;
+	timeToDeposeRessources = _timeCost;
 }
 
 void Buildings::SetRessourceIDNeeded(int *_resssourceID, const unsigned char &_numberRessources)
 {
-	if (this->ressourceIDNeeded != nullptr)
+	if (ressourceIDNeeded != nullptr)
 	{
-		delete this->ressourceIDNeeded;
-		this->ressourceIDNeeded = nullptr;
+		delete ressourceIDNeeded;
+		ressourceIDNeeded = nullptr;
 	}
 
-	this->numberRessourceNeeded = _numberRessources;
+	numberRessourceNeeded = _numberRessources;
 
-	this->ressourceIDNeeded = _resssourceID;
+	ressourceIDNeeded = _resssourceID;
 }
 
 void Buildings::SetRessourceQuantityNeeded(int *_resssourceQuantity)
 {
-	if (this->ressourceQuantityNeeded != nullptr)
+	if (ressourceQuantityNeeded != nullptr)
 	{
-		delete this->ressourceQuantityNeeded;
-		this->ressourceQuantityNeeded = nullptr;
+		delete ressourceQuantityNeeded;
+		ressourceQuantityNeeded = nullptr;
 	}
 
-	this->ressourceQuantityNeeded = _resssourceQuantity;
+	ressourceQuantityNeeded = _resssourceQuantity;
 }
 
 void Buildings::SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources)
 {
-	if (this->ressourceIDProduced != nullptr)
+	if (ressourceIDProduced != nullptr)
 	{
-		delete this->ressourceIDProduced;
-		this->ressourceIDProduced = nullptr;
+		delete ressourceIDProduced;
+		ressourceIDProduced = nullptr;
 	}
 
-	this->numberRessourceProduced = _numberRessources;
+	numberRessourceProduced = _numberRessources;
 
-	this->ressourceIDProduced = _resssourceID;
+	ressourceIDProduced = _resssourceID;
 }
 
 void Buildings::SetRessourceQuantityProduced(int *_resssourceQuantity)
 {
-	if (this->ressourceQuantityProduced != nullptr)
+	if (ressourceQuantityProduced != nullptr)
 	{
-		delete this->ressourceQuantityProduced;
-		this->ressourceQuantityProduced = nullptr;
+		delete ressourceQuantityProduced;
+		ressourceQuantityProduced = nullptr;
 	}
 
-	this->ressourceQuantityProduced = _resssourceQuantity;
-}
-
-std::string Buildings::GetName()
-{
-	// Get the building name
-	return this->name;
-}
-
-std::string Buildings::GetDescription()
-{
-	// Get the building description
-	return this->description;
-}
-
-sf::Sprite Buildings::GetSprite()
-{
-	// Get the building sprite
-	return this->sprite;
-}
-
-sf::Sprite Buildings::GetIcon()
-{
-	// Get the building icon
-	return this->icon;
-}
-
-sf::Vector2i Buildings::GetSize()
-{
-	// Get the building size
-	return this->size;
-}
-
-int Buildings::GetConstructionCost()
-{
-	// Get the building money cost
-	return this->moneyCostToBuild;
+	ressourceQuantityProduced = _resssourceQuantity;
 }
 
 
-float Buildings::GetConstructionTimeCost()
-{
-	// Get the building time cost
-	return this->timeToBuild;
-}
 
-float Buildings::GetProductionTimeCost()
+int Buildings::GetRessourceIDNeeded(const unsigned char &_value) const
 {
-	// Get the production time cost
-	return this->timeToProduce;
-}
-
-float Buildings::GetDepositingTimeCost()
-{
-	// Get the depositing cost in term of time
-	return this->timeToDeposeRessources;
-}
-
-float Buildings::GetPickupingTimeCost()
-{
-	// Get the pickuping cost in term of time necessary
-	return this->timeToPickUpRessources;
-}
-
-unsigned int Buildings::GetRessourceNumberNeeded()
-{
-	return this->numberRessourceNeeded;
-}
-
-
-unsigned int Buildings::GetRessourceNumberProduced()
-{
-	return this->numberRessourceProduced;
-}
-
-int Buildings::GetRessourceIDNeeded(const unsigned char &_value)
-{
-	if (_value - 1 >= 0 && _value - 1 < this->numberRessourceNeeded)
+	if (_value - 1 >= 0 && _value - 1 < numberRessourceNeeded)
 	{
-		return this->ressourceIDNeeded[_value - 1];
+		return ressourceIDNeeded[_value - 1];
 	}
 	else
 	{
@@ -239,11 +174,11 @@ int Buildings::GetRessourceIDNeeded(const unsigned char &_value)
 	}
 }
 
-int Buildings::GetRessourceQuantityNeeded(const unsigned char &_value)
+int Buildings::GetRessourceQuantityNeeded(const unsigned char &_value) const
 {
-	if (_value - 1 >= 0 && _value - 1 < this->numberRessourceNeeded)
+	if (_value - 1 >= 0 && _value - 1 < numberRessourceNeeded)
 	{
-		return this->ressourceQuantityNeeded[_value - 1];
+		return ressourceQuantityNeeded[_value - 1];
 	}
 	else
 	{
@@ -252,11 +187,11 @@ int Buildings::GetRessourceQuantityNeeded(const unsigned char &_value)
 	}
 }
 
-int Buildings::GetRessourceIDProduced(const unsigned char &_value)
+int Buildings::GetRessourceIDProduced(const unsigned char &_value) const
 {
-	if (_value - 1 >= 0 && _value - 1 < this->numberRessourceProduced)
+	if (_value - 1 >= 0 && _value - 1 < numberRessourceProduced)
 	{
-		return this->ressourceIDProduced[_value - 1];
+		return ressourceIDProduced[_value - 1];
 	}
 	else
 	{
@@ -265,11 +200,11 @@ int Buildings::GetRessourceIDProduced(const unsigned char &_value)
 	}
 }
 
-int Buildings::GetRessourceQuantityProduced(const unsigned char &_value)
+int Buildings::GetRessourceQuantityProduced(const unsigned char &_value) const
 {
-	if (_value - 1 >= 0 && _value - 1 < this->numberRessourceProduced)
+	if (_value - 1 >= 0 && _value - 1 < numberRessourceProduced)
 	{
-		return this->ressourceQuantityProduced[_value - 1];
+		return ressourceQuantityProduced[_value - 1];
 	}
 	else
 	{

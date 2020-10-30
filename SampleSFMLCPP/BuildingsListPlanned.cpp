@@ -128,7 +128,7 @@ void BuildingsListPlanned::DeleteCurrentFirstBuildingInList()
 	}
 }
 
-bool BuildingsListPlanned::IsBuildingListIsEmpty()
+inline bool BuildingsListPlanned::IsBuildingListIsEmpty()
 {
 	return ((this->listOfBuildingsPlanned != nullptr) && (this->listOfBuildingsPlanned->first != nullptr)) ? false : true;
 }
