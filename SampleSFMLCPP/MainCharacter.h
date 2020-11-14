@@ -2,7 +2,6 @@
 #define MAIN_CHARACTER__H
 
 #include "Entities.h"
-#include "BuildingsListPlanned.h"
 
 
 class MainCharacter : public Entities
@@ -10,7 +9,7 @@ class MainCharacter : public Entities
 private:
 	sf::Sprite sprite;
 
-	enum WorkerStatus actualStatus;
+	WorkerStatus actualStatus;
 	
 	bool isLauchingMovement; // Temporaire
 	bool isItWorkingPlace;

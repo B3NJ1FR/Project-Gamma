@@ -21,32 +21,32 @@ class Buildings
 {
 protected :
 
-	sf::Vector2i size;
-	sf::Vector2i enterPosition;
-	sf::Vector2i exitPosition;
+	sf::Vector2i m_size;
+	sf::Vector2i m_enterPosition;
+	sf::Vector2i m_exitPosition;
 
-	sf::Sprite sprite;
-	sf::Sprite icon;
+	sf::Sprite m_sprite;
+	sf::Sprite m_icon;
 
-	std::string name;
-	std::string description;
+	std::string m_name;
+	std::string m_description;
 
-	unsigned int id;
+	unsigned int m_id;
 
-	int moneyCostToBuild;
-	float timeToBuild;
-	float timeToProduce;
+	int m_moneyCostToBuild;
+	float m_timeToBuild;
+	float m_timeToProduce;
 
-	float timeToPickUpRessources;
-	float timeToDeposeRessources;
+	float m_timeToPickUpRessources;
+	float m_timeToDeposeRessources;
 
-	unsigned int numberRessourceNeeded;
-	int *ressourceIDNeeded;
-	int *ressourceQuantityNeeded;
+	unsigned int m_numberRessourceNeeded;
+	int *m_ressourceIDNeeded;
+	int *m_ressourceQuantityNeeded;
 
-	unsigned int numberRessourceProduced;
-	int *ressourceIDProduced;
-	int *ressourceQuantityProduced;
+	unsigned int m_numberRessourceProduced;
+	int *m_ressourceIDProduced;
+	int *m_ressourceQuantityProduced;
 
 public :
 
@@ -60,30 +60,30 @@ public :
 	void SetEntranceCaracteristics(const sf::Vector2i _enterPosition);
 	void SetExitCaracteristics(const sf::Vector2i _exitPosition);
 
-	void SetSprite(const std::string _spriteFileName, int _spriteOriginPosition = 0);
-	void SetIcon(const std::string _iconFileName, int _iconOriginPosition = 0);
+	void SetSprite(const std::string& _spriteFileName, int _spriteOriginPosition = 0);
+	void SetIcon(const std::string& _iconFileName, int _iconOriginPosition = 0);
 	void SetConstructionMoneyCost(const int _moneyCost);
-	void SetConstructionTimeCost(const float &_timeCost);
-	void SetProductionTimeCost(const float &_timeCost);
-	void SetPickupingTimeCost(const float &_timeCost = 0);
-	void SetDepositingTimeCost(const float &_timeCost = 0);
+	void SetConstructionTimeCost(const float _timeCost);
+	void SetProductionTimeCost(const float _timeCost);
+	void SetPickupingTimeCost(const float _timeCost = 0);
+	void SetDepositingTimeCost(const float _timeCost = 0);
 	void SetRessourceIDNeeded(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityNeeded(int *_resssourceQuantity = 0);
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
 
-	inline std::string GetName() const { return name; };
-	inline std::string GetDescription() const { return description; };
-	inline sf::Sprite GetSprite() const { return sprite; };
-	inline sf::Sprite GetIcon() const { return icon; };
-	inline sf::Vector2i GetSize() const { return size; };
-	inline int GetConstructionCost() const { return moneyCostToBuild; };
-	inline float GetConstructionTimeCost() const { return timeToBuild; };
-	inline float GetProductionTimeCost() const { return timeToProduce; };
-	inline float GetDepositingTimeCost() const { return timeToDeposeRessources; };
-	inline float GetPickupingTimeCost() const { return timeToPickUpRessources; };
-	inline unsigned int GetRessourceNumberNeeded() const { return numberRessourceNeeded; };
-	inline unsigned int GetRessourceNumberProduced() const { return numberRessourceProduced; };
+	inline std::string GetName() const { return m_name; };
+	inline std::string GetDescription() const { return m_description; };
+	inline sf::Sprite GetSprite() const { return m_sprite; };
+	inline sf::Sprite GetIcon() const { return m_icon; };
+	inline sf::Vector2i GetSize() const { return m_size; };
+	inline int GetConstructionCost() const { return m_moneyCostToBuild; };
+	inline float GetConstructionTimeCost() const { return m_timeToBuild; };
+	inline float GetProductionTimeCost() const { return m_timeToProduce; };
+	inline float GetDepositingTimeCost() const { return m_timeToDeposeRessources; };
+	inline float GetPickupingTimeCost() const { return m_timeToPickUpRessources; };
+	inline unsigned int GetRessourceNumberNeeded() const { return m_numberRessourceNeeded; };
+	inline unsigned int GetRessourceNumberProduced() const { return m_numberRessourceProduced; };
 	
 	int GetRessourceIDNeeded(const unsigned char &_value = 1) const;
 	int GetRessourceQuantityNeeded(const unsigned char &_value = 1) const;

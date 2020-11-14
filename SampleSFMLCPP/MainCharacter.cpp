@@ -10,7 +10,7 @@ MainCharacter::MainCharacter()
 	// A CONFIG / SET TEMPORAIRE
 	mapPosition = sf::Vector2f(10, 10);
 	
-	actualStatus = IDLE;
+	actualStatus = WorkerStatus::IDLE;
 	isLauchingMovement = false;
 	isItWorkingPlace = false;
 
@@ -76,7 +76,7 @@ void MainCharacter::SetMainCharacterEndingPosition(sf::Vector2i _mapPosition, un
 	{
 		// We change the worker's status to working
 		isItWorkingPlace = true;
-		actualBuilding = (enum TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x];
+		actualBuilding = (TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
@@ -84,7 +84,7 @@ void MainCharacter::SetMainCharacterEndingPosition(sf::Vector2i _mapPosition, un
 	{
 		// We change the worker's status to working
 		isItWorkingPlace = true;
-		actualBuilding = (enum TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x];
+		actualBuilding = (TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
@@ -184,7 +184,7 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 			if (isCurrentlyBuilding)
 			{
 				// Test if the list is empty or not
-				if (_game->buildingsListPlanned->IsBuildingListIsEmpty())
+				if (1 == 1/*_game->buildingsListPlanned->IsBuildingListIsEmpty()*/)
 				{
 					isCurrentlyBuilding = false;
 					waitingTimer = RESET;
@@ -350,7 +350,7 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 
 
 					// Test if the list is empty or not
-					if (_game->buildingsListPlanned->IsBuildingListIsEmpty())
+					if (1 == 1/*_game->buildingsListPlanned->IsBuildingListIsEmpty()*/)
 					{
 						isCurrentlyBuilding = false;
 						SetMainCharacterStatus(IDLE);
