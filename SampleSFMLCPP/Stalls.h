@@ -75,7 +75,7 @@ public:
 	sf::Vector2i GetMapPosition();
 
 	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers, Storehouse *_storehouse);
+	void UpdateInternalCycles(class Money *_money, enum CurrentGameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers, Storehouse *_storehouse);
 	void UpdateBuildingSprite(unsigned short ***_map);
 
 

@@ -1,17 +1,17 @@
 #include "LoadingScreen.h"
 
-LoadingScreenClass::LoadingScreenClass()
+LoadingScreen::LoadingScreen()
 {
-	this->loadingPicture = LoadSprite("Data/Assets/Sprites/Menu/LoadingScreen/loadingBackground.png", 0);
+	loadingPicture = LoadSprite("Data/Assets/Sprites/Menu/LoadingScreen/loadingBackground.png", 0);
 }
 
-LoadingScreenClass::~LoadingScreenClass()
+LoadingScreen::~LoadingScreen()
 {
-	delete (this->loadingPicture.getTexture());
+	delete (loadingPicture.getTexture());
 }
 
 
-void LoadingScreenClass::DisplayLoadingScreen(sf::RenderWindow &_window)
+void LoadingScreen::DisplayLoadingScreen(sf::RenderWindow &_window)
 {
 	_window.clear();
 

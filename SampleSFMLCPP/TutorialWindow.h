@@ -9,18 +9,18 @@ class TutorialWindow
 {
 private:
 
-	sf::Sprite backgroundMessage;
+	sf::Sprite m_backgroundMessage;
 
-	std::string *messages;
-	std::string pressSpaceMessage;
+	std::string *m_messages;
+	std::string m_pressSpaceMessage;
 
-	sf::Text text;
-	sf::Text textPressSpace;
+	sf::Text m_text;
+	sf::Text m_textPressSpace;
 
-	short int counterMessages;
-	short int actualMessages;
+	short int m_counterMessages;
+	short int m_actualMessages;
 
-	bool isMessageHasChanged;
+	bool m_isMessageHasChanged;
 
 public:
 	TutorialWindow(sf::Font *_font);
@@ -28,7 +28,7 @@ public:
 
 	void InitTextOfTutorialFromFile();
 
-	void InputTutorialWindow(enum GameState *_state, sf::RenderWindow &_window);
+	void InputTutorialWindow(enum CurrentGameState *_state, sf::RenderWindow &_window);
 	void UpdateTutorialWindow(sf::Font *_font);
 	void DisplayTutorialWindow(sf::RenderWindow &_window);
 };

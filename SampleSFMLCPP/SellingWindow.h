@@ -33,7 +33,7 @@ public:
 	void UpdateQuantityConvertedToSell(Purchasers *_purchasers, const int &_quantityStocked);
 	void UpdateSellingWindowTexts(Purchasers *_purchasers);
 	void DisplaySellingWindow(sf::RenderWindow &_window);
-	void InputSellingWindow(bool *_isOfferAccepted, enum GameState *_state, Stalls *_stall, sf::RenderWindow &_window);
+	void InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window);
 };
 
 

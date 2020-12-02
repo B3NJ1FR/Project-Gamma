@@ -1,12 +1,11 @@
-#ifndef GAME_DEFINITIONS__H
-#define GAME_DEFINITIONS__H
+#pragma once
+
+#include "LoadingScreen.h"
+#include "BuildingManagement.h"
+#include "Map.h"
 
 #include "Money.h"
 #include "TimeManagement.h"
-#include "Vines.h"
-#include "SpecificsBuildings.h"
-#include "Stalls.h"
-#include "Storehouse.h"
 #include "Pathfinding.h"
 #include "WorkersList.h"
 #include "Purchasers.h"
@@ -25,34 +24,7 @@
 
 #define CAMERA_SPEED 5
 
-enum Dimensions
-{
-	COLLISIONS_ID,
-	BUILDING_ID,
-	SPRITE_ID,
-};
-
-enum Floors
-{
-	ZERO_FLOOR,
-	FIRST_FLOOR = 3,
-	SECOND_FLOOR = 6,
-	THIRD_FLOOR = 9,
-};
-
-enum TypesOfCollisions
-{
-	NO_COLLISION,
-	COLLISION,
-	BUILDING_ENTRANCE,
-	BUILDING_EXIT,
-	BUILDING_GHOST,
-	PATH,
-	STONE_PATH,
-	ROAD,
-};
-
-enum GameState
+enum CurrentGameState
 {
 	TUTORIAL_MODE,
 	NORMAL_MODE,
@@ -65,33 +37,24 @@ enum GameState
 };
 
 
+
+
 struct Game
 {
 	sf::RenderWindow *window;
 
-	enum GameState actualGameState;
-	enum GameState previousGameState;
+	enum CurrentGameState actualGameState;
+	enum CurrentGameState previousGameState;
 
 	TutorialWindow *tutorialWindow;
 
 	// Buildings
-	unsigned short numberOfBuilding;
-	Buildings *buildings;
-	Vines vines;
-	SpecificsBuildings stompingVats;
-	SpecificsBuildings winePress;
-	SpecificsBuildings wineStorehouse;
-	Stalls *stall;
-	Storehouse storehouse;
-	sf::Text *buildingsNameTexts;
+	BuildingManagement builds;
 
-	sf::Sprite *spriteArray;
+	sf::Sprite* spriteArray;
 
 	// Map
-	unsigned short ***map;
-	unsigned short numberLayers;
-	unsigned short numberLines;
-	unsigned short numberColumns;
+	Map map;
 
 	// Camera
 	sf::Vector3f camera;
@@ -147,6 +110,6 @@ struct Game
 
 	// Temporary
 	Pathfinding path;
-};
 
-#endif
+	Game(LoadingScreen* _loadingScreen);
+};

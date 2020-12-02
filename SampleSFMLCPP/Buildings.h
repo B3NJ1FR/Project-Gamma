@@ -1,5 +1,4 @@
-#ifndef BUILDINGS__H
-#define BUILDINGS__H
+#pragma once
 
 #include "Common.hpp"
 
@@ -94,4 +93,3 @@ public :
 
 
 
-#endif // !BUILDINGS__H

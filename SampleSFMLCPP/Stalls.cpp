@@ -311,7 +311,7 @@ void Stalls::UpdateBuildingConstruction(const float &_frametime)
 
 
 
-void Stalls::UpdateInternalCycles(class Money *_money, enum GameState *_state, const float &_frametime, Ressources *_ressourceSent, Purchasers *_purchasers, Storehouse *_storehouse)
+void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_state, const float &_frametime, Ressources *_ressourceSent, Purchasers *_purchasers, Storehouse *_storehouse)
 {
 	if (this->constructionState == BUILT)
 	{

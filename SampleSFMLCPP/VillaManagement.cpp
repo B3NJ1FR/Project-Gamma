@@ -30,7 +30,7 @@ VillaManagement::~VillaManagement()
 }
 
 
-void VillaManagement::InputVillaManagement(enum GameState *_state, TimeManagement *_time, sf::RenderWindow &_window)
+void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, TimeManagement *_time, sf::RenderWindow &_window)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 	

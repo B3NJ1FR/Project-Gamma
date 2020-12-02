@@ -1,11 +1,18 @@
-#ifndef COMMON__HPP
-#define COMMON__HPP
+#pragma once
 
 #include "Definitions.hpp"
 
+enum GeneralState
+{
+	MAIN_STATE_MENU,
+	MAIN_STATE_LOAD_GAME,
+	MAIN_STATE_GAME,
+	MAIN_STATE_EXIT,
+};
+
+
 #define TILE_WIDTH 64
 #define TILE_HEIGHT 32
-
 
 // This function allow to precharging the sprites for the pictures that will appear at screen
 // Also, we add the posibility to center the picture origin
@@ -45,6 +52,4 @@ sf::Vector2i ScreenToTileMouse(sf::Vector2f _position, sf::Vector2f _scale);
 float DistanceFormula(const float &_1stX, const float &_2ndX, const float &_1stY, const float &_2ndY);
 float DistanceFormula(const sf::Vector2f &_1stMapPosition, const sf::Vector2f &_2ndMapPosition);
 
-
-#endif // !COMMON__HPP
 

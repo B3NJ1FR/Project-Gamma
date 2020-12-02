@@ -6,148 +6,6 @@
 #include "Pathfinding.h" // Temporaire
 
 
-void MapInitialisation(struct Game *_game)
-{
-	// WARNING : THE MAP IS DEFINED WITH UNSIGNED CHAR -> THE MAP LIMIT WILL BE 255 !
-
-	std::ifstream mapInitialisationFile("Data/Configurations/Settings.data", std::ios::in);
-
-	std::string temporaryString;
-	temporaryString.erase();
-	
-	bool isMapHasBeenDefined = false;
-
-	if (!mapInitialisationFile.is_open())
-	{
-		std::cout << "Error accessing Settings.data file" << std::endl;
-
-		exit(EXIT_FAILURE);
-	}
-
-	while (!mapInitialisationFile.eof())
-	{
-		mapInitialisationFile >> temporaryString;
-
-		if (temporaryString == "MAP"
-			&& isMapHasBeenDefined == false)
-		{
-			// Read the map size infos
-			mapInitialisationFile >> _game->numberColumns >> _game->numberLines >> _game->numberLayers;
-
-			std::cout << "Map size : " << _game->numberColumns << " " << _game->numberLines << " " << _game->numberLayers << std::endl;
-
-			isMapHasBeenDefined = true;
-			temporaryString.erase();
-		}
-	}
-
-	mapInitialisationFile.close();
-
-
-	// Temporary, to define into a config file in the futur
-	/*_game->numberLayers = THIRD_FLOOR;
-	_game->numberLines = 35;
-	_game->numberColumns = 40;*/
-
-	if (isMapHasBeenDefined == true)
-	{
-		_game->map = new unsigned short **[_game->numberLayers];
-
-		for (int i = 0; i < _game->numberLayers; i++)
-		{
-			_game->map[i] = new unsigned short *[_game->numberLines];
-		}
-
-		for (int i = 0; i < _game->numberLayers; i++)
-		{
-			for (int j = 0; j < _game->numberLines; j++)
-			{
-				_game->map[i][j] = new unsigned short[_game->numberColumns];
-			}
-		}
-
-		for (int z = 0; z < _game->numberLayers; z++)
-		{
-			for (int y = 0; y < _game->numberLines; y++)
-			{
-				for (int x = 0; x < _game->numberColumns; x++)
-				{
-					_game->map[z][y][x] = RESET;
-
-					if (z % 3 == BUILDING_ID)
-					{
-						_game->map[z][y][x] = -1;
-					}
-
-					if (z == (ZERO_FLOOR + COLLISIONS_ID) && z % 3 == COLLISIONS_ID)
-					{
-						// Collisions of the road
-						if (y == 4)
-						{
-							_game->map[z][y][x] = ROAD;
-						}
-						else if (y == 5)
-						{
-							_game->map[z][y][x] = ROAD;
-						}
-					}
-
-					if (z == (ZERO_FLOOR + SPRITE_ID) && z % 3 == SPRITE_ID)
-					{
-						// Display of the road
-						if (y == 4)
-						{
-							_game->map[z][y][x] = 5;
-						}
-						else if (y == 5)
-						{
-							_game->map[z][y][x] = 6;
-						}
-						else
-						{
-							_game->map[z][y][x] = rand() % 2 + 1;
-						}
-					}
-
-					if (z == (FIRST_FLOOR + SPRITE_ID))
-					{
-						if (y <= 3)
-						{
-							bool randomNumber(rand() % 2);
-
-							if (randomNumber == 1)
-							{
-								_game->map[z][y][x] = 11;
-								_game->map[z - 2][y][x] = COLLISION;
-							}
-							else
-							{
-								_game->map[z][y][x] = 0;
-							}
-						}
-
-						if (x == 5 && y == 8)
-						{
-							_game->map[z][y][x] = 33;
-							_game->map[z - 2][y][x] = COLLISION;
-							_game->map[z - 1][y][x] = BUILDING_VILLA;
-						}
-						
-					}
-
-				}
-			}
-		}
-	}
-	else
-	{
-		// ERROR LOG
-		std::cout << "ERROR OF MAP DEFINITION\n\n\n";
-	}
-
-	
-}
-
 
 void SpritesInitialisation(struct Game *_game)
 {
@@ -191,7 +49,7 @@ void SpritesInitialisation(struct Game *_game)
 
 	// Dynamic allocation of the array sprite's
 	maximalNumberOfSprites += 1;
-	_game->spriteArray = new sf::Sprite[maximalNumberOfSprites];
+	spriteArray = new sf::Sprite[maximalNumberOfSprites];
 
 	// Reset the reading cursor at the begging
 	spritesFile.seekg(0, std::ios::beg);
@@ -212,7 +70,7 @@ void SpritesInitialisation(struct Game *_game)
 				spritesFile >> temporaryString;
 				
 				std::cout << temporaryID << " - Sprite " << temporaryString << std::endl;
-				_game->spriteArray[temporaryID] = LoadSprite(temporaryString, temporaryNumber);
+				spriteArray[temporaryID] = LoadSprite(temporaryString, temporaryNumber);
 			}
 			else
 			{
@@ -356,54 +214,53 @@ void RessourcesInitialisation(struct Game *_game)
 }
 
 
-void GameInitialisation(struct Game *_game, struct LoadingScreen *_loadingScreen)
+void GameInitialisation(Game *_game, LoadingScreen *_loadingScreen)
 {
-	// Display the loading screen during the game loading
-	_loadingScreen->loadingScreen.DisplayLoadingScreen(*_game->window);
+	//// Display the loading screen during the game loading
+	//_loadingScreen->DisplayLoadingScreen(*_game->window);
 
 
-	_game->actualGameState = TUTORIAL_MODE;
-	//_game->actualGameState = NORMAL_MODE;
+	//_game->actualGameState = TUTORIAL_MODE;
 
-	_game->numberOfBuilding = RESET;
-	
-	InitBuildingsFromFile(_game);
-	MapInitialisation(_game);
-	SpritesInitialisation(_game);
-	TextsInit(_game);
-	RessourcesInitialisation(_game);
+	//_game->numberOfBuilding = RESET;
+	//
+	//InitBuildingsFromFile(_game);
+	//MapInitialisation(_game);
+	//SpritesInitialisation(_game);
+	//TextsInit(_game);
+	//RessourcesInitialisation(_game);
 
-	_game->time = new TimeManagement(&_game->charlemagneFont);
-	_game->tutorialWindow = new TutorialWindow(&_game->charlemagneFont);
-	_game->workersList = new WorkersList;
-	_game->mainCharacter = new MainCharacter;
-	_game->stall = new Stalls(&_game->buildings[BUILDING_STALL]);
-	_game->sellingWindow = new SellingWindow(&_game->generalFont);
-	_game->buildingsListPlanned = new BuildingsListPlanned();
-	_game->purchasers = nullptr;
+	//_game->time = new TimeManagement(&_game->charlemagneFont);
+	//_game->tutorialWindow = new TutorialWindow(&_game->charlemagneFont);
+	//_game->workersList = new WorkersList;
+	//_game->mainCharacter = new MainCharacter;
+	//_game->stall = new Stalls(&_game->buildings[BUILDING_STALL]);
+	//_game->sellingWindow = new SellingWindow(&_game->generalFont);
+	//_game->buildingsListPlanned = new BuildingsListPlanned();
+	//_game->purchasers = nullptr;
 
-	
-	_game->camera.x = -15;
-	_game->camera.y = -15;
-	_game->camera.z = RESET;
-	
-	_game->scale.x = 1 / (1 - _game->camera.z);
-	_game->scale.y = 1 / (1 - _game->camera.z);
+	//
+	//_game->camera.x = -15;
+	//_game->camera.y = -15;
+	//_game->camera.z = RESET;
+	//
+	//_game->scale.x = 1 / (1 - _game->camera.z);
+	//_game->scale.y = 1 / (1 - _game->camera.z);
 
-	_game->isDebuggerModeActive = false;
-
+	//_game->isDebuggerModeActive = false;
 
 
-	_game->vines.InitialisationVines(&_game->buildings[BUILDING_VINES]);
-	_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[BUILDING_GRAPE_STOMPING_VATS]);
-	_game->winePress.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_PRESS]);
-	_game->wineStorehouse.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_STOREHOUSE]);
-	_game->storehouse.InitialisationStorehouse(&_game->buildings[BUILDING_STOREHOUSE]);
 
-	_game->workersList->InitialisationWorkersList();
+	//_game->vines.InitialisationVines(&_game->buildings[BUILDING_VINES]);
+	//_game->stompingVats.InitialisationSpeBuilding(&_game->buildings[BUILDING_GRAPE_STOMPING_VATS]);
+	//_game->winePress.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_PRESS]);
+	//_game->wineStorehouse.InitialisationSpeBuilding(&_game->buildings[BUILDING_WINE_STOREHOUSE]);
+	//_game->storehouse.InitialisationStorehouse(&_game->buildings[BUILDING_STOREHOUSE]);
+
+	//_game->workersList->InitialisationWorkersList();
 
 
-	_game->buildingsNameTexts = nullptr;
-	_game->buildWindow.InitTextsBuildWindow(&_game->charlemagneFont);
+	//_game->buildingsNameTexts = nullptr;
+	//_game->buildWindow.InitTextsBuildWindow(&_game->charlemagneFont);
 }
 

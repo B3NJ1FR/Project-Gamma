@@ -4,14 +4,17 @@
 MainMenu::MainMenu()
 {
 	// Initialisation of the sprites
-	this->background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 0);
-	this->buttonNewGame = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_New_Game.png", 1);
-	this->buttonContinue = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
-	this->buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
-	this->buttonQuit = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
-	this->warningMessage = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Message.png", 0);
+	logo = LoadSprite("Data/Assets/Vindemia Antiquus_Icon.png", 0);
+	background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 0);
+	buttonNewGame = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_New_Game.png", 1);
+	buttonContinue = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
+	buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
+	buttonQuit = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
+	buttonValidate = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
+	buttonReturn = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
+	warningMessage = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Message.png", 0);
 
-	this->font.loadFromFile("Data/Fonts/arial.ttf");
+	font.loadFromFile("Data/Fonts/arial.ttf");
 
 
 	// ***************** VERSION NUMBER LOADING ***************** //
@@ -46,31 +49,35 @@ MainMenu::MainMenu()
 
 	settingsFile.close();
 
-	this->versionNumber = nullptr;
-	this->versionNumber = new sf::Text;
+	versionNumber = nullptr;
+	versionNumber = new sf::Text;
+	resolution = nullptr;
+	temporaryResolution = -1;
 
-	LoadTextString(this->versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
+	LoadTextString(versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
 
-	this->isNewGameClicked = false;
-	this->isLoadGameClicked = false;
+	isNewGameClicked = false;
+	isLoadGameClicked = false;
 }
 
 MainMenu::~MainMenu()
 {
 	// Deletion of the sprites
-	delete (this->background.getTexture());
-	delete (this->buttonNewGame.getTexture());
-	delete (this->buttonContinue.getTexture());
-	delete (this->buttonOptions.getTexture());
-	delete (this->buttonQuit.getTexture());
-	delete (this->warningMessage.getTexture());
+	delete (background.getTexture());
+	delete (buttonNewGame.getTexture());
+	delete (buttonContinue.getTexture());
+	delete (buttonOptions.getTexture());
+	delete (buttonQuit.getTexture());
+	delete (warningMessage.getTexture());
 
-	//delete this->versionNumber;
-	this->versionNumber = nullptr;
+	delete versionNumber;
+	versionNumber = nullptr;
+	delete resolution;
+	resolution = nullptr;
 }
 
 
-void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_generalState)
+void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_generalState, System *_system)
 {
 	sf::Event event;
 	while (_window.pollEvent(event))
@@ -87,9 +94,9 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 			if (event.key.code == sf::Keyboard::Escape)
 			{
 				exit(EXIT_SUCCESS);
-			}
+			}			
 
-			if (event.key.code == sf::Keyboard::Space && this->isNewGameClicked == true)
+			if (event.key.code == sf::Keyboard::Space && isNewGameClicked == true)
 			{
 				*(_generalState) = MAIN_STATE_GAME;
 
@@ -99,50 +106,97 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 
 		if (event.type == sf::Event::MouseButtonPressed)
 		{
-			// If we pressed the escape key, we close the game
-			if (event.key.code == sf::Mouse::Left)
+			if (state != MAIN_MENU_OPTIONS)
 			{
-				sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
-
-				// Button New Game
-				if (mousePostionAtScreen.x > 400 - (this->buttonNewGame.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < 400 + (this->buttonNewGame.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y > 200 - (this->buttonNewGame.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < 200 + (this->buttonNewGame.getGlobalBounds().height / 2))
+				if (event.key.code == sf::Mouse::Left)
 				{
-					std::cout << "\n\nLaunching a new game...\n\n\n";
-					this->isNewGameClicked = true;
-					this->isLoadGameClicked = false;
+					sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
+
+					// Button New Game
+					if (mousePostionAtScreen.x > 400 - (buttonNewGame.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < 400 + (buttonNewGame.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > 200 - (buttonNewGame.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < 200 + (buttonNewGame.getGlobalBounds().height / 2))
+					{
+						std::cout << "\n\nLaunching a new game...\n\n\n";
+						isNewGameClicked = true;
+						isLoadGameClicked = false;
+					}
+
+					// Button Continue
+					if (mousePostionAtScreen.x > 400 - (buttonContinue.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < 400 + (buttonContinue.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > 400 - (buttonContinue.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < 400 + (buttonContinue.getGlobalBounds().height / 2))
+					{
+						std::cout << "\n\nLaunching old game...\n\n\n";
+						isNewGameClicked = false;
+						isLoadGameClicked = true;
+					}
+
+					// Button Options	
+					if (mousePostionAtScreen.x > 400 - (buttonOptions.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < 400 + (buttonOptions.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > 600 - (buttonOptions.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < 600 + (buttonOptions.getGlobalBounds().height / 2))
+					{
+						std::cout << "\n\nOptions ...\n\n\n";
+						state = MAIN_MENU_OPTIONS;
+
+						resolution = new sf::Text;
+						LoadTextString(resolution, _system->listOfScreenResolutions[_system->currentScreenResolution], &this->font, 40, sf::Color::Black, 1);
+					}
+
+					// Button Quit
+					if (mousePostionAtScreen.x > 400 - (buttonQuit.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < 400 + (buttonQuit.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > 900 - (buttonQuit.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < 900 + (buttonQuit.getGlobalBounds().height / 2))
+					{
+						std::cout << "\n\nSee you soon !\n\n\n";
+						this->~MainMenu();
+						_window.close();
+						exit(EXIT_SUCCESS);
+					}
 				}
-
-				// Button Continue
-				if (mousePostionAtScreen.x > 400 - (this->buttonNewGame.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < 400 + (this->buttonNewGame.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y > 400 - (this->buttonNewGame.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < 400 + (this->buttonNewGame.getGlobalBounds().height / 2))
+			}
+			else
+			{
+				if (event.key.code == sf::Mouse::Left)
 				{
-					std::cout << "\n\nLaunching old game...\n\n\n";
-					this->isNewGameClicked = false;
-					this->isLoadGameClicked = true;
-				}
+					sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
 
-				// Button Options	
-				if (mousePostionAtScreen.x > 400 - (this->buttonOptions.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < 400 + (this->buttonOptions.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y > 600 - (this->buttonOptions.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < 600 + (this->buttonOptions.getGlobalBounds().height / 2))
-				{
-					std::cout << "\n\nOptions ...\n\n\n";
-				}
+					// Change resolution displayed
+					if (mousePostionAtScreen.x > 400 - 100
+						&& mousePostionAtScreen.x < 400 + 100
+						&& mousePostionAtScreen.y > 200 - 30
+						&& mousePostionAtScreen.y < 200 + 30)
+					{
+						temporaryResolution = (temporaryResolution == -1) ? _system->currentScreenResolution + 1 : (temporaryResolution + 1) % SR_NUMBER_MAX;
+						
+						LoadTextString(resolution, _system->listOfScreenResolutions[temporaryResolution], &this->font, 40, sf::Color::Black, 1);
+					}
 
-				// Button Quit
-				if (mousePostionAtScreen.x > 400 - (this->buttonQuit.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < 400 + (this->buttonQuit.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y > 900 - (this->buttonQuit.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < 900 + (this->buttonQuit.getGlobalBounds().height / 2))
-				{
-					std::cout << "\n\nSee you soon !\n\n\n";
-					exit(EXIT_SUCCESS);
+
+					// Button Validate
+					if (mousePostionAtScreen.x > 400 - (buttonValidate.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < 400 + (buttonValidate.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > 600 - (buttonValidate.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < 600 + (buttonValidate.getGlobalBounds().height / 2))
+					{
+						_system->ChangeWindowResolution(_system->FindWindowResolution((ListOfResolutions)temporaryResolution),
+														(ListOfResolutions)temporaryResolution);
+					}
+
+					// Button Return
+					if (mousePostionAtScreen.x > 400 - (buttonReturn.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < 400 + (buttonReturn.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > 900 - (buttonReturn.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < 900 + (buttonReturn.getGlobalBounds().height / 2))
+					{
+						state = MAIN_MENU_OPERATIONAL;
+					}
+
 				}
 			}
 		}
@@ -152,7 +206,7 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 
 void MainMenu::UpdateMainMenu(enum GeneralState *_generalState)
 {
-	if (this->isLoadGameClicked == true)
+	if (isLoadGameClicked == true)
 	{
 		*(_generalState) = MAIN_STATE_LOAD_GAME;
 
@@ -166,31 +220,64 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
 	_window.clear();
 
 	// Blit the background
-	BlitSprite(this->background, 0, 0, 0, _window);
+	BlitSprite(background, 0, 0, 0, _window);
 
 
 	// Blit the logo
+	BlitSprite(logo, 1920 - logo.getGlobalBounds().width - 20, 0, 0, _window);
 
 
 
 	// Blit the buttons
-	BlitSprite(this->buttonNewGame, 400, 200, 0, _window);
-	BlitSprite(this->buttonContinue, 400, 400, 0, _window);
-	BlitSprite(this->buttonOptions, 400, 600, 0, _window);
-	BlitSprite(this->buttonQuit, 400, 900, 0, _window);
+	BlitSprite(buttonNewGame, 400, 200, 0, _window);
+	BlitSprite(buttonContinue, 400, 400, 0, _window);
+	BlitSprite(buttonOptions, 400, 600, 0, _window);
+	BlitSprite(buttonQuit, 400, 900, 0, _window);
 
 
 	// Blit the version number
-	if (this->versionNumber != nullptr)
+	if (versionNumber != nullptr)
 	{
-		BlitString(*this->versionNumber, _window);
+		BlitString(*versionNumber, _window);
 	}
 
 
 
 	if (this->isNewGameClicked == true)
 	{
-		BlitSprite(this->warningMessage, 0, 0, 0, _window);
+		BlitSprite(warningMessage, 0, 0, 0, _window);
+	}
+
+	_window.display();
+
+}
+
+
+void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window)
+{
+	_window.clear();
+
+	// Blit the background
+	BlitSprite(background, 0, 0, 0, _window);
+
+
+	// Blit the logo
+	BlitSprite(logo, 1920 - logo.getGlobalBounds().width - 20, 0, 0, _window);
+
+	if (resolution != nullptr)
+	{
+		BlitString(*resolution, 400, 200, _window);
+	}
+
+	// Blit the buttons
+	BlitSprite(buttonValidate, 400, 600, 0, _window);
+	BlitSprite(buttonReturn, 400, 900, 0, _window);
+
+
+	// Blit the version number
+	if (versionNumber != nullptr)
+	{
+		BlitString(*versionNumber, _window);
 	}
 
 	_window.display();
@@ -199,15 +286,28 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
 
 
 
-void MainMenuState(Data *_data)
+void MainMenu::MainMenuState(System *_system, enum GeneralState *_state)
 {
 	// Input
-	_data->mainMenu->menu.InputMainMenu(_data->system->window, &_data->state);
+	InputMainMenu(_system->window, _state, _system);
 
 	// Update
-	_data->mainMenu->menu.UpdateMainMenu(&_data->state);
+	UpdateMainMenu(_state);
 
 	// Display
-	_data->mainMenu->menu.DisplayMainMenu(_data->system->window);
-	
+	switch (state)
+	{
+	case MAIN_MENU_OPERATIONAL:
+		DisplayMainMenu(_system->window);
+		break;
+	case MAIN_MENU_OPTIONS:
+		DisplayMainMenuOptions(_system->window);
+		break;
+	case MAIN_MENU_EXIT:
+		DisplayMainMenu(_system->window);
+		break;
+	default:
+		DisplayMainMenu(_system->window);
+		break;
+	}
 }

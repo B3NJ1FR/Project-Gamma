@@ -3,24 +3,27 @@
 
 TutorialWindow::TutorialWindow(sf::Font *_font)
 {
-	this->backgroundMessage = LoadSprite("Data/Assets/Sprites/Menu/TutorialWindow/backgroundMessage.png", 1);
-	this->actualMessages = RESET;
-	this->counterMessages = RESET;
-	this->isMessageHasChanged = true;
+	m_backgroundMessage = LoadSprite("Data/Assets/Sprites/Menu/TutorialWindow/backgroundMessage.png", 1);
+	m_actualMessages = RESET;
+	m_counterMessages = RESET;
+	m_isMessageHasChanged = true;
 
-	this->messages = nullptr;
-	this->pressSpaceMessage = "Press Space to Continue";
+	m_messages = nullptr;
+	m_pressSpaceMessage = "Press Space to Continue";
 
 
-	this->InitTextOfTutorialFromFile();
+	InitTextOfTutorialFromFile();
 	
-	LoadTextString(&this->text, this->messages[this->actualMessages], _font, 18, sf::Color::Black, 1);
-	LoadTextString(&this->textPressSpace, this->pressSpaceMessage, _font, 17, sf::Color::Black, 1);
+	LoadTextString(&m_text, m_messages[m_actualMessages], _font, 18, sf::Color::Black, 1);
+	LoadTextString(&m_textPressSpace, m_pressSpaceMessage, _font, 17, sf::Color::Black, 1);
 }
 
 TutorialWindow::~TutorialWindow()
 {
-
+	if (m_messages != nullptr)
+	{
+		delete m_messages;
+	}
 }
 
 void TutorialWindow::InitTextOfTutorialFromFile()
@@ -44,15 +47,15 @@ void TutorialWindow::InitTextOfTutorialFromFile()
 
 		if (temporaryString == "NEW_MESSAGE")
 		{
-			this->counterMessages++;
+			m_counterMessages++;
 		}
 	}
 
-	if (this->counterMessages != 0)
+	if (m_counterMessages != 0)
 	{
-		std::string *finalString = new std::string[this->counterMessages];
+		std::string *finalString = new std::string[m_counterMessages];
 
-		for (int i = 0; i < this->counterMessages; i++)
+		for (int i = 0; i < m_counterMessages; i++)
 		{
 			finalString[i].erase();
 		}
@@ -82,19 +85,24 @@ void TutorialWindow::InitTextOfTutorialFromFile()
 
 
 
-		for (int i = 0; i < this->counterMessages; i++)
+		for (int i = 0; i < m_counterMessages; i++)
 		{
 			std::cout << finalString[i] << std::endl << std::endl;
 		}
 
-		this->messages = finalString;
+		m_messages = finalString;
+
+		if (finalString != nullptr)
+		{
+			delete[] finalString;
+		}
 	}
 	
 	tutorialFile.close();
 }
 
 
-void TutorialWindow::InputTutorialWindow(enum GameState *_state, sf::RenderWindow &_window)
+void TutorialWindow::InputTutorialWindow(enum CurrentGameState *_state, sf::RenderWindow &_window)
 {
 	sf::Event event;
 	while (_window.pollEvent(event))
@@ -116,10 +124,10 @@ void TutorialWindow::InputTutorialWindow(enum GameState *_state, sf::RenderWindo
 			// If we pressed the escape key, we close the game
 			if (event.key.code == sf::Keyboard::Space)
 			{
-				if (this->actualMessages + 1 <= this->counterMessages - 1)
+				if (m_actualMessages + 1 <= m_counterMessages - 1)
 				{
-					this->actualMessages += 1;
-					this->isMessageHasChanged = true;
+					m_actualMessages += 1;
+					m_isMessageHasChanged = true;
 				}
 				else
 				{
@@ -133,22 +141,22 @@ void TutorialWindow::InputTutorialWindow(enum GameState *_state, sf::RenderWindo
 
 void TutorialWindow::UpdateTutorialWindow(sf::Font *_font)
 {
-	if (this->isMessageHasChanged == true
-		&& this->actualMessages <= this->counterMessages - 1)
+	if (m_isMessageHasChanged == true
+		&& m_actualMessages <= m_counterMessages - 1)
 	{
-		this->messages[this->actualMessages] = ConvertStringIntoParagraph(this->messages[this->actualMessages], NUMBER_OF_CARACTERS_PER_LINE);
+		m_messages[m_actualMessages] = ConvertStringIntoParagraph(m_messages[m_actualMessages], NUMBER_OF_CARACTERS_PER_LINE);
 
-		LoadTextString(&this->text, this->messages[this->actualMessages], _font, 18, sf::Color::Black, 1);
+		LoadTextString(&m_text, m_messages[m_actualMessages], _font, 18, sf::Color::Black, 1);
 
-		this->isMessageHasChanged = false;
+		m_isMessageHasChanged = false;
 	}
 }
 
 
 void TutorialWindow::DisplayTutorialWindow(sf::RenderWindow &_window)
 {
-	BlitSprite(this->backgroundMessage, this->backgroundMessage.getGlobalBounds().width, SCREEN_HEIGHT - this->backgroundMessage.getGlobalBounds().height, 0, _window);
+	BlitSprite(m_backgroundMessage, m_backgroundMessage.getGlobalBounds().width, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height, 0, _window);
 	
-	BlitString(this->text, this->backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - this->backgroundMessage.getGlobalBounds().height - 10, _window);
-	BlitString(this->textPressSpace, this->backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - this->backgroundMessage.getGlobalBounds().height + 95, _window);
+	BlitString(m_text, m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height - 10, _window);
+	BlitString(m_textPressSpace, m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height + 95, _window);
 }

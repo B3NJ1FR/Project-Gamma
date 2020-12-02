@@ -1,23 +1,15 @@
-#ifndef LOADING_SCREEN__H
-#define LOADING_SCREEN__H
+#pragma once
 
 #include "Common.hpp"
 
-class LoadingScreenClass
+class LoadingScreen
 {
 private :
 	sf::Sprite loadingPicture;
 
 public :
-	LoadingScreenClass();
-	~LoadingScreenClass();
+	LoadingScreen();
+	~LoadingScreen();
 
 	void DisplayLoadingScreen(sf::RenderWindow &_window);
 };
-
-struct LoadingScreen
-{
-	LoadingScreenClass loadingScreen;
-};
-
-#endif // !LOADING_SCREEN__H

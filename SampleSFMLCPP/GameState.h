@@ -1,6 +1,6 @@
-#ifndef GAME_STATE__H
-#define GAME_STATE__H
+#pragma once
 
-void GameState(struct Game *_game, struct LoadingScreen *_loadingScreen, enum GeneralState *_generalState);
+#include "Common.hpp"
+#include "LoadingScreen.h"
 
-#endif
+void GameState(Game *_game, LoadingScreen *_loadingScreen, enum GeneralState *_generalState);

@@ -71,9 +71,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\Executables\x64\Debug</OutDir>
+    <TargetName>VindemiaAntiquus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\Executables\x64\Release</OutDir>
+    <TargetName>VindemiaAntiquus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\Executables\x64\Debug</OutDir>
@@ -150,12 +152,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuildingManagement.cpp" />
     <ClCompile Include="Buildings.cpp" />
     <ClCompile Include="BuildingsListPlanned.cpp" />
     <ClCompile Include="BuildWindow.cpp" />
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Data.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="ErrorsLogFile.cpp" />
+    <ClCompile Include="GameDefinitions.cpp" />
     <ClCompile Include="GameDisplay.cpp" />
     <ClCompile Include="GameInitialisation.cpp" />
     <ClCompile Include="GameInput.cpp" />
@@ -169,6 +174,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Money.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="PauseWindow.cpp" />
@@ -179,6 +185,7 @@
     <ClCompile Include="SpecificsBuildings.cpp" />
     <ClCompile Include="Stalls.cpp" />
     <ClCompile Include="Storehouse.cpp" />
+    <ClCompile Include="System.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="TutorialWindow.cpp" />
     <ClCompile Include="VillaManagement.cpp" />
@@ -187,10 +194,12 @@
     <ClCompile Include="WorkersList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuildingManagement.h" />
     <ClInclude Include="Buildings.h" />
     <ClInclude Include="BuildingsListPlanned.h" />
     <ClInclude Include="BuildWindow.h" />
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="Data.h" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="Entities.h" />
     <ClInclude Include="ErrorsLogFile.h" />
@@ -207,6 +216,7 @@
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Money.h" />
     <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="PauseWindow.h" />
@@ -217,6 +227,7 @@
     <ClInclude Include="SpecificsBuildings.h" />
     <ClInclude Include="Stalls.h" />
     <ClInclude Include="Storehouse.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="TutorialWindow.h" />
     <ClInclude Include="VillaManagement.h" />

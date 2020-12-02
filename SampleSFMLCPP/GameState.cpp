@@ -10,7 +10,7 @@
 
 
 
-void GameState(struct Game *_game, struct LoadingScreen *_loadingScreen, enum GeneralState *_generalState)
+void GameState(Game *_game, LoadingScreen *_loadingScreen, enum GeneralState *_generalState)
 {
 	// Initialisation
 	GameInitialisation(_game, _loadingScreen);

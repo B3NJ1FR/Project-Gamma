@@ -139,7 +139,7 @@ void SellingWindow::DisplaySellingWindow(sf::RenderWindow &_window)
 }
 
 
-void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum GameState *_state, Stalls *_stall, sf::RenderWindow &_window)
+void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
