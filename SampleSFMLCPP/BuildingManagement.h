@@ -9,9 +9,9 @@
 #include "Storehouse.h"
 
 
-class BuildingManagement
+struct BuildingManagement
 {
-private :
+public :
 	unsigned short numberOfBuilding;
 	Buildings* buildings;
 	Vines vines;
@@ -22,7 +22,6 @@ private :
 	Storehouse storehouse;
 	sf::Text* buildingsNameTexts;
 
-public:
 	// Constructor & Destructor
 	BuildingManagement();
 	~BuildingManagement();

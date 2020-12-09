@@ -52,18 +52,18 @@ void SavingGame::SaveTheGame(struct Game *_game)
 		{
 			for (int x = 0; x < _game->numberColumns; x++)
 			{
-				saveFile.write((char *)&_game->map[z][y][x], sizeof(unsigned short));
+				saveFile.write((char *)&_game->m_map[z][y][x], sizeof(unsigned short));
 			}
 		}
 	}
 
 
 	// Saving of the ressources data
-	saveFile.write((char *) &_game->numberTypesOfRessources, sizeof(unsigned int));
+	saveFile.write((char *) &_game->m_numberTypesOfRessources, sizeof(unsigned int));
 
-	for (int i = 0; i < _game->numberTypesOfRessources; i++)
+	for (int i = 0; i < _game->m_numberTypesOfRessources; i++)
 	{
-		int quantity = _game->ressources[i].GetQuantityOwned();
+		int quantity = _game->m_ressources[i].GetQuantityOwned();
 		saveFile.write((char *) &quantity, sizeof(int));
 	}
 
@@ -74,12 +74,12 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 
 	// Saving of the time elapsed
-	_game->time->SavingTimeFromFile(&saveFile);
+	_game->m_time->SavingTimeFromFile(&saveFile);
 
 
 	// Saving of the workers data
 	//saveFile.write((char *) &_game->workersList, sizeof(WorkersList)); // Marche pas
-	_game->workersList->SavingWorkersListForFile(&saveFile);
+	_game->m_workersList->SavingWorkersListForFile(&saveFile);
 
 
 	// Saving of the vines data
@@ -99,9 +99,9 @@ void SavingGame::SaveTheGame(struct Game *_game)
 	if (((_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 		&& _game->stall->GetIsNewMerchantNeeded() == false)
 		|| _game->stall->GetStatus() == STALL_PURCHASER_IS_PRESENT)
-		&& _game->purchasers != nullptr)
+		&& _game->m_purchasers != nullptr)
 	{
-		_game->purchasers->SavingPurchasersForFile(&saveFile);
+		_game->m_purchasers->SavingPurchasersForFile(&saveFile);
 	}
 
 

@@ -1,5 +1,4 @@
-#ifndef TUTORIAL_WINDOW__H
-#define TUTORIAL_WINDOW__H
+#pragma once
 
 #include "Common.hpp"
 
@@ -23,16 +22,14 @@ private:
 	bool m_isMessageHasChanged;
 
 public:
+	// Constructor & Destructor
 	TutorialWindow(sf::Font *_font);
 	~TutorialWindow();
 
+	// Methods
 	void InitTextOfTutorialFromFile();
 
 	void InputTutorialWindow(enum CurrentGameState *_state, sf::RenderWindow &_window);
 	void UpdateTutorialWindow(sf::Font *_font);
 	void DisplayTutorialWindow(sf::RenderWindow &_window);
 };
-
-
-
-#endif // !TUTORIAL_WINDOW__H

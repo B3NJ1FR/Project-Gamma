@@ -10,28 +10,6 @@
 
 
 
-void GameState(Game *_game, LoadingScreen *_loadingScreen, enum GeneralState *_generalState)
-{
-	// Initialisation
-	GameInitialisation(_game, _loadingScreen);
-
-	if (*(_generalState) == MAIN_STATE_LOAD_GAME)
-	{
-		// Load the game with the last save from the Save.txt's file
-		_game->load.LoadTheGame(_game);
-
-		*(_generalState) = MAIN_STATE_GAME;
-	}
-
-	while (*(_generalState) == MAIN_STATE_GAME)
-	{
-		// Input
-		GameInput(_game);
-
-		// Update
-		GameUpdate(_game);
-
-		// Display
-		GameDisplay(_game);
-	}
-}
+// -------------------------------------------------------------------------
+//								A DESTROY
+// -------------------------------------------------------------------------

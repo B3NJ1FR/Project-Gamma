@@ -67,11 +67,11 @@ void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _
 
 void GameInput(struct Game *_game)
 {
-	if (_game->actualGameState != PAUSE_WINDOW
-		&& _game->actualGameState != TUTORIAL_MODE)
+	if (_game->m_actualGameState != PAUSE_WINDOW
+		&& _game->m_actualGameState != TUTORIAL_MODE)
 	{
 		sf::Event event;
-		while (_game->window->pollEvent(event))
+		while (_game->m_window->pollEvent(event))
 		{
 			// Closing by pressing the Close button
 			if (event.type == sf::Event::Closed)
@@ -82,31 +82,31 @@ void GameInput(struct Game *_game)
 			if (event.type == sf::Event::KeyPressed)
 			{
 				// If we pressed the escape key, we close the game
-				if (event.key.code == sf::Keyboard::Escape && _game->actualGameState == VILLA_MANAGEMENT)
+				if (event.key.code == sf::Keyboard::Escape && _game->m_actualGameState == VILLA_MANAGEMENT)
 				{
-					_game->actualGameState = NORMAL_MODE;
+					_game->m_actualGameState = NORMAL_MODE;
 				}
 				else if (event.key.code == sf::Keyboard::Escape)
 				{
-					_game->actualGameState = PAUSE_WINDOW;
+					_game->m_actualGameState = PAUSE_WINDOW;
 				}
 
 				// When the B keybutton is pressed, we change the state of the game
-				if (event.key.code == sf::Keyboard::B && _game->actualGameState == VILLA_MANAGEMENT)
+				if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == VILLA_MANAGEMENT)
 				{
-					_game->actualGameState = BUILD_MODE;
+					_game->m_actualGameState = BUILD_MODE;
 				}
-				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == BUILD_MODE)
+				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == BUILD_MODE)
 				{
-					_game->mainCharacter->SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->map);
-					_game->mainCharacter->SetMainCharacterStatus(IDLE, true);
+					_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
+					_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
 
-					_game->actualGameState = NORMAL_MODE;
-					_game->time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+					_game->m_actualGameState = NORMAL_MODE;
+					_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
 				}
-				else if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
+				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == NORMAL_MODE)
 				{
-					_game->mainCharacter->SetIsMainCharacterSelected(_game->mainCharacter->GetIsMainCharacterSelected() ? false : true);
+					_game->m_mainCharacter->SetIsMainCharacterSelected(_game->m_mainCharacter->GetIsMainCharacterSelected() ? false : true);
 				}
 
 				/*if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
@@ -137,7 +137,7 @@ void GameInput(struct Game *_game)
 
 				if (event.key.code == sf::Keyboard::F3)
 				{
-					_game->isDebuggerModeActive = !_game->isDebuggerModeActive;
+					_game->m_isDebuggerModeActive = !_game->m_isDebuggerModeActive;
 				}
 
 
@@ -164,20 +164,20 @@ void GameInput(struct Game *_game)
 				// Set the game at the Pause State	
 				if (event.key.code == sf::Keyboard::P)
 				{
-					if (_game->time->GetTypeOfAcceleration() != GAME_PAUSE)
+					if (_game->m_time->GetTypeOfAcceleration() != GAME_PAUSE)
 					{
-						_game->time->SetTypeOfAcceleration(GAME_PAUSE);
+						_game->m_time->SetTypeOfAcceleration(GAME_PAUSE);
 					}
 					else
 					{
-						_game->time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+						_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
 					}
 				}
 
 
 				// Touche placé sur O, mais à changer	
 				if (event.key.code == sf::Keyboard::O
-					&& _game->actualGameState == NORMAL_MODE)
+					&& _game->m_actualGameState == NORMAL_MODE)
 				{
 					// Prix temporaire
 					if (_game->money.GetMoneyQuantity() - 1000 >= 0)
@@ -187,13 +187,13 @@ void GameInput(struct Game *_game)
 						sf::Vector2i value = { rand() % _game->numberColumns, rand() % _game->numberLines };
 
 						// We spawn the workers on the road
-						while (_game->map[ZERO_FLOOR + COLLISIONS_ID][value.y][value.x] != ROAD)
+						while (_game->m_map[ZERO_FLOOR + COLLISIONS_ID][value.y][value.x] != ROAD)
 						{
 							value.x = rand() % _game->numberColumns;
 							value.y = rand() % _game->numberLines;
 						}
 
-						_game->workersList->AddNewWorkersToList(sf::Vector2f(value));
+						_game->m_workersList->AddNewWorkersToList(sf::Vector2f(value));
 					}
 				}
 
@@ -225,13 +225,13 @@ void GameInput(struct Game *_game)
 				if (event.key.code == sf::Keyboard::Add
 					|| event.key.code == sf::Keyboard::A)
 				{
-					_game->workersList->ChangeWorkerNumberSelectedAdd();
+					_game->m_workersList->ChangeWorkerNumberSelectedAdd();
 				}
 				// TEST
 				if (event.key.code == sf::Keyboard::Subtract
 					|| event.key.code == sf::Keyboard::E)
 				{
-					_game->workersList->ChangeWorkerNumberSelectedSubtract();
+					_game->m_workersList->ChangeWorkerNumberSelectedSubtract();
 				}
 
 
@@ -244,40 +244,40 @@ void GameInput(struct Game *_game)
 					_game->load.LoadTheGame(_game);
 				}
 
-				if (_game->actualGameState == BUILD_MODE
+				if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num1)
 				{
-					_game->buildWindow.SetIDChosenBuilding(BUILDING_VINES);
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_VINES);
 					std::cout << "You've choose the vines\n";
 				}
-				else if (_game->actualGameState == BUILD_MODE
+				else if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num2)
 				{
-					_game->buildWindow.SetIDChosenBuilding(BUILDING_GRAPE_STOMPING_VATS);
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_GRAPE_STOMPING_VATS);
 					std::cout << "You've choose the stomping vats\n";
 				}
-				else if (_game->actualGameState == BUILD_MODE
+				else if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num3)
 				{
-					_game->buildWindow.SetIDChosenBuilding(BUILDING_WINE_PRESS);
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_WINE_PRESS);
 					std::cout << "You've choose the wine press\n";
 				}
-				else if (_game->actualGameState == BUILD_MODE
+				else if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num4)
 				{
-					_game->buildWindow.SetIDChosenBuilding(BUILDING_WINE_STOREHOUSE);
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_WINE_STOREHOUSE);
 					std::cout << "You've choose the wine storehouse\n";
 				}
-				else if (_game->actualGameState == BUILD_MODE
+				else if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num5)
 				{
-					_game->buildWindow.SetIDChosenBuilding(BUILDING_STOREHOUSE);
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_STOREHOUSE);
 					std::cout << "You've choose the \n";
 				}
-				else if (_game->actualGameState == BUILD_MODE
+				else if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num6)
 				{
-					_game->buildWindow.SetIDChosenBuilding(BUILDING_STALL);
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_STALL);
 					std::cout << "You've choose the stall\n";
 				}
 
@@ -285,46 +285,46 @@ void GameInput(struct Game *_game)
 
 			if (event.type == sf::Event::MouseWheelScrolled)
 			{
-				if (_game->actualGameState != BUILD_MODE)
+				if (_game->m_actualGameState != BUILD_MODE)
 				{
-					if (_game->camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
+					if (_game->m_camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->m_camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
 					{
 						int profondeur = 1;
 
-						_game->camera.z += event.mouseWheelScroll.delta / 20;
+						_game->m_camera.z += event.mouseWheelScroll.delta / 20;
 
-						_game->scale.x = 1 / (profondeur - _game->camera.z);
-						_game->scale.y = 1 / (profondeur - _game->camera.z);
+						_game->m_scale.x = 1 / (profondeur - _game->m_camera.z);
+						_game->m_scale.y = 1 / (profondeur - _game->m_camera.z);
 					}
 				}
 				else
 				{
-					sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
+					sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->m_window);
 
 					// We verify that mouse is in the building UI area
-					if (mousePosition.x > SCREEN_WIDTH - _game->buildWindow.GetBuildingUI().getGlobalBounds().width
+					if (mousePosition.x > SCREEN_WIDTH - _game->m_buildWindow.GetBuildingUI().getGlobalBounds().width
 						&& mousePosition.x < SCREEN_WIDTH
-						&& mousePosition.y > SCREEN_HEIGHT - _game->buildWindow.GetBuildingUI().getGlobalBounds().height
+						&& mousePosition.y > SCREEN_HEIGHT - _game->m_buildWindow.GetBuildingUI().getGlobalBounds().height
 						&& mousePosition.y < SCREEN_HEIGHT)
 					{
 						// We check if the scrolling doesn't leave the area
 						// The max is dynamically calculated in function of the number of building present in the game
-						if (_game->buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) >= -130 * (_game->numberOfBuilding / 2) + 80
-							&& (_game->buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) <= 80))
+						if (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) >= -130 * (_game->numberOfBuilding / 2) + 80
+							&& (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) <= 80))
 						{
-							_game->buildWindow.SetScrollBuildingList(_game->buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5));
+							_game->m_buildWindow.SetScrollBuildingList(_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5));
 						}
 					}
 					else
 					{
-						if (_game->camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
+						if (_game->m_camera.z + (event.mouseWheelScroll.delta / 20) >= MAX_DEZOOMING && (_game->m_camera.z + (event.mouseWheelScroll.delta / 20) <= MAX_ZOOMING))
 						{
 							int profondeur = 1;
 
-							_game->camera.z += event.mouseWheelScroll.delta / 20;
+							_game->m_camera.z += event.mouseWheelScroll.delta / 20;
 
-							_game->scale.x = 1 / (profondeur - _game->camera.z);
-							_game->scale.y = 1 / (profondeur - _game->camera.z);
+							_game->m_scale.x = 1 / (profondeur - _game->m_camera.z);
+							_game->m_scale.y = 1 / (profondeur - _game->m_camera.z);
 						}
 					}
 				}
@@ -335,32 +335,32 @@ void GameInput(struct Game *_game)
 			{
 				if (event.mouseButton.button == sf::Mouse::Left)
 				{
-					if (_game->actualGameState == NORMAL_MODE)
+					if (_game->m_actualGameState == NORMAL_MODE)
 					{
-						_game->buildWindow.InputPickUpCaseClicked(*_game->window, false, sf::Vector2f(_game->camera.x, _game->camera.y), _game->scale);
+						_game->m_buildWindow.InputPickUpCaseClicked(*_game->m_window, false, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
 
 						// Security to avoid an array exit
-						if (_game->buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->buildWindow.GetBuildingCheckboxSelected()))
+						if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->m_buildWindow.GetBuildingCheckboxSelected()))
 						{
-							if (_game->mainCharacter->GetIsMainCharacterSelected() == true)
+							if (_game->m_mainCharacter->GetIsMainCharacterSelected() == true)
 							{
-								_game->mainCharacter->SetMainCharacterEndingPosition(_game->buildWindow.GetBuildingCheckboxSelected(), _game->map);
+								_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), _game->m_map);
 
-								_game->mainCharacter->SetMainCharacterStatus(IDLE, true);
+								_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
 							}
 							else
 							{
-								_game->workersList->WorkerListSetEndPosition(_game->buildWindow.GetBuildingCheckboxSelected(), _game->map);
+								_game->m_workersList->WorkerListSetEndPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), _game->m_map);
 							}
 						}
 
-						_game->time->InputTimeManagement(*_game->window);
+						_game->m_time->InputTimeManagement(*_game->m_window);
 					}
-					else if (_game->actualGameState == BUILD_MODE)
+					else if (_game->m_actualGameState == BUILD_MODE)
 					{
-						_game->buildWindow.InputBuildingModeOldScrollUI(_game->buildWindow.GetScrollBuildingList(), *_game->window);
+						_game->m_buildWindow.InputBuildingModeOldScrollUI(_game->m_buildWindow.GetScrollBuildingList(), *_game->m_window);
 					}
-					else if (_game->actualGameState == TEST_PATHFINDING_MODE)
+					else if (_game->m_actualGameState == TEST_PATHFINDING_MODE)
 					{
 
 						//sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->window);
@@ -427,9 +427,9 @@ void GameInput(struct Game *_game)
 						//	}
 						//}					
 					}
-					else if (_game->actualGameState == VILLA_MANAGEMENT)
+					else if (_game->m_actualGameState == VILLA_MANAGEMENT)
 					{
-						_game->villaManagement.InputVillaManagement(&_game->actualGameState, _game->time, *_game->window);
+						_game->villaManagement.InputVillaManagement(&_game->m_actualGameState, _game->m_time, *_game->m_window);
 					}
 				}
 			}
@@ -438,28 +438,28 @@ void GameInput(struct Game *_game)
 		}
 
 
-		CameraInputs(&_game->camera, _game->time->GetContinuousFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
+		CameraInputs(&_game->m_camera, _game->m_time->GetContinuousFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
 
 
 		// Case clicked in build mode
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (_game->actualGameState == BUILD_MODE)
+			if (_game->m_actualGameState == BUILD_MODE)
 			{
-				_game->buildWindow.InputBuildWindow(_game);
+				_game->m_buildWindow.InputBuildWindow(_game);
 			}
-			else if (_game->actualGameState == SELLING_WINDOW)
+			else if (_game->m_actualGameState == SELLING_WINDOW)
 			{
-				_game->sellingWindow->InputSellingWindow(&_game->stall->isOfferAccepted, &_game->actualGameState, _game->stall, *_game->window);
+				_game->m_sellingWindow->InputSellingWindow(&_game->stall->isOfferAccepted, &_game->m_actualGameState, _game->stall, *_game->m_window);
 			}
 		}
 	}
-	else if (_game->actualGameState == PAUSE_WINDOW)
+	else if (_game->m_actualGameState == PAUSE_WINDOW)
 	{
 		_game->pauseWindow.InputPauseWindow(_game, &_game->save, &_game->load);
 	}
-	else if (_game->actualGameState == TUTORIAL_MODE)
+	else if (_game->m_actualGameState == TUTORIAL_MODE)
 	{
-		_game->tutorialWindow->InputTutorialWindow(&_game->actualGameState, *_game->window);
+		_game->m_tutorialWindow->InputTutorialWindow(&_game->m_actualGameState, *_game->m_window);
 	}
 }

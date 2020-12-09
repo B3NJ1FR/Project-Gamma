@@ -64,8 +64,8 @@ public :
 	void SetConstructionMoneyCost(const int _moneyCost);
 	void SetConstructionTimeCost(const float _timeCost);
 	void SetProductionTimeCost(const float _timeCost);
-	void SetPickupingTimeCost(const float _timeCost = 0);
-	void SetDepositingTimeCost(const float _timeCost = 0);
+	void SetPickupingTimeCost(const float _timeCost = 0.0f);
+	void SetDepositingTimeCost(const float _timeCost = 0.0f);
 	void SetRessourceIDNeeded(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityNeeded(int *_resssourceQuantity = 0);
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);

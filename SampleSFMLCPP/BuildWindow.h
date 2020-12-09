@@ -1,7 +1,7 @@
-#ifndef BUILD_WINDOW__H
-#define BUILD_WINDOW__H
+#pragma once
 
 #include "Common.hpp"
+#include "GameDefinitions.h"
 
 #define BUILD_WINDOW_HELP_NB_OF_TEXTS 5
 
@@ -18,56 +18,56 @@ enum BuildWindowTextBuildingHelps
 class BuildWindow
 {
 private:
-	int IDChosenBuilding;
-	int previousIDChosenBuilding;
-	sf::Vector2i buildingCaseSelected;
-	bool isBuildingCaseOccupied;
-	sf::Text *textBuildingCaseOccupied;
-	sf::Text *textBuildingHelps;
+	int m_IDChosenBuilding;
+	int m_previousIDChosenBuilding;
+	sf::Vector2i m_buildingCaseSelected;
+	bool m_isBuildingCaseOccupied;
+	sf::Text *m_textBuildingCaseOccupied;
+	sf::Text *m_textBuildingHelps;
 
-	sf::Sprite buildingUI;
-	sf::Sprite buildingUIclosed;
-	sf::Sprite buildingUIdestroyBuildings;
-	sf::Sprite blackFilter;
-	sf::Sprite contour;
-	sf::Sprite enteringArrow;
-	sf::Sprite exitingArrow;
-	sf::Sprite separationLine;
-	float scrollBuildingList;
+	sf::Sprite m_buildingUI;
+	sf::Sprite m_buildingUIclosed;
+	sf::Sprite m_buildingUIdestroyBuildings;
+	sf::Sprite m_blackFilter;
+	sf::Sprite m_contour;
+	sf::Sprite m_enteringArrow;
+	sf::Sprite m_exitingArrow;
+	sf::Sprite m_separationLine;
+	float m_scrollBuildingList;
 
 public:
+	// Constructor & Destructor
 	BuildWindow();
 	~BuildWindow();
 	
 	void InitTextsBuildWindow(sf::Font *_font);
 	void InitSpritesBuildWindow();
 
-	sf::Sprite GetBuildingUI();
-	sf::Sprite GetBuildingUIClosed();
-	sf::Vector2i GetBuildingCheckboxSelected();
-	float GetScrollBuildingList();
-	int GetIDChosenBuilding();
-	bool GetIsBuildingCaseOccupied();
+	// Getters
+	inline sf::Sprite GetBuildingUI() const;
+	inline sf::Sprite GetBuildingUIClosed() const;
+	inline sf::Vector2i GetBuildingCheckboxSelected() const;
+	inline float GetScrollBuildingList() const;
+	inline int GetIDChosenBuilding() const;
+	inline bool GetIsBuildingCaseOccupied() const;
 
+	// Setters
 	void SetScrollBuildingList(const float &_scrollBuildingList);
 	void SetIDChosenBuilding(const int &_buildingID);
 
+	// Methods
 	bool IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize, const sf::Vector2i &_mapPosition);
 
 	void InputBuildingModeOldScrollUI(const float &_scrollDelta, const sf::RenderWindow &_window);
 	void InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale);
 	
-	void SetBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const enum TypesOfCollisions &_collisionID, const sf::Vector2i &_mapPosition);
-	void SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
-	void RemoveBuildingOnMap(struct Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition);
+	void SetBuildingOnMap(Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const enum TypesOfCollisions &_collisionID, const sf::Vector2i &_mapPosition);
+	void SetGhostBuildingOnMap(Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
+	void RemoveBuildingOnMap(Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition);
 	
-	void UpdateTextsBuildWindow(struct Game *_game);
+	void UpdateTextsBuildWindow(Game *_game);
 
-	void InputBuildWindow(struct Game *_game);
-	void UpdateBuildWindow(struct Game *_game);
-	void DisplayBuildWindow(struct Game *_game);
+	void InputBuildWindow(Game *_game);
+	void UpdateBuildWindow(Game *_game);
+	void DisplayBuildWindow(Game *_game);
 };
-
-
-
-#endif // !BUILD_WINDOW__H

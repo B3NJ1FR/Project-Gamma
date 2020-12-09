@@ -37,7 +37,7 @@ void PauseWindow::DisplayPauseWindow(sf::RenderWindow &_window)
 void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, LoadingGame *_load)
 {
 	sf::Event event;
-	while (_game->window->pollEvent(event))
+	while (_game->m_window->pollEvent(event))
 	{
 		// Closing by pressing the Close button
 		if (event.type == sf::Event::Closed)
@@ -50,29 +50,29 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 			// If we pressed the escape key, we close the game
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				if (_game->previousGameState == TUTORIAL_MODE)
+				if (_game->m_previousGameState == TUTORIAL_MODE)
 				{
-					_game->actualGameState = TUTORIAL_MODE;
+					_game->m_actualGameState = TUTORIAL_MODE;
 				}
-				else if (_game->previousGameState == NORMAL_MODE)
+				else if (_game->m_previousGameState == NORMAL_MODE)
 				{
-					_game->actualGameState = NORMAL_MODE;
+					_game->m_actualGameState = NORMAL_MODE;
 				}
-				else if (_game->previousGameState == BUILD_MODE)
+				else if (_game->m_previousGameState == BUILD_MODE)
 				{
-					_game->actualGameState = BUILD_MODE;
+					_game->m_actualGameState = BUILD_MODE;
 				}
-				else if (_game->previousGameState == SELLING_WINDOW)
+				else if (_game->m_previousGameState == SELLING_WINDOW)
 				{
-					_game->actualGameState = SELLING_WINDOW;
+					_game->m_actualGameState = SELLING_WINDOW;
 				}
-				else if (_game->previousGameState == VILLA_MANAGEMENT)
+				else if (_game->m_previousGameState == VILLA_MANAGEMENT)
 				{
-					_game->actualGameState = VILLA_MANAGEMENT;
+					_game->m_actualGameState = VILLA_MANAGEMENT;
 				}
-				else if (_game->previousGameState == ESTATE_DATA_N_STATISTICS)
+				else if (_game->m_previousGameState == ESTATE_DATA_N_STATISTICS)
 				{
-					_game->actualGameState = ESTATE_DATA_N_STATISTICS;
+					_game->m_actualGameState = ESTATE_DATA_N_STATISTICS;
 				}
 			}
 		}
@@ -82,7 +82,7 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 			// If we pressed the escape key, we close the game
 			if (event.key.code == sf::Mouse::Left)
 			{
-				sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(*_game->window);
+				sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(*_game->m_window);
 
 				// Button Resume
 				if (mousePostionAtScreen.x > SCREEN_WIDTH / 2 - (this->resumeButton.getGlobalBounds().width / 2)
@@ -90,29 +90,29 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 					&& mousePostionAtScreen.y > SCREEN_HEIGHT / 6 - (this->resumeButton.getGlobalBounds().height / 2)
 					&& mousePostionAtScreen.y < SCREEN_HEIGHT / 6 + (this->resumeButton.getGlobalBounds().height / 2))
 				{
-					if (_game->previousGameState == TUTORIAL_MODE)
+					if (_game->m_previousGameState == TUTORIAL_MODE)
 					{
-						_game->actualGameState = TUTORIAL_MODE;
+						_game->m_actualGameState = TUTORIAL_MODE;
 					}
-					else if (_game->previousGameState == NORMAL_MODE)
+					else if (_game->m_previousGameState == NORMAL_MODE)
 					{
-						_game->actualGameState = NORMAL_MODE;
+						_game->m_actualGameState = NORMAL_MODE;
 					}
-					else if (_game->previousGameState == BUILD_MODE)
+					else if (_game->m_previousGameState == BUILD_MODE)
 					{
-						_game->actualGameState = BUILD_MODE;
+						_game->m_actualGameState = BUILD_MODE;
 					}
-					else if (_game->previousGameState == SELLING_WINDOW)
+					else if (_game->m_previousGameState == SELLING_WINDOW)
 					{
-						_game->actualGameState = SELLING_WINDOW;
+						_game->m_actualGameState = SELLING_WINDOW;
 					}
-					else if (_game->previousGameState == VILLA_MANAGEMENT)
+					else if (_game->m_previousGameState == VILLA_MANAGEMENT)
 					{
-						_game->actualGameState = VILLA_MANAGEMENT;
+						_game->m_actualGameState = VILLA_MANAGEMENT;
 					}
-					else if (_game->previousGameState == ESTATE_DATA_N_STATISTICS)
+					else if (_game->m_previousGameState == ESTATE_DATA_N_STATISTICS)
 					{
-						_game->actualGameState = ESTATE_DATA_N_STATISTICS;
+						_game->m_actualGameState = ESTATE_DATA_N_STATISTICS;
 					}
 				}
 

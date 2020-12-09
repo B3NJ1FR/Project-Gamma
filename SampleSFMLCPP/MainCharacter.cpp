@@ -1,28 +1,26 @@
 #include "MainCharacter.h"
-#include "GameDefinitions.h"
-#include "BuildingsListPlanned.h"
 
 
 MainCharacter::MainCharacter()
 {
-	sprite = LoadSprite("Data/Assets/Sprites/Entities/Main_Character.png", 5);
+	m_sprite = LoadSprite("Data/Assets/Sprites/Entities/Main_Character.png", 5);
 
 	// A CONFIG / SET TEMPORAIRE
-	mapPosition = sf::Vector2f(10, 10);
+	m_mapPosition = sf::Vector2f(10, 10);
 	
-	actualStatus = WorkerStatus::IDLE;
-	isLauchingMovement = false;
-	isItWorkingPlace = false;
+	m_actualStatus = WorkerStatus::IDLE;
+	m_isLauchingMovement = false;
+	m_isItWorkingPlace = false;
 
-	buildingTimer = RESET;
-	waitingTimer = RESET;
+	m_buildingTimer = RESET;
+	m_waitingTimer = RESET;
 
 	isPressingEnd = false;
 	isPressingStart = false;
 
 
-	isMainCharacterSelected = true;
-	isCurrentlyBuilding = false;
+	m_isMainCharacterSelected = true;
+	m_isCurrentlyBuilding = false;
 
 
 	std::cout << "Ouvrier initialisé\n\n";
@@ -30,175 +28,179 @@ MainCharacter::MainCharacter()
 
 MainCharacter::~MainCharacter()
 {
-
+	if (m_targetedBuilding != nullptr)
+	{
+		delete[] m_targetedBuilding;
+	}
 }
 
 
-void MainCharacter::InitPathfinding(struct Game *_game)
+void MainCharacter::InitPathfinding(Game *_game)
 {
-	if (isLauchingMovement == true)
+	if (m_isLauchingMovement == true)
 	{
-		if (path != nullptr)
+		if (m_path != nullptr)
 		{
-			delete path;
-			path = nullptr;
+			delete m_path;
+			m_path = nullptr;
 		}
 
-		path = new Pathfinding;
+		m_path = new Pathfinding;
 
-		path->InitMapCopyPathfinding(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->map, (FIRST_FLOOR + COLLISIONS_ID)); // TEMPORAIRE
+		m_path->InitMapCopyPathfinding(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _game->m_map.GetMap(), (FIRST_FLOOR + COLLISIONS_ID)); // TEMPORAIRE
 
-		path->SetPathStartingPosition((sf::Vector2i)mapPosition); // TEMPORAIRE
-		path->SetPathEndingPosition((sf::Vector2i)mapEndPosition); // TEMPORAIRE
+		m_path->SetPathStartingPosition((sf::Vector2i)m_mapPosition); // TEMPORAIRE
+		m_path->SetPathEndingPosition((sf::Vector2i)m_mapEndPosition); // TEMPORAIRE
 	}
 }
 
 
 void MainCharacter::SetMainCharacterPosition(const sf::Vector2f &_mapPosition)
 {
-	mapPosition = _mapPosition;
+	m_mapPosition = _mapPosition;
 }
 
 
-void MainCharacter::SetMainCharacterEndingPosition(sf::Vector2i _mapPosition, unsigned short ***_map)
+void MainCharacter::SetMainCharacterEndingPosition(const sf::Vector2i& _mapPosition, Map *_map)
 {
-	if (_mapPosition.x >= 0 && _mapPosition.y >= 0)
+	if (_mapPosition.x >= 0 && _mapPosition.y >= 0
+		&& _mapPosition.x < _map->GetNumberOfColumns() && _mapPosition.y < _map->GetNumberOfLines())
 	{
-		mapEndPosition = (sf::Vector2f)_mapPosition;
+		m_mapEndPosition = (sf::Vector2f)_mapPosition;
 	}
 
-	//
-	// CRASH SORTIE DE TABLEAU A CAUSE DE X > 100000
-	//
-
 	// If this place is a building
-	if (_map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] >= 0)
+	if (_map->GetMap()[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x] >= 0)
 	{
 		// We change the worker's status to working
-		isItWorkingPlace = true;
-		actualBuilding = (TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x];
+		m_isItWorkingPlace = true;
+		m_actualBuilding = (TypeOfBuilding)_map->GetMap()[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
-	else if (_map[ZERO_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] >= 0)
+	else if (_map->GetMap()[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x] >= 0)
 	{
 		// We change the worker's status to working
-		isItWorkingPlace = true;
-		actualBuilding = (TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x];
+		m_isItWorkingPlace = true;
+		m_actualBuilding = (TypeOfBuilding)_map->GetMap()[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
 	else
 	{
-		isItWorkingPlace = false;
+		m_isItWorkingPlace = false;
 	}
 }
 
 void MainCharacter::SetSpriteScale(const sf::Vector2f &_newScale)
 {
-	sprite.setScale(sf::Vector2f(_newScale.x * 1.3f, _newScale.y * 1.3f));
+	m_sprite.setScale(sf::Vector2f(_newScale.x * 1.3f, _newScale.y * 1.3f));
 }
 
 void MainCharacter::SetMainCharacterStatus(const enum WorkerStatus &_newStatus, const bool &_isLaunchingMovement)
 {
-	actualStatus = _newStatus;
+	m_actualStatus = _newStatus;
 
 	if (_isLaunchingMovement == true)
 	{
-		isLauchingMovement = true;
+		m_isLauchingMovement = true;
 	}
 }
 
 void MainCharacter::SetIsMainCharacterSelected(const bool &_isMainCharacterSelected)
 {
-	isMainCharacterSelected = _isMainCharacterSelected;
+	m_isMainCharacterSelected = _isMainCharacterSelected;
 }
 
 void MainCharacter::SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace)
 {
-	isItWorkingPlace = _isItWorkingPlace;
+	m_isItWorkingPlace = _isItWorkingPlace;
 }
 
 void MainCharacter::SetIsCurrentlyBuilding(const bool &_isCurrentlyBuilding)
 {
-	isCurrentlyBuilding = _isCurrentlyBuilding;
+	m_isCurrentlyBuilding = _isCurrentlyBuilding;
 }
 
 
 
-sf::Vector2f MainCharacter::GetMainCharacterPosition()
+sf::Vector2f MainCharacter::GetMainCharacterPosition() const
 {
-	return mapPosition;
+	return m_mapPosition;
 }
 
-bool MainCharacter::IsMainCharacterPosition(const sf::Vector2i &_mapPosition)
+
+sf::Vector2f MainCharacter::GetMainCharacterEndingPosition() const
 {
-	return (sf::Vector2i(mapPosition) == _mapPosition) ? true : false;
+	return m_mapEndPosition;
 }
 
-sf::Vector2f MainCharacter::GetMainCharacterEndingPosition()
+sf::Sprite MainCharacter::GetSprite() const
 {
-	return mapEndPosition;
+	return m_sprite;
 }
 
-sf::Sprite MainCharacter::GetSprite()
+bool MainCharacter::GetIsMainCharacterSelected() const
 {
-	return sprite;
+	return m_isMainCharacterSelected;
 }
 
-bool MainCharacter::GetIsMainCharacterSelected()
+enum WorkerStatus MainCharacter::GetWorkerStatus() const
 {
-	return isMainCharacterSelected;
+	return m_actualStatus;
 }
 
-enum WorkerStatus MainCharacter::GetWorkerStatus()
+bool MainCharacter::GetIsCurrentlyBuilding() const
 {
-	return actualStatus;
+	return m_isCurrentlyBuilding;
 }
 
-bool MainCharacter::GetIsCurrentlyBuilding()
+
+
+bool MainCharacter::IsMainCharacterPosition(const sf::Vector2i& _mapPosition) const
 {
-	return isCurrentlyBuilding;
+	return (sf::Vector2i(m_mapPosition) == _mapPosition) ? true : false;
 }
 
-void MainCharacter::UpdatePathAndActivities(struct Game *_game)
+
+void MainCharacter::UpdatePathAndActivities(Game *_game)
 {
 	float speed(RESET);
 
-	switch (actualStatus)
+	switch (m_actualStatus)
 	{
 	case IDLE:
 
-		if (isLauchingMovement == true)
+		if (m_isLauchingMovement == true)
 		{
 			//std::cout << "Changement de status vers Waiting Movement\n";
 
 			SetMainCharacterStatus(WAITING_MOVEMENT);
-			isLauchingMovement = false;
+			m_isLauchingMovement = false;
 		}
 		else
 		{
-			waitingTimer += _game->time->GetFrameTime();
+			m_waitingTimer += _game->m_time->GetFrameTime();
 
 			// If the main character is waiting, but have buildings planned to be built, we check and launch his movement
-			if (isCurrentlyBuilding)
+			if (m_isCurrentlyBuilding)
 			{
 				// Test if the list is empty or not
 				if (1 == 1/*_game->buildingsListPlanned->IsBuildingListIsEmpty()*/)
 				{
-					isCurrentlyBuilding = false;
-					waitingTimer = RESET;
+					m_isCurrentlyBuilding = false;
+					m_waitingTimer = RESET;
 				}
 				else
 				{
-					if (waitingTimer > 3)
+					if (m_waitingTimer > 3)
 					{
 						// Set the position of the next building plannified
-						SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->map);
+						SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
 
 						SetMainCharacterStatus(IDLE, true);
 
-						waitingTimer = RESET;
+						m_waitingTimer = RESET;
 					}
 				}
 			}
@@ -210,20 +212,20 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 	case WAITING_MOVEMENT:
 
 		//std::cout << "WAITING MOVEMENT\n";
-		path->MainStatePathfinding();
+		m_path->MainStatePathfinding();
 
 		// In the case that we find a way, we start to move
-		if (path->GetActualStatus() == PATHFINDING_FIND_WAY_FIRST
-			|| path->GetActualStatus() == PATHFINDING_FIND_WAY)
+		if (m_path->GetActualStatus() == PATHFINDING_FIND_WAY_FIRST
+			|| m_path->GetActualStatus() == PATHFINDING_FIND_WAY)
 		{
 			SetMainCharacterStatus(MOVEMENT);
 		}
 		// In the case that we don't find any way to join the target, we stay where we're
-		else if (path->GetActualStatus() == PATHFINDING_FIND_NO_WAY)
+		else if (m_path->GetActualStatus() == PATHFINDING_FIND_NO_WAY)
 		{
 			SetMainCharacterStatus(IDLE);
-			delete path;
-			path = nullptr;
+			delete m_path;
+			m_path = nullptr;
 		}
 
 		break;
@@ -231,35 +233,35 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 	case MOVEMENT:
 
 		// Speed modification depending on the type of soil
-		if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)mapPosition.y][(int)mapPosition.x] == PATH)
+		if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
 		{
-			speed = _game->time->GetFrameTime() * 2.25f;
+			speed = _game->m_time->GetFrameTime() * 2.25f;
 		}
-		else if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)mapPosition.y][(int)mapPosition.x] == STONE_PATH)
+		else if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
 		{
-			speed = _game->time->GetFrameTime() * 3.5f;
+			speed = _game->m_time->GetFrameTime() * 3.5f;
 		}
-		else if (_game->map[ZERO_FLOOR + COLLISIONS_ID][(int)mapPosition.y][(int)mapPosition.x] == ROAD)
+		else if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
 		{
-			speed = _game->time->GetFrameTime() * 5;
+			speed = _game->m_time->GetFrameTime() * 5;
 		}
 		else
 		{
-			speed = _game->time->GetFrameTime() * 1.5f;
+			speed = _game->m_time->GetFrameTime() * 1.5f;
 		}
 
 		//std::cout << "MOVEMENT\n";
-		path->WalkProcess(&mapPosition, speed);
+		m_path->WalkProcess(&m_mapPosition, speed);
 
 
 
 		// If the path ask to be deleted, that mean that the character has reached his destination
-		if (path->GetActualStatus() == PATHFINDING_NEED_TO_BE_DELETED)
+		if (m_path->GetActualStatus() == PATHFINDING_NEED_TO_BE_DELETED)
 		{
 			// If at the initialisation we find that location is a working place, we change the status of the worker to WORKING
-			if (isItWorkingPlace == true)
+			if (m_isItWorkingPlace == true)
 			{
-				if (isCurrentlyBuilding)
+				if (m_isCurrentlyBuilding)
 				{
 					SetMainCharacterStatus(BUILDING);
 				}
@@ -275,19 +277,19 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 			}
 
 			// We delete the path and init his pointer to null
-			delete path;
-			path = nullptr;
+			delete m_path;
+			m_path = nullptr;
 		}
 
 		break;
 
 	case BUILDING:
-		if (isCurrentlyBuilding == true
-			&& _game->buildingsListPlanned->GetBuildingPositionInMap() == (sf::Vector2i)mapPosition)
+		if (m_isCurrentlyBuilding == true
+			&& _game->buildingsListPlanned->GetBuildingPositionInMap() == (sf::Vector2i)m_mapPosition)
 		{
-			buildingTimer += _game->time->GetFrameTime();
+			m_buildingTimer += _game->m_time->GetFrameTime();
 
-			if (buildingTimer >= 2)
+			if (m_buildingTimer >= 2)
 			{
 				// Security
 				if (_game->buildingsListPlanned->GetBuildingID() != -1
@@ -299,14 +301,14 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 					{
 						for (int x = 0; x < _game->buildingsListPlanned->GetBuildingSize().x; x++)
 						{
-							_game->map[ZERO_FLOOR + SPRITE_ID]
+							_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID]
 								[_game->buildingsListPlanned->GetBuildingPositionInMap().y - y]
 							[_game->buildingsListPlanned->GetBuildingPositionInMap().x - x] = 1;
 						}
 					}
 
 					// Modifier couche pour ID
-					_game->buildWindow.SetBuildingOnMap(_game, FIRST_FLOOR, _game->buildingsListPlanned->GetBuildingID(), COLLISION, _game->buildingsListPlanned->GetBuildingPositionInMap());
+					_game->m_buildWindow.SetBuildingOnMap(_game, FIRST_FLOOR, _game->buildingsListPlanned->GetBuildingID(), COLLISION, _game->buildingsListPlanned->GetBuildingPositionInMap());
 
 
 
@@ -315,23 +317,23 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 					switch (_game->buildingsListPlanned->GetBuildingID())
 					{
 					case BUILDING_VINES:
-						_game->vines.AddNewVineToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.vines.AddNewVineToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_GRAPE_STOMPING_VATS:
-						_game->stompingVats.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.stompingVats.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_WINE_PRESS:
-						_game->winePress.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.winePress.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_WINE_STOREHOUSE:
-						_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_STOREHOUSE:
-						_game->storehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
-						_game->stall->AddStorehousePosition((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.storehouse.AddNewBuildingToList((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.stall->AddStorehousePosition((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_STALL:
-						_game->stall->AddNewBuilding((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.stall->AddNewBuilding((sf::Vector2f)_game->buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 						/*case BUILDING_VILLA:
 							break;
@@ -346,25 +348,25 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 					_game->buildingsListPlanned->DeleteCurrentFirstBuildingInList();
 
 					//Update the workers's paths
-					_game->workersList->CheckAndUpdateWorkersPath(_game->map);
+					_game->m_workersList->CheckAndUpdateWorkersPath(_game->m_map.GetMap());
 
 
 					// Test if the list is empty or not
 					if (1 == 1/*_game->buildingsListPlanned->IsBuildingListIsEmpty()*/)
 					{
-						isCurrentlyBuilding = false;
+						m_isCurrentlyBuilding = false;
 						SetMainCharacterStatus(IDLE);
 					}
 					else
 					{
 						// Set the position of the next building plannified
-						SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->map);
+						SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
 
 						SetMainCharacterStatus(IDLE, true);
 					}
 
 					// Reset the builder timer of the main character
-					buildingTimer -= 2;
+					m_buildingTimer -= 2;
 				}
 				else
 				{
@@ -381,11 +383,11 @@ void MainCharacter::UpdatePathAndActivities(struct Game *_game)
 		break;
 	case WORKING:
 
-		if (actualBuilding == BUILDING_VILLA)
+		if (m_actualBuilding == BUILDING_VILLA)
 		{
-			if (_game->actualGameState != VILLA_MANAGEMENT)
+			if (_game->m_actualGameState != VILLA_MANAGEMENT)
 			{
-				_game->actualGameState = VILLA_MANAGEMENT;
+				_game->m_actualGameState = VILLA_MANAGEMENT;
 			}
 			else
 			{

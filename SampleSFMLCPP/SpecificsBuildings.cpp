@@ -93,7 +93,7 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						{
 							if (_ressourceSent->GetQuantityOwned() - 1 >= 0)
 							{
-								_ressourceSent->SubtractQuantityOwned(1);
+								_ressourceSent->AddOrSubtractQuantityOwned(-1);
 								((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
 							}
 						}

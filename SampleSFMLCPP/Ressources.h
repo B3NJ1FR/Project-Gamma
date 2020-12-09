@@ -1,5 +1,4 @@
-#ifndef RESSOURCES__H
-#define RESSOURCES__H
+#pragma once
 
 #include "Common.hpp"
 
@@ -21,24 +20,24 @@ enum TypesOfRessources
 class Ressources
 {
 private :
-	std::string name;
-	int quantityOwned;
+	std::string m_name;
+	int m_quantityOwned;
 
-	sf::Sprite sprite;
+	sf::Sprite m_sprite;
 
 public :
+	// Constructor & Destructor
 	Ressources();
 	~Ressources();
 
-	void SetSprite(const std::string _spriteFileName, int _spriteOriginPosition = 0);
-	void SetName	(const std::string _name);
-	void SetInitialQuantityOwned(int _quantityOwned = 0);
-	void AddQuantityOwned(int _quantityToAdd);
-	void SubtractQuantityOwned(int _quantityToSubtract);
+	// Setters
+	inline void SetSprite (const std::string _spriteFileName, const int _spriteOriginPosition = 0);
+	inline void SetName (const std::string& _name);
+	inline void SetInitialQuantityOwned (const int _quantityOwned = 0);
+	inline void AddOrSubtractQuantityOwned(const int _quantityToAdd);
 	
-	sf::Sprite GetSprite();
-	std::string GetName();
-	int GetQuantityOwned();
+	// Getters
+	inline sf::Sprite GetSprite() const { return m_sprite; };
+	inline std::string GetName() const { return m_name; };
+	inline int GetQuantityOwned() const { return m_quantityOwned; };
 };
-
-#endif // !RESSOURCES__H

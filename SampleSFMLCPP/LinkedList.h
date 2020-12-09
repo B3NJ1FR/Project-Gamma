@@ -1,5 +1,4 @@
-#ifndef LINKED_LIST__H
-#define LINKED_LIST__H
+#pragma once
 
 #include "Common.hpp"
 
@@ -51,6 +50,3 @@ protected:
 	//sLinkedList *list;
 
 };
-
-
-#endif // !LINKED_LIST__H

@@ -41,75 +41,90 @@ enum CurrentGameState
 
 struct Game
 {
-	sf::RenderWindow *window;
+public:
+	// Shortcut of the window address
+	sf::RenderWindow *m_window;
 
-	enum CurrentGameState actualGameState;
-	enum CurrentGameState previousGameState;
+	enum CurrentGameState m_actualGameState;
+	enum CurrentGameState m_previousGameState;
 
-	TutorialWindow *tutorialWindow;
+	// Tutorial Window
+	TutorialWindow *m_tutorialWindow;
 
 	// Buildings
-	BuildingManagement builds;
+	BuildingManagement m_builds;
 
-	sf::Sprite* spriteArray;
+	// Sprites Array
+	sf::Sprite* m_spriteArray;
 
 	// Map
-	Map map;
+	Map m_map;
 
 	// Camera
-	sf::Vector3f camera;
-	sf::Vector2f scale;
-
-	//Debugger
-	bool isDebuggerModeActive;
-	sf::Vector2f mouseClicked;
-	sf::Text debbugTexts[12];
-
-	sf::Font generalFont;
-	sf::Font charlemagneFont;
-
-	// Selling Window
-	SellingWindow *sellingWindow;
-	
-	// Construction Mode
-	BuildWindow buildWindow;
-	BuildingsListPlanned *buildingsListPlanned;
-	VillaManagement villaManagement;
-
-
-	// General UI
-	sf::Text UITexts[10];
-
-	// Debugger
-
-
-
-	// Money
-	Money money;
+	sf::Vector3f m_camera;
+	sf::Vector2f m_scale;
 
 	// Ressources
-	Ressources *ressources;
-	unsigned int numberTypesOfRessources;
-	
-	// Time management
-	TimeManagement *time;
+	Ressources* m_ressources;
+	unsigned int m_numberTypesOfRessources;
 
+	// Fonts
+	sf::Font m_generalFont;
+	sf::Font m_charlemagneFont;
+
+	//Debugger
+	bool m_isDebuggerModeActive;
+	sf::Vector2f m_mouseClicked;
+	sf::Text m_debbugTexts[12];
+
+	// General UI
+	sf::Text m_UITexts[10];
+
+	// Time management
+	TimeManagement *m_time;
 
 	// Workers
-	WorkersList *workersList;
-	Purchasers *purchasers;
-	MainCharacter *mainCharacter;
+	WorkersList *m_workersList;
+	Purchasers *m_purchasers;
+	MainCharacter *m_mainCharacter;
+
+	// Selling Window
+	SellingWindow *m_sellingWindow;
+	
+	// Construction Mode
+	BuildWindow m_buildWindow; // Verifier pour la money
+	BuildingsListPlanned *buildingsListPlanned;
+	
+	
+	//VillaManagement villaManagement;
 
 
-	// Save and Load
-	SavingGame save;
-	LoadingGame load;
+	//// Money
+	//Money money;
 
-	// Pause
-	PauseWindow pauseWindow;
 
-	// Temporary
-	Pathfinding path;
 
-	Game(LoadingScreen* _loadingScreen);
+
+	//// Save and Load
+	//SavingGame save;
+	//LoadingGame load;
+
+	//// Pause
+	//PauseWindow pauseWindow;
+
+	//// Temporary
+	//Pathfinding path;
+
+public :
+	// Constructor & Destructor
+	Game();
+	~Game();
+
+	// Setters
+	inline void SetWindowMemoryAddress(sf::RenderWindow* window);
+
+	// Methods
+	void SpritesInitialisation();
+	void TextsInit();
+	void RessourcesInitialisation();
 };

@@ -4,7 +4,7 @@
 Purchasers::Purchasers()
 {
 	this->actualStatus = IDLE;
-	this->path = nullptr;
+	this->m_path = nullptr;
 	
 	this->minimalMoneyValueForRessource = RESET;
 	this->maximalMoneyValueForRessource = RESET;

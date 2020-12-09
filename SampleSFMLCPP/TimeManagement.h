@@ -1,5 +1,4 @@
-#ifndef TIME_MANAGEMENT__H
-#define TIME_MANAGEMENT__H
+#pragma once
 
 #include "Common.hpp"
 
@@ -46,40 +45,44 @@ enum TypeOfTimeAcceleration
 class TimeManagement
 {
 private:
-	sf::Clock gameClock;
-	sf::Time frameTime;
-	sf::Time timer;
+	sf::Clock m_gameClock;
+	sf::Time m_frameTime;
+	sf::Time m_timer;
 
-	bool isMonthHasChanged;
-	bool isYearHasChanged;
+	bool m_isMonthHasChanged;
+	bool m_isYearHasChanged;
 
-	enum MonthsInOneYear actualMonth;
-	int numberOfYears;
+	enum MonthsInOneYear m_actualMonth;
+	int m_numberOfYears;
 
-	sf::Text monthText;
+	sf::Text m_monthText;
 	sf::Text yearText;
 
-	short int accelerator;
-	enum TypeOfTimeAcceleration typeOfAcceleration;
+	short int m_accelerator;
+	enum TypeOfTimeAcceleration m_typeOfAcceleration;
 
-	sf::Sprite timesSprite[4];
+	sf::Sprite m_timesSprite[4];
 
 public:
+	// Constructor & Destructor
 	TimeManagement(sf::Font *_font);
 	~TimeManagement();
-	
+
+	// Setters
+	inline void SetAccelerator(const short int& _accelerator);
+	void SetTypeOfAcceleration(const enum TypeOfTimeAcceleration& _typeOfAcceleration);
+
+	// Getters
+	inline short int GetAccelerator() const { return m_accelerator; };
+	inline enum TypeOfTimeAcceleration GetTypeOfAcceleration() const { return m_typeOfAcceleration; };
+	inline float GetFrameTime() const { return m_frameTime.asSeconds() * m_accelerator; };
+	inline float GetContinuousFrameTime()const { return m_frameTime.asSeconds(); };
+	inline float GetGeneralTime() const { return m_timer.asSeconds(); };
+	inline enum MonthsInOneYear GetActualMonth() const { return m_actualMonth; };
+
+	// Methods
 	void UpdateFrameTime();
 	void UpdateGeneralTime();
-
-	short int GetAccelerator();
-	enum TypeOfTimeAcceleration GetTypeOfAcceleration();
-	float GetFrameTime();
-	float GetContinuousFrameTime();
-	float GetGeneralTime();
-	enum MonthsInOneYear GetActualMonth();
-
-	void SetAccelerator(const short int &_accelerator);
-	void SetTypeOfAcceleration(const enum TypeOfTimeAcceleration &_typeOfAcceleration);
 
 	void InputTimeManagement(sf::RenderWindow &_window);
 	void UpdateMonthToDisplay();
@@ -88,6 +91,3 @@ public:
 	void SavingTimeFromFile(std::ofstream *_file);
 	void LoadingTimeFromFile(std::ifstream *_file);
 };
-
-
-#endif // !TIME_MANAGEMENT__H

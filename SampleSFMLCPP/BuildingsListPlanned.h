@@ -1,5 +1,4 @@
-#ifndef BUILDINGS_LIST_PLANNED__H
-#define BUILDINGS_LIST_PLANNED__H
+#pragma once
 
 #include "LinkedList.h"
 
@@ -19,21 +18,20 @@ private:
 	LinkedListClass::sLinkedList *listOfBuildingsPlanned;
 
 public:
+	// Constructor & Destructor
 	BuildingsListPlanned();
 	~BuildingsListPlanned();
 
 	void ReadBuildingsPlannedToList();
 
+	// Getters
 	sf::Vector2i GetBuildingPositionInMap();
 	sf::Vector2i GetBuildingSize();
 	int GetBuildingID();
 
+	// Methods
 	void AddBuildingPlannedToList(const sf::Vector2i &_mapPosition, const enum TypeOfBuilding &_buildingID, const sf::Vector2i &_buildingSize);
 
 	void DeleteCurrentFirstBuildingInList();
 	inline bool IsBuildingListIsEmpty();
 };
-
-
-
-#endif // !BUILDINGS_LIST_PLANNED__H

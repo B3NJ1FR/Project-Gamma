@@ -4,32 +4,32 @@
 
 SellingWindow::SellingWindow(sf::Font *_font)
 {
-	this->sellingWindowBackground = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_background.png", 1);
+	m_sellingWindowBackground = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_background.png", 1);
 
-	this->sellingWindowAcceptButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_acceptButton.png", 1);
-	this->sellingWindowRejectButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_refuseButton.png", 1);
+	m_sellingWindowAcceptButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_acceptButton.png", 1);
+	m_sellingWindowRejectButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_refuseButton.png", 1);
 
-	this->sellingWindowScrollButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollButton.png", 1);
-	this->sellingWindowScrollLine = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollLine.png", 1);
-
-
-	LoadTextString(&this->sellingWindowProvenance, "", _font, 50, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150));
-
-	LoadTextString(&this->sellingWindowPrice[0], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 + 270, SCREEN_HEIGHT / 2 - 50));
-	LoadTextString(&this->sellingWindowPrice[1], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 - 50));
-	LoadTextString(&this->sellingWindowPrice[2], "", _font, 50, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80));
-
-	LoadTextString(&this->sellingWindowRessourceQuantity[0], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 - 20));
-	LoadTextString(&this->sellingWindowRessourceQuantity[1], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 + 270, SCREEN_HEIGHT / 2 - 20));
-	LoadTextString(&this->sellingWindowRessourceQuantity[2], "Quantity to sell :", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 - 250, SCREEN_HEIGHT / 2 + 20));
-	LoadTextString(&this->sellingWindowRessourceQuantity[3], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20));
+	m_sellingWindowScrollButton = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollButton.png", 1);
+	m_sellingWindowScrollLine = LoadSprite("Data/Assets/Sprites/Menu/SellingWindow/sellingWindow_ScrollLine.png", 1);
 
 
-	this->sellingWindowScrollButtonPosition = (int)((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
-	this->sellingWindowScrollButtonMax = (int)((SCREEN_WIDTH / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
-	this->wasCursorPressed = false;
-	this->quantityConvertedToSell = this->sellingWindowScrollButtonPosition;
-	this->priceAccepted = RESET;
+	LoadTextString(&m_sellingWindowProvenance, "", _font, 50, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150));
+
+	LoadTextString(&m_sellingWindowPrice[0], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 + 270, SCREEN_HEIGHT / 2 - 50));
+	LoadTextString(&m_sellingWindowPrice[1], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 - 50));
+	LoadTextString(&m_sellingWindowPrice[2], "", _font, 50, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80));
+
+	LoadTextString(&m_sellingWindowRessourceQuantity[0], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 - 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[1], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2 + 270, SCREEN_HEIGHT / 2 - 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[2], "Quantity to sell :", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 - 250, SCREEN_HEIGHT / 2 + 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[3], "", _font, 30, sf::Color::Black, sf::Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20));
+
+
+	m_sellingWindowScrollButtonPosition = (int)((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
+	m_sellingWindowScrollButtonMax = (int)((SCREEN_WIDTH / 2) + (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
+	m_wasCursorPressed = false;
+	m_quantityConvertedToSell = m_sellingWindowScrollButtonPosition;
+	m_priceAccepted = RESET;
 
 }
 
@@ -43,51 +43,51 @@ void SellingWindow::UpdateQuantityConvertedToSell(Purchasers *_purchasers, const
 {
 	// If the cursor is at the end of the line and the quantity stocked is higher than it asked
 	if (_quantityStocked >= _purchasers->GetUnitQuantityRessourceScope().y
-		&& (this->sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) >= this->sellingWindowScrollLine.getGlobalBounds().width - 2)
+		&& (m_sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2))) >= m_sellingWindowScrollLine.getGlobalBounds().width - 2)
 	{
-		this->quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().y;
-		this->priceAccepted = _purchasers->GetUnitPriceScope().x;
+		m_quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().y;
+		m_priceAccepted = _purchasers->GetUnitPriceScope().x;
 	}
 	// If the cursor is at the begin of the line and thus at the minimal quantity
-	else if ((this->sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) == 0)
+	else if ((m_sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2))) == 0)
 	{
-		this->quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().x;
-		this->priceAccepted = _purchasers->GetUnitPriceScope().y;
+		m_quantityConvertedToSell = _purchasers->GetUnitQuantityRessourceScope().x;
+		m_priceAccepted = _purchasers->GetUnitPriceScope().y;
 	}
 	else
 	{
-		int percentage = (int)(((this->sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) * 100) / (((SCREEN_WIDTH / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2)) - ((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))));
+		int percentage = (int)(((m_sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2))) * 100) / (((SCREEN_WIDTH / 2) + (m_sellingWindowScrollLine.getGlobalBounds().width / 2)) - ((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2))));
 		
 		int temporaryQuantityConverted = (int)((percentage * (_purchasers->GetUnitQuantityRessourceScope().y - _purchasers->GetUnitQuantityRessourceScope().x)) / 100) + _purchasers->GetUnitQuantityRessourceScope().x;
 
 		// In the case if we've stocked less object than the purchaser can buy
 		if (_quantityStocked < _purchasers->GetUnitQuantityRessourceScope().y)
 		{
-			if (this->sellingWindowScrollButtonMax == (int)((SCREEN_WIDTH / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2)))
+			if (m_sellingWindowScrollButtonMax == (int)((SCREEN_WIDTH / 2) + (m_sellingWindowScrollLine.getGlobalBounds().width / 2)))
 			{
 				// We block the cursor at the stocked quantity and not higher
 				float temporaryPercentage = 100 * (_quantityStocked - _purchasers->GetUnitQuantityRessourceScope().x) / (_purchasers->GetUnitQuantityRessourceScope().y - _purchasers->GetUnitQuantityRessourceScope().x);
-				this->sellingWindowScrollButtonMax = (int)((temporaryPercentage * this->sellingWindowScrollLine.getGlobalBounds().width) / 100) + 1;
+				m_sellingWindowScrollButtonMax = (int)((temporaryPercentage * m_sellingWindowScrollLine.getGlobalBounds().width) / 100) + 1;
 			}
 			
 
 			// If the cursor atteign the max quantity stocked
-			if ((this->sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2))) >= this->sellingWindowScrollButtonMax - 1)
+			if ((m_sellingWindowScrollButtonPosition - ((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2))) >= m_sellingWindowScrollButtonMax - 1)
 			{
-				this->quantityConvertedToSell = _quantityStocked;
+				m_quantityConvertedToSell = _quantityStocked;
 			}
 			else
 			{
-				this->quantityConvertedToSell = temporaryQuantityConverted;
+				m_quantityConvertedToSell = temporaryQuantityConverted;
 			}
 			
-			this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
+			m_priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
 		}
 		else
 		{
-			this->quantityConvertedToSell = temporaryQuantityConverted;
+			m_quantityConvertedToSell = temporaryQuantityConverted;
 
-			this->priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
+			m_priceAccepted = (int)(((100 - percentage) * (_purchasers->GetUnitPriceScope().y - _purchasers->GetUnitPriceScope().x)) / 100) + _purchasers->GetUnitPriceScope().x;
 		}
 	}
 }
@@ -95,47 +95,47 @@ void SellingWindow::UpdateQuantityConvertedToSell(Purchasers *_purchasers, const
 void SellingWindow::UpdateSellingWindowTexts(Purchasers *_purchasers)
 {
 	// Update Purchaser's Provenance
-	this->sellingWindowProvenance.setString(_purchasers->GetProvenanceName());
+	m_sellingWindowProvenance.setString(_purchasers->GetProvenanceName());
 
 	// Update of the prices texts
-	UpdateDynamicsTexts(&this->sellingWindowPrice[0], _purchasers->GetUnitPriceScope().x);
-	UpdateDynamicsTexts(&this->sellingWindowPrice[1], _purchasers->GetUnitPriceScope().y);
-	UpdateDynamicsTexts(&this->sellingWindowPrice[2], this->priceAccepted);
+	UpdateDynamicsTexts(&m_sellingWindowPrice[0], _purchasers->GetUnitPriceScope().x);
+	UpdateDynamicsTexts(&m_sellingWindowPrice[1], _purchasers->GetUnitPriceScope().y);
+	UpdateDynamicsTexts(&m_sellingWindowPrice[2], m_priceAccepted);
 
 	// Update of the ressources quantities texts
-	UpdateDynamicsTexts(&this->sellingWindowRessourceQuantity[0], _purchasers->GetUnitQuantityRessourceScope().x);
-	UpdateDynamicsTexts(&this->sellingWindowRessourceQuantity[1], _purchasers->GetUnitQuantityRessourceScope().y);
-	UpdateDynamicsTexts(&this->sellingWindowRessourceQuantity[3], this->quantityConvertedToSell);
+	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[0], _purchasers->GetUnitQuantityRessourceScope().x);
+	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[1], _purchasers->GetUnitQuantityRessourceScope().y);
+	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[3], m_quantityConvertedToSell);
 }
 
 void SellingWindow::DisplaySellingWindow(sf::RenderWindow &_window)
 {
 	// Display of the background
-	BlitSprite(this->sellingWindowBackground, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0, _window);
+	BlitSprite(m_sellingWindowBackground, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0, _window);
 	
 	// Display of the accept and reject buttons
-	BlitSprite(this->sellingWindowAcceptButton, SCREEN_WIDTH / 2 + 200, SCREEN_HEIGHT / 2 + 125, 0, _window);
-	BlitSprite(this->sellingWindowRejectButton, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 125, 0, _window);
+	BlitSprite(m_sellingWindowAcceptButton, SCREEN_WIDTH / 2 + 200, SCREEN_HEIGHT / 2 + 125, 0, _window);
+	BlitSprite(m_sellingWindowRejectButton, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 125, 0, _window);
 
 	// Display of the scroll's cursor and line
-	BlitSprite(this->sellingWindowScrollLine, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0, _window);
-	BlitSprite(this->sellingWindowScrollButton, this->sellingWindowScrollButtonPosition, SCREEN_HEIGHT / 2, 0, _window);
+	BlitSprite(m_sellingWindowScrollLine, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0, _window);
+	BlitSprite(m_sellingWindowScrollButton, m_sellingWindowScrollButtonPosition, SCREEN_HEIGHT / 2, 0, _window);
 	
 
 	// Display of the merchant provenance
-	BlitString(this->sellingWindowProvenance, _window);
+	BlitString(m_sellingWindowProvenance, _window);
 
 
 	// Display of the prices texts
-	BlitString(this->sellingWindowPrice[0], _window);
-	BlitString(this->sellingWindowPrice[1], _window);
-	BlitString(this->sellingWindowPrice[2], _window);
+	BlitString(m_sellingWindowPrice[0], _window);
+	BlitString(m_sellingWindowPrice[1], _window);
+	BlitString(m_sellingWindowPrice[2], _window);
 
 	// Display of the ressources quantities texts
-	BlitString(this->sellingWindowRessourceQuantity[0], _window);
-	BlitString(this->sellingWindowRessourceQuantity[1], _window);
-	BlitString(this->sellingWindowRessourceQuantity[2], _window);
-	BlitString(this->sellingWindowRessourceQuantity[3], _window);
+	BlitString(m_sellingWindowRessourceQuantity[0], _window);
+	BlitString(m_sellingWindowRessourceQuantity[1], _window);
+	BlitString(m_sellingWindowRessourceQuantity[2], _window);
+	BlitString(m_sellingWindowRessourceQuantity[3], _window);
 }
 
 
@@ -144,31 +144,31 @@ void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameS
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
 	// Button Accept
-	if (mousePosition.x > SCREEN_WIDTH / 2 + 200 - (this->sellingWindowAcceptButton.getGlobalBounds().width / 2)
-		&& mousePosition.x < SCREEN_WIDTH / 2 + 200 + (this->sellingWindowAcceptButton.getGlobalBounds().width / 2)
-		&& mousePosition.y > SCREEN_HEIGHT / 2 + 125 - (this->sellingWindowAcceptButton.getGlobalBounds().height / 2)
-		&& mousePosition.y < SCREEN_HEIGHT / 2 + 125 + (this->sellingWindowAcceptButton.getGlobalBounds().height / 2))
+	if (mousePosition.x > SCREEN_WIDTH / 2 + 200 - (m_sellingWindowAcceptButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < SCREEN_WIDTH / 2 + 200 + (m_sellingWindowAcceptButton.getGlobalBounds().width / 2)
+		&& mousePosition.y > SCREEN_HEIGHT / 2 + 125 - (m_sellingWindowAcceptButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < SCREEN_HEIGHT / 2 + 125 + (m_sellingWindowAcceptButton.getGlobalBounds().height / 2))
 	{
 		std::cout << "Marchant offer accepted !\n\n";
 
 		*(_isOfferAccepted) = true;
 		*(_state) = NORMAL_MODE;
 
-		_stall->PickUpPriceAccepted(this->priceAccepted);
-		_stall->SetRessourceQuantityToSell(this->quantityConvertedToSell);
+		_stall->PickUpPriceAccepted(m_priceAccepted);
+		_stall->SetRessourceQuantityToSell(m_quantityConvertedToSell);
 		_stall->SetStatus(STALL_OFFER_HANDLED);
 
 
 		// Reset of the data for the next offer
-		this->sellingWindowScrollButtonPosition = (int)((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
-		this->sellingWindowScrollButtonMax = (int)((SCREEN_WIDTH / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
+		m_sellingWindowScrollButtonPosition = (int)((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
+		m_sellingWindowScrollButtonMax = (int)((SCREEN_WIDTH / 2) + (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
 	}
 
 	// Button Refuse	
-	if (mousePosition.x > SCREEN_WIDTH / 2 - 200 - (this->sellingWindowRejectButton.getGlobalBounds().width / 2)
-		&& mousePosition.x < SCREEN_WIDTH / 2 - 200 + (this->sellingWindowRejectButton.getGlobalBounds().width / 2)
-		&& mousePosition.y > SCREEN_HEIGHT / 2 + 125 - (this->sellingWindowRejectButton.getGlobalBounds().height / 2)
-		&& mousePosition.y < SCREEN_HEIGHT / 2 + 125 + (this->sellingWindowRejectButton.getGlobalBounds().height / 2))
+	if (mousePosition.x > SCREEN_WIDTH / 2 - 200 - (m_sellingWindowRejectButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < SCREEN_WIDTH / 2 - 200 + (m_sellingWindowRejectButton.getGlobalBounds().width / 2)
+		&& mousePosition.y > SCREEN_HEIGHT / 2 + 125 - (m_sellingWindowRejectButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < SCREEN_HEIGHT / 2 + 125 + (m_sellingWindowRejectButton.getGlobalBounds().height / 2))
 	{
 		std::cout << "Marchant offer refused !\n\n";
 
@@ -178,42 +178,42 @@ void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameS
 		_stall->SetStatus(STALL_OFFER_HANDLED);
 
 		// Reset of the data for the next offer
-		this->sellingWindowScrollButtonPosition = (int)((SCREEN_WIDTH / 2) - (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
-		this->sellingWindowScrollButtonMax = (int)((SCREEN_WIDTH / 2) + (this->sellingWindowScrollLine.getGlobalBounds().width / 2));
+		m_sellingWindowScrollButtonPosition = (int)((SCREEN_WIDTH / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
+		m_sellingWindowScrollButtonMax = (int)((SCREEN_WIDTH / 2) + (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
 	}
 
 	// Cursor movement with the mouse on the cursor
-	if (mousePosition.x > this->sellingWindowScrollButtonPosition - (this->sellingWindowScrollButton.getGlobalBounds().width / 2)
-		&& mousePosition.x < this->sellingWindowScrollButtonPosition + (this->sellingWindowScrollButton.getGlobalBounds().width / 2)
-		&& mousePosition.x > SCREEN_WIDTH / 2 - this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.x < SCREEN_WIDTH / 2 + this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.x < SCREEN_WIDTH / 2 - (this->sellingWindowScrollLine.getGlobalBounds().width / 2) + this->sellingWindowScrollButtonMax
-		&& mousePosition.y > SCREEN_HEIGHT / 2 - (this->sellingWindowScrollButton.getGlobalBounds().height / 2)
-		&& mousePosition.y < SCREEN_HEIGHT / 2 + (this->sellingWindowScrollButton.getGlobalBounds().height / 2))
+	if (mousePosition.x > m_sellingWindowScrollButtonPosition - (m_sellingWindowScrollButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < m_sellingWindowScrollButtonPosition + (m_sellingWindowScrollButton.getGlobalBounds().width / 2)
+		&& mousePosition.x > SCREEN_WIDTH / 2 - m_sellingWindowScrollLine.getGlobalBounds().width / 2
+		&& mousePosition.x < SCREEN_WIDTH / 2 + m_sellingWindowScrollLine.getGlobalBounds().width / 2
+		&& mousePosition.x < SCREEN_WIDTH / 2 - (m_sellingWindowScrollLine.getGlobalBounds().width / 2) + m_sellingWindowScrollButtonMax
+		&& mousePosition.y > SCREEN_HEIGHT / 2 - (m_sellingWindowScrollButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < SCREEN_HEIGHT / 2 + (m_sellingWindowScrollButton.getGlobalBounds().height / 2))
 	{
-		if (this->wasCursorPressed == true)
+		if (m_wasCursorPressed == true)
 		{
-			this->sellingWindowScrollButtonPosition = mousePosition.x;
+			m_sellingWindowScrollButtonPosition = mousePosition.x;
 		}
 
-		this->wasCursorPressed = true;
+		m_wasCursorPressed = true;
 	}
 	// Cursor movement without the mouse on the cursor
-	else if (mousePosition.x > SCREEN_WIDTH / 2 - this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.x < SCREEN_WIDTH / 2 + this->sellingWindowScrollLine.getGlobalBounds().width / 2
-		&& mousePosition.x < SCREEN_WIDTH / 2 - (this->sellingWindowScrollLine.getGlobalBounds().width / 2) + this->sellingWindowScrollButtonMax
-		&& mousePosition.y > SCREEN_HEIGHT / 2 - (this->sellingWindowScrollButton.getGlobalBounds().height / 2) - 10
-		&& mousePosition.y < SCREEN_HEIGHT / 2 + (this->sellingWindowScrollButton.getGlobalBounds().height / 2) + 10)
+	else if (mousePosition.x > SCREEN_WIDTH / 2 - m_sellingWindowScrollLine.getGlobalBounds().width / 2
+		&& mousePosition.x < SCREEN_WIDTH / 2 + m_sellingWindowScrollLine.getGlobalBounds().width / 2
+		&& mousePosition.x < SCREEN_WIDTH / 2 - (m_sellingWindowScrollLine.getGlobalBounds().width / 2) + m_sellingWindowScrollButtonMax
+		&& mousePosition.y > SCREEN_HEIGHT / 2 - (m_sellingWindowScrollButton.getGlobalBounds().height / 2) - 10
+		&& mousePosition.y < SCREEN_HEIGHT / 2 + (m_sellingWindowScrollButton.getGlobalBounds().height / 2) + 10)
 	{
-		if (this->wasCursorPressed == true)
+		if (m_wasCursorPressed == true)
 		{
-			this->sellingWindowScrollButtonPosition = mousePosition.x;
+			m_sellingWindowScrollButtonPosition = mousePosition.x;
 		}
 
-		this->wasCursorPressed = true;
+		m_wasCursorPressed = true;
 	}
 	else
 	{
-		this->wasCursorPressed = false;
+		m_wasCursorPressed = false;
 	}
 }

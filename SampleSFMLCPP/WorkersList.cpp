@@ -4,45 +4,48 @@
 
 WorkersList::WorkersList()
 {
-	this->workerNumberSelected = 1;
+	m_workerNumberSelected = 1;
 
 
-	this->sprite = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
+	m_sprite = LoadSprite("Data/Assets/Sprites/Entities/worker_test.png", 5);
 
-	this->actionsIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
-	this->actionsIcons[1] = LoadSprite("Data/Assets/Sprites/Entities/worker_waiting.png", 1);
-	this->actionsIcons[2] = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
-	this->actionsIcons[3] = LoadSprite("Data/Assets/Sprites/Entities/worker_pickuping.png", 1);
-	this->actionsIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
+	m_actionsIcons[0] = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
+	m_actionsIcons[1] = LoadSprite("Data/Assets/Sprites/Entities/worker_waiting.png", 1);
+	m_actionsIcons[2] = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
+	m_actionsIcons[3] = LoadSprite("Data/Assets/Sprites/Entities/worker_pickuping.png", 1);
+	m_actionsIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
 }
 
 WorkersList::~WorkersList()
 {
-
+	if (m_list != nullptr)
+	{
+		delete[] m_list;
+	}
 }
 
 void WorkersList::InitialisationWorkersList()
 {
-	std::cout << "List before : " << this->list << std::endl;
+	std::cout << "List before : " << m_list << std::endl;
 
-	this->list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 	
-	std::cout << "List " << this->list << " Size : " << this->list->size << " Real First : " << this->list->first << " & Last : " << this->list->last << std::endl;
+	std::cout << "List " << m_list << " Size : " << m_list->size << " Real First : " << m_list->first << " & Last : " << m_list->last << std::endl;
 }
 
 void WorkersList::ReadWorkersLinkedList()
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			int positionCounter(1);
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				std::cout << "Worker : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
+				std::cout << "Worker : " << positionCounter << "/" << m_list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
 				positionCounter++;
 			}
 
@@ -51,7 +54,7 @@ void WorkersList::ReadWorkersLinkedList()
 	}
 }
 
-void WorkersList::AddNewWorkersToList(sf::Vector2f _mapPosition)
+void WorkersList::AddNewWorkersToList(const sf::Vector2f& _mapPosition)
 {
 	LinkedListClass::sElement* newWorker = new LinkedListClass::sElement;
 	newWorker->data = new Workers;
@@ -70,24 +73,24 @@ void WorkersList::AddNewWorkersToList(sf::Vector2f _mapPosition)
 	newWorker->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
-	this->AddElementToLinkedList(this->list, newWorker, -1);
+	AddElementToLinkedList(m_list, newWorker, -1);
 
-	//this->ReadVineLinkedList();
-	//this->ReadLinkedList(this->list);
+	//ReadVineLinkedList();
+	//ReadLinkedList(list);
 }
 
-void WorkersList::UpdateWorkersLife(struct Game *_game)
+void WorkersList::UpdateWorkersLife(Game *_game)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 			
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
-				((Workers *)currentElement->data)->InitPathfinding(_game);
-				((Workers *)currentElement->data)->UpdatePathAndActivities(_game);
+				((Workers *)currentElement->data)->InitPathfinding(&_game->m_map);
+				((Workers *)currentElement->data)->UpdatePathAndActivities(&_game->m_map, _game->m_time, &_game->m_builds, _game->m_ressources);
 			}
 		}
 	}
@@ -95,22 +98,22 @@ void WorkersList::UpdateWorkersLife(struct Game *_game)
 
 void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, sf::RenderWindow &_window)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			int positionCounter(1);
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				if (_actualPosition == sf::Vector2i(((Workers *)currentElement->data)->GetWorkerPosition()))
 				{
 					sf::Vector2f tileCoordinates = WorldToScreen(((Workers *)currentElement->data)->GetWorkerPosition());
 					sf::Vector2f cameraIso = WorldToScreen(_cameraPosition.x, _cameraPosition.y);
 
-					this->sprite.setScale(_gameScale);
+					m_sprite.setScale(_gameScale);
 
 
 					if (((Workers *)currentElement->data)->GetWorkerStatus() != WORKING
@@ -118,7 +121,7 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, cons
 							&& (((Workers *)currentElement->data)->GetWorkerActualBuilding() == BUILDING_VINES
 								|| ((Workers *)currentElement->data)->GetWorkerActualBuilding() == BUILDING_STALL)))
 					{
-						BlitSprite(this->sprite,
+						BlitSprite(m_sprite,
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z),
 							0, _window);
@@ -127,36 +130,36 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, cons
 
 					if (((Workers *)currentElement->data)->GetWorkerStatus() == IDLE)
 					{
-						BlitSprite(this->actionsIcons[1],
+						BlitSprite(m_actionsIcons[1],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 							0, _window);
 					}
 					else if (((Workers *)currentElement->data)->GetWorkerStatus() == WORKING)
 					{
-						//BlitSprite(this->actionsIcons[2],
+						//BlitSprite(actionsIcons[2],
 						//	(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 						//	(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 						//	0, _window);
 					}
 					else if (((Workers *)currentElement->data)->GetWorkerStatus() == PICKUP_RESSOURCES)
 					{
-						BlitSprite(this->actionsIcons[3],
+						BlitSprite(m_actionsIcons[3],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 							0, _window);
 					}
 					else if (((Workers *)currentElement->data)->GetWorkerStatus() == DEPOSIT_RESSOURCES)
 					{
-						BlitSprite(this->actionsIcons[4],
+						BlitSprite(m_actionsIcons[4],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 							0, _window);
 					}
 
-					if (positionCounter == this->workerNumberSelected)
+					if (positionCounter == m_workerNumberSelected)
 					{
-						BlitSprite(this->actionsIcons[0],
+						BlitSprite(m_actionsIcons[0],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 90,
 							0, _window);
@@ -172,17 +175,17 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, cons
 
 void WorkersList::UpdateWorkersProduction(Ressources *_ressource)
 {
-	/*if (this->list != nullptr)
+	/*if (list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = list->first;
 
 			int positionCounter(1);
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				std::cout << "Worker : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
+				std::cout << "Worker : " << positionCounter << "/" << list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
 				positionCounter++;
 			}
 		}
@@ -192,39 +195,39 @@ void WorkersList::UpdateWorkersProduction(Ressources *_ressource)
 
 void WorkersList::ChangeWorkerNumberSelectedAdd()
 {
-	if (this->workerNumberSelected + 1 <= this->list->size)
+	if (m_workerNumberSelected + 1 <= m_list->size)
 	{
-		this->workerNumberSelected++;
+		m_workerNumberSelected += 1;
 	}
 	else
 	{
-		this->workerNumberSelected = 1;
+		m_workerNumberSelected = 1;
 	}
 }
 
 void WorkersList::ChangeWorkerNumberSelectedSubtract()
 {
-	if (this->workerNumberSelected - 1 >= 1)
+	if (m_workerNumberSelected - 1 >= 1)
 	{
-		this->workerNumberSelected--;
+		m_workerNumberSelected -= 1;
 	}
 	else
 	{
-		this->workerNumberSelected = this->list->size;
+		m_workerNumberSelected = m_list->size;
 	}
 }
 
 void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			int positionCounter(1);
 
-			while (positionCounter != this->workerNumberSelected)
+			while (positionCounter != m_workerNumberSelected)
 			{
 				currentElement = currentElement->next;
 				positionCounter++;
@@ -241,20 +244,20 @@ void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, uns
 
 void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			int positionCounter(1);
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				if (((Workers *)currentElement->data)->GetWorkerStatus() == WAITING_MOVEMENT
 					|| ((Workers *)currentElement->data)->GetWorkerStatus() == MOVEMENT)
 				{
-					//std::cout << "The worker number " << positionCounter++ << "/" << this->list->size << " need to change his path\n\n";
+					//std::cout << "The worker number " << positionCounter++ << "/" << list->size << " need to change his path\n\n";
 
 					((Workers *)currentElement->data)->SetEndingPosition((sf::Vector2i)((Workers *)currentElement->data)->GetWorkerEndingPosition(), _map);
 					
@@ -272,16 +275,16 @@ void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 {
 	// Save the number of workers
-	_file->write((char *)&this->list->size, sizeof(int));
+	_file->write((char *)&m_list->size, sizeof(int));
 
 
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				//_file->write((char *) (Workers *)currentElement->data, sizeof(Workers));
 
@@ -320,11 +323,11 @@ void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 				
 			}
 
-			std::cout << "Number of workers : " << this->list->size;
+			std::cout << "Number of workers : " << m_list->size;
 		}
 	}
 
-	_file->write((char *)&this->workerNumberSelected, sizeof(int));
+	_file->write((char *)&m_workerNumberSelected, sizeof(int));
 
 }
 
@@ -332,31 +335,31 @@ void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned short ***_map)
 {
 	// Delete every paths if workers are moving
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				if (((Workers *)currentElement->data)->GetWorkerStatus() == MOVEMENT)
 				{
-					if (this->path != nullptr)
+					if (m_path != nullptr)
 					{
-						delete this->path;
-						this->path = nullptr;
+						delete m_path;
+						m_path = nullptr;
 					}
 				}
 			}
 		}
 
-		this->FreeLinkedList(this->list);
+		FreeLinkedList(m_list);
 	}
 	
 
 	// We reinit the workers list
-	this->InitialisationWorkersList();
+	InitialisationWorkersList();
 
 
 	// Load the number of workers
@@ -426,17 +429,16 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 		if (i == 0)
 		{
 			// Add this worker at the top of the list
-			this->AddElementToLinkedList(this->list, newWorker, 1);
+			AddElementToLinkedList(m_list, newWorker, 1);
 		}
 		else
 		{
 			// Add this worker at the end of the list
-			this->AddElementToLinkedList(this->list, newWorker, -1);
+			AddElementToLinkedList(m_list, newWorker, -1);
 		}
 
 		//std::cout << "Map position : " << ((Workers *)newWorker->data)->GetWorkerPosition().x << " " << ((Workers *)newWorker->data)->GetWorkerPosition().y;
 	}
 
-	_file->read((char *)&this->workerNumberSelected, sizeof(int));
-
+	_file->read((char *)&m_workerNumberSelected, sizeof(int));
 }

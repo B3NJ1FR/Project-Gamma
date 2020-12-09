@@ -1,5 +1,4 @@
-#ifndef SELLING_WINDOW__H
-#define SELLING_WINDOW__H
+#pragma once
 
 #include "Common.hpp"
 #include "Purchasers.h"
@@ -10,20 +9,21 @@ class SellingWindow
 {
 private:
 
-	sf::Sprite sellingWindowBackground;
-	sf::Sprite sellingWindowAcceptButton;
-	sf::Sprite sellingWindowRejectButton;
-	sf::Sprite sellingWindowScrollButton;
-	sf::Sprite sellingWindowScrollLine;
-	sf::Text sellingWindowProvenance;
-	sf::Text sellingWindowPrice[3];
-	sf::Text sellingWindowRessourceQuantity[4];
+	sf::Sprite m_sellingWindowBackground;
+	sf::Sprite m_sellingWindowAcceptButton;
+	sf::Sprite m_sellingWindowRejectButton;
+	sf::Sprite m_sellingWindowScrollButton;
+	sf::Sprite m_sellingWindowScrollLine;
+	sf::Text m_sellingWindowProvenance;
+	sf::Text m_sellingWindowPrice[3];
+	sf::Text m_sellingWindowRessourceQuantity[4];
 
-	int sellingWindowScrollButtonPosition;
-	int sellingWindowScrollButtonMax;
-	int quantityConvertedToSell;
-	int priceAccepted;
-	bool wasCursorPressed;
+	int m_sellingWindowScrollButtonPosition;
+	int m_sellingWindowScrollButtonMax;
+	int m_quantityConvertedToSell;
+	int m_priceAccepted;
+
+	bool m_wasCursorPressed;
 
 public:
 	SellingWindow(sf::Font *_font);
@@ -35,7 +35,3 @@ public:
 	void DisplaySellingWindow(sf::RenderWindow &_window);
 	void InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window);
 };
-
-
-
-#endif // !SELLING_WINDOW__H

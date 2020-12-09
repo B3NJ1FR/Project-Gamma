@@ -144,7 +144,7 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 						state = MAIN_MENU_OPTIONS;
 
 						resolution = new sf::Text;
-						LoadTextString(resolution, _system->listOfScreenResolutions[_system->currentScreenResolution], &this->font, 40, sf::Color::Black, 1);
+						LoadTextString(resolution, _system->listOfScreenResolutions[_system->currentScreenResolution], &font, 40, sf::Color::Black, 1);
 					}
 
 					// Button Quit

@@ -1,5 +1,4 @@
-#ifndef PATHFINDING__H
-#define PATHFINDING__H
+#pragma once
 
 #include "LinkedList.h"
 
@@ -52,7 +51,7 @@ private :
 
 	bool isActive;
 
-	unsigned short **testMap;
+	unsigned short **temporaryMap;
 	sf::Sprite blackBackground; // Temporaire
 	sf::Sprite tile[7]; // Temporaire
 
@@ -71,22 +70,23 @@ private :
 
 
 public:
+	// Constructor & Destructor
 	Pathfinding();
 	~Pathfinding();
 
 	void PathfindingReset();
 
-	void InitMapCopyPathfinding(sf::Vector2i _mapSize, unsigned short ***_map, unsigned short _mapHeight);
-	void AddObstacle(sf::Vector2i _position);
+	void InitMapCopyPathfinding(const sf::Vector2i& _mapSize, unsigned short ***_map, unsigned short _mapHeight);
+	void AddObstacle(const sf::Vector2i& _position);
 
 	void DisplayPathfinding(sf::RenderWindow &_window);
-	int CalculatorHeuristic(sf::Vector2i _node, sf::Vector2i _endingNode);
-	int CalculatorMovementCost(int _parentCost, bool isDiagonal = 0);
+	int CalculatorHeuristic(const sf::Vector2i& _node, const sf::Vector2i& _endingNode) const;
+	int CalculatorMovementCost(int _parentCost, bool isDiagonal = 0) const;
 
-	void SetPathStartingPosition(sf::Vector2i _mapPosition);
-	void SetPathEndingPosition(sf::Vector2i _mapPosition);
+	void SetPathStartingPosition(const sf::Vector2i& _mapPosition);
+	void SetPathEndingPosition(const sf::Vector2i& _mapPosition);
 
-	void AddFirstNodeToList(sf::Vector2i _mapPosition);
+	void AddFirstNodeToList(const sf::Vector2i& _mapPosition);
 	void AddNewNodeToList(LinkedListClass::sElement *_parentLink, sf::Vector2i _mapPosition, int _parentMovementCost, bool _isDiag);
 
 	void ModifyParentLink(LinkedListClass::sElement *_nodeToModify, LinkedListClass::sElement *_newParentLink);
@@ -97,10 +97,9 @@ public:
 	void WalkProcess(sf::Vector2f *_workerPosition, const float &_speed = 1);
 	void T(); // Temporaire
 
-	enum PathfindingGeneralProcessStatus GetActualStatus();
+	// Getters
+	inline enum PathfindingGeneralProcessStatus GetActualStatus() const { return actualStatus; };
 
 	bool isPressingStart; // Temporaire
 	bool isPressingEnd; // Temporaire
 };
-
-#endif // !PATHFINDING__H

@@ -773,6 +773,7 @@ void LinkedListClass::FreeLinkedList(LinkedListClass::sLinkedList *_list)
 			{
 				temporary = currentElement->next;
 
+				// TO OPTIMIZE / TRANSFORM
 				free(currentElement->data);
 				free(currentElement);
 

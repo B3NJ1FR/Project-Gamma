@@ -33,16 +33,22 @@ enum TypesOfCollisions
 class Map
 {
 private :
-	unsigned short*** map;
-	unsigned short numberLayers;
-	unsigned short numberLines;
-	unsigned short numberColumns;
+	unsigned short*** m_map;
+	unsigned short m_numberLayers;
+	unsigned short m_numberLines;
+	unsigned short m_numberColumns;
 
 public :
 
 	// Constructor & Destructor
 	Map();
 	~Map();
+
+	// Getters
+	inline unsigned short GetNumberOfLayers() const { return m_numberLayers;  }
+	inline unsigned short GetNumberOfLines() const { return m_numberLines;  }
+	inline unsigned short GetNumberOfColumns() const { return m_numberColumns;  }
+	inline unsigned short*** GetMap() const { return m_map;  }
 
 	// Methods
 	void InitMapFromFile();

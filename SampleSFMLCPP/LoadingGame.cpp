@@ -55,7 +55,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 		{
 			for (int x = 0; x < _game->numberColumns; x++)
 			{
-				saveFile.read((char *) &_game->map[z][y][x], sizeof(unsigned short));
+				saveFile.read((char *) &_game->m_map[z][y][x], sizeof(unsigned short));
 			}
 		}
 	}
@@ -64,14 +64,14 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 
 
 	// Loading of the ressources data
-	saveFile.read((char *) &_game->numberTypesOfRessources, sizeof(unsigned int));
+	saveFile.read((char *) &_game->m_numberTypesOfRessources, sizeof(unsigned int));
 
-	for (int i = 0; i < _game->numberTypesOfRessources; i++)
+	for (int i = 0; i < _game->m_numberTypesOfRessources; i++)
 	{
 		int quantityOwned(RESET);
 
 		saveFile.read((char *) &quantityOwned, sizeof(int));
-		_game->ressources[i].SetInitialQuantityOwned(quantityOwned);
+		_game->m_ressources[i].SetInitialQuantityOwned(quantityOwned);
 	}
 
 	std::cout << "Ressources loaded !\n";
@@ -84,12 +84,12 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	std::cout << "Money loaded !\n";
 
 	// Loading of the time elapsed
-	_game->time->LoadingTimeFromFile(&saveFile);
+	_game->m_time->LoadingTimeFromFile(&saveFile);
 
 	std::cout << "Time loaded !\n";
 
 	// Loading of the workers data
-	_game->workersList->LoadingWorkersListFromFile(&saveFile, _game->map);
+	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map);
 
 	std::cout << "Workers loaded !\n";
 
@@ -121,18 +121,18 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	if ((_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 		|| _game->stall->GetStatus() == STALL_PURCHASER_IS_PRESENT))
 	{
-		if (_game->purchasers != nullptr)
+		if (_game->m_purchasers != nullptr)
 		{
-			delete _game->purchasers;
-			_game->purchasers = nullptr;
+			delete _game->m_purchasers;
+			_game->m_purchasers = nullptr;
 
 			std::cout << "Suppression of this actual merchant\n\n";
 		}
 
 		_game->stall->SetIsNewMerchantNeeded(false);
 
-		_game->purchasers = new Purchasers;
-		_game->purchasers->LoadingPurchasersFromFile(&saveFile);
+		_game->m_purchasers = new Purchasers;
+		_game->m_purchasers->LoadingPurchasersFromFile(&saveFile);
 
 		std::cout << "Purchaser loaded !\n";
 	}

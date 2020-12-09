@@ -71,7 +71,7 @@ void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ress
 					if (_ressourceSent->GetQuantityOwned() - 1 >= 0
 						&& ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter + 1 <= ((Storehouse::sStorehouseData *)currentElement->data)->maximalQuantity)
 					{
-						_ressourceSent->SubtractQuantityOwned(1);
+						_ressourceSent->AddOrSubtractQuantityOwned(-1);
 						((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += 1;
 					}
 				}

@@ -5,9 +5,10 @@
 class LoadingScreen
 {
 private :
-	sf::Sprite loadingPicture;
+	sf::Sprite m_loadingPicture;
 
 public :
+	//Constructor & Destructor
 	LoadingScreen();
 	~LoadingScreen();
 

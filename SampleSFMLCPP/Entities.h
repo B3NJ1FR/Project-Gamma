@@ -1,5 +1,4 @@
-#ifndef ENTITIES__H
-#define ENTITIES__H
+#pragma once
 
 #include "Pathfinding.h"
 
@@ -17,17 +16,14 @@ enum WorkerStatus
 
 class Entities : public Pathfinding
 {
-public : 
+protected :
+	sf::Vector2f m_mapPosition;
+	sf::Vector2f m_mapEndPosition;
+
+	Pathfinding *m_path = nullptr;
+
+public:
+	// Constructor & Destructor
 	Entities();
 	~Entities();
-
-protected :
-	sf::Vector2f mapPosition;
-	sf::Vector2f mapEndPosition;
-
-	Pathfinding *path;
 };
-
-
-
-#endif // !ENTITIES__H

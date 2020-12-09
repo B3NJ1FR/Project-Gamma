@@ -1,36 +1,29 @@
-//#include "Common.hpp"
-//#include "Update.hpp"
-//#include "Display.hpp"
-//#include "Input.hpp"
-//#include "MainMenu.h"
-
 #include "Data.h"
-//#include "GameState.h"
 
 int main()
 {
 	Data data;
 
-	while (data.system->window.isOpen())
+	while (data.m_system->window.isOpen())
 	{	
-		switch (data.state)
+		switch (data.m_state)
 		{
 		case MAIN_STATE_MENU:
-			data.mainMenu->MainMenuState(data.system, &data.state);
+			data.m_mainMenu->MainMenuState(data.m_system, &data.m_state);
 			break;
 		case MAIN_STATE_LOAD_GAME:
-			GameState(data.game, data.loadingScreen, &data.state);
+			data.GameState();
 			break;
 		case MAIN_STATE_GAME:
-			GameState(data.game, data.loadingScreen, &data.state);
+			data.GameState();
 			break;
 		case MAIN_STATE_EXIT:
 			break;
 		default:
 			std::cout << "Error main state\n\n";
+			data.m_mainMenu->MainMenuState(data.m_system, &data.m_state);
 			break;
 		}
-
 	}
 
 
