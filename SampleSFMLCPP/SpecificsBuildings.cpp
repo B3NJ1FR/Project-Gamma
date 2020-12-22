@@ -5,7 +5,7 @@
 
 SpecificsBuildings::SpecificsBuildings()
 {
-	this->workerIsThereSprite = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
+	m_workerIsThereSprite = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
 }
 
 
@@ -15,13 +15,13 @@ SpecificsBuildings::~SpecificsBuildings()
 
 void SpecificsBuildings::InitialisationSpeBuilding(Buildings *_specificBuildingConcerned)
 {
-	std::cout << "List before : " << this->list << std::endl;
+	std::cout << "List before : " << m_list << std::endl;
 
-	this->list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 
-	std::cout << "List " << this->list << " Size : " << this->list->size << " Real First : " << this->list->first << " & Last : " << this->list->last << std::endl << std::endl;
+	std::cout << "List " << m_list << " Size : " << m_list->size << " Real First : " << m_list->first << " & Last : " << m_list->last << std::endl << std::endl;
 
-	this->building = _specificBuildingConcerned;
+	m_building = _specificBuildingConcerned;
 
 }
 
@@ -39,7 +39,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualState = BUILDING_READY_TO_PRODUCE;
 
 	// A MODIFIER PAR VALEUR SEUIL
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->quantitativeThreshold = this->building->GetRessourceQuantityNeeded();
+	((SpecificsBuildings::sBuildingData *)newBuilding->data)->quantitativeThreshold = m_building->GetRessourceQuantityNeeded();
 	// A CONFIGURER
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->maximalQuantity = 5;
 	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalImportRessourceCounter = RESET;
@@ -57,22 +57,22 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	newBuilding->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
-	this->AddElementToLinkedList(this->list, newBuilding, -1);
+	AddElementToLinkedList(m_list, newBuilding, -1);
 
-	//this->ReadVineLinkedList();
-	//this->ReadLinkedList(this->list);
+	//ReadVineLinkedList();
+	//ReadLinkedList(list);
 }
 
 
 void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressources *_ressourceSent, Ressources *_ressourceProduced)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT)
 				{
@@ -110,7 +110,7 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						{
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime += _frametime;
 
-							if (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime > this->building->GetProductionTimeCost())
+							if (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime > m_building->GetProductionTimeCost())
 							{
 								((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
 								((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime = RESET;
@@ -145,22 +145,22 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 		}
 		else
 		{
-			//std::cout << "List : " << this->list->first << std::endl;
+			//std::cout << "List : " << list->first << std::endl;
 		}
 	}
 }
 
 void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			//std::cout << "Time : " << _lapsedFrameTime << std::endl;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState)
 				{
@@ -173,7 +173,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 					// TEMPORARY
 					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 					{
-						//std::cout << "Building launched ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						//std::cout << "Building launched ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << building->GetConstructionTimeCost() << std::endl;
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = CONSTRUCTION;
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime = RESET;
 					}
@@ -190,9 +190,9 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 					//std::cout << "Constructing ...\n";
 
 					// If the building life is higher than the construction time, we launch it's growthing
-					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime >= this->building->GetConstructionTimeCost())
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime >= m_building->GetConstructionTimeCost())
 					{
-						//std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						//std::cout << "Building built ! " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime << " " << building->GetConstructionTimeCost() << std::endl;
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState = BUILT;
 						//((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
 					}
@@ -218,7 +218,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 		}
 		else
 		{
-			//std::cout << "List : " << this->list->first << std::endl;
+			//std::cout << "List : " << list->first << std::endl;
 		}
 	}
 }
@@ -226,11 +226,11 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 
 void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite == true)
 				{
@@ -268,17 +268,17 @@ void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum
 
 void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
 				{
 					//// Add quantity produced to the ressource targeted
-					//_ressource->AddQuantityOwned(this->building->GetRessourceQuantityProduced());
+					//_ressource->AddQuantityOwned(building->GetRessourceQuantityProduced());
 
 					//// Launch the feedback animation of producing
 
@@ -293,17 +293,17 @@ void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
 
 bool SpecificsBuildings::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// We verify if the player location is between the origin and the max size of the building concerned
 				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - m_building->GetSize().x
 					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					return ((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere;
 				}
@@ -325,22 +325,22 @@ bool SpecificsBuildings::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 
 sf::Sprite SpecificsBuildings::GetSpriteWorkerIsThere()
 {
-	return this->workerIsThereSprite;
+	return m_workerIsThereSprite;
 }
 
 bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// We verify if the player location is between the origin and the max size of the building concerned
 				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - this->building->GetSize().x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x - m_building->GetSize().x
 					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - this->building->GetSize().y)
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					if (_isPreciseCoordinates)
 					{
@@ -384,14 +384,34 @@ bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtPosition(const sf::Vec
 	}
 }
 
+void SpecificsBuildings::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					((SpecificsBuildings::sBuildingData*)currentElement->data)->isWorkerThere = false;					
+				}
+			}
+		}
+	}
+}
 
 bool SpecificsBuildings::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -423,11 +443,11 @@ bool SpecificsBuildings::CheckSpecificBuildingHasProducedRessource(const sf::Vec
 
 bool SpecificsBuildings::CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -459,11 +479,11 @@ bool SpecificsBuildings::CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f 
 
 int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
@@ -472,7 +492,7 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 					{
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime += _frametime;
 
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime >= this->building->GetPickupingTimeCost())
+						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime >= m_building->GetPickupingTimeCost())
 						{
 							// Launch the feedback animation of producing
 
@@ -483,7 +503,7 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
 
-							return this->building->GetRessourceQuantityProduced() * ((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter;
+							return m_building->GetRessourceQuantityProduced() * ((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter;
 						}
 						else
 						{
@@ -517,15 +537,15 @@ sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf:
 {
 	sf::Vector2i buildingPosition = { RESET, RESET };
 
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
 			float lastLowerDistance(RESET);
 
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (currentElement == this->list->first)
+				if (currentElement == m_list->first)
 				{
 					float distance = DistanceFormula(_mapPosition, ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition);
 
@@ -569,16 +589,16 @@ sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf:
 
 bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
 			int positionCounter(1);
 			bool isBuildingFind(false);
 
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				//std::cout << "Map : " << positionCounter << "/" << this->list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+				//std::cout << "Map : " << positionCounter << "/" << list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
 
 				// If the building position is identical to which send, we save his position in the linked list
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition
@@ -598,7 +618,7 @@ bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosit
 			// After having saved the building's position, we ask to destroy it
 			if (isBuildingFind == true)
 			{
-				RemoveElementsOfLinkedList(this->list, true, positionCounter);
+				RemoveElementsOfLinkedList(m_list, true, positionCounter);
 
 				return true;
 			}
@@ -624,15 +644,15 @@ bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosit
 void SpecificsBuildings::SavingSpecificsBuildingsListForFile(std::ofstream *_file)
 {
 	// Save the number of vines
-	_file->write((char *)&this->list->size, sizeof(int));
+	_file->write((char *)&m_list->size, sizeof(int));
 
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				_file->write((char *)(SpecificsBuildings::sBuildingData *)currentElement->data, sizeof(sBuildingData));
 			}
@@ -644,14 +664,14 @@ void SpecificsBuildings::SavingSpecificsBuildingsListForFile(std::ofstream *_fil
 void SpecificsBuildings::LoadingSpecificsBuildingsListFromFile(std::ifstream *_file)
 {
 	// Delete every vines
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		this->FreeLinkedList(this->list);
+		FreeLinkedList(m_list);
 	}
 
 
 	// We reinit the vines list
-	this->list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 
 
 	// Save the number of vines
@@ -671,12 +691,12 @@ void SpecificsBuildings::LoadingSpecificsBuildingsListFromFile(std::ifstream *_f
 		if (i == 0)
 		{
 			// Add this worker at the top of the list
-			this->AddElementToLinkedList(this->list, newBuilding, 1);
+			AddElementToLinkedList(m_list, newBuilding, 1);
 		}
 		else
 		{
 			// Add this worker at the end of the list
-			this->AddElementToLinkedList(this->list, newBuilding, -1);
+			AddElementToLinkedList(m_list, newBuilding, -1);
 		}
 	}
 }

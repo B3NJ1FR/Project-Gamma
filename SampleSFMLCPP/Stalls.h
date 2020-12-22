@@ -1,5 +1,4 @@
-#ifndef STALLS__H
-#define STALLS__H
+#pragma once
 
 #include "Ressources.h"
 #include "Buildings.h"
@@ -19,36 +18,36 @@ enum StallStatus
 class Stalls
 {
 private:
-	Buildings *building;
+	Buildings *m_building;
 	
 
-	sf::Vector2f mapPosition;
-	enum BuildingStatus constructionState;
-	enum StallStatus actualState;
+	sf::Vector2f m_mapPosition;
+	enum BuildingStatus m_constructionState;
+	enum StallStatus m_actualState;
 
-	int quantitativeThreshold; // Minimal threshold of launching
-	int maximalQuantity; // Maximal threshold
-	int internalRessourceCounter;
+	int m_quantitativeThreshold; // Minimal threshold of launching
+	int m_maximalQuantity; // Maximal threshold
+	int m_internalRessourceCounter;
 
-	float lifeTime;
-	float actualProductionTime;
+	float m_lifeTime;
+	float m_actualProductionTime;
 
-	bool isChangingSprite;
-	bool hasBeenBuilt;
-	bool isWorkerThere;
-	bool isPurchaserThere;
+	bool m_isChangingSprite;
+	bool m_hasBeenBuilt;
+	bool m_isWorkerThere;
+	bool m_isPurchaserThere;
 
-	int priceAccepted;
-	int internalImportRessourceCounterSaved;
-	int ressourceQuantityToSell;
-	bool isNewMerchantNeeded;
+	int m_priceAccepted;
+	int m_internalImportRessourceCounterSaved;
+	int m_ressourceQuantityToSell;
+	bool m_isNewMerchantNeeded;
 
-	sf::Vector2f *storehousesCoordinates;
-	int numberStorehousesCoordinates;
+	sf::Vector2f *m_storehousesCoordinates;
+	int m_numberStorehousesCoordinates;
 
 public:
 	
-	bool isOfferAccepted;
+	bool m_isOfferAccepted;
 
 	Stalls(Buildings *_specificBuildingConcerned);
 	~Stalls();
@@ -66,6 +65,7 @@ public:
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 	bool ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
 
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	enum StallStatus GetStatus();
@@ -83,5 +83,3 @@ public:
 	void LoadingStallFromFile(std::ifstream *_file);
 
 };
-
-#endif // !STALLS__H

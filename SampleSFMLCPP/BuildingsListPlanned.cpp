@@ -2,26 +2,31 @@
 
 BuildingsListPlanned::BuildingsListPlanned()
 {
-	this->listOfBuildingsPlanned = LinkedListInitialisation();
+	m_listOfBuildingsPlanned = LinkedListInitialisation();
 }
 
 BuildingsListPlanned::~BuildingsListPlanned()
 {	
+	if (m_listOfBuildingsPlanned != nullptr)
+	{
+		LinkedListClass::FreeLinkedList(m_listOfBuildingsPlanned);
 
+		delete m_listOfBuildingsPlanned;
+	}
 }
 
 void BuildingsListPlanned::ReadBuildingsPlannedToList()
 {
-	if (this->listOfBuildingsPlanned != nullptr)
+	if (m_listOfBuildingsPlanned != nullptr)
 	{
-		if (this->listOfBuildingsPlanned->first != nullptr)
+		if (m_listOfBuildingsPlanned->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->listOfBuildingsPlanned->first;
+			LinkedListClass::sElement *currentElement = m_listOfBuildingsPlanned->first;
 			int position(1);
 
-			for (currentElement = this->listOfBuildingsPlanned->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_listOfBuildingsPlanned->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				std::cout << position << "/" << this->listOfBuildingsPlanned->size << " - ID : " << ((struct DataBuildings *)currentElement->data)->buildingID << " - Map Position : " << ((struct DataBuildings *)currentElement->data)->mapPosition.x << " " << ((struct DataBuildings *)currentElement->data)->mapPosition.y << std::endl;
+				std::cout << position << "/" << m_listOfBuildingsPlanned->size << " - ID : " << ((struct DataBuildings *)currentElement->data)->m_buildingID << " - Map Position : " << ((struct DataBuildings *)currentElement->data)->m_mapPosition.x << " " << ((struct DataBuildings *)currentElement->data)->m_mapPosition.y << std::endl;
 
 				position++;
 			}
@@ -31,15 +36,15 @@ void BuildingsListPlanned::ReadBuildingsPlannedToList()
 	std::cout << std::endl << std::endl;
 }
 
-sf::Vector2i BuildingsListPlanned::GetBuildingPositionInMap()
+sf::Vector2i BuildingsListPlanned::GetBuildingPositionInMap() const
 {
-	if (this->listOfBuildingsPlanned != nullptr)
+	if (m_listOfBuildingsPlanned != nullptr)
 	{
-		if (this->listOfBuildingsPlanned->first != nullptr)
+		if (m_listOfBuildingsPlanned->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->listOfBuildingsPlanned->first;
+			LinkedListClass::sElement *currentElement = m_listOfBuildingsPlanned->first;
 
-			return ((struct DataBuildings *)currentElement->data)->mapPosition;
+			return ((struct DataBuildings *)currentElement->data)->m_mapPosition;
 		}
 		else
 		{
@@ -52,15 +57,15 @@ sf::Vector2i BuildingsListPlanned::GetBuildingPositionInMap()
 	}
 }
 
-sf::Vector2i BuildingsListPlanned::GetBuildingSize()
+sf::Vector2i BuildingsListPlanned::GetBuildingSize() const
 {
-	if (this->listOfBuildingsPlanned != nullptr)
+	if (m_listOfBuildingsPlanned != nullptr)
 	{
-		if (this->listOfBuildingsPlanned->first != nullptr)
+		if (m_listOfBuildingsPlanned->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->listOfBuildingsPlanned->first;
+			LinkedListClass::sElement *currentElement = m_listOfBuildingsPlanned->first;
 
-			return ((struct DataBuildings *)currentElement->data)->buildingSize;
+			return ((struct DataBuildings *)currentElement->data)->m_buildingSize;
 		}
 		else
 		{
@@ -73,15 +78,15 @@ sf::Vector2i BuildingsListPlanned::GetBuildingSize()
 	}
 }
 
-int BuildingsListPlanned::GetBuildingID()
+int BuildingsListPlanned::GetBuildingID() const
 {
-	if (this->listOfBuildingsPlanned != nullptr)
+	if (m_listOfBuildingsPlanned != nullptr)
 	{
-		if (this->listOfBuildingsPlanned->first != nullptr)
+		if (m_listOfBuildingsPlanned->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->listOfBuildingsPlanned->first;
+			LinkedListClass::sElement *currentElement = m_listOfBuildingsPlanned->first;
 
-			return ((struct DataBuildings *)currentElement->data)->buildingID;
+			return ((struct DataBuildings *)currentElement->data)->m_buildingID;
 		}
 		else
 		{
@@ -100,35 +105,30 @@ void BuildingsListPlanned::AddBuildingPlannedToList(const sf::Vector2i &_mapPosi
 	newBuilding->data = new struct DataBuildings;
 
 	// Save the position in map
-	((struct DataBuildings *)newBuilding->data)->mapPosition = _mapPosition;
+	((struct DataBuildings *)newBuilding->data)->m_mapPosition = _mapPosition;
 
 	// Init of the worker status
-	((struct DataBuildings *)newBuilding->data)->buildingID = _buildingID;
+	((struct DataBuildings *)newBuilding->data)->m_buildingID = _buildingID;
 	
-	((struct DataBuildings *)newBuilding->data)->buildingSize = _buildingSize;
+	((struct DataBuildings *)newBuilding->data)->m_buildingSize = _buildingSize;
 	
 	newBuilding->status = ELEMENT_ACTIVE;
 
 
 	// Add this new building at the end of the list
-	this->AddElementToLinkedList(this->listOfBuildingsPlanned, newBuilding, -1);
-	//this->ReadBuildingsPlannedToList();
+	AddElementToLinkedList(m_listOfBuildingsPlanned, newBuilding, -1);
+	//ReadBuildingsPlannedToList();
 }
 
 
 void BuildingsListPlanned::DeleteCurrentFirstBuildingInList()
 {
-	if (this->listOfBuildingsPlanned != nullptr)
+	if (m_listOfBuildingsPlanned != nullptr)
 	{
-		if (this->listOfBuildingsPlanned->first != nullptr)
+		if (m_listOfBuildingsPlanned->first != nullptr)
 		{
 			// Deletion of the first element of the list
-			RemoveElementsOfLinkedList(this->listOfBuildingsPlanned, true, 1);
+			RemoveElementsOfLinkedList(m_listOfBuildingsPlanned, true, 1);
 		}
 	}
-}
-
-inline bool BuildingsListPlanned::IsBuildingListIsEmpty()
-{
-	return ((this->listOfBuildingsPlanned != nullptr) && (this->listOfBuildingsPlanned->first != nullptr)) ? false : true;
 }

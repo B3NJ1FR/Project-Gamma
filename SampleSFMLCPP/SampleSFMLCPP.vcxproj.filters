@@ -19,12 +19,6 @@
     <Filter Include="Fichiers sources\Main Menu">
       <UniqueIdentifier>{9c97a83d-6075-46c9-96f0-4a1db973bc2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Initialisation Game Launching">
-      <UniqueIdentifier>{856c1a3a-b2b1-4ff9-a733-16ffc361f541}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Initialisation Game Launching">
-      <UniqueIdentifier>{4d19f66a-688e-4d26-a0e4-aa32b2b1bb3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers sources\Game">
       <UniqueIdentifier>{52ef696f-761c-40c4-8bdf-bf17902b603f}</UniqueIdentifier>
     </Filter>
@@ -90,9 +84,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Initialisation.cpp">
-      <Filter>Fichiers sources\Initialisation Game Launching</Filter>
-    </ClCompile>
     <ClCompile Include="MainMenu.cpp">
       <Filter>Fichiers sources\Main Menu</Filter>
     </ClCompile>
@@ -100,9 +91,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Buildings.cpp">
-      <Filter>Fichiers sources\Game\Buildings</Filter>
-    </ClCompile>
-    <ClCompile Include="InitBuildingsFromFile.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
     <ClCompile Include="Ressources.cpp">
@@ -126,13 +114,7 @@
     <ClCompile Include="GameDisplay.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
-    <ClCompile Include="GameInitialisation.cpp">
-      <Filter>Fichiers sources\Game\Internal Game</Filter>
-    </ClCompile>
     <ClCompile Include="GameInput.cpp">
-      <Filter>Fichiers sources\Game\Internal Game</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
     <ClCompile Include="GameUpdate.cpp">
@@ -215,16 +197,10 @@
     <ClInclude Include="Definitions.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Initialisation.hpp">
-      <Filter>Fichiers d%27en-tête\Initialisation Game Launching</Filter>
-    </ClInclude>
     <ClInclude Include="Common.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Buildings.h">
-      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
-    </ClInclude>
-    <ClInclude Include="InitBuildingsFromFile.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
     <ClInclude Include="GameDefinitions.h">
@@ -257,16 +233,7 @@
     <ClInclude Include="Workers.h">
       <Filter>Fichiers d%27en-tête\Game\Entities\Workers</Filter>
     </ClInclude>
-    <ClInclude Include="GameDisplay.h">
-      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
-    </ClInclude>
-    <ClInclude Include="GameInitialisation.h">
-      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
-    </ClInclude>
     <ClInclude Include="GameInput.h">
-      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
-    </ClInclude>
-    <ClInclude Include="GameState.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
     </ClInclude>
     <ClInclude Include="GameUpdate.h">

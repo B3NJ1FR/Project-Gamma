@@ -27,6 +27,7 @@ private:
 
 	sf::Text *versionNumber;
 	sf::Text *resolution;
+	sf::Text *fullscreen;
 	sf::Font font;
 
 	int temporaryResolution;
@@ -35,9 +36,11 @@ private:
 
 public:
 
+	// Constructor & Destructor
 	MainMenu();
 	~MainMenu();
 
+	// Methods
 	void InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_generalState, System *_system);
 	void UpdateMainMenu(enum GeneralState *_generalState);
 	void DisplayMainMenu(sf::RenderWindow &_window);

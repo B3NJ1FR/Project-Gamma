@@ -13,8 +13,8 @@ Game::Game()
 	m_workersList = new WorkersList;
 	m_mainCharacter = new MainCharacter; // Vérifier le code après la remise en route de BuildManagement
 	m_sellingWindow = new SellingWindow(&m_generalFont);
-	//m_buildingsListPlanned = new BuildingsListPlanned();
-	//m_purchasers = nullptr;
+	m_buildingsListPlanned = new BuildingsListPlanned();
+	m_purchasers = nullptr;
 
 
 	m_camera.x = -15;
@@ -28,9 +28,9 @@ Game::Game()
 
 
 
-	m_workersList->InitialisationWorkersList();
+	//m_workersList->InitialisationWorkersList();
 
-	//m_buildWindow.InitTextsBuildWindow(&m_charlemagneFont);
+	m_buildWindow.InitTextsBuildWindow(&m_charlemagneFont);
 }
 
 
@@ -58,7 +58,7 @@ void Game::SetWindowMemoryAddress(sf::RenderWindow* _window)
 {
 	m_window = _window;
 
-	std::cout << "Memory Adress : " << &m_window;
+	std::cout << "Memory Adress : " << m_window;
 }
 
 

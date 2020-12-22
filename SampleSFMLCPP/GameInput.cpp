@@ -71,6 +71,7 @@ void GameInput(struct Game *_game)
 		&& _game->m_actualGameState != TUTORIAL_MODE)
 	{
 		sf::Event event;
+
 		while (_game->m_window->pollEvent(event))
 		{
 			// Closing by pressing the Close button
@@ -98,7 +99,7 @@ void GameInput(struct Game *_game)
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == BUILD_MODE)
 				{
-					_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
+					_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
 					_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
 
 					_game->m_actualGameState = NORMAL_MODE;
@@ -180,17 +181,17 @@ void GameInput(struct Game *_game)
 					&& _game->m_actualGameState == NORMAL_MODE)
 				{
 					// Prix temporaire
-					if (_game->money.GetMoneyQuantity() - 1000 >= 0)
+					if (_game->m_money.GetMoneyQuantity() - 1000 >= 0)
 					{
-						_game->money.SubtractMoney(1000);
+						_game->m_money.SubtractMoney(1000);
 
-						sf::Vector2i value = { rand() % _game->numberColumns, rand() % _game->numberLines };
+						sf::Vector2i value = { rand() % _game->m_map.GetNumberOfColumns(), rand() % _game->m_map.GetNumberOfLines() };
 
 						// We spawn the workers on the road
-						while (_game->m_map[ZERO_FLOOR + COLLISIONS_ID][value.y][value.x] != ROAD)
+						while (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][value.y][value.x] != ROAD)
 						{
-							value.x = rand() % _game->numberColumns;
-							value.y = rand() % _game->numberLines;
+							value.x = rand() % _game->m_map.GetNumberOfColumns();
+							value.y = rand() % _game->m_map.GetNumberOfLines();
 						}
 
 						_game->m_workersList->AddNewWorkersToList(sf::Vector2f(value));
@@ -235,14 +236,14 @@ void GameInput(struct Game *_game)
 				}
 
 
-				if (event.key.code == sf::Keyboard::M)
+				/*if (event.key.code == sf::Keyboard::M)
 				{
-					_game->save.SaveTheGame(_game);
+					_game->m_save.SaveTheGame(_game);
 				}
 				if (event.key.code == sf::Keyboard::L)
 				{
-					_game->load.LoadTheGame(_game);
-				}
+					_game->m_load.LoadTheGame(_game);
+				}*/
 
 				if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num1)
@@ -309,7 +310,7 @@ void GameInput(struct Game *_game)
 					{
 						// We check if the scrolling doesn't leave the area
 						// The max is dynamically calculated in function of the number of building present in the game
-						if (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) >= -130 * (_game->numberOfBuilding / 2) + 80
+						if (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) >= -130 * (_game->m_builds.GetNumberOfBuildings() / 2) + 80
 							&& (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) <= 80))
 						{
 							_game->m_buildWindow.SetScrollBuildingList(_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5));
@@ -340,17 +341,17 @@ void GameInput(struct Game *_game)
 						_game->m_buildWindow.InputPickUpCaseClicked(*_game->m_window, false, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
 
 						// Security to avoid an array exit
-						if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->numberColumns, _game->numberLines), _game->m_buildWindow.GetBuildingCheckboxSelected()))
+						if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _game->m_buildWindow.GetBuildingCheckboxSelected()))
 						{
 							if (_game->m_mainCharacter->GetIsMainCharacterSelected() == true)
 							{
-								_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), _game->m_map);
+								_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), &_game->m_map);
 
 								_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
 							}
 							else
 							{
-								_game->m_workersList->WorkerListSetEndPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), _game->m_map);
+								_game->m_workersList->WorkerListSetEndPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), _game->m_map.GetMap());
 							}
 						}
 
@@ -429,7 +430,7 @@ void GameInput(struct Game *_game)
 					}
 					else if (_game->m_actualGameState == VILLA_MANAGEMENT)
 					{
-						_game->villaManagement.InputVillaManagement(&_game->m_actualGameState, _game->m_time, *_game->m_window);
+						_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, _game->m_time, *_game->m_window);
 					}
 				}
 			}
@@ -438,7 +439,7 @@ void GameInput(struct Game *_game)
 		}
 
 
-		CameraInputs(&_game->m_camera, _game->m_time->GetContinuousFrameTime(), sf::Vector2i(_game->numberColumns, _game->numberLines));
+		CameraInputs(&_game->m_camera, _game->m_time->GetContinuousFrameTime(), sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()));
 
 
 		// Case clicked in build mode
@@ -450,13 +451,13 @@ void GameInput(struct Game *_game)
 			}
 			else if (_game->m_actualGameState == SELLING_WINDOW)
 			{
-				_game->m_sellingWindow->InputSellingWindow(&_game->stall->isOfferAccepted, &_game->m_actualGameState, _game->stall, *_game->m_window);
+				_game->m_sellingWindow->InputSellingWindow(&_game->m_builds.m_stall->m_isOfferAccepted, &_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window);
 			}
 		}
 	}
 	else if (_game->m_actualGameState == PAUSE_WINDOW)
 	{
-		_game->pauseWindow.InputPauseWindow(_game, &_game->save, &_game->load);
+		_game->m_pauseWindow.InputPauseWindow(_game, &_game->m_save, &_game->m_load);
 	}
 	else if (_game->m_actualGameState == TUTORIAL_MODE)
 	{

@@ -1,5 +1,4 @@
-#ifndef VILLA_MANAGEMENT__H
-#define VILLA_MANAGEMENT__H
+#pragma once
 
 #include "TimeManagement.h"
 
@@ -9,23 +8,21 @@
 class VillaManagement
 {
 private:
-	sf::Sprite backgroundSprite;
-	sf::Sprite tableSprite;
-	sf::Sprite bookshelfSprite;
-	sf::Sprite entranceSprite;
+	sf::Sprite m_backgroundSprite;
+	sf::Sprite m_tableSprite;
+	sf::Sprite m_bookshelfSprite;
+	sf::Sprite m_entranceSprite;
 
-	sf::Image imageTable;
-	sf::Image imageBookshelf;
-	sf::Image imageEntrance;
+	sf::Image m_imageTable;
+	sf::Image m_imageBookshelf;
+	sf::Image m_imageEntrance;
 
 public:
+	// Constructor & Destructor
 	VillaManagement();
 	~VillaManagement();
 
+	// Methods
 	void InputVillaManagement(enum CurrentGameState *_state, TimeManagement *_time, sf::RenderWindow &_window);
 	void DisplayVillaManagement(sf::RenderWindow &_window);
 };
-
-
-
-#endif // !VILLA_MANAGEMENT__H

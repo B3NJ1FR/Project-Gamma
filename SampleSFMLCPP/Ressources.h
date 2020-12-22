@@ -31,10 +31,10 @@ public :
 	~Ressources();
 
 	// Setters
-	inline void SetSprite (const std::string _spriteFileName, const int _spriteOriginPosition = 0);
-	inline void SetName (const std::string& _name);
-	inline void SetInitialQuantityOwned (const int _quantityOwned = 0);
-	inline void AddOrSubtractQuantityOwned(const int _quantityToAdd);
+	inline void SetSprite(const std::string& _spriteFileName, const int _spriteOriginPosition = 0) { m_sprite = LoadSprite(_spriteFileName, _spriteOriginPosition); };
+	inline void SetName(const std::string& _name) { m_name = _name; };
+	inline void SetInitialQuantityOwned(int _quantityOwned = 0) { m_quantityOwned = _quantityOwned; };
+	void AddOrSubtractQuantityOwned(int _quantityToAdd);
 	
 	// Getters
 	inline sf::Sprite GetSprite() const { return m_sprite; };

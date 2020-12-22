@@ -9,13 +9,13 @@ private:
 
 	struct DataBuildings
 	{
-		sf::Vector2i mapPosition;
+		sf::Vector2i m_mapPosition;
 
-		sf::Vector2i buildingSize;
-		int buildingID; // enum TypeOfBuilding
+		sf::Vector2i m_buildingSize;
+		int m_buildingID; // enum TypeOfBuilding
 	};
 
-	LinkedListClass::sLinkedList *listOfBuildingsPlanned;
+	LinkedListClass::sLinkedList *m_listOfBuildingsPlanned;
 
 public:
 	// Constructor & Destructor
@@ -25,13 +25,13 @@ public:
 	void ReadBuildingsPlannedToList();
 
 	// Getters
-	sf::Vector2i GetBuildingPositionInMap();
-	sf::Vector2i GetBuildingSize();
-	int GetBuildingID();
+	sf::Vector2i GetBuildingPositionInMap() const;
+	sf::Vector2i GetBuildingSize() const;
+	int GetBuildingID() const;
 
 	// Methods
 	void AddBuildingPlannedToList(const sf::Vector2i &_mapPosition, const enum TypeOfBuilding &_buildingID, const sf::Vector2i &_buildingSize);
 
 	void DeleteCurrentFirstBuildingInList();
-	inline bool IsBuildingListIsEmpty();
+	inline bool IsBuildingListIsEmpty() { return ((m_listOfBuildingsPlanned != nullptr) && (m_listOfBuildingsPlanned->first != nullptr)) ? false : true; };
 };

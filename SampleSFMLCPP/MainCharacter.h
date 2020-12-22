@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Entities.h"
-#include "GameDefinitions.h"
-#include "Map.h"
 #include "BuildingsListPlanned.h"
+#include "Map.h"
+//#include "GameDefinitions.h"
 
 
 class MainCharacter : public Entities
@@ -32,28 +32,29 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
-	void InitPathfinding(Game *_game);
+	void InitPathfinding(Map * _map);
 
 	// Setters
-	void SetMainCharacterPosition(const sf::Vector2f &_mapPosition);
+	inline void SetMainCharacterPosition(const sf::Vector2f& _mapPosition) { m_mapPosition = _mapPosition; };
 	void SetMainCharacterEndingPosition(const sf::Vector2i& _mapPosition, Map* _map);
-	void SetSpriteScale(const sf::Vector2f &_newScale);
+	inline void SetSpriteScale(const sf::Vector2f& _newScale) { m_sprite.setScale(sf::Vector2f(_newScale.x * 1.3f, _newScale.y * 1.3f)); };
 	void SetMainCharacterStatus(const enum WorkerStatus &_newStatus, const bool &_isLaunchingMovement = false);
-	void SetIsMainCharacterSelected(const bool &_isMainCharacterSelected);
-	void SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace);
-	void SetIsCurrentlyBuilding(const bool &_isCurrentlyBuilding);
+	inline void SetIsMainCharacterSelected(const bool& _isMainCharacterSelected) { m_isMainCharacterSelected = _isMainCharacterSelected; };
+	inline void SetWorkerIsInWorkingPlace(const bool& _isItWorkingPlace) { m_isItWorkingPlace = _isItWorkingPlace; };
+	inline void SetIsCurrentlyBuilding(const bool& _isCurrentlyBuilding) { m_isCurrentlyBuilding = _isCurrentlyBuilding; };
 
 	// Getters
-	inline sf::Vector2f GetMainCharacterPosition() const;
-	inline sf::Vector2f GetMainCharacterEndingPosition() const;
-	inline sf::Sprite GetSprite() const;
-	inline bool GetIsMainCharacterSelected() const;
-	inline enum WorkerStatus GetWorkerStatus() const;
-	inline bool GetIsCurrentlyBuilding() const;
-	
-	inline bool IsMainCharacterPosition(const sf::Vector2i &_mapPosition) const;
-	void UpdatePathAndActivities(Game *_game);
+	inline sf::Vector2f GetMainCharacterPosition() const { return m_mapPosition; };
 
+	inline sf::Vector2f GetMainCharacterEndingPosition() const { return m_mapEndPosition; };
+	inline sf::Sprite GetSprite() const { return m_sprite; };
+	inline bool GetIsMainCharacterSelected() const { return m_isMainCharacterSelected; };
+	inline enum WorkerStatus GetWorkerStatus() const { return m_actualStatus; };
+	inline bool GetIsCurrentlyBuilding() const { return m_isCurrentlyBuilding; };
+	
+	inline bool IsMainCharacterPosition(const sf::Vector2i& _mapPosition) const { return (sf::Vector2i(m_mapPosition) == _mapPosition) ? true : false; };
+	void UpdatePathAndActivities(struct Game *_game); // WARNING NEED TO BE VERIFIED IF NOT WORKING
+	//void UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds, BuildingsListPlanned* _buildingsList, BuildWindow* _buildWindow, Ressources* _ressources);
 	//bool isPressingStart; // Temporaire
 	//bool isPressingEnd; // Temporaire
 };

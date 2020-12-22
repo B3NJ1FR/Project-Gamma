@@ -1,5 +1,4 @@
-#ifndef STOREHOUSE__H
-#define STOREHOUSE__H
+#pragma once
 
 #include "Ressources.h"
 #include "SpecificsBuildings.h"
@@ -25,6 +24,7 @@ public:
 	};
 	typedef struct StorehouseData sStorehouseData;
 
+	// Constructor & Destructor
 	Storehouse();
 	~Storehouse();
 
@@ -40,6 +40,7 @@ public:
 	void AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity);
 
 	bool ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition);
 	//bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
@@ -50,9 +51,8 @@ public:
 
 	void SavingVinesListForFile(std::ofstream *_file);
 	void LoadingVinesListFromFile(std::ifstream *_file);
-private:
-	LinkedListClass::sLinkedList *list;
-	Buildings *building;
-};
 
-#endif // !STOREHOUSE__H
+private:
+	LinkedListClass::sLinkedList *m_list;
+	Buildings *m_building;
+};

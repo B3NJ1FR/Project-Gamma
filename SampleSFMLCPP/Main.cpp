@@ -4,7 +4,7 @@ int main()
 {
 	Data data;
 
-	while (data.m_system->window.isOpen())
+	while (data.m_system->m_window.isOpen())
 	{	
 		switch (data.m_state)
 		{

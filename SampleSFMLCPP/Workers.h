@@ -1,14 +1,10 @@
 #pragma once
 
 #include "Entities.h"
-#include "BuildingManagement.h"
 #include "Map.h"
 #include "TimeManagement.h"
-
-
-//#include "Vines.h"
-//#include "SpecificsBuildings.h"
-
+#include "Ressources.h"
+#include "BuildingManagement.h"
 
 enum WorkerCaste
 {
@@ -16,26 +12,27 @@ enum WorkerCaste
 	SLAVE,
 };
 
-class Workers : public Entities, public BuildingManagement
+class Workers : public Entities
 {
 private :
 	//enum WorkerCaste caste; // FUTURE UPDATE
 	//int happiness; // FUTURE UPDATE
 	//int age; // FUTURE UPDATE
 
-	enum WorkerStatus m_actualStatus;
+	WorkerStatus m_actualStatus;
 	
 	int m_moneyValue;
 	int m_moneyCostPerMonth;
 
 	bool m_isLauchingMovement; // Temporaire
 	bool m_isItWorkingPlace;
+	bool m_isWorkerWasWorkingInBuilding;
 
 	enum TypesOfRessources *m_ressourceHeld;
 	int *m_quantityRessourceHeld;
 
-	enum TypeOfBuilding m_actualBuilding;
-	enum TypeOfBuilding *m_targetedBuilding;
+	TypeOfBuilding m_currentBuilding;
+	TypeOfBuilding *m_targetedBuilding;
 
 	float m_timeToDeposit;
 
@@ -45,24 +42,26 @@ public:
 	~Workers();
 
 	// Setters
-	void SetWorkerPosition(const sf::Vector2f &_mapPosition);
-	void SetWorkerStatus(const enum WorkerStatus &_newStatus);
-	void SetWorkerMoneyValue(const int &_moneyValue);
-	void SetWorkerMoneyCostPerMonth(const int &_moneyCostPerMonth);
-	void SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace);
-	void SetTimeToDeposit(const float &_time);
-	void AddTimeToDeposit(const float &_frametime);
+	void SetWorkerPosition(const sf::Vector2f& _mapPosition) { m_mapPosition = _mapPosition; };
+	void SetWorkerStatus(const enum WorkerStatus& _newStatus) { m_actualStatus = _newStatus; };
+
+	void SetWorkerMoneyValue(const int& _moneyValue) { m_moneyValue = _moneyValue; };
+
+	void SetWorkerMoneyCostPerMonth(const int& _moneyCostPerMonth) { m_moneyCostPerMonth = _moneyCostPerMonth; };
+	void SetWorkerIsInWorkingPlace(const bool& _isItWorkingPlace) { m_isItWorkingPlace = _isItWorkingPlace; };
+	void SetTimeToDeposit(const float& _time) { m_timeToDeposit = _time; };
+	void AddTimeToDeposit(const float& _frametime) { m_timeToDeposit += _frametime; };
 	void SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short ***_map);
 
 	// Getters
-	inline sf::Vector2f GetWorkerPosition() const;
-	inline sf::Vector2f GetWorkerEndingPosition() const;
-	inline int GetWorkerMoneyValue() const;
-	inline int GetWorkerMoneyCostPerMonth() const;
-	inline bool GetWorkerIsInWorkingPlace() const;
-	inline enum WorkerStatus GetWorkerStatus() const;
-	inline float GetTimeToDeposit() const;
-	inline enum TypeOfBuilding GetWorkerActualBuilding() const;
+	inline sf::Vector2f GetWorkerPosition() const { return m_mapPosition; };
+	inline sf::Vector2f GetWorkerEndingPosition() const { return m_mapEndPosition; };
+	inline int GetWorkerMoneyValue() const { return m_moneyValue; };
+	inline int GetWorkerMoneyCostPerMonth() const { return m_moneyCostPerMonth; };
+	inline bool GetWorkerIsInWorkingPlace() const { return m_isItWorkingPlace; };
+	inline enum WorkerStatus GetWorkerStatus() const { return m_actualStatus; };
+	inline float GetTimeToDeposit() const { return m_timeToDeposit; };
+	inline enum TypeOfBuilding GetWorkerActualBuilding() const { return m_currentBuilding; };
 
 	// Methods
 	void InitPathfinding(Map* _map);

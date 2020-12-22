@@ -1,25 +1,26 @@
 #include "BuildingManagement.h"
+#include "Buildings.h"
 
 
 BuildingManagement::BuildingManagement()
 {
-	numberOfBuilding = RESET;
+	m_numberOfBuilding = RESET;
 
-	buildings = nullptr;
-	stall = nullptr;
-	buildingsNameTexts = nullptr;
+	m_buildings = nullptr;
+	m_stall = nullptr;
+	m_buildingsNameTexts = nullptr;
 
 	InitBuildingsFromFile();
 
-	if (buildings != nullptr)
+	if (m_buildings != nullptr)
 	{
-		stall = new Stalls(&buildings[BUILDING_STALL]);
+		m_stall = new Stalls(&m_buildings[BUILDING_STALL]);
 
-		vines.InitialisationVines(&buildings[BUILDING_VINES]);
-		stompingVats.InitialisationSpeBuilding(&buildings[BUILDING_GRAPE_STOMPING_VATS]);
-		winePress.InitialisationSpeBuilding(&buildings[BUILDING_WINE_PRESS]);
-		wineStorehouse.InitialisationSpeBuilding(&buildings[BUILDING_WINE_STOREHOUSE]);
-		storehouse.InitialisationStorehouse(&buildings[BUILDING_STOREHOUSE]);
+		m_vines.InitialisationVines(&m_buildings[BUILDING_VINES]);
+		m_stompingVats.InitialisationSpeBuilding(&m_buildings[BUILDING_GRAPE_STOMPING_VATS]);
+		m_winePress.InitialisationSpeBuilding(&m_buildings[BUILDING_WINE_PRESS]);
+		m_wineStorehouse.InitialisationSpeBuilding(&m_buildings[BUILDING_WINE_STOREHOUSE]);
+		m_storehouse.InitialisationStorehouse(&m_buildings[BUILDING_STOREHOUSE]);
 	}
 
 	std::cout << "----- BuildingManagement Initialised ! -----\n\n\n";
@@ -27,19 +28,19 @@ BuildingManagement::BuildingManagement()
 
 BuildingManagement::~BuildingManagement()
 {
-	if (buildings != nullptr)
+	if (m_buildings != nullptr)
 	{
-		delete[] buildings;
+		delete[] m_buildings;
 	}
 
-	if (stall != nullptr)
+	if (m_stall != nullptr)
 	{
-		delete stall;
+		delete m_stall;
 	}
 
-	if (buildingsNameTexts != nullptr)
+	if (m_buildingsNameTexts != nullptr)
 	{
-		delete[] buildingsNameTexts;
+		delete[] m_buildingsNameTexts;
 	}
 }
 
@@ -71,11 +72,11 @@ void BuildingManagement::InitBuildingsFromFile()
 
 		if (temporaryString == "NUMBER_OF_BUILDINGS")
 		{
-			buildingsFile >> numberOfBuilding;
-			std::cout << "Number of buildings : " << numberOfBuilding << std::endl << std::endl;
+			buildingsFile >> m_numberOfBuilding;
+			std::cout << "Number of buildings : " << m_numberOfBuilding << std::endl << std::endl;
 
 			// Buildings array allocation that will conserve all the buildings data
-			buildings = new Buildings[numberOfBuilding];
+			m_buildings = new Buildings[m_numberOfBuilding];
 
 			isAllocated = true;
 		}
@@ -86,7 +87,7 @@ void BuildingManagement::InitBuildingsFromFile()
 			unsigned short buildingID = temporaryNumber;
 
 			// Security to avoid to add elements into the void
-			if (buildingID <= (numberOfBuilding - 1))
+			if (buildingID <= (m_numberOfBuilding - 1))
 			{
 				buildingsFile >> temporaryString;
 
@@ -112,7 +113,7 @@ void BuildingManagement::InitBuildingsFromFile()
 						std::string newString;
 						newString.erase();
 
-						for (int i = 0; i < differenceBetweenWords / 2 - 1; i++)
+						for (int i = 0; i < ((differenceBetweenWords / 2) - 1); i++)
 						{
 							newString.append("\t");
 						}
@@ -142,7 +143,7 @@ void BuildingManagement::InitBuildingsFromFile()
 						temporaryString.copy(buffer2, secondWordLengh, temporaryString.find("\n") + 1);
 						buffer2[secondWordLengh] = '\0';
 
-						for (int i = 0; i < differenceBetweenWords / 2 - 1; i++)
+						for (auto i = 0; i < differenceBetweenWords / 2 - 1; i++)
 						{
 							newString.append("\t");
 						}
@@ -159,7 +160,7 @@ void BuildingManagement::InitBuildingsFromFile()
 					}
 				}
 
-				buildings[buildingID].SetName(temporaryString);
+				m_buildings[buildingID].SetName(temporaryString);
 
 
 				// Pickup the ID and the name of the building
@@ -178,14 +179,14 @@ void BuildingManagement::InitBuildingsFromFile()
 							temporaryString.replace(temporaryString.find("_"), 1, " ", 1);
 						}
 
-						buildings[buildingID].SetDescription(temporaryString);
+						m_buildings[buildingID].SetDescription(temporaryString);
 					}
 					else if (temporaryString == "SIZE")
 					{
 						sf::Vector2i temporarySize = { RESET, RESET };
 
 						buildingsFile >> temporarySize.x >> temporarySize.y;
-						buildings[buildingID].SetSizeCaracteristics(temporarySize);
+						m_buildings[buildingID].SetSizeCaracteristics(temporarySize);
 
 						std::cout << temporarySize.x << "x" << temporarySize.y << std::endl;
 
@@ -195,7 +196,7 @@ void BuildingManagement::InitBuildingsFromFile()
 						sf::Vector2i temporaryEntrance = { RESET, RESET };
 
 						buildingsFile >> temporaryEntrance.x >> temporaryEntrance.y;
-						buildings[buildingID].SetEntranceCaracteristics(temporaryEntrance);
+						m_buildings[buildingID].SetEntranceCaracteristics(temporaryEntrance);
 
 						std::cout << "\tEntrance :\t" << temporaryEntrance.x << " " << temporaryEntrance.y << std::endl;
 					}
@@ -204,24 +205,24 @@ void BuildingManagement::InitBuildingsFromFile()
 						sf::Vector2i temporaryExit = { RESET, RESET };
 
 						buildingsFile >> temporaryExit.x >> temporaryExit.y;
-						buildings[buildingID].SetExitCaracteristics(temporaryExit);
+						m_buildings[buildingID].SetExitCaracteristics(temporaryExit);
 
 						std::cout << "\tExit :\t\t" << temporaryExit.x << " " << temporaryExit.y << std::endl;
 					}
 					else if (temporaryString == "SPRITE")
 					{
 						buildingsFile >> temporaryString;
-						buildings[buildingID].SetSprite(temporaryString);
+						m_buildings[buildingID].SetSprite(temporaryString);
 					}
 					else if (temporaryString == "ICON")
 					{
 						buildingsFile >> temporaryString;
-						buildings[buildingID].SetIcon(temporaryString);
+						m_buildings[buildingID].SetIcon(temporaryString);
 					}
 					else if (temporaryString == "MONEY")
 					{
 						buildingsFile >> temporaryNumber;
-						buildings[buildingID].SetConstructionMoneyCost(temporaryNumber);
+						m_buildings[buildingID].SetConstructionMoneyCost(temporaryNumber);
 					}
 					else if (temporaryString == "RESSOURCES")
 					{
@@ -247,9 +248,9 @@ void BuildingManagement::InitBuildingsFromFile()
 							*resssourceQuantity = temporaryNumber;
 
 
-							buildings[buildingID].SetRessourceIDNeeded(resssourceID, counterRessources);
+							m_buildings[buildingID].SetRessourceIDNeeded(resssourceID, counterRessources);
 
-							buildings[buildingID].SetRessourceQuantityNeeded(resssourceQuantity);
+							m_buildings[buildingID].SetRessourceQuantityNeeded(resssourceQuantity);
 						}
 						else
 						{
@@ -265,9 +266,9 @@ void BuildingManagement::InitBuildingsFromFile()
 								resssourceQuantity[i] = temporaryNumber;
 							}
 
-							buildings[buildingID].SetRessourceIDNeeded(resssourceID, counterRessources);
+							m_buildings[buildingID].SetRessourceIDNeeded(resssourceID, counterRessources);
 
-							buildings[buildingID].SetRessourceQuantityNeeded(resssourceQuantity);
+							m_buildings[buildingID].SetRessourceQuantityNeeded(resssourceQuantity);
 						}
 
 
@@ -291,9 +292,9 @@ void BuildingManagement::InitBuildingsFromFile()
 							buildingsFile >> temporaryNumber;
 							*resssourceQuantity = temporaryNumber;
 
-							buildings[buildingID].SetRessourceIDProduced(resssourceID, counterRessources);
+							m_buildings[buildingID].SetRessourceIDProduced(resssourceID, counterRessources);
 
-							buildings[buildingID].SetRessourceQuantityProduced(resssourceQuantity);
+							m_buildings[buildingID].SetRessourceQuantityProduced(resssourceQuantity);
 						}
 						else
 						{
@@ -309,25 +310,25 @@ void BuildingManagement::InitBuildingsFromFile()
 								resssourceQuantity[i] = temporaryNumber;
 							}
 
-							buildings[buildingID].SetRessourceIDProduced(resssourceID, counterRessources);
+							m_buildings[buildingID].SetRessourceIDProduced(resssourceID, counterRessources);
 
-							buildings[buildingID].SetRessourceQuantityProduced(resssourceQuantity);
+							m_buildings[buildingID].SetRessourceQuantityProduced(resssourceQuantity);
 						}
 
 					}
 					else if (temporaryString == "TIME")
 					{
 						buildingsFile >> temporaryFloatingNumber;
-						buildings[buildingID].SetConstructionTimeCost(temporaryFloatingNumber);
+						m_buildings[buildingID].SetConstructionTimeCost(temporaryFloatingNumber);
 
 						buildingsFile >> temporaryFloatingNumber;
-						buildings[buildingID].SetProductionTimeCost(temporaryFloatingNumber);
+						m_buildings[buildingID].SetProductionTimeCost(temporaryFloatingNumber);
 
 						buildingsFile >> temporaryFloatingNumber;
-						buildings[buildingID].SetPickupingTimeCost(temporaryFloatingNumber);
+						m_buildings[buildingID].SetPickupingTimeCost(temporaryFloatingNumber);
 
 						buildingsFile >> temporaryFloatingNumber;
-						buildings[buildingID].SetDepositingTimeCost(temporaryFloatingNumber);
+						m_buildings[buildingID].SetDepositingTimeCost(temporaryFloatingNumber);
 					}
 					else if (temporaryString == "WORKERS")
 					{
@@ -349,5 +350,4 @@ void BuildingManagement::InitBuildingsFromFile()
 	std::cout << "\n\n\tBuildings Initialisation succeed !\n\n\n";
 
 	buildingsFile.close();
-
 }

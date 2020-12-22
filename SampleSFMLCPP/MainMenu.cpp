@@ -52,6 +52,7 @@ MainMenu::MainMenu()
 	versionNumber = nullptr;
 	versionNumber = new sf::Text;
 	resolution = nullptr;
+	fullscreen = nullptr;
 	temporaryResolution = -1;
 
 	LoadTextString(versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
@@ -73,6 +74,8 @@ MainMenu::~MainMenu()
 	delete versionNumber;
 	versionNumber = nullptr;
 	delete resolution;
+	resolution = nullptr;
+	delete fullscreen;
 	resolution = nullptr;
 }
 
@@ -144,7 +147,18 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 						state = MAIN_MENU_OPTIONS;
 
 						resolution = new sf::Text;
-						LoadTextString(resolution, _system->listOfScreenResolutions[_system->currentScreenResolution], &font, 40, sf::Color::Black, 1);
+						fullscreen = new sf::Text;
+						LoadTextString(resolution, _system->m_listOfScreenResolutions[_system->m_currentScreenResolution], &font, 40, sf::Color::Black, 1);
+
+						if (_system->m_isFullscreen)
+						{
+							LoadTextString(fullscreen, "Fullscreen : ON", &font, 40, sf::Color::Black, 1);
+						}
+						else
+						{
+							LoadTextString(fullscreen, "Fullscreen : OFF", &font, 40, sf::Color::Black, 1);
+						}
+
 					}
 
 					// Button Quit
@@ -172,9 +186,27 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 						&& mousePostionAtScreen.y > 200 - 30
 						&& mousePostionAtScreen.y < 200 + 30)
 					{
-						temporaryResolution = (temporaryResolution == -1) ? _system->currentScreenResolution + 1 : (temporaryResolution + 1) % SR_NUMBER_MAX;
+						temporaryResolution = (temporaryResolution == -1) ? _system->m_currentScreenResolution + 1 : (temporaryResolution + 1) % SR_NUMBER_MAX;
 						
-						LoadTextString(resolution, _system->listOfScreenResolutions[temporaryResolution], &this->font, 40, sf::Color::Black, 1);
+						LoadTextString(resolution, _system->m_listOfScreenResolutions[temporaryResolution], &this->font, 40, sf::Color::Black, 1);
+					}
+					
+					// Change fullscreen displayed
+					if (mousePostionAtScreen.x > 400 - 100
+						&& mousePostionAtScreen.x < 400 + 100
+						&& mousePostionAtScreen.y > 300 - 30
+						&& mousePostionAtScreen.y < 300 + 30)
+					{
+						_system->m_isFullscreen = !_system->m_isFullscreen;
+
+						if (_system->m_isFullscreen)
+						{
+							LoadTextString(fullscreen, "Fullscreen : ON", &font, 40, sf::Color::Black, 1);
+						}
+						else
+						{
+							LoadTextString(fullscreen, "Fullscreen : OFF", &font, 40, sf::Color::Black, 1);
+						}
 					}
 
 
@@ -268,6 +300,12 @@ void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window)
 	{
 		BlitString(*resolution, 400, 200, _window);
 	}
+	
+	if (fullscreen != nullptr)
+	{
+		BlitString(*fullscreen, 400, 300, _window);
+	}
+
 
 	// Blit the buttons
 	BlitSprite(buttonValidate, 400, 600, 0, _window);
@@ -289,7 +327,7 @@ void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window)
 void MainMenu::MainMenuState(System *_system, enum GeneralState *_state)
 {
 	// Input
-	InputMainMenu(_system->window, _state, _system);
+	InputMainMenu(_system->m_window, _state, _system);
 
 	// Update
 	UpdateMainMenu(_state);
@@ -298,16 +336,16 @@ void MainMenu::MainMenuState(System *_system, enum GeneralState *_state)
 	switch (state)
 	{
 	case MAIN_MENU_OPERATIONAL:
-		DisplayMainMenu(_system->window);
+		DisplayMainMenu(_system->m_window);
 		break;
 	case MAIN_MENU_OPTIONS:
-		DisplayMainMenuOptions(_system->window);
+		DisplayMainMenuOptions(_system->m_window);
 		break;
 	case MAIN_MENU_EXIT:
-		DisplayMainMenu(_system->window);
+		DisplayMainMenu(_system->m_window);
 		break;
 	default:
-		DisplayMainMenu(_system->window);
+		DisplayMainMenu(_system->m_window);
 		break;
 	}
 }

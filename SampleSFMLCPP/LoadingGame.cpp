@@ -1,6 +1,8 @@
 #include "LoadingGame.h"
 #include "GameDefinitions.h"
 
+// WE DONT LOAD THE MAP
+
 LoadingGame::LoadingGame()
 {
 
@@ -41,26 +43,8 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 		exit(EXIT_FAILURE);
 	}
 
-	// Loading the map size
-	saveFile.read((char *) &_game->numberColumns, sizeof(unsigned short));
-	saveFile.read((char *) &_game->numberLines, sizeof(unsigned short));
-	saveFile.read((char *) &_game->numberLayers, sizeof(unsigned short));
-
-	std::cout << "Map size loaded : " << _game->numberColumns << " " << _game->numberLines << " " << _game->numberLayers << std::endl;
-
-	// Loading the map content
-	for (int z = 0; z < _game->numberLayers; z++)
-	{
-		for (int y = 0; y < _game->numberLines; y++)
-		{
-			for (int x = 0; x < _game->numberColumns; x++)
-			{
-				saveFile.read((char *) &_game->m_map[z][y][x], sizeof(unsigned short));
-			}
-		}
-	}
-
-	std::cout << "Map loaded !\n";
+	// Save the map
+	_game->m_map.LoadingMapFromFile(&saveFile);
 
 
 	// Loading of the ressources data
@@ -79,7 +63,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	// Loading of the money data
 	int money(RESET);
 	saveFile.read((char *) &money, sizeof(int));
-	_game->money.SetInitialQuantity(money);
+	_game->m_money.SetInitialQuantity(money);
 
 	std::cout << "Money loaded !\n";
 
@@ -89,37 +73,37 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	std::cout << "Time loaded !\n";
 
 	// Loading of the workers data
-	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map);
+	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map.GetMap());
 
 	std::cout << "Workers loaded !\n";
 
 	// Loading of the vines data
-	_game->vines.LoadingVinesListFromFile(&saveFile);
+	_game->m_builds.m_vines.LoadingVinesListFromFile(&saveFile);
 
 	std::cout << "Vines loaded !\n";
 	
 	// Saving of the specific buildings data
-	_game->stompingVats.LoadingSpecificsBuildingsListFromFile(&saveFile);
+	_game->m_builds.m_stompingVats.LoadingSpecificsBuildingsListFromFile(&saveFile);
 	std::cout << "Stomping Vats loaded !\n";
 
-	_game->winePress.LoadingSpecificsBuildingsListFromFile(&saveFile);
+	_game->m_builds.m_winePress.LoadingSpecificsBuildingsListFromFile(&saveFile);
 	std::cout << "Wine Presses loaded !\n";
 
-	_game->wineStorehouse.LoadingSpecificsBuildingsListFromFile(&saveFile);
+	_game->m_builds.m_wineStorehouse.LoadingSpecificsBuildingsListFromFile(&saveFile);
 	std::cout << "Wine Storehouses loaded !\n";
 
 	// Saving of the storehouses data
-	_game->storehouse.LoadingVinesListFromFile(&saveFile);
+	_game->m_builds.m_storehouse.LoadingVinesListFromFile(&saveFile);
 
 	std::cout << "Storehouses loaded !\n";
 
 	// Loading of the stall data
-	_game->stall->LoadingStallFromFile(&saveFile);
+	_game->m_builds.m_stall->LoadingStallFromFile(&saveFile);
 
 	std::cout << "Stall loaded !\n";
 
-	if ((_game->stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
-		|| _game->stall->GetStatus() == STALL_PURCHASER_IS_PRESENT))
+	if ((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+		|| _game->m_builds.m_stall->GetStatus() == STALL_PURCHASER_IS_PRESENT))
 	{
 		if (_game->m_purchasers != nullptr)
 		{
@@ -129,7 +113,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 			std::cout << "Suppression of this actual merchant\n\n";
 		}
 
-		_game->stall->SetIsNewMerchantNeeded(false);
+		_game->m_builds.m_stall->SetIsNewMerchantNeeded(false);
 
 		_game->m_purchasers = new Purchasers;
 		_game->m_purchasers->LoadingPurchasersFromFile(&saveFile);

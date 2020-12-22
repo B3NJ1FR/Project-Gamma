@@ -1,4 +1,5 @@
 #include "WorkersList.h"
+#include "GameDefinitions.h"
 
 
 
@@ -14,6 +15,8 @@ WorkersList::WorkersList()
 	m_actionsIcons[2] = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
 	m_actionsIcons[3] = LoadSprite("Data/Assets/Sprites/Entities/worker_pickuping.png", 1);
 	m_actionsIcons[4] = LoadSprite("Data/Assets/Sprites/Entities/worker_depositing.png", 1);
+
+	InitialisationWorkersList();
 }
 
 WorkersList::~WorkersList()
@@ -79,7 +82,7 @@ void WorkersList::AddNewWorkersToList(const sf::Vector2f& _mapPosition)
 	//ReadLinkedList(list);
 }
 
-void WorkersList::UpdateWorkersLife(Game *_game)
+void WorkersList::UpdateWorkersLife(struct Game *_game)
 {
 	if (m_list != nullptr)
 	{
@@ -173,26 +176,6 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, cons
 	}
 }
 
-void WorkersList::UpdateWorkersProduction(Ressources *_ressource)
-{
-	/*if (list != nullptr)
-	{
-		if (list->first != nullptr)
-		{
-			LinkedListClass::sElement *currentElement = list->first;
-
-			int positionCounter(1);
-
-			for (currentElement = list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				std::cout << "Worker : " << positionCounter << "/" << list->size << "  -  Position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y << std::endl;
-				positionCounter++;
-			}
-		}
-	}*/
-}
-
-
 void WorkersList::ChangeWorkerNumberSelectedAdd()
 {
 	if (m_workerNumberSelected + 1 <= m_list->size)
@@ -275,8 +258,8 @@ void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 {
 	// Save the number of workers
-	_file->write((char *)&m_list->size, sizeof(int));
-
+	auto listSize = m_list->size;
+	_file->write((char *)&listSize, sizeof(int));
 
 	if (m_list != nullptr)
 	{
@@ -286,19 +269,17 @@ void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 
 			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
-				//_file->write((char *) (Workers *)currentElement->data, sizeof(Workers));
-
-				//std::cout << "Map position : " << ((Workers *)currentElement->data)->GetWorkerPosition().x << " " << ((Workers *)currentElement->data)->GetWorkerPosition().y;
 				// Save the worker status
 				enum WorkerStatus status = ((Workers *)currentElement->data)->GetWorkerStatus();
 				_file->write((char *) &status, sizeof(enum WorkerStatus));
-				
-				if (status == MOVEMENT || WAITING_MOVEMENT)
+
+
+				if (status == MOVEMENT || status == WAITING_MOVEMENT)
 				{
 					float mapEndingPositionX = ((Workers *)currentElement->data)->GetWorkerEndingPosition().x;
 					float mapEndingPositionY = ((Workers *)currentElement->data)->GetWorkerEndingPosition().y;
 
-					std::cout << "Save : End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
+					//std::cout << "Save : End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
 					_file->write((char *) &mapEndingPositionX, sizeof(float));
 					_file->write((char *) &mapEndingPositionY, sizeof(float));
 				}
@@ -323,7 +304,7 @@ void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 				
 			}
 
-			std::cout << "Number of workers : " << m_list->size;
+			//std::cout << "Number of workers : " << m_list->size;
 		}
 	}
 
@@ -363,30 +344,29 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 
 
 	// Load the number of workers
-	int previousListSize(RESET);
-	_file->read((char *)&previousListSize, sizeof(int));
-	
+	int previousListSize = 0;
+	_file->read((char *) &previousListSize, sizeof(int));
+
+	//std::cout << "Number of workers : " << previousListSize;
+
 	// We add every workers data to the list
-	for (int i = RESET; i < previousListSize; i++)
+	for (int i = 0; i < previousListSize; i++)
 	{
 		LinkedListClass::sElement* newWorker = new LinkedListClass::sElement;
 		newWorker->data = new Workers;
-
-		//_file->read((char *)(Workers *)newWorker->data, sizeof(Workers));
-		//((Workers *)newWorker->data)->PathfindingReset(); // PROBLEME DE PATHFINDING AU CHARGEMENTS
 
 		// Save the worker status
 		enum WorkerStatus status;
 		_file->read((char *)&status, sizeof(enum WorkerStatus));
 
-		if (status == MOVEMENT || WAITING_MOVEMENT)
+		if (status == MOVEMENT || status == WAITING_MOVEMENT)
 		{
 			float mapEndingPositionX(RESET);
 			float mapEndingPositionY(RESET);
 			_file->read((char *)&mapEndingPositionX, sizeof(float));
 			_file->read((char *)&mapEndingPositionY, sizeof(float));
 
-			std::cout << "End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
+			//std::cout << "End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
 
 			sf::Vector2i mapEndingPosition = { (int)mapEndingPositionX, (int)mapEndingPositionY };
 			((Workers *)newWorker->data)->SetEndingPosition(mapEndingPosition, _map);
@@ -424,7 +404,7 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 
 		newWorker->status = ELEMENT_ACTIVE;
 
-		std::cout << "Map position : " << ((Workers *)newWorker->data)->GetWorkerPosition().x << " " << ((Workers *)newWorker->data)->GetWorkerPosition().y;
+		//std::cout << "Map position : " << ((Workers *)newWorker->data)->GetWorkerPosition().x << " " << ((Workers *)newWorker->data)->GetWorkerPosition().y << std::endl;
 
 		if (i == 0)
 		{

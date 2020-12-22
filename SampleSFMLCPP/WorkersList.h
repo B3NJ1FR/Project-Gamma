@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Workers.h"
-#include "GameDefinitions.h"
 
 class WorkersList : public Workers
 {
@@ -21,9 +20,8 @@ public:
 	void InitialisationWorkersList();
 	void ReadWorkersLinkedList();
 	void AddNewWorkersToList(const sf::Vector2f& _mapPosition);
-	void UpdateWorkersLife(Game *_game);
+	void UpdateWorkersLife(struct Game *_game);
 	void DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, sf::RenderWindow &_window);
-	void UpdateWorkersProduction(Ressources *_ressource);
 	void ChangeWorkerNumberSelectedAdd();
 	void ChangeWorkerNumberSelectedSubtract();
 	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map);

@@ -1,5 +1,4 @@
-#ifndef SPECIFICS_BUILDINGS__H
-#define SPECIFICS_BUILDINGS__H
+#pragma once
 
 #include "Ressources.h"
 #include "Buildings.h"
@@ -50,6 +49,7 @@ public:
 	};
 	typedef struct BuildingData sBuildingData;
 
+	// Constructor & Destructor
 	SpecificsBuildings();
 	~SpecificsBuildings();
 
@@ -64,6 +64,7 @@ public:
 	sf::Sprite GetSpriteWorkerIsThere();
 
 	bool ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	void WorkerLeavingThisPosition(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition);
 	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
@@ -73,10 +74,9 @@ public:
 
 	void SavingSpecificsBuildingsListForFile(std::ofstream *_file);
 	void LoadingSpecificsBuildingsListFromFile(std::ifstream *_file);
-private:
-	LinkedListClass::sLinkedList *list;
-	Buildings *building;
-	sf::Sprite workerIsThereSprite;
-};
 
-#endif // !SPECIFICS_BUILDINGS__H
+private:
+	LinkedListClass::sLinkedList *m_list;
+	Buildings *m_building;
+	sf::Sprite m_workerIsThereSprite;
+};

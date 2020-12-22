@@ -49,23 +49,24 @@ protected :
 
 public :
 
+	// Constructor & Destructor
 	Buildings();
 	~Buildings();
 
-	void SetName(const std::string _name);
-	void SetDescription(std::string _description);
+	inline void SetName(const std::string& _name) { m_name = _name; };
+	inline void SetDescription(const std::string& _description) { m_description = _description; };
+	inline void SetSizeCaracteristics(const sf::Vector2i& _buildingSize) { m_size = _buildingSize; };
+	inline void SetEntranceCaracteristics(const sf::Vector2i& _enterPosition) { m_enterPosition = _enterPosition; };
+	inline void SetExitCaracteristics(const sf::Vector2i& _exitPosition) { m_exitPosition = _exitPosition; };
 
-	void SetSizeCaracteristics(const sf::Vector2i _buildingSize);
-	void SetEntranceCaracteristics(const sf::Vector2i _enterPosition);
-	void SetExitCaracteristics(const sf::Vector2i _exitPosition);
 
-	void SetSprite(const std::string& _spriteFileName, int _spriteOriginPosition = 0);
-	void SetIcon(const std::string& _iconFileName, int _iconOriginPosition = 0);
-	void SetConstructionMoneyCost(const int _moneyCost);
-	void SetConstructionTimeCost(const float _timeCost);
-	void SetProductionTimeCost(const float _timeCost);
-	void SetPickupingTimeCost(const float _timeCost = 0.0f);
-	void SetDepositingTimeCost(const float _timeCost = 0.0f);
+	inline void SetSprite(const std::string& _spriteFileName, int _spriteOriginPosition = 0) { m_sprite = LoadSprite(_spriteFileName, _spriteOriginPosition); };
+	inline void SetIcon(const std::string& _iconFileName, int _iconOriginPosition = 0) { m_icon = LoadSprite(_iconFileName, _iconOriginPosition); };
+	inline void SetConstructionMoneyCost(const int _moneyCost) { m_moneyCostToBuild = _moneyCost; };
+	inline void SetConstructionTimeCost(const float _timeCost) { m_timeToBuild = _timeCost; };
+	inline void SetProductionTimeCost(const float _timeCost) { m_timeToProduce = _timeCost; };
+	inline void SetPickupingTimeCost(const float _timeCost = 0.0f) { m_timeToPickUpRessources = _timeCost; };
+	inline void SetDepositingTimeCost(const float _timeCost = 0.0f) { m_timeToDeposeRessources = _timeCost; };
 	void SetRessourceIDNeeded(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityNeeded(int *_resssourceQuantity = 0);
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);

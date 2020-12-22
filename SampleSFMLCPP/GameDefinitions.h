@@ -1,14 +1,15 @@
 #pragma once
 
 #include "LoadingScreen.h"
-#include "BuildingManagement.h"
 #include "Map.h"
 
 #include "Money.h"
 #include "TimeManagement.h"
-#include "Pathfinding.h"
+#include "Ressources.h"
+
+#include "BuildingManagement.h"
+
 #include "WorkersList.h"
-#include "Purchasers.h"
 #include "MainCharacter.h"
 #include "SellingWindow.h"
 #include "VillaManagement.h"
@@ -17,7 +18,6 @@
 #include "PauseWindow.h"
 #include "BuildWindow.h"
 #include "TutorialWindow.h"
-#include "BuildingsListPlanned.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -43,7 +43,7 @@ struct Game
 {
 public:
 	// Shortcut of the window address
-	sf::RenderWindow *m_window;
+	sf::RenderWindow *m_window = nullptr;
 
 	enum CurrentGameState m_actualGameState;
 	enum CurrentGameState m_previousGameState;
@@ -58,7 +58,7 @@ public:
 	sf::Sprite* m_spriteArray;
 
 	// Map
-	Map m_map;
+	Map m_map; // WE DONT LOAD THE MAP
 
 	// Camera
 	sf::Vector3f m_camera;
@@ -92,25 +92,20 @@ public:
 	SellingWindow *m_sellingWindow;
 	
 	// Construction Mode
-	BuildWindow m_buildWindow; // Verifier pour la money
-	BuildingsListPlanned *buildingsListPlanned;
+	BuildWindow m_buildWindow; // Verifier pour la Money et BuildingsListPlanned
+	BuildingsListPlanned *m_buildingsListPlanned;
 	
+	// Money
+	Money m_money;
 	
-	//VillaManagement villaManagement;
+	// Save and Load
+	SavingGame m_save;
+	LoadingGame m_load; // WE DONT LOAD THE MAP
 
+	VillaManagement m_villaManagement;
 
-	//// Money
-	//Money money;
-
-
-
-
-	//// Save and Load
-	//SavingGame save;
-	//LoadingGame load;
-
-	//// Pause
-	//PauseWindow pauseWindow;
+	// Pause
+	PauseWindow m_pauseWindow;
 
 	//// Temporary
 	//Pathfinding path;
@@ -121,10 +116,18 @@ public :
 	~Game();
 
 	// Setters
-	inline void SetWindowMemoryAddress(sf::RenderWindow* window);
+	void SetWindowMemoryAddress(sf::RenderWindow* _window);
 
 	// Methods
 	void SpritesInitialisation();
 	void TextsInit();
 	void RessourcesInitialisation();
+
+	// Game States
+	void Display();
+	void DisplayDecor();
+	void DisplayUIGeneral();
+	void DisplayDebugger();
 };
+
+typedef struct Game sGame;

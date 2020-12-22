@@ -1,7 +1,7 @@
-#ifndef VINES__H
-#define VINES__H
+#pragma once
 
 #include "Ressources.h"
+#include "TimeManagement.h"
 #include "Buildings.h"
 #include "LinkedList.h"
 
@@ -76,17 +76,19 @@ public:
 	};
 	typedef struct VinesData sVines;
 
+	// Constructor & Destructor
 	Vines();
 	~Vines();
 
 	void InitialisationVines(Buildings *_vine);
 	void ReadVineLinkedList();
 	void AddNewVineToList(sf::Vector2f _mapPosition);
-	void UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &_actualMonth);
+	void UpdateVineLife(const float &_frametime, enum MonthsInOneYear _actualMonth);
 	void UpdateVineSprite(unsigned short ***_map);
 	void UpdateVineProduction(Ressources *_ressource);
 
 	bool ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_thisIsAWorker = false);
+	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition);
@@ -96,9 +98,8 @@ public:
 
 	void SavingVinesListForFile(std::ofstream *_file);
 	void LoadingVinesListFromFile(std::ifstream *_file);
-private:
-	LinkedListClass::sLinkedList *list;
-	Buildings *vineBuilding;
-};
 
-#endif // !VINES__H
+private:
+	LinkedListClass::sLinkedList *m_list;
+	Buildings *m_vineBuilding;
+};

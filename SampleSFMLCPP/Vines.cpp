@@ -19,28 +19,28 @@ Vines::~Vines()
 
 void Vines::InitialisationVines(Buildings *_vine)
 {
-	std::cout << "List before : " << this->list << std::endl;
+	std::cout << "List before : " << m_list << std::endl;
 
-	this->list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 
-	std::cout << "List " << this->list << " Size : " << this->list->size << " Real First : " << this->list->first << " & Last : " << this->list->last << std::endl;
+	std::cout << "List " << m_list << " Size : " << m_list->size << " Real First : " << m_list->first << " & Last : " << m_list->last << std::endl;
 
-	this->vineBuilding = _vine;
+	m_vineBuilding = _vine;
 }
 
 void Vines::ReadVineLinkedList()
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			int positionCounter(1);
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				//std::cout << "Vine : " << positionCounter << "/" << this->list->size << "  -  Position : " << ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+				//std::cout << "Vine : " << positionCounter << "/" << list->size << "  -  Position : " << ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
 				positionCounter++;
 			}
 
@@ -81,23 +81,23 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	newVine->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
-	this->AddElementToLinkedList(this->list, newVine, -1);
+	AddElementToLinkedList(m_list, newVine, -1);
 
-	//this->ReadVineLinkedList();
-	//this->ReadLinkedList(this->list);
+	//ReadVineLinkedList();
+	//ReadLinkedList(list);
 }
 
-void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &_actualMonth)
+void Vines::UpdateVineLife(const float &_frametime, enum MonthsInOneYear _actualMonth)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			//std::cout << "Time : " << _lapsedFrameTime << std::endl;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				switch (((Vines::sVines *)currentElement->data)->generalState)
 				{
@@ -110,9 +110,9 @@ void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &
 					}
 
 					// If the vine life is higher than the construction time, we launch it's growthing
-					if (((Vines::sVines *)currentElement->data)->lifeTime >= this->vineBuilding->GetConstructionTimeCost())
+					if (((Vines::sVines *)currentElement->data)->lifeTime >= m_vineBuilding->GetConstructionTimeCost())
 					{
-						//std::cout << "Vines built ! " << ((Vines::sVines *)currentElement->data)->lifeTime << " " << this->vineBuilding->GetConstructionTimeCost() << std::endl;
+						//std::cout << "Vines built ! " << ((Vines::sVines *)currentElement->data)->lifeTime << " " << vineBuilding->GetConstructionTimeCost() << std::endl;
 						((Vines::sVines *)currentElement->data)->generalState = THREE_YEARS_GROWTHING;
 						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
 						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
@@ -245,7 +245,7 @@ void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &
 					{
 						/*((Vines::sVines *)currentElement->data)->actualProductionTime += _frametime;
 						
-						if (((Vines::sVines *)currentElement->data)->actualProductionTime >= this->vineBuilding->GetProductionTimeCost())
+						if (((Vines::sVines *)currentElement->data)->actualProductionTime >= vineBuilding->GetProductionTimeCost())
 						{
 							((Vines::sVines *)currentElement->data)->actualProductionTime = RESET;
 							((Vines::sVines *)currentElement->data)->isChangingSprite = true;
@@ -298,7 +298,7 @@ void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &
 		}
 		else
 		{
-			//std::cout << "List : " << this->list->first << std::endl;
+			//std::cout << "List : " << list->first << std::endl;
 		}
 	}
 }
@@ -306,11 +306,11 @@ void Vines::UpdateVineLife(const float &_frametime, const enum MonthsInOneYear &
 
 void Vines::UpdateVineSprite(unsigned short ***_map)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Vines::sVines *)currentElement->data)->isChangingSprite == true)
 				{
@@ -407,17 +407,17 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 
 void Vines::UpdateVineProduction(Ressources *_ressource)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
 				if (((Vines::sVines *)currentElement->data)->isProduced == true)
 				{
 					// Add quantity produced to the ressource targeted
-					//_ressource->AddQuantityOwned(this->vineBuilding->GetRessourceQuantityProduced());
+					//_ressource->AddQuantityOwned(vineBuilding->GetRessourceQuantityProduced());
 
 					// Launch the feedback animation of producing
 
@@ -431,11 +431,11 @@ void Vines::UpdateVineProduction(Ressources *_ressource)
 
 bool Vines::ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_thisIsAWorker)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -465,14 +465,30 @@ bool Vines::ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, cons
 	}	
 }
 
+void Vines::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
+				{
+					((Vines::sVines*)currentElement->data)->isWorkerThere = false;
+				}
+			}
+		}
+	}
+}
 
 bool Vines::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// We verify if the player location is between the origin and the max size of the building concerned
 				if (_mapPosition == ((Vines::sVines *)currentElement->data)->mapPosition)
@@ -497,11 +513,11 @@ bool Vines::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 
 bool Vines::CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -532,11 +548,11 @@ bool Vines::CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition)
 
 bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -567,11 +583,11 @@ bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 
 int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
@@ -580,7 +596,7 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 					{
 						((Vines::sVines *)currentElement->data)->secondaryTime += _frametime;
 
-						if (((Vines::sVines *)currentElement->data)->secondaryTime >= this->vineBuilding->GetPickupingTimeCost())
+						if (((Vines::sVines *)currentElement->data)->secondaryTime >= m_vineBuilding->GetPickupingTimeCost())
 						{
 							// Changer de sprite
 							((Vines::sVines *)currentElement->data)->isChangingSprite = true;
@@ -594,7 +610,7 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 							((Vines::sVines *)currentElement->data)->isProduced = false;
 
 
-							return this->vineBuilding->GetRessourceQuantityProduced();
+							return m_vineBuilding->GetRessourceQuantityProduced();
 
 						}
 						else
@@ -627,16 +643,16 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 
 bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 {
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
 			int positionCounter(1);
 			bool isBuildingFind(false);
 			
-			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				//std::cout << "Map : " << positionCounter << "/" << this->list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+				//std::cout << "Map : " << positionCounter << "/" << list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
 
 				// If the building position is identical to which send, we save his position in the linked list
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition
@@ -656,7 +672,7 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 			// After having saved the building's position, we ask to destroy it
 			if (isBuildingFind == true)
 			{
-				RemoveElementsOfLinkedList(this->list, true, positionCounter);
+				RemoveElementsOfLinkedList(m_list, true, positionCounter);
 
 				return true;
 			}
@@ -682,15 +698,15 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 void Vines::SavingVinesListForFile(std::ofstream *_file)
 {
 	// Save the number of vines
-	_file->write((char *)&this->list->size, sizeof(int));
+	_file->write((char *)&m_list->size, sizeof(int));
 	
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				_file->write((char *)(Vines::sVines *)currentElement->data, sizeof(sVines));
 			}
@@ -702,14 +718,14 @@ void Vines::SavingVinesListForFile(std::ofstream *_file)
 void Vines::LoadingVinesListFromFile(std::ifstream *_file)
 {
 	// Delete every vines
-	if (this->list != nullptr)
+	if (m_list != nullptr)
 	{
-		this->FreeLinkedList(this->list);
+		FreeLinkedList(m_list);
 	}
 
 
 	// We reinit the vines list
-	this->list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 
 
 	// Save the number of vines
@@ -729,12 +745,12 @@ void Vines::LoadingVinesListFromFile(std::ifstream *_file)
 		if (i == 0)
 		{
 			// Add this worker at the top of the list
-			this->AddElementToLinkedList(this->list, newVine, 1);
+			AddElementToLinkedList(m_list, newVine, 1);
 		}
 		else
 		{
 			// Add this worker at the end of the list
-			this->AddElementToLinkedList(this->list, newVine, -1);
+			AddElementToLinkedList(m_list, newVine, -1);
 		}
 	}
 }

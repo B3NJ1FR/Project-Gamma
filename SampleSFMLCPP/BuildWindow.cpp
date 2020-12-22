@@ -1,4 +1,5 @@
 #include "BuildWindow.h"
+#include "GameDefinitions.h"
 
 
 BuildWindow::BuildWindow()
@@ -50,49 +51,8 @@ void BuildWindow::InitSpritesBuildWindow()
 	m_separationLine = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/separation.png", 1);
 }
 
-sf::Sprite BuildWindow::GetBuildingUI() const
-{
-	return m_buildingUI;
-}
-
-sf::Sprite BuildWindow::GetBuildingUIClosed() const
-{
-	return m_buildingUIclosed;
-}
-
-sf::Vector2i BuildWindow::GetBuildingCheckboxSelected() const
-{
-	return m_buildingCaseSelected;
-}
 
 
-float BuildWindow::GetScrollBuildingList() const
-{
-	return m_scrollBuildingList;
-}
-
-int BuildWindow::GetIDChosenBuilding() const
-{
-	return m_IDChosenBuilding;
-}
-
-bool BuildWindow::GetIsBuildingCaseOccupied() const
-{
-	return m_isBuildingCaseOccupied;
-}
-
-
-
-
-void BuildWindow::SetScrollBuildingList(const float &_scrollBuildingList)
-{
-	m_scrollBuildingList = _scrollBuildingList;
-}
-
-void BuildWindow::SetIDChosenBuilding(const int &_buildingID)
-{
-	m_IDChosenBuilding = _buildingID;
-}
 
 
 
@@ -180,38 +140,38 @@ void BuildWindow::InputBuildingModeOldScrollUI(const float &_scrollDelta, const 
 	}
 }
 
-void BuildWindow::SetBuildingOnMap(Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const enum TypesOfCollisions &_collisionID, const sf::Vector2i &_mapPosition)
+void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, enum Floors _floorFocused, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i& _mapPosition)
 {
-	for (int y = 0; y < _game->m_builds.buildings[_typeOfBuilding].GetSize().y; y++)
+	for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
 	{
-		for (int x = 0; x < _game->m_builds.buildings[_typeOfBuilding].GetSize().x; x++)
+		for (int x = 0; x < _builds->m_buildings[_typeOfBuilding].GetSize().x; x++)
 		{
-			if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _mapPosition))
+			if (IsBuildingCheckboxIsInMap(sf::Vector2i(_map->GetNumberOfColumns(), _map->GetNumberOfLines()), _mapPosition))
 			{
 				// Set the collisions and buildings id for the building
-				_game->m_map.GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
-				_game->m_map.GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
+				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
+				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
 				
 				// Set the building sprite
 				switch (_typeOfBuilding)
 				{
 				case BUILDING_VINES:
-					_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 32;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 32;
 					break;
 				case BUILDING_GRAPE_STOMPING_VATS:
-					_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 26;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 26;
 					break;
 				case BUILDING_WINE_PRESS:
-					_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 30;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 30;
 					break;
 				case BUILDING_WINE_STOREHOUSE:
-					_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 31;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 31;
 					break;
 				case BUILDING_STOREHOUSE:
-					_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 29;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 29;
 					break;
 				case BUILDING_STALL:
-					_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 27;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 27;
 					break;
 				/*case BUILDING_VILLA:
 					break;
@@ -223,29 +183,29 @@ void BuildWindow::SetBuildingOnMap(Game *_game, const enum Floors &_floorFocused
 				
 
 				// Set the collisions and buildings id for the ground
-				_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
-				_game->m_map.GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
+				_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
+				_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
 
 				// Set the ground sprite adapted to the building selected
 				switch (_typeOfBuilding)
 				{
 				case BUILDING_VINES:
-					_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 7;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 7;
 					break;
 				case BUILDING_GRAPE_STOMPING_VATS:
-					_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 25;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 25;
 					break;
 				case BUILDING_WINE_PRESS:
-					_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 23;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 23;
 					break;
 				case BUILDING_WINE_STOREHOUSE:
-					_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 24;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 24;
 					break;
 				case BUILDING_STOREHOUSE:
-					_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 22;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 22;
 					break;
 				case BUILDING_STALL:
-					_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 20;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 20;
 					break;
 					/*case BUILDING_VILLA:
 						break;
@@ -265,11 +225,11 @@ void BuildWindow::SetBuildingOnMap(Game *_game, const enum Floors &_floorFocused
 }
 
 
-void BuildWindow::SetGhostBuildingOnMap(Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition)
+void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition)
 {
-	for (int y = 0; y < _game->m_builds.buildings[_typeOfBuilding].GetSize().y; y++)
+	for (int y = 0; y < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().y; y++)
 	{
-		for (int x = 0; x < _game->m_builds.buildings[_typeOfBuilding].GetSize().x; x++)
+		for (int x = 0; x < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().x; x++)
 		{
 			if (x == 0 && y == 0)
 			{
@@ -299,14 +259,14 @@ void BuildWindow::SetGhostBuildingOnMap(Game *_game, const int &_typeOfBuilding,
 	}
 }
 
-void BuildWindow::RemoveBuildingOnMap(Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition)
+void BuildWindow::RemoveBuildingOnMap(struct Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition)
 {
 	_game->m_map.GetMap()[_floorFocused + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _statsToApply.z;
 
 	// EN FAIRE UNE FONCTION
-	for (int y = 0; y < _game->m_builds.buildings[_typeOfBuilding].GetSize().y; y++)
+	for (int y = 0; y < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().y; y++)
 	{
-		for (int x = 0; x < _game->m_builds.buildings[_typeOfBuilding].GetSize().x; x++)
+		for (int x = 0; x < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().x; x++)
 		{
 			if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _mapPosition))
 			{
@@ -326,7 +286,7 @@ void BuildWindow::RemoveBuildingOnMap(Game *_game, enum Floors _floorFocused, co
 
 
 
-void BuildWindow::InputBuildWindow(Game *_game)
+void BuildWindow::InputBuildWindow(struct Game *_game)
 {
 	// Verification
 	InputPickUpCaseClicked(*_game->m_window, true, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
@@ -335,17 +295,17 @@ void BuildWindow::InputBuildWindow(Game *_game)
 	if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), m_buildingCaseSelected))
 	{
 		if (m_IDChosenBuilding >= 0
-			&& m_IDChosenBuilding < _game->m_builds.numberOfBuilding)
+			&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 		{
 			bool isAreaEmpty = true;
 
 			// If we've already built the stall, we cant built it again
-			if (m_IDChosenBuilding == BUILDING_STALL && _game->m_builds.stall->GetConstructionStatus() != BUILDING_DESTROYED)
+			if (m_IDChosenBuilding == BUILDING_STALL && _game->m_builds.m_stall->GetConstructionStatus() != BUILDING_DESTROYED)
 			{
 				isAreaEmpty = false;
 			}
 			// Money verification
-			else if (_game->money.GetMoneyQuantity() >= _game->m_builds.buildings[m_IDChosenBuilding].GetConstructionCost())
+			else if (_game->m_money.GetMoneyQuantity() >= _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost())
 			{
 				// Collisions verifications
 				if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == PATH
@@ -356,9 +316,9 @@ void BuildWindow::InputBuildWindow(Game *_game)
 				}
 				else
 				{
-					for (int y = 0; y < _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y; y++)
+					for (int y = 0; y < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y; y++)
 					{
-						for (int x = 0; x < _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x; x++)
+						for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
 						{
 							if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), m_buildingCaseSelected))
 							{
@@ -369,8 +329,8 @@ void BuildWindow::InputBuildWindow(Game *_game)
 									isAreaEmpty = false;
 
 									// We cut the for loop
-									y = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y;
-									x = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x;
+									y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+									x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 								}
 								// Check case occupation concerning roads
 								else if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
@@ -379,8 +339,8 @@ void BuildWindow::InputBuildWindow(Game *_game)
 									isAreaEmpty = false;
 
 									// We cut the for loop
-									y = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y;
-									x = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x;
+									y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+									x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 								}
 							}
 							else
@@ -389,8 +349,8 @@ void BuildWindow::InputBuildWindow(Game *_game)
 								isAreaEmpty = false;
 
 								// We cut the for loop
-								y = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y;
-								x = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x;
+								y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+								x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 							}
 						}
 					}
@@ -463,18 +423,18 @@ void BuildWindow::InputBuildWindow(Game *_game)
 
 				if (m_IDChosenBuilding == BUILDING_STALL)
 				{
-					_game->m_builds.stall->SetConstructionStatus(PLANNED);
+					_game->m_builds.m_stall->SetConstructionStatus(PLANNED);
 				}
 
 				// We add the current building to the planned list
-				_game->buildingsListPlanned->AddBuildingPlannedToList(m_buildingCaseSelected, (enum TypeOfBuilding)m_IDChosenBuilding, _game->m_builds.buildings[m_IDChosenBuilding].GetSize());
+				_game->m_buildingsListPlanned->AddBuildingPlannedToList(m_buildingCaseSelected, (enum TypeOfBuilding)m_IDChosenBuilding, _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize());
 				
 				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
 				_game->m_buildWindow.SetGhostBuildingOnMap(_game, (enum TypeOfBuilding)m_IDChosenBuilding, m_buildingCaseSelected);
 				
 
 				// We remove the money needed to construct the building
-				_game->money.SubtractMoney(_game->m_builds.buildings[m_IDChosenBuilding].GetConstructionCost());
+				_game->m_money.SubtractMoney(_game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
 				
 				// We change the main character status
 				_game->m_mainCharacter->SetIsCurrentlyBuilding(true);
@@ -483,7 +443,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 			}
 		}
 		// Condition to determine if the destructor mode has been selected
-		else if (m_IDChosenBuilding == _game->m_builds.numberOfBuilding)
+		else if (m_IDChosenBuilding == _game->m_builds.GetNumberOfBuildings())
 		{
 			bool isOccupiedArea = false;
 
@@ -503,7 +463,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 				{
 				case BUILDING_VINES:
 
-					if (_game->m_builds.vines.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
+					if (_game->m_builds.m_vines.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
 					{
 						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
 					}
@@ -515,7 +475,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 					break;
 				case BUILDING_GRAPE_STOMPING_VATS:
 
-					if (_game->m_builds.stompingVats.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
+					if (_game->m_builds.m_stompingVats.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
 					{
 						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
 					}
@@ -527,7 +487,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 					break;
 				case BUILDING_WINE_PRESS:
 
-					if (_game->m_builds.winePress.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
+					if (_game->m_builds.m_winePress.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
 					{
 						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
 					}
@@ -539,7 +499,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 					break;
 				case BUILDING_WINE_STOREHOUSE:
 
-					if (_game->m_builds.wineStorehouse.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
+					if (_game->m_builds.m_wineStorehouse.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
 					{
 						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
 					}
@@ -552,7 +512,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 
 				case BUILDING_STOREHOUSE:
 
-					if (_game->m_builds.storehouse.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
+					if (_game->m_builds.m_storehouse.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
 					{
 						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
 					}
@@ -565,7 +525,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 
 				case BUILDING_STALL:
 
-					if (_game->m_builds.stall->DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
+					if (_game->m_builds.m_stall->DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
 					{
 						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
 					}
@@ -589,7 +549,7 @@ void BuildWindow::InputBuildWindow(Game *_game)
 	}
 }
 
-void BuildWindow::UpdateBuildWindow(Game *_game)
+void BuildWindow::UpdateBuildWindow(struct Game *_game)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->m_window);
 	sf::Vector2f cameraIso = WorldToScreen(_game->m_camera.x, _game->m_camera.y);
@@ -606,13 +566,13 @@ void BuildWindow::UpdateBuildWindow(Game *_game)
 	if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), m_buildingCaseSelected))
 	{
 		if (m_IDChosenBuilding >= 0
-			&& m_IDChosenBuilding < _game->m_builds.numberOfBuilding)
+			&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 		{
 			bool isAreaEmpty = true;
 
-			for (int y = 0; y < _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y; y++)
+			for (int y = 0; y < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y; y++)
 			{
-				for (int x = 0; x < _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x; x++)
+				for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
 				{
 					if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), m_buildingCaseSelected))
 					{
@@ -623,8 +583,8 @@ void BuildWindow::UpdateBuildWindow(Game *_game)
 							isAreaEmpty = false;
 
 							// We cut the for loop
-							y = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y;
-							x = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x;
+							y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+							x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 						}
 						else if(_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 						{
@@ -632,8 +592,8 @@ void BuildWindow::UpdateBuildWindow(Game *_game)
 							isAreaEmpty = false;
 
 							// We cut the for loop
-							y = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y;
-							x = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x;
+							y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+							x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 						}
 					}
 					else
@@ -642,8 +602,8 @@ void BuildWindow::UpdateBuildWindow(Game *_game)
 						isAreaEmpty = false;
 
 						// We cut the for loop
-						y = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y;
-						x = _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x;
+						y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+						x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 					}
 				}
 			}
@@ -666,13 +626,13 @@ void BuildWindow::UpdateBuildWindow(Game *_game)
 
 
 	// Text creation if they don't exist
-	if (_game->m_builds.buildingsNameTexts == nullptr)
+	if (_game->m_builds.m_buildingsNameTexts == nullptr)
 	{
-		_game->m_builds.buildingsNameTexts = new sf::Text[_game->m_builds.numberOfBuilding];
+		_game->m_builds.m_buildingsNameTexts = new sf::Text[_game->m_builds.GetNumberOfBuildings()];
 
-		for (int i = 0; i < _game->m_builds.numberOfBuilding; i++)
+		for (int i = 0; i < _game->m_builds.GetNumberOfBuildings(); i++)
 		{
-			LoadTextString(&_game->m_builds.buildingsNameTexts[i], _game->m_builds.buildings[i].GetName(), &_game->m_charlemagneFont, 18, sf::Color::Black, 2);
+			LoadTextString(&_game->m_builds.m_buildingsNameTexts[i], _game->m_builds.m_buildings[i].GetName(), &_game->m_charlemagneFont, 18, sf::Color::Black, 2);
 		}
 	}
 
@@ -680,20 +640,20 @@ void BuildWindow::UpdateBuildWindow(Game *_game)
 	UpdateTextsBuildWindow(_game);
 }
 
-void BuildWindow::UpdateTextsBuildWindow(Game *_game)
+void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 {
 	if (m_previousIDChosenBuilding != m_IDChosenBuilding
 		&& m_IDChosenBuilding >= 0 
-		&& m_IDChosenBuilding < _game->m_builds.numberOfBuilding)
+		&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 	{
 		// Numerics texts
-		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], _game->m_builds.buildings[m_IDChosenBuilding].GetSize().x);
-		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], _game->m_builds.buildings[m_IDChosenBuilding].GetSize().y);
+		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x);
+		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y);
 
-		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], _game->m_builds.buildings[m_IDChosenBuilding].GetConstructionCost());
+		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
 		
 		// Texts				
-		LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->m_builds.buildings[m_IDChosenBuilding].GetDescription(), 25));
+		LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->m_builds.m_buildings[m_IDChosenBuilding].GetDescription(), 25));
 
 		m_previousIDChosenBuilding = m_IDChosenBuilding;
 	}
@@ -702,66 +662,66 @@ void BuildWindow::UpdateTextsBuildWindow(Game *_game)
 void BuildWindow::DisplayBuildWindow(struct Game *_game)
 {
 	// Display of the building selection UI
-	BlitSprite(m_buildingUI, SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width, SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
+	BlitSprite(m_buildingUI, SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width, SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
 	
 	// Display of the help scroll that indicates every building info
-	if (m_IDChosenBuilding < _game->m_builds.numberOfBuilding)
+	if (m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 	{
-		BlitSprite(m_buildingUI, SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2), SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
+		BlitSprite(m_buildingUI, SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2), SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
 
-		BlitSprite(_game->m_builds.buildings[m_IDChosenBuilding].GetIcon(), (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width * 2) + 135, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 135, 0, *_game->m_window);
+		BlitSprite(_game->m_builds.m_buildings[m_IDChosenBuilding].GetIcon(), (SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width * 2) + 135, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 135, 0, *_game->m_window);
 
 		// Display of the info paper about the building selected
-		if (_game->m_builds.buildingsNameTexts != nullptr)
+		if (_game->m_builds.m_buildingsNameTexts != nullptr)
 		{
 			// Display the name
-			BlitString(_game->m_builds.buildingsNameTexts[m_IDChosenBuilding], (SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 70, *_game->m_window);
+			BlitString(_game->m_builds.m_buildingsNameTexts[m_IDChosenBuilding], (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 70, *_game->m_window);
 			
-			BlitSprite(m_separationLine, (SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 120, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 120, 0, *_game->m_window);
 
 
 			// Display the size
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 134, *_game->m_window);
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 290, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 134, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 290, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
 			
 			// Display the entering ressource logo
-			BlitSprite(m_enteringArrow, SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 181, 0, *_game->m_window);
+			BlitSprite(m_enteringArrow, SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 181, 0, *_game->m_window);
 			
-			if (_game->m_builds.buildings[m_IDChosenBuilding].GetRessourceNumberNeeded() > 0)
+			if (_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded() > 0)
 			{
-				for (int i = 0; i < _game->m_builds.buildings[m_IDChosenBuilding].GetRessourceNumberNeeded(); i++)
+				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
+					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
 				}
 			}
 			
 			// Display the exiting ressource logo
-			BlitSprite(m_exitingArrow, SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 216, 0, *_game->m_window);
+			BlitSprite(m_exitingArrow, SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 216, 0, *_game->m_window);
 			
-			if (_game->m_builds.buildings[m_IDChosenBuilding].GetRessourceNumberProduced() > 0)
+			if (_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced() > 0)
 			{
-				for (int i = 0; i < _game->m_builds.buildings[m_IDChosenBuilding].GetRessourceNumberProduced(); i++)
+				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.buildings[m_IDChosenBuilding].GetRessourceIDProduced(i + 1)].GetSprite(), SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
+					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced(i + 1)].GetSprite(), SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
 				}
 			}
 
-			BlitSprite(m_separationLine, (SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 250, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 250, 0, *_game->m_window);
 
 
 			// Display the description
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + 120, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 260, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 120, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 260, *_game->m_window);
 
-			BlitSprite(m_separationLine, (SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 385, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 385, 0, *_game->m_window);
 
 
 			// Display the money cost of the building
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) - 30, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 30, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
 			
-			_game->money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
-			BlitSprite(_game->money.GetSprite(), (SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) + 30, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
-			_game->money.SetSpriteScale(sf::Vector2f(1, 1));
+			_game->m_money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
+			BlitSprite(_game->m_money.GetSprite(), (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 30, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
+			_game->m_money.SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}
 
@@ -771,14 +731,14 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 
 	// Display of the buildings list
-	for (int i = 0; i < _game->m_builds.numberOfBuilding; i++)
+	for (int i = 0; i < _game->m_builds.GetNumberOfBuildings(); i++)
 	{
 		if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
-			&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - _game->m_builds.buildings[i].GetIcon().getGlobalBounds().height - 40)
+			&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height - 40)
 		{
-			BlitSprite(_game->m_builds.buildings[i].GetIcon(), (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 
-			if (_game->money.GetMoneyQuantity() < _game->m_builds.buildings[i].GetConstructionCost())
+			if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[i].GetConstructionCost())
 			{
 				sf::Color color = { 255, 255, 255, 150 };
 				m_blackFilter.setColor(color);
@@ -789,7 +749,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			//std::cout << "Stall : " << _game->stall->GetStatus() << std::endl;
 
 			if (i == BUILDING_STALL
-				&& _game->m_builds.stall->GetConstructionStatus() != BUILDING_DESTROYED)
+				&& _game->m_builds.m_stall->GetConstructionStatus() != BUILDING_DESTROYED)
 			{
 				sf::Color color = { 255, 255, 255, 150 };
 				m_blackFilter.setColor(color);
@@ -797,22 +757,22 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 				BlitSprite(m_blackFilter, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 			}
 
-			if (_game->m_builds.buildingsNameTexts != nullptr)
+			if (_game->m_builds.m_buildingsNameTexts != nullptr)
 			{
-				BlitString(_game->m_builds.buildingsNameTexts[i], (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList + 70, *_game->m_window);
+				BlitString(_game->m_builds.m_buildingsNameTexts[i], (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList + 70, *_game->m_window);
 			}
 		}
 
 	}
 
 	// Display of the destroy button
-	if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.numberOfBuilding / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
-		&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.numberOfBuilding / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - m_buildingUIdestroyBuildings.getGlobalBounds().height - 40)
+	if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
+		&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - m_buildingUIdestroyBuildings.getGlobalBounds().height - 40)
 	{
-		BlitSprite(m_buildingUIdestroyBuildings, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (_game->m_builds.numberOfBuilding % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.numberOfBuilding / 2) + m_scrollBuildingList, 0, *_game->m_window);
+		BlitSprite(m_buildingUIdestroyBuildings, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (_game->m_builds.GetNumberOfBuildings() % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList, 0, *_game->m_window);
 	}
 
-	if (m_IDChosenBuilding <= _game->m_builds.numberOfBuilding)
+	if (m_IDChosenBuilding <= _game->m_builds.GetNumberOfBuildings())
 	{
 		if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
 			&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - m_contour.getGlobalBounds().height - 40)
@@ -894,7 +854,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 		_game->m_spriteArray[18].setColor(sf::Color::White);
 	}
-	else if (m_IDChosenBuilding != _game->m_builds.numberOfBuilding)
+	else if (m_IDChosenBuilding != _game->m_builds.GetNumberOfBuildings())
 	{
 		if (m_isBuildingCaseOccupied == false)
 		{

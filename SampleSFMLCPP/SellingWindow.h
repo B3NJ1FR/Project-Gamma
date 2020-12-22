@@ -26,6 +26,7 @@ private:
 	bool m_wasCursorPressed;
 
 public:
+	// Constructor & Destructor
 	SellingWindow(sf::Font *_font);
 	~SellingWindow();
 

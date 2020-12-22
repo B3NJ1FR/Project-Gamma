@@ -1,5 +1,4 @@
-#ifndef LOADING_GAME__H
-#define LOADING_GAME__H
+#pragma once
 
 #include "Common.hpp"
 
@@ -8,10 +7,10 @@ class LoadingGame
 private :
 
 public :
+	// Constructor & Destructor
 	LoadingGame();
 	~LoadingGame();
 
+	// Methods
 	void LoadTheGame(struct Game *_game);
 };
-
-#endif // !LOADING_GAME__H

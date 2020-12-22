@@ -21,15 +21,18 @@ enum ListOfResolutions
 struct System
 {
 	// Window Management
-	enum ListOfResolutions currentScreenResolution;
-	std::string listOfScreenResolutions[SR_NUMBER_MAX];
-	sf::Vector2i screenResolution;
-	sf::RenderWindow window;
+	enum ListOfResolutions m_currentScreenResolution;
+	std::string m_listOfScreenResolutions[SR_NUMBER_MAX];
+	sf::Vector2i m_screenResolution;
+	bool m_isFullscreen;
+	sf::RenderWindow m_window;
 
 	System();
 
 	void RandomTime();
 	sf::Vector2i FindWindowResolution(enum ListOfResolutions _screenResolution) const;
+	enum ListOfResolutions FindEnumFromResolution(const sf::Vector2i& _screenSize) const;
+	void ReadScreenResolutionFromFile();
 	void PrimaryWindowInitialisation();
 	void ChangeWindowResolution(const sf::Vector2i& _newResolution, enum ListOfResolutions _screenResInList);
 };

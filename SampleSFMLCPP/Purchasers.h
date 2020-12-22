@@ -1,9 +1,7 @@
-#ifndef PURCHASERS__H
-#define PURCHASERS__H
+#pragma once
 
 #include "Entities.h"
 #include "Ressources.h"
-#include "Workers.h"
 
 
 class Purchasers : public Entities
@@ -20,23 +18,23 @@ private:
 	// - décalage entre plus l'on vend, moins on gagne
 	// - si une offre est refusée, la prochaine est un peu plus cher
 
-	enum WorkerStatus actualStatus;
+	WorkerStatus m_actualStatus;
 
-	std::string provenance;
+	std::string m_provenance;
 
-	int minimalMoneyValueForRessource;
-	int maximalMoneyValueForRessource;
+	int m_minimalMoneyValueForRessource;
+	int m_maximalMoneyValueForRessource;
 
-	int minimalRessourceQuantity;
-	int actualRessourceQuantity;
-	int maximalRessourceQuantity;
+	int m_minimalRessourceQuantity;
+	int m_actualRessourceQuantity;
+	int m_maximalRessourceQuantity;
 
-	enum TypesOfRessources ressourceID;
+	enum TypesOfRessources m_ressourceID;
 
-	int minimalMovementTime;
-	int maximalMovementTime;
+	int m_minimalMovementTime;
+	int m_maximalMovementTime;
 
-	bool isPreviousOfferHasBeenRefused;
+	bool m_isPreviousOfferHasBeenRefused;
 
 	
 
@@ -50,23 +48,26 @@ private:
 	//float timeToDeposit;
 
 public:
+	// Constructor & Destructor
 	Purchasers();
 	~Purchasers();
 
-	void Initialisation(const int &_actualQuantity);
-	int RandomiseData(const sf::Vector2i &_data);
+	// Setters
+	inline void SetActualQuantityStored(const int& _quantity);
+
+	// Getters
+	sf::Vector2i GetUnitPriceScope();
+	inline sf::Vector2i GetUnitQuantityRessourceScope() const { return sf::Vector2i(m_minimalRessourceQuantity, m_maximalRessourceQuantity); };
+	inline std::string GetProvenanceName() const { return m_provenance; };
+
+	// Methods
+	void Initialisation(const int& _actualQuantity);
+	int RandomiseData(const sf::Vector2i& _data);
 
 	int TimeToTravel();
-	void SetActualQuantityStored(const int &_quantity);
-	sf::Vector2i GetUnitPriceScope();
-	sf::Vector2i GetUnitQuantityRessourceScope();
-	std::string GetProvenanceName();
-	void IsOfferHasBeenRefused();
+	inline void IsOfferHasBeenRefused() { m_isPreviousOfferHasBeenRefused = true; };
 
+	// Save
 	void SavingPurchasersForFile(std::ofstream *_file);
 	void LoadingPurchasersFromFile(std::ifstream *_file);
 };
-
-
-
-#endif // !PURCHASERS__H

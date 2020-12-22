@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Common.hpp"
-#include "GameDefinitions.h"
+#include "Map.h"
+#include "BuildingManagement.h"
 
 #define BUILD_WINDOW_HELP_NB_OF_TEXTS 5
 
@@ -44,16 +45,18 @@ public:
 	void InitSpritesBuildWindow();
 
 	// Getters
-	inline sf::Sprite GetBuildingUI() const;
-	inline sf::Sprite GetBuildingUIClosed() const;
-	inline sf::Vector2i GetBuildingCheckboxSelected() const;
-	inline float GetScrollBuildingList() const;
-	inline int GetIDChosenBuilding() const;
-	inline bool GetIsBuildingCaseOccupied() const;
+	inline sf::Sprite GetBuildingUI() const { return m_buildingUI; };
+	inline sf::Sprite GetBuildingUIClosed() const { return m_buildingUIclosed; };
+	inline sf::Vector2i GetBuildingCheckboxSelected() const { return m_buildingCaseSelected; };
+
+	inline float GetScrollBuildingList() const { return m_scrollBuildingList; };
+	inline int GetIDChosenBuilding() const { return m_IDChosenBuilding; };
+
+	inline bool GetIsBuildingCaseOccupied() const { return m_isBuildingCaseOccupied; };
 
 	// Setters
-	void SetScrollBuildingList(const float &_scrollBuildingList);
-	void SetIDChosenBuilding(const int &_buildingID);
+	inline void SetScrollBuildingList(const float& _scrollBuildingList) { m_scrollBuildingList = _scrollBuildingList; };
+	inline void SetIDChosenBuilding(const int& _buildingID) { m_IDChosenBuilding = _buildingID; };
 
 	// Methods
 	bool IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize, const sf::Vector2i &_mapPosition);
@@ -61,13 +64,13 @@ public:
 	void InputBuildingModeOldScrollUI(const float &_scrollDelta, const sf::RenderWindow &_window);
 	void InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale);
 	
-	void SetBuildingOnMap(Game *_game, const enum Floors &_floorFocused, const int &_typeOfBuilding, const enum TypesOfCollisions &_collisionID, const sf::Vector2i &_mapPosition);
-	void SetGhostBuildingOnMap(Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
-	void RemoveBuildingOnMap(Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition);
+	void SetBuildingOnMap(Map* _map, BuildingManagement* _builds, enum Floors _floorFocused, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i &_mapPosition);
+	void SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
+	void RemoveBuildingOnMap(struct Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition);
 	
-	void UpdateTextsBuildWindow(Game *_game);
+	void UpdateTextsBuildWindow(struct Game *_game);
 
-	void InputBuildWindow(Game *_game);
-	void UpdateBuildWindow(Game *_game);
-	void DisplayBuildWindow(Game *_game);
+	void InputBuildWindow(struct Game *_game);
+	void UpdateBuildWindow(struct Game *_game);
+	void DisplayBuildWindow(struct Game *_game);
 };

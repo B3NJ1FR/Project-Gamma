@@ -1,4 +1,5 @@
 #include "Workers.h"
+#include "BuildingManagement.h"
 
 
 Workers::Workers()
@@ -6,6 +7,7 @@ Workers::Workers()
 	m_actualStatus = IDLE;
 	m_isLauchingMovement = false;
 	m_isItWorkingPlace = false;
+	m_isWorkerWasWorkingInBuilding = false;
 
 	m_isPressingEnd = false;
 	m_isPressingStart = false;
@@ -35,102 +37,12 @@ Workers::~Workers()
 	}
 }
 
-void Workers::SetWorkerPosition(const sf::Vector2f &_mapPosition)
-{
-	m_mapPosition = _mapPosition;
-}
-
-void Workers::SetWorkerStatus(const enum WorkerStatus &_newStatus)
-{
-	m_actualStatus = _newStatus;
-}
-
-
-void Workers::SetWorkerMoneyValue(const int &_moneyValue)
-{
-	m_moneyValue = _moneyValue;
-}
-
-
-void Workers::SetWorkerMoneyCostPerMonth(const int &_moneyCostPerMonth)
-{
-	m_moneyCostPerMonth = _moneyCostPerMonth;
-}
-
-void Workers::SetWorkerIsInWorkingPlace(const bool &_isItWorkingPlace)
-{
-	m_isItWorkingPlace = _isItWorkingPlace;
-}
-
-void Workers::SetTimeToDeposit(const float& _time)
-{
-	// Get the pickuping cost in term of time necessary
-	m_timeToDeposit = _time;
-}
-
-void Workers::AddTimeToDeposit(const float& _frametime)
-{
-	// Get the depositing cost in term of time
-	m_timeToDeposit += _frametime;
-}
-
-
-sf::Vector2f Workers::GetWorkerPosition() const
-{
-	return m_mapPosition;
-}
-
-sf::Vector2f Workers::GetWorkerEndingPosition() const
-{
-	return m_mapEndPosition;
-}
-
-int Workers::GetWorkerMoneyValue() const
-{
-	return m_moneyValue;
-}
-
-int Workers::GetWorkerMoneyCostPerMonth() const
-{
-	return m_moneyCostPerMonth;
-}
-
-bool Workers::GetWorkerIsInWorkingPlace() const
-{
-	return m_isItWorkingPlace;
-}
-
-enum WorkerStatus Workers::GetWorkerStatus() const
-{
-	return m_actualStatus;
-}
-
-enum TypeOfBuilding Workers::GetWorkerActualBuilding() const
-{
-	return m_actualBuilding;
-}
-
-float Workers::GetTimeToDeposit() const
-{
-	// Get the pickuping cost in term of necessary time
-	return m_timeToDeposit;
-}
-
-void Workers::DisplayWorker()
-{
-
-}
 
 
 
 
-void Workers::ActiveLauchingMovement() // TEMPORAIRE
-{
-	std::cout << "Chemin lance\n\n";
-	m_isLauchingMovement = true;
-}
 
-void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short ***_map)
+void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short*** _map)
 {
 	if (_mapPosition.x >= 0 && _mapPosition.y >= 0)
 	{
@@ -146,7 +58,7 @@ void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short
 	{
 		// We change the worker's status to working
 		m_isItWorkingPlace = true;
-		m_actualBuilding = (enum TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
+		m_currentBuilding = (enum TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
@@ -154,7 +66,7 @@ void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short
 	{
 		// We change the worker's status to working
 		m_isItWorkingPlace = true;
-		m_actualBuilding = (enum TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
+		m_currentBuilding = (enum TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
@@ -163,6 +75,20 @@ void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short
 		m_isItWorkingPlace = false;
 	}
 }
+
+
+
+void Workers::DisplayWorker()
+{
+
+}
+
+void Workers::ActiveLauchingMovement() // TEMPORAIRE
+{
+	std::cout << "Chemin lance\n\n";
+	m_isLauchingMovement = true;
+}
+
 
 void Workers::InitPathfinding(Map *_map)
 {
@@ -183,7 +109,7 @@ void Workers::InitPathfinding(Map *_map)
 	}
 }
 
-void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, BuildingManagement* _builds, Ressources* _ressources)
+void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds, Ressources* _ressources)
 {
 	float speed(RESET);
 
@@ -192,6 +118,42 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 	case IDLE:
 
 		//std::cout << "Idle\n";
+
+		if (m_isWorkerWasWorkingInBuilding)
+		{
+			// We send at the vines building the confirmation that a worker is there
+			if (_builds->m_vines.ConfirmVinePresenceAtPosition(m_mapPosition))
+			{
+				_builds->m_vines.WorkerLeavingThisPosition(m_mapPosition);
+			}
+			// We send at the stomping vats building the confirmation that a worker is there
+			else if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition))
+			{
+				_builds->m_stompingVats.WorkerLeavingThisPosition(m_mapPosition);
+			}
+			// We send at the wine press building the confirmation that a worker is there
+			else if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition))
+			{
+				_builds->m_winePress.WorkerLeavingThisPosition(m_mapPosition);
+			}
+			// We send at the wine storehouse building the confirmation that a worker is there
+			else if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition))
+			{
+				_builds->m_wineStorehouse.WorkerLeavingThisPosition(m_mapPosition);
+			}
+			// We send at the storehouse building the confirmation that a worker is there
+			else if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition))
+			{
+				_builds->m_storehouse.WorkerLeavingThisPosition(m_mapPosition);
+			}
+			// We send at the wine storehouse building the confirmation that a worker is there
+			else if (_builds->m_stall->ConfirmPresenceAtPosition(m_mapPosition))
+			{
+				_builds->m_stall->WorkerLeavingThisPosition(m_mapPosition);
+			}
+
+			m_isWorkerWasWorkingInBuilding = false;
+		}
 
 		if (m_isLauchingMovement == true)
 		{
@@ -261,37 +223,37 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				// If that place is what which were targeted and the worker carry some ressource, he need to deposit them
 				if (m_targetedBuilding != nullptr)
 				{
-					if (*(m_targetedBuilding) == m_actualBuilding
+					if (*(m_targetedBuilding) == m_currentBuilding
 						&& m_ressourceHeld != nullptr)
 					{
 						SetWorkerStatus(DEPOSIT_RESSOURCES);
 					}
 					else
 					{
-						switch (m_actualBuilding)
+						switch (m_currentBuilding)
 						{
 						case BUILDING_VINES:
-							SetWorkerStatus((_builds->vines.CheckVineHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_vines.CheckVineHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_GRAPE_STOMPING_VATS:
-							SetWorkerStatus((_builds->stompingVats.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_stompingVats.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_WINE_PRESS:
-							SetWorkerStatus((_builds->winePress.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_winePress.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_WINE_STOREHOUSE:
-							SetWorkerStatus((_builds->wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_STOREHOUSE:
-							SetWorkerStatus((_builds->storehouse.CheckStorehouseHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_storehouse.CheckStorehouseHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_STALL:
-							SetWorkerStatus((_builds->stall->GetConstructionStatus() == PLANNED || _builds->stall->GetConstructionStatus() == CONSTRUCTION) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_stall->GetConstructionStatus() == PLANNED || _builds->m_stall->GetConstructionStatus() == CONSTRUCTION) ? BUILDING : WORKING);
 
 							break;
 							/*case BUILDING_VILLA:
@@ -318,30 +280,30 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 					}
 					else
 					{
-						switch (m_actualBuilding)
+						switch (m_currentBuilding)
 						{
 						case BUILDING_VINES:
-							SetWorkerStatus((_builds->vines.CheckVineHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_vines.CheckVineHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_GRAPE_STOMPING_VATS:
-							SetWorkerStatus((_builds->stompingVats.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_stompingVats.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_WINE_PRESS:
-							SetWorkerStatus((_builds->winePress.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_winePress.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_WINE_STOREHOUSE:
-							SetWorkerStatus((_builds->wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_STOREHOUSE:
-							SetWorkerStatus((_builds->storehouse.CheckStorehouseHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_storehouse.CheckStorehouseHasBeenBuilt(m_mapPosition) == false) ? BUILDING : WORKING);
 
 							break;
 						case BUILDING_STALL:
-							SetWorkerStatus((_builds->stall->GetConstructionStatus() == PLANNED || _builds->stall->GetConstructionStatus() == CONSTRUCTION) ? BUILDING : WORKING);
+							SetWorkerStatus((_builds->m_stall->GetConstructionStatus() == PLANNED || _builds->m_stall->GetConstructionStatus() == CONSTRUCTION) ? BUILDING : WORKING);
 
 							break;
 						/*case BUILDING_VILLA:
@@ -384,13 +346,13 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 		//std::cout << "Building ..\n";
 
-		switch (m_actualBuilding)
+		switch (m_currentBuilding)
 		{
 		case BUILDING_VINES:
-			if (_builds->vines.CheckVineHasBeenBuilt(m_mapPosition) == false)
+			if (_builds->m_vines.CheckVineHasBeenBuilt(m_mapPosition) == false)
 			{
 				// If the result is false, that mean the building isn't there or has been destroyed
-				if (_builds->vines.ConfirmVinePresenceAtPosition(m_mapPosition, true) == false)
+				if (_builds->m_vines.ConfirmVinePresenceAtPosition(m_mapPosition, true) == false)
 				{
 					SetWorkerStatus(IDLE);
 				}
@@ -402,10 +364,10 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 			break;
 		case BUILDING_GRAPE_STOMPING_VATS:
-			if (_builds->stompingVats.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false)
+			if (_builds->m_stompingVats.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false)
 			{
 				// If the result is false, that mean the building isn't there or has been destroyed
-				if (_builds->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == false)
+				if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == false)
 				{
 					SetWorkerStatus(IDLE);
 				}
@@ -417,10 +379,10 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 			break;
 		case BUILDING_WINE_PRESS:
-			if (_builds->winePress.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false)
+			if (_builds->m_winePress.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false)
 			{
 				// If the result is false, that mean the building isn't there or has been destroyed
-				if (_builds->winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == false)
+				if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == false)
 				{
 					SetWorkerStatus(IDLE);
 				}
@@ -432,10 +394,10 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 			break;
 		case BUILDING_WINE_STOREHOUSE:
-			if (_builds->wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false)
+			if (_builds->m_wineStorehouse.CheckSpecificsBuildingsHasBeenBuilt(m_mapPosition) == false)
 			{
 				// If the result is false, that mean the building isn't there or has been destroyed
-				if (_builds->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == false)
+				if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == false)
 				{
 					SetWorkerStatus(IDLE);
 				}
@@ -447,10 +409,10 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 			break;
 		case BUILDING_STOREHOUSE:
-			if (_builds->storehouse.CheckStorehouseHasBeenBuilt(m_mapPosition) == false)
+			if (_builds->m_storehouse.CheckStorehouseHasBeenBuilt(m_mapPosition) == false)
 			{
 				// If the result is false, that mean the building isn't there or has been destroyed
-				if (_builds->storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true) == false)
+				if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true) == false)
 				{
 					SetWorkerStatus(IDLE);
 				}
@@ -462,10 +424,10 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 			break;
 		case BUILDING_STALL:
-			if (_builds->stall->GetConstructionStatus() == PLANNED || _builds->stall->GetConstructionStatus() == CONSTRUCTION)
+			if (_builds->m_stall->GetConstructionStatus() == PLANNED || _builds->m_stall->GetConstructionStatus() == CONSTRUCTION)
 			{
 				// If the result is false, that mean the building isn't there or has been destroyed
-				if (_builds->stall->ConfirmPresenceAtPosition(m_mapPosition, false, true) == false)
+				if (_builds->m_stall->ConfirmPresenceAtPosition(m_mapPosition, false, true) == false)
 				{
 					SetWorkerStatus(IDLE);
 				}
@@ -493,14 +455,15 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 	case WORKING:
 		
-		if (m_actualBuilding == BUILDING_VINES)
+		if (m_currentBuilding == BUILDING_VINES)
 		{
 			// We send at the vines building the confirmation that a worker is there
-			if (_builds->vines.ConfirmVinePresenceAtPosition(m_mapPosition, true) == true)
+			if (_builds->m_vines.ConfirmVinePresenceAtPosition(m_mapPosition, true) == true)
 			{
+				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
-				if (_builds->vines.CheckVineHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_vines.CheckVineHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -512,14 +475,15 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
+		else if (m_currentBuilding == BUILDING_GRAPE_STOMPING_VATS)
 		{
 			// We send at the stomping vats building the confirmation that a worker is there
-			if (_builds->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
+			if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
-				if (_builds->stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -531,14 +495,15 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_WINE_PRESS)
+		else if (m_currentBuilding == BUILDING_WINE_PRESS)
 		{
 			// We send at the wine press building the confirmation that a worker is there
-			if (_builds->winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
+			if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
-				if (_builds->winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -551,14 +516,15 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_WINE_STOREHOUSE)
+		else if (m_currentBuilding == BUILDING_WINE_STOREHOUSE)
 		{
 			// We send at the wine storehouse building the confirmation that a worker is there
-			if (_builds->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
+			if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 							   				 
-				if (_builds->wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -569,11 +535,12 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_STOREHOUSE)
+		else if (m_currentBuilding == BUILDING_STOREHOUSE)
 		{
 			// We send at the storehouse building the confirmation that a worker is there
-			if (_builds->storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true) == true)
+			if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 			}
 			else
@@ -582,11 +549,12 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_STALL)
+		else if (m_currentBuilding == BUILDING_STALL)
 		{
 			// We send at the wine storehouse building the confirmation that a worker is there
-			if (_builds->stall->ConfirmPresenceAtPosition(m_mapPosition, false, true) == true)
+			if (_builds->m_stall->ConfirmPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 			}
 			else
@@ -606,7 +574,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 	
 	case PICKUP_RESSOURCES:
 
-		if (m_actualBuilding == BUILDING_VINES)
+		if (m_currentBuilding == BUILDING_VINES)
 		{
 			// That mean the worker has already picked up a ressource
 			if (m_ressourceHeld != nullptr)
@@ -614,14 +582,14 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(m_ressourceHeld) == BUNCH_OF_GRAPE)
 				{
-					int ressourceProduced = _builds->vines.VinesSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+					int ressourceProduced = _builds->m_vines.VinesSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 					*(m_quantityRessourceHeld) += ressourceProduced;
 					*(m_targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
 					
 					m_isItWorkingPlace = false;
 					
-					sf::Vector2i targetedPosition = _builds->stompingVats.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_stompingVats.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -641,7 +609,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->vines.VinesSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+				int ressourceProduced = _builds->m_vines.VinesSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -657,7 +625,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 					m_isItWorkingPlace = false;
 
 					
-					sf::Vector2i targetedPosition = _builds->stompingVats.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_stompingVats.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -670,12 +638,12 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->vines.CheckVineHasProducedRessource(m_mapPosition) == true)
+				else if (_builds->m_vines.CheckVineHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->vines.CheckVineHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_vines.CheckVineHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -686,7 +654,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			
 
 		}
-		else if (m_actualBuilding == BUILDING_GRAPE_STOMPING_VATS)
+		else if (m_currentBuilding == BUILDING_GRAPE_STOMPING_VATS)
 		{
 			// That mean the worker has already picked up a ressource
 			if (m_ressourceHeld != nullptr)
@@ -694,14 +662,14 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(m_ressourceHeld) == GRAPES_MUST)
 				{
-					int ressourceProduced = _builds->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+					int ressourceProduced = _builds->m_stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 					*(m_quantityRessourceHeld) += ressourceProduced;
 					*(m_targetedBuilding) = BUILDING_WINE_PRESS;
 
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->winePress.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_winePress.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -721,7 +689,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+				int ressourceProduced = _builds->m_stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -736,7 +704,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 					m_isItWorkingPlace = false;
 					
-					sf::Vector2i targetedPosition = _builds->winePress.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_winePress.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -749,12 +717,12 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				else if (_builds->m_stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -764,7 +732,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_WINE_PRESS)
+		else if (m_currentBuilding == BUILDING_WINE_PRESS)
 		{
 			// That mean the worker has already picked up a ressource
 			if (m_ressourceHeld != nullptr)
@@ -772,14 +740,14 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(m_ressourceHeld) == GRAPE_JUICE)
 				{
-					int ressourceProduced = _builds->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+					int ressourceProduced = _builds->m_winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 					*(m_quantityRessourceHeld) += ressourceProduced;
 					*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
 					
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->wineStorehouse.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_wineStorehouse.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -801,7 +769,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+				int ressourceProduced = _builds->m_winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -816,7 +784,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->wineStorehouse.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_wineStorehouse.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -829,12 +797,12 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				else if (_builds->m_winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -844,7 +812,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 
 		}
-		else if (m_actualBuilding == BUILDING_WINE_STOREHOUSE)
+		else if (m_currentBuilding == BUILDING_WINE_STOREHOUSE)
 		{
 			// That mean the worker has already picked up a ressource
 			if (m_ressourceHeld != nullptr)
@@ -852,14 +820,14 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 				if (*(m_ressourceHeld) == AMPHORA_OF_WINE)
 				{
-					int ressourceProduced = _builds->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+					int ressourceProduced = _builds->m_wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 					*(m_quantityRessourceHeld) += ressourceProduced;
 					*(m_targetedBuilding) = BUILDING_STOREHOUSE;
 					
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->storehouse.StorehouseFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_storehouse.StorehouseFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -881,7 +849,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
+				int ressourceProduced = _builds->m_wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
 
 				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
 				if (ressourceProduced != 0 && ressourceProduced > 0)
@@ -896,7 +864,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->storehouse.StorehouseFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_storehouse.StorehouseFindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -909,12 +877,12 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				else if (_builds->m_wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -940,11 +908,11 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				break;
 			case BUNCH_OF_GRAPE:
 
-				if (_builds->stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
+				if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 				{
 					AddTimeToDeposit(_time->GetFrameTime());
 
-					if (GetTimeToDeposit() >= _builds->buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
+					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
 					{
 						std::cout << "Worker, want to deposit ressources\n";
 
@@ -972,11 +940,11 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				break;
 			case GRAPES_MUST:
 
-				if (_builds->winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
+				if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 				{
 					AddTimeToDeposit(_time->GetFrameTime());
 
-					if (GetTimeToDeposit() >= _builds->buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
+					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
 					{
 						std::cout << "Worker, want to deposit ressources\n";
 
@@ -1004,11 +972,11 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				break;
 			case GRAPE_JUICE:
 
-				if (_builds->wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
+				if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 				{
 					AddTimeToDeposit(_time->GetFrameTime());
 
-					if (GetTimeToDeposit() >= _builds->buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
 					{
 						std::cout << "Worker, want to deposit ressources\n";
 
@@ -1047,7 +1015,7 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 
 				AddTimeToDeposit(_time->GetFrameTime());
 
-				if (GetTimeToDeposit() >= _builds->buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+				if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
 				{
 					std::cout << "Worker, want to deposit ressources\n";
 
@@ -1070,11 +1038,11 @@ void Workers::UpdatePathAndActivities(Map *_map, TimeManagement *_time, Building
 				break;
 			case AMPHORA_OF_WINE:
 				
-				if (_builds->storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true))
+				if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true))
 				{
 					AddTimeToDeposit(_time->GetFrameTime());
 
-					if (GetTimeToDeposit() >= _builds->buildings[BUILDING_STOREHOUSE].GetDepositingTimeCost())
+					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_STOREHOUSE].GetDepositingTimeCost())
 					{
 						std::cout << "Worker, deposit amphora of wine ressources\n";
 

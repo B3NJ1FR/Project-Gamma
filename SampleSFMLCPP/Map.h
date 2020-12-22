@@ -1,4 +1,4 @@
-#pragma 
+#pragma once
 
 #include "Common.hpp"
 #include "Buildings.h"
@@ -44,13 +44,21 @@ public :
 	Map();
 	~Map();
 
+	// Setters
+	inline void SetNumberOfLayers(unsigned char _nbOfLayers) {  m_numberLayers = _nbOfLayers; }
+	inline void SetNumberOfLines(unsigned char _nbOfLines) { m_numberLines = _nbOfLines; }
+	inline void SetNumberOfColumns(unsigned char _nbOfColumns) { m_numberColumns = _nbOfColumns; }
+
 	// Getters
 	inline unsigned short GetNumberOfLayers() const { return m_numberLayers;  }
 	inline unsigned short GetNumberOfLines() const { return m_numberLines;  }
 	inline unsigned short GetNumberOfColumns() const { return m_numberColumns;  }
-	inline unsigned short*** GetMap() const { return m_map;  }
+	inline unsigned short*** GetMap() { return m_map;  }
 
 	// Methods
 	void InitMapFromFile();
+
+	void SavingMapFromFile(std::ofstream* _file);
+	void LoadingMapFromFile(std::ifstream* _file);
 };
 

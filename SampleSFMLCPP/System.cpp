@@ -8,40 +8,39 @@ System::System()
 		switch (i)
 		{
 		case SR_1280X720:
-			listOfScreenResolutions[i] = "1280 x 720";
+			m_listOfScreenResolutions[i] = "1280 x 720";
 			break;
 		case SR_1366X768:
-			listOfScreenResolutions[i] = "1366 x 768";
+			m_listOfScreenResolutions[i] = "1366 x 768";
 			break;
 		case SR_1440X900:
-			listOfScreenResolutions[i] = "1440 x 900";
+			m_listOfScreenResolutions[i] = "1440 x 900";
 			break;
 		case SR_1600X1200:
-			listOfScreenResolutions[i] = "1600 x 1200";
+			m_listOfScreenResolutions[i] = "1600 x 1200";
 			break;
 		case SR_1680X1050:
-			listOfScreenResolutions[i] = "1680 x 1050";
+			m_listOfScreenResolutions[i] = "1680 x 1050";
 			break;
 		case SR_1920X1080:
-			listOfScreenResolutions[i] = "1920 x 1080";
+			m_listOfScreenResolutions[i] = "1920 x 1080";
 			break;
 		case SR_2048X1080:
-			listOfScreenResolutions[i] = "2048 x 1080";
+			m_listOfScreenResolutions[i] = "2048 x 1080";
 			break;
 		case SR_2560X1440:
-			listOfScreenResolutions[i] = "2560 x 1440";
+			m_listOfScreenResolutions[i] = "2560 x 1440";
 			break;
 		case SR_3440X1440:
-			listOfScreenResolutions[i] = "3440 x 1440";
+			m_listOfScreenResolutions[i] = "3440 x 1440";
 			break;
 		default:
-			listOfScreenResolutions[i] = "1920 x 1080";
+			m_listOfScreenResolutions[i] = "1920 x 1080";
 			break;
 		}
 	}
 
-	screenResolution = sf::Vector2i(1920, 1080);
-	currentScreenResolution = SR_1920X1080;
+	m_isFullscreen = true;
 }
 
 
@@ -91,40 +90,216 @@ sf::Vector2i System::FindWindowResolution(enum ListOfResolutions _screenResoluti
 	}
 }
 
+
+enum ListOfResolutions System::FindEnumFromResolution(const sf::Vector2i& _screenSize) const
+{
+	if (_screenSize.x == 1280 && _screenSize.y == 720)
+	{
+		return SR_1280X720;
+	}
+	else if (_screenSize.x == 1366 && _screenSize.y == 768)
+	{
+		return SR_1366X768;
+	}
+	else if (_screenSize.x == 1440 && _screenSize.y == 900)
+	{
+		return SR_1440X900;
+	}
+	else if (_screenSize.x == 1600 && _screenSize.y == 1200)
+	{
+		return SR_1600X1200;
+	}
+	else if (_screenSize.x == 1680 && _screenSize.y == 1050)
+	{
+		return SR_1680X1050;
+	}
+	else if (_screenSize.x == 1920 && _screenSize.y == 1080)
+	{
+		return SR_1920X1080;
+	}
+	else if (_screenSize.x == 2048 && _screenSize.y == 1080)
+	{
+		return SR_2048X1080;
+	}
+	else if (_screenSize.x == 2560 && _screenSize.y == 1440)
+	{
+		return SR_2560X1440;
+	}
+	else if (_screenSize.x == 3440 && _screenSize.y == 1440)
+	{
+		return SR_3440X1440;
+	}
+	else
+	{
+		return SR_1920X1080;
+	}
+}
+
+
+void System::ReadScreenResolutionFromFile()
+{
+	std::ifstream settingsFile("Data/Configurations/Settings.data", std::ios::in);
+
+	std::string temporaryString;
+	temporaryString.erase();
+	int screenSizeX = 0, screenSizeY = 0;
+	bool isModificationNeeded = false;
+	bool isScreenSizeHasBeenFound = false;
+
+	if (!settingsFile.is_open())
+	{
+		std::cout << "Error accessing Settings.data file" << std::endl;
+
+		exit(EXIT_FAILURE);
+	}
+
+	while (!settingsFile.eof())
+	{
+		settingsFile >> temporaryString;
+
+		if (temporaryString == "SCREEN_RESOLUTION")
+		{
+			isScreenSizeHasBeenFound = true;
+
+			// Read the version number
+			settingsFile >> screenSizeX >> screenSizeY;
+
+			if (screenSizeX > 0 && screenSizeY > 0)
+			{
+				m_screenResolution.x = screenSizeX;
+				m_screenResolution.y = screenSizeY;
+
+				m_currentScreenResolution = FindEnumFromResolution(m_screenResolution);
+			}
+			else
+			{
+				isModificationNeeded = true;
+
+				m_screenResolution.x = 1920;
+				m_screenResolution.y = 1080;
+
+				m_currentScreenResolution = FindEnumFromResolution(m_screenResolution);
+			}
+		}
+		else if (temporaryString == "FULLSCREEN")
+		{
+			// Read the version number
+			settingsFile >> temporaryString;
+
+			if (temporaryString == "ON")
+			{
+				m_isFullscreen = true;
+			}
+			else if (temporaryString == "OFF")
+			{
+				m_isFullscreen = false;
+			}
+			else
+			{
+				m_isFullscreen = true;
+			}
+		}
+	}
+	
+	if (!isScreenSizeHasBeenFound)
+	{
+		isModificationNeeded = true;
+
+		m_screenResolution.x = 1920;
+		m_screenResolution.y = 1080;
+
+		m_currentScreenResolution = FindEnumFromResolution(m_screenResolution);
+	}
+
+
+	settingsFile.close();
+
+	if (isModificationNeeded)
+	{
+		std::fstream settingsFile("Data/Configurations/Settings.data");
+
+		std::string temporaryString;
+		temporaryString.erase();
+
+		if (!settingsFile.is_open())
+		{
+			std::cout << "Error accessing Settings.data file" << std::endl;
+
+			exit(EXIT_FAILURE);
+		}
+
+		while (!settingsFile.eof())
+		{
+			settingsFile >> temporaryString;
+
+			if (temporaryString == "SCREEN_RESOLUTION")
+			{
+				// Write the screen size
+				int screenSizeX = m_screenResolution.x, screenSizeY = m_screenResolution.y;
+				settingsFile << screenSizeX << " " << screenSizeY;
+
+				break;
+			}
+		}
+
+		if (!isScreenSizeHasBeenFound)
+		{
+			settingsFile << "SCREEN_RESOLUTION " << m_screenResolution.x << " " << m_screenResolution.y;
+		}
+
+
+		settingsFile.close();
+	}
+}
+
 void System::PrimaryWindowInitialisation()
 {
 	// Set the maximal frame time limit at 60 FPS
-	window.setFramerateLimit(60);
+	m_window.setFramerateLimit(60);
 
 	// Set the window's size
-	window.create(sf::VideoMode(screenResolution.x, screenResolution.y, 32), "Vindemia Antiquus", sf::Style::Fullscreen);
+	if (m_isFullscreen)
+	{
+		m_window.create(sf::VideoMode(m_screenResolution.x, m_screenResolution.y, 32), "Vindemia Antiquus", sf::Style::Fullscreen);
+	}
+	else
+	{
+		m_window.create(sf::VideoMode(m_screenResolution.x, m_screenResolution.y, 32), "Vindemia Antiquus");
+	}
+
 
 	// Set the game's icon
 	sf::Image gameIcon;
 	gameIcon.loadFromFile("Data/Assets/Vindemia Antiquus_Icon.png");
-	window.setIcon(gameIcon.getSize().x, gameIcon.getSize().y, gameIcon.getPixelsPtr());
+	m_window.setIcon(gameIcon.getSize().x, gameIcon.getSize().y, gameIcon.getPixelsPtr());
 
 	std::cout << "Window's creation succeeded\n";
-
 }
 
 void System::ChangeWindowResolution(const sf::Vector2i& _newResolution, enum ListOfResolutions _screenResInList)
 {
 	if (_newResolution.x > 0 && _newResolution.y > 0)
 	{
-		currentScreenResolution = _screenResInList;
+		m_currentScreenResolution = _screenResInList;
 
 		// Set the maximal frame time limit at 60 FPS
-		window.setFramerateLimit(60);
+		m_window.setFramerateLimit(60);
 
 		// Set the window's size
-		screenResolution = _newResolution;
-		window.create(sf::VideoMode(screenResolution.x, screenResolution.y, 32), "Vindemia Antiquus");
+		m_screenResolution = _newResolution;
+		if (m_isFullscreen)
+		{
+			m_window.create(sf::VideoMode(m_screenResolution.x, m_screenResolution.y, 32), "Vindemia Antiquus", sf::Style::Fullscreen);
+		}
+		else
+		{
+			m_window.create(sf::VideoMode(m_screenResolution.x, m_screenResolution.y, 32), "Vindemia Antiquus");
+		}
 
 		// Set the game's icon
 		sf::Image gameIcon;
 		gameIcon.loadFromFile("Data/Assets/Vindemia Antiquus_Icon.png");
-		window.setIcon(gameIcon.getSize().x, gameIcon.getSize().y, gameIcon.getPixelsPtr());
+		m_window.setIcon(gameIcon.getSize().x, gameIcon.getSize().y, gameIcon.getPixelsPtr());
 
 		std::cout << "New window's creation succeeded\n";
 	}

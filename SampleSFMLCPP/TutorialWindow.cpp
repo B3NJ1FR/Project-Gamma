@@ -51,7 +51,7 @@ void TutorialWindow::InitTextOfTutorialFromFile()
 		}
 	}
 
-	if (m_counterMessages != 0)
+	if (m_counterMessages > 0)
 	{
 		std::string *finalString = new std::string[m_counterMessages];
 
@@ -91,11 +91,6 @@ void TutorialWindow::InitTextOfTutorialFromFile()
 		}
 
 		m_messages = finalString;
-
-		if (finalString != nullptr)
-		{
-			delete[] finalString;
-		}
 	}
 	
 	tutorialFile.close();
@@ -132,7 +127,6 @@ void TutorialWindow::InputTutorialWindow(enum CurrentGameState *_state, sf::Rend
 				else
 				{
 					*(_state) = NORMAL_MODE;
-					std::cout << "THERE\N";
 				}
 			}
 		}

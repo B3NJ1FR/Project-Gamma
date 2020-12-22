@@ -170,3 +170,53 @@ void Map::InitMapFromFile()
 		std::cout << "ERROR OF MAP DEFINITION\n\n\n";
 	}
 }
+
+void Map::SavingMapFromFile(std::ofstream* _file)
+{
+	// Saving the map size
+	_file->write((char*)&m_numberColumns, sizeof(unsigned short));
+	_file->write((char*)&m_numberLines, sizeof(unsigned short));
+	_file->write((char*)&m_numberLayers, sizeof(unsigned short));
+
+	std::cout << "Size saved !\n";
+
+
+	// Saving the map content
+	for (unsigned short z = 0; z < m_numberLayers; z++)
+	{
+		for (unsigned short y = 0; y < m_numberLines; y++)
+		{
+			for (unsigned short x = 0; x < m_numberColumns; x++)
+			{
+				_file->write((char*) &m_map[z][y][x], sizeof(unsigned short));
+			}
+		}
+	}
+
+	std::cout << "Map saved !\n";
+}
+
+
+void Map::LoadingMapFromFile(std::ifstream* _file)
+{
+	// Loading the map size
+	_file->read((char*)&m_numberColumns, sizeof(unsigned short));
+	_file->read((char*)&m_numberLines, sizeof(unsigned short));
+	_file->read((char*)&m_numberLayers, sizeof(unsigned short));
+
+	std::cout << "Map size loaded : " << m_numberColumns << " " << m_numberLines<< " " << m_numberLayers << std::endl;
+
+	// Loading the map content
+	for (auto z = 0; z < m_numberLayers; z++)
+	{
+		for (auto y = 0; y < m_numberLines; y++)
+		{
+			for (auto x = 0; x < m_numberColumns; x++)
+			{
+				_file->read((char*) &m_map[z][y][x], sizeof(unsigned short));
+			}
+		}
+	}
+
+	std::cout << "Map loaded !\n";
+}
