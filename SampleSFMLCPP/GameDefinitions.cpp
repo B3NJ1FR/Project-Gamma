@@ -1,18 +1,25 @@
 #include "GameDefinitions.h"
 
-Game::Game()
+Game::Game(const sf::Vector2i& _screenResolution)
 {
+	if (m_screenReso == nullptr)
+	{
+		m_screenReso = new sf::Vector2i();
+	}
+
+	*m_screenReso = _screenResolution;
+
 	m_actualGameState = TUTORIAL_MODE;
 
 	SpritesInitialisation();
 	TextsInit();
 	RessourcesInitialisation();
 
-	m_time = new TimeManagement(&m_charlemagneFont);
+	m_time = new TimeManagement(&m_charlemagneFont, *m_screenReso);
 	m_tutorialWindow = new TutorialWindow(&m_charlemagneFont);
 	m_workersList = new WorkersList;
 	m_mainCharacter = new MainCharacter; // Vérifier le code après la remise en route de BuildManagement
-	m_sellingWindow = new SellingWindow(&m_generalFont);
+	m_sellingWindow = new SellingWindow(&m_generalFont, *m_screenReso);
 	m_buildingsListPlanned = new BuildingsListPlanned();
 	m_purchasers = nullptr;
 
@@ -50,6 +57,11 @@ Game::~Game()
 	{
 		delete [] m_ressources;
 	}
+
+	if (m_screenReso != nullptr)
+	{
+		delete m_screenReso;
+	}
 }
 
 
@@ -60,7 +72,6 @@ void Game::SetWindowMemoryAddress(sf::RenderWindow* _window)
 
 	std::cout << "Memory Adress : " << m_window;
 }
-
 
 
 

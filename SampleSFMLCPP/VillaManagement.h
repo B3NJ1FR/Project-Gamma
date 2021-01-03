@@ -23,6 +23,6 @@ public:
 	~VillaManagement();
 
 	// Methods
-	void InputVillaManagement(enum CurrentGameState *_state, TimeManagement *_time, sf::RenderWindow &_window);
+	void InputVillaManagement(enum CurrentGameState *_state, sf::RenderWindow &_window);
 	void DisplayVillaManagement(sf::RenderWindow &_window);
 };

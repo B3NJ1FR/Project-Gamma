@@ -10,6 +10,7 @@ class MainCharacter : public Entities
 {
 private:
 	sf::Sprite m_sprite;
+	sf::Sprite m_spriteCharaSelected;
 
 	WorkerStatus m_actualStatus;
 	
@@ -48,11 +49,13 @@ public:
 
 	inline sf::Vector2f GetMainCharacterEndingPosition() const { return m_mapEndPosition; };
 	inline sf::Sprite GetSprite() const { return m_sprite; };
+	inline sf::Sprite GetSpriteSelected() const { return m_spriteCharaSelected; };
 	inline bool GetIsMainCharacterSelected() const { return m_isMainCharacterSelected; };
 	inline enum WorkerStatus GetWorkerStatus() const { return m_actualStatus; };
 	inline bool GetIsCurrentlyBuilding() const { return m_isCurrentlyBuilding; };
 	
 	inline bool IsMainCharacterPosition(const sf::Vector2i& _mapPosition) const { return (sf::Vector2i(m_mapPosition) == _mapPosition) ? true : false; };
+	void DisplayMainCharacter(const sf::Vector2i& _actualPosition, const sf::Vector3f& _cameraPosition, const sf::Vector2i& _screenSize, const sf::Vector2f& _gameScale, sf::RenderWindow& _window);
 	void UpdatePathAndActivities(struct Game *_game); // WARNING NEED TO BE VERIFIED IF NOT WORKING
 	//void UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds, BuildingsListPlanned* _buildingsList, BuildWindow* _buildWindow, Ressources* _ressources);
 	//bool isPressingStart; // Temporaire

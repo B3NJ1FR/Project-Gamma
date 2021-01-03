@@ -351,6 +351,8 @@ std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalC
 
 	spacesPositions = temporaryString.find_first_of(" ");
 
+	int positionBackToTheLine = temporaryString.find('\n');
+
 	while (positionInString + maximalCharactersPerLine < temporaryString.length())
 	{
 		while (temporaryString.find_first_of(" ", spacesPositions + 1) <= positionInString + maximalCharactersPerLine)
@@ -359,24 +361,33 @@ std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalC
 			spacesPositions = temporaryString.find(" ", spacesPositions + 1);
 		}
 
-		// If the space position is equal to the maximal lengh needed, we can put a return at this current position
-		if (spacesPositions == positionInString + maximalCharactersPerLine)
+		// If the \n character is in this line, we set the cursor to the \n's position
+		if (positionBackToTheLine > positionInString
+			&& positionBackToTheLine <= positionInString + maximalCharactersPerLine)
 		{
-			positionInString = temporaryString.find(" ", spacesPositions);
+			positionInString = positionBackToTheLine;
 		}
-		// If the space position is higher than the maximal lengh needed, we take the previous position to put it a return
-		else if (spacesPositions > positionInString + maximalCharactersPerLine)
+		else
 		{
-			positionInString = temporaryString.find(" ", previousSpacesPositions);
-		}
-		// If the space position is less than the maximal lengh needed, we can put a return at this current position
-		else if (spacesPositions < positionInString + maximalCharactersPerLine
-			&& spacesPositions > positionInString)
-		{
-			positionInString = temporaryString.find(" ", spacesPositions);
-		}
+			// If the space position is equal to the maximal lengh needed, we can put a return at this current position
+			if (spacesPositions == positionInString + maximalCharactersPerLine)
+			{
+				positionInString = temporaryString.find(" ", spacesPositions);
+			}
+			// If the space position is higher than the maximal lengh needed, we take the previous position to put it a return
+			else if (spacesPositions > positionInString + maximalCharactersPerLine)
+			{
+				positionInString = temporaryString.find(" ", previousSpacesPositions);
+			}
+			// If the space position is less than the maximal lengh needed, we can put a return at this current position
+			else if (spacesPositions < positionInString + maximalCharactersPerLine
+				&& spacesPositions > positionInString)
+			{
+				positionInString = temporaryString.find(" ", spacesPositions);
+			}
 
-		temporaryString.replace(positionInString, 1, "\n", 1);
+			temporaryString.replace(positionInString, 1, "\n", 1);
+		}		
 	}
 
 	return temporaryString;

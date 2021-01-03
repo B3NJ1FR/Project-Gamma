@@ -26,8 +26,8 @@ void Game::DisplayDecor()
 									m_spriteArray[m_map.GetMap()[z][y][x]].setScale(m_scale);
 
 									BlitSprite(m_spriteArray[m_map.GetMap()[z][y][x]],
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 										0, *m_window);
 								}
 							}
@@ -74,8 +74,8 @@ void Game::DisplayDecor()
 										m_spriteArray[groundToDisplay].setScale(m_scale);
 
 										BlitSprite(m_spriteArray[groundToDisplay],
-											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 											0, *m_window);
 									}
 									else
@@ -86,8 +86,8 @@ void Game::DisplayDecor()
 										m_spriteArray[m_map.GetMap()[z][y][x]].setScale(m_scale);
 
 										BlitSprite(m_spriteArray[m_map.GetMap()[z][y][x]],
-											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 											0, *m_window);
 									}
 								}
@@ -132,8 +132,8 @@ void Game::DisplayDecor()
 										m_spriteArray[buildingToDisplay].setScale(m_scale);
 
 										BlitSprite(m_spriteArray[buildingToDisplay],
-											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 											0, *m_window);
 									}
 									else
@@ -144,8 +144,8 @@ void Game::DisplayDecor()
 										m_spriteArray[m_map.GetMap()[z][y][x]].setScale(m_scale);
 
 										BlitSprite(m_spriteArray[m_map.GetMap()[z][y][x]],
-											(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-											(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 											0, *m_window);
 									}
 								}
@@ -167,8 +167,8 @@ void Game::DisplayDecor()
 								if (m_builds.m_vines.GetWorkerIsThere(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerIsThere(),
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
 								}
 							}
@@ -177,8 +177,8 @@ void Game::DisplayDecor()
 								if (m_builds.m_stompingVats.GetWorkerIsThere(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerIsThere(),
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
 								}
 							}
@@ -187,8 +187,8 @@ void Game::DisplayDecor()
 								if (m_builds.m_winePress.GetWorkerIsThere(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_winePress.GetSpriteWorkerIsThere(),
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
 								}
 
@@ -198,8 +198,8 @@ void Game::DisplayDecor()
 								if (m_builds.m_wineStorehouse.GetWorkerIsThere(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerIsThere(),
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
 								}
 							}
@@ -208,8 +208,8 @@ void Game::DisplayDecor()
 								if (m_builds.m_stall->GetWorkerIsThere(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerIsThere(),
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
 								}
 							}
@@ -218,8 +218,8 @@ void Game::DisplayDecor()
 								if (m_builds.m_storehouse.GetWorkerIsThere(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerIsThere(),
-										(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
+										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
 								}
 							}
@@ -251,8 +251,8 @@ void Game::DisplayDecor()
 								}
 
 								BlitSprite(m_spriteArray[m_map.GetMap()[z - SECOND_FLOOR][y][x]],
-									(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-									(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+									(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+									(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 									0, *m_window);
 
 								m_spriteArray[m_map.GetMap()[z - SECOND_FLOOR][y][x]].setColor(sf::Color::White);
@@ -267,15 +267,7 @@ void Game::DisplayDecor()
 						// Display of the main character
 						if (m_mainCharacter->IsMainCharacterPosition(sf::Vector2i(x, y)) == true)
 						{
-							sf::Vector2f tileCoordinates = WorldToScreen(m_mainCharacter->GetMainCharacterPosition());
-							sf::Vector2f cameraIso = WorldToScreen(m_camera.x, m_camera.y);
-
-							m_mainCharacter->SetSpriteScale(m_scale);
-
-							BlitSprite(m_mainCharacter->GetSprite(),
-								(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-								(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 16,
-								0, *m_window);
+							m_mainCharacter->DisplayMainCharacter(sf::Vector2i(x, y), m_camera, *m_screenReso, m_scale, *m_window);
 						}
 
 						// Display of the workers
@@ -364,7 +356,7 @@ void Game::Display()
 	}
 	else if (m_actualGameState == SELLING_WINDOW)
 	{
-		m_sellingWindow->DisplaySellingWindow(*m_window);
+		m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
 		m_previousGameState = SELLING_WINDOW;
 	}
 	else if (m_actualGameState == VILLA_MANAGEMENT)
@@ -385,7 +377,7 @@ void Game::Display()
 	}
 
 	DisplayUIGeneral();
-	m_time->DisplayUITime(*m_window);
+	m_time->DisplayUITime(*m_window, *m_screenReso);
 
 	if (m_isDebuggerModeActive == true)
 	{
@@ -405,7 +397,7 @@ void Game::Display()
 		}
 		else if (m_previousGameState == SELLING_WINDOW)
 		{
-			m_sellingWindow->DisplaySellingWindow(*m_window);
+			m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
 		}
 		else if (m_previousGameState == VILLA_MANAGEMENT)
 		{
@@ -421,7 +413,7 @@ void Game::Display()
 			m_tutorialWindow->DisplayTutorialWindow(*m_window);
 		}
 
-		m_pauseWindow.DisplayPauseWindow(*m_window);
+		m_pauseWindow.DisplayPauseWindow(*m_window, *m_screenReso);
 	}
 
 	m_window->display();

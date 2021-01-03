@@ -303,10 +303,10 @@ void GameInput(struct Game *_game)
 					sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->m_window);
 
 					// We verify that mouse is in the building UI area
-					if (mousePosition.x > SCREEN_WIDTH - _game->m_buildWindow.GetBuildingUI().getGlobalBounds().width
-						&& mousePosition.x < SCREEN_WIDTH
-						&& mousePosition.y > SCREEN_HEIGHT - _game->m_buildWindow.GetBuildingUI().getGlobalBounds().height
-						&& mousePosition.y < SCREEN_HEIGHT)
+					if (mousePosition.x > _game->m_screenReso->x - _game->m_buildWindow.GetBuildingUI().getGlobalBounds().width
+						&& mousePosition.x < _game->m_screenReso->x
+						&& mousePosition.y > _game->m_screenReso->y - _game->m_buildWindow.GetBuildingUI().getGlobalBounds().height
+						&& mousePosition.y < _game->m_screenReso->y)
 					{
 						// We check if the scrolling doesn't leave the area
 						// The max is dynamically calculated in function of the number of building present in the game
@@ -338,7 +338,7 @@ void GameInput(struct Game *_game)
 				{
 					if (_game->m_actualGameState == NORMAL_MODE)
 					{
-						_game->m_buildWindow.InputPickUpCaseClicked(*_game->m_window, false, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
+						_game->m_buildWindow.InputPickUpCaseClicked(*_game->m_window, *_game->m_screenReso, false, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
 
 						// Security to avoid an array exit
 						if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _game->m_buildWindow.GetBuildingCheckboxSelected()))
@@ -355,11 +355,11 @@ void GameInput(struct Game *_game)
 							}
 						}
 
-						_game->m_time->InputTimeManagement(*_game->m_window);
+						_game->m_time->InputTimeManagement(*_game->m_window, *_game->m_screenReso);
 					}
 					else if (_game->m_actualGameState == BUILD_MODE)
 					{
-						_game->m_buildWindow.InputBuildingModeOldScrollUI(_game->m_buildWindow.GetScrollBuildingList(), *_game->m_window);
+						_game->m_buildWindow.InputBuildingModeOldScrollUI(_game->m_buildWindow.GetScrollBuildingList(), *_game->m_window, *_game->m_screenReso);
 					}
 					else if (_game->m_actualGameState == TEST_PATHFINDING_MODE)
 					{
@@ -430,7 +430,7 @@ void GameInput(struct Game *_game)
 					}
 					else if (_game->m_actualGameState == VILLA_MANAGEMENT)
 					{
-						_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, _game->m_time, *_game->m_window);
+						_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, *_game->m_window);
 					}
 				}
 			}
@@ -451,7 +451,7 @@ void GameInput(struct Game *_game)
 			}
 			else if (_game->m_actualGameState == SELLING_WINDOW)
 			{
-				_game->m_sellingWindow->InputSellingWindow(&_game->m_builds.m_stall->m_isOfferAccepted, &_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window);
+				_game->m_sellingWindow->InputSellingWindow(&_game->m_builds.m_stall->m_isOfferAccepted, &_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window, *_game->m_screenReso);
 			}
 		}
 	}

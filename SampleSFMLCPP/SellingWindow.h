@@ -27,12 +27,12 @@ private:
 
 public:
 	// Constructor & Destructor
-	SellingWindow(sf::Font *_font);
+	SellingWindow(sf::Font *_font, const sf::Vector2i& _screenResolution);
 	~SellingWindow();
 
 	// Function that manages the cursor data (quantity selected, minimals, maximals and current price)
-	void UpdateQuantityConvertedToSell(Purchasers *_purchasers, const int &_quantityStocked);
+	void UpdateQuantityConvertedToSell(Purchasers* _purchasers, const int& _quantityStocked, const sf::Vector2i& _screenResolution);
 	void UpdateSellingWindowTexts(Purchasers *_purchasers);
-	void DisplaySellingWindow(sf::RenderWindow &_window);
-	void InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window);
+	void DisplaySellingWindow(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
+	void InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 };

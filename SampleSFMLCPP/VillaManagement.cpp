@@ -30,7 +30,7 @@ VillaManagement::~VillaManagement()
 }
 
 
-void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, TimeManagement *_time, sf::RenderWindow &_window)
+void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::RenderWindow &_window)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 	
@@ -45,8 +45,6 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, TimeMa
 		{
 			std::cout << "Table cliqued\n";
 			*(_state) = BUILD_MODE;
-
-			_time->SetTypeOfAcceleration(GAME_PAUSE);
 		}
 		else if(m_imageBookshelf.getPixel(mousePosition.x / 2, mousePosition.y / 2).a != 0)
 		{

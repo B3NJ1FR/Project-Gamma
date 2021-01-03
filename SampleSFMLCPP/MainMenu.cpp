@@ -5,14 +5,14 @@ MainMenu::MainMenu()
 {
 	// Initialisation of the sprites
 	logo = LoadSprite("Data/Assets/Vindemia Antiquus_Icon.png", 0);
-	background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 0);
+	background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 1);
 	buttonNewGame = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_New_Game.png", 1);
 	buttonContinue = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
 	buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
 	buttonQuit = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
 	buttonValidate = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
 	buttonReturn = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
-	warningMessage = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Message.png", 0);
+	warningMessage = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Message.png", 1);
 
 	font.loadFromFile("Data/Fonts/arial.ttf");
 
@@ -114,12 +114,13 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 				if (event.key.code == sf::Mouse::Left)
 				{
 					sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
+					float widthOffset = (_system->m_screenResolution.x * 400) / 1920.f;
 
 					// Button New Game
-					if (mousePostionAtScreen.x > 400 - (buttonNewGame.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.x < 400 + (buttonNewGame.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.y > 200 - (buttonNewGame.getGlobalBounds().height / 2)
-						&& mousePostionAtScreen.y < 200 + (buttonNewGame.getGlobalBounds().height / 2))
+					if (mousePostionAtScreen.x > widthOffset - (buttonNewGame.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < widthOffset + (buttonNewGame.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > (_system->m_screenResolution.y * 200) / 1080 - (buttonNewGame.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < (_system->m_screenResolution.y * 200) / 1080 + (buttonNewGame.getGlobalBounds().height / 2))
 					{
 						std::cout << "\n\nLaunching a new game...\n\n\n";
 						isNewGameClicked = true;
@@ -127,10 +128,10 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 					}
 
 					// Button Continue
-					if (mousePostionAtScreen.x > 400 - (buttonContinue.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.x < 400 + (buttonContinue.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.y > 400 - (buttonContinue.getGlobalBounds().height / 2)
-						&& mousePostionAtScreen.y < 400 + (buttonContinue.getGlobalBounds().height / 2))
+					if (mousePostionAtScreen.x > widthOffset - (buttonContinue.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < widthOffset + (buttonContinue.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > (_system->m_screenResolution.y * 400) / 1080 - (buttonContinue.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < (_system->m_screenResolution.y * 400) / 1080 + (buttonContinue.getGlobalBounds().height / 2))
 					{
 						std::cout << "\n\nLaunching old game...\n\n\n";
 						isNewGameClicked = false;
@@ -138,10 +139,10 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 					}
 
 					// Button Options	
-					if (mousePostionAtScreen.x > 400 - (buttonOptions.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.x < 400 + (buttonOptions.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.y > 600 - (buttonOptions.getGlobalBounds().height / 2)
-						&& mousePostionAtScreen.y < 600 + (buttonOptions.getGlobalBounds().height / 2))
+					if (mousePostionAtScreen.x > widthOffset - (buttonOptions.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < widthOffset + (buttonOptions.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > (_system->m_screenResolution.y * 600) / 1080 - (buttonOptions.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < (_system->m_screenResolution.y * 600) / 1080 + (buttonOptions.getGlobalBounds().height / 2))
 					{
 						std::cout << "\n\nOptions ...\n\n\n";
 						state = MAIN_MENU_OPTIONS;
@@ -162,10 +163,10 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 					}
 
 					// Button Quit
-					if (mousePostionAtScreen.x > 400 - (buttonQuit.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.x < 400 + (buttonQuit.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.y > 900 - (buttonQuit.getGlobalBounds().height / 2)
-						&& mousePostionAtScreen.y < 900 + (buttonQuit.getGlobalBounds().height / 2))
+					if (mousePostionAtScreen.x > widthOffset - (buttonQuit.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < widthOffset + (buttonQuit.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > (_system->m_screenResolution.y * 900) / 1080 - (buttonQuit.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < (_system->m_screenResolution.y * 900) / 1080 + (buttonQuit.getGlobalBounds().height / 2))
 					{
 						std::cout << "\n\nSee you soon !\n\n\n";
 						this->~MainMenu();
@@ -179,10 +180,11 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 				if (event.key.code == sf::Mouse::Left)
 				{
 					sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
+					float widthOffset = (_system->m_screenResolution.x * 400) / 1920.f;
 
 					// Change resolution displayed
-					if (mousePostionAtScreen.x > 400 - 100
-						&& mousePostionAtScreen.x < 400 + 100
+					if (mousePostionAtScreen.x > widthOffset - 100
+						&& mousePostionAtScreen.x < widthOffset + 100
 						&& mousePostionAtScreen.y > 200 - 30
 						&& mousePostionAtScreen.y < 200 + 30)
 					{
@@ -192,8 +194,8 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 					}
 					
 					// Change fullscreen displayed
-					if (mousePostionAtScreen.x > 400 - 100
-						&& mousePostionAtScreen.x < 400 + 100
+					if (mousePostionAtScreen.x > widthOffset - 100
+						&& mousePostionAtScreen.x < widthOffset + 100
 						&& mousePostionAtScreen.y > 300 - 30
 						&& mousePostionAtScreen.y < 300 + 30)
 					{
@@ -211,20 +213,20 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 
 
 					// Button Validate
-					if (mousePostionAtScreen.x > 400 - (buttonValidate.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.x < 400 + (buttonValidate.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.y > 600 - (buttonValidate.getGlobalBounds().height / 2)
-						&& mousePostionAtScreen.y < 600 + (buttonValidate.getGlobalBounds().height / 2))
+					if (mousePostionAtScreen.x > widthOffset - (buttonValidate.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < widthOffset + (buttonValidate.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > (_system->m_screenResolution.y * 600) / 1080 - (buttonValidate.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < (_system->m_screenResolution.y * 600) / 1080 + (buttonValidate.getGlobalBounds().height / 2))
 					{
 						_system->ChangeWindowResolution(_system->FindWindowResolution((ListOfResolutions)temporaryResolution),
 														(ListOfResolutions)temporaryResolution);
 					}
 
 					// Button Return
-					if (mousePostionAtScreen.x > 400 - (buttonReturn.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.x < 400 + (buttonReturn.getGlobalBounds().width / 2)
-						&& mousePostionAtScreen.y > 900 - (buttonReturn.getGlobalBounds().height / 2)
-						&& mousePostionAtScreen.y < 900 + (buttonReturn.getGlobalBounds().height / 2))
+					if (mousePostionAtScreen.x > widthOffset - (buttonReturn.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.x < widthOffset + (buttonReturn.getGlobalBounds().width / 2)
+						&& mousePostionAtScreen.y > (_system->m_screenResolution.y * 900) / 1080 - (buttonReturn.getGlobalBounds().height / 2)
+						&& mousePostionAtScreen.y < (_system->m_screenResolution.y * 900) / 1080 + (buttonReturn.getGlobalBounds().height / 2))
 					{
 						state = MAIN_MENU_OPERATIONAL;
 					}
@@ -247,24 +249,29 @@ void MainMenu::UpdateMainMenu(enum GeneralState *_generalState)
 }
 
 
-void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
+void MainMenu::DisplayMainMenu(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
 {
 	_window.clear();
 
 	// Blit the background
-	BlitSprite(background, 0, 0, 0, _window);
+	BlitSprite(background, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
 
 
 	// Blit the logo
-	BlitSprite(logo, 1920 - logo.getGlobalBounds().width - 20, 0, 0, _window);
+	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width - 20, 0, 0, _window);
 
-
+	sf::Vector2f newScale = { _screenResolution.y / 1080.f, _screenResolution.y / 1080.f };
+	buttonNewGame.setScale(newScale);
+	buttonContinue.setScale(newScale);
+	buttonOptions.setScale(newScale);
+	buttonQuit.setScale(newScale);
 
 	// Blit the buttons
-	BlitSprite(buttonNewGame, 400, 200, 0, _window);
-	BlitSprite(buttonContinue, 400, 400, 0, _window);
-	BlitSprite(buttonOptions, 400, 600, 0, _window);
-	BlitSprite(buttonQuit, 400, 900, 0, _window);
+	float widthOffset = (_screenResolution.x * 400) / 1920.f;
+	BlitSprite(buttonNewGame, widthOffset, (_screenResolution.y * 200) / 1080.f, 0, _window);
+	BlitSprite(buttonContinue, widthOffset, (_screenResolution.y * 400) / 1080.f, 0, _window);
+	BlitSprite(buttonOptions, widthOffset, (_screenResolution.y * 600) / 1080.f, 0, _window);
+	BlitSprite(buttonQuit, widthOffset, (_screenResolution.y * 900) / 1080.f, 0, _window);
 
 
 	// Blit the version number
@@ -277,7 +284,7 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
 
 	if (this->isNewGameClicked == true)
 	{
-		BlitSprite(warningMessage, 0, 0, 0, _window);
+		BlitSprite(warningMessage, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
 	}
 
 	_window.display();
@@ -285,31 +292,37 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window)
 }
 
 
-void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window)
+void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution)
 {
 	_window.clear();
 
 	// Blit the background
-	BlitSprite(background, 0, 0, 0, _window);
+	BlitSprite(background, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
 
 
 	// Blit the logo
-	BlitSprite(logo, 1920 - logo.getGlobalBounds().width - 20, 0, 0, _window);
+	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width - 20, 0, 0, _window);
+
+	float widthOffset = (_screenResolution.x * 400) / 1920.f;
 
 	if (resolution != nullptr)
 	{
-		BlitString(*resolution, 400, 200, _window);
+		BlitString(*resolution, widthOffset, 200, _window);
 	}
 	
 	if (fullscreen != nullptr)
 	{
-		BlitString(*fullscreen, 400, 300, _window);
+		BlitString(*fullscreen, widthOffset, 300, _window);
 	}
 
+	sf::Vector2f newScale = { _screenResolution.y / 1080.f, _screenResolution.y / 1080.f };
+
+	buttonValidate.setScale(newScale);
+	buttonReturn.setScale(newScale);
 
 	// Blit the buttons
-	BlitSprite(buttonValidate, 400, 600, 0, _window);
-	BlitSprite(buttonReturn, 400, 900, 0, _window);
+	BlitSprite(buttonValidate, widthOffset, (_screenResolution.y * 600) / 1080.f, 0, _window);
+	BlitSprite(buttonReturn, widthOffset, (_screenResolution.y * 900) / 1080.f, 0, _window);
 
 
 	// Blit the version number
@@ -336,16 +349,16 @@ void MainMenu::MainMenuState(System *_system, enum GeneralState *_state)
 	switch (state)
 	{
 	case MAIN_MENU_OPERATIONAL:
-		DisplayMainMenu(_system->m_window);
+		DisplayMainMenu(_system->m_window, _system->m_screenResolution);
 		break;
 	case MAIN_MENU_OPTIONS:
-		DisplayMainMenuOptions(_system->m_window);
+		DisplayMainMenuOptions(_system->m_window, _system->m_screenResolution);
 		break;
 	case MAIN_MENU_EXIT:
-		DisplayMainMenu(_system->m_window);
+		DisplayMainMenu(_system->m_window, _system->m_screenResolution);
 		break;
 	default:
-		DisplayMainMenu(_system->m_window);
+		DisplayMainMenu(_system->m_window, _system->m_screenResolution);
 		break;
 	}
 }

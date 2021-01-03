@@ -71,7 +71,7 @@ bool BuildWindow::IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize, const 
 	}
 }
 
-void BuildWindow::InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale)
+void BuildWindow::InputPickUpCaseClicked(sf::RenderWindow &_window, const sf::Vector2i &_screenResolution, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 	//std::cout << "Mouse Position : " << mousePosition.x << " & " << mousePosition.y << std::endl;
@@ -79,15 +79,15 @@ void BuildWindow::InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuil
 	if (_isBuildingUINeeded)
 	{
 		// If the mouse if out of the building UI, we can try to place a building
-		if (!(mousePosition.x > SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width * 2
-			&& mousePosition.x < SCREEN_WIDTH
-			&& mousePosition.y > SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height
-			&& mousePosition.y < SCREEN_HEIGHT))
+		if (!(mousePosition.x > _screenResolution.x - m_buildingUI.getGlobalBounds().width * 2
+			&& mousePosition.x < _screenResolution.x
+			&& mousePosition.y > _screenResolution.y - m_buildingUI.getGlobalBounds().height
+			&& mousePosition.y < _screenResolution.y))
 		{
 			sf::Vector2f cameraIso = WorldToScreen(_camera.x, _camera.y);
 
-			m_buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (SCREEN_WIDTH / 2)) - cameraIso.x * _cameraScale.x),
-				((mousePosition.y - (SCREEN_HEIGHT / 2)) - cameraIso.y * _cameraScale.y),
+			m_buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (_screenResolution.x / 2)) - cameraIso.x * _cameraScale.x),
+				((mousePosition.y - (_screenResolution.y / 2)) - cameraIso.y * _cameraScale.y),
 				_cameraScale);
 		}
 		else
@@ -98,15 +98,15 @@ void BuildWindow::InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuil
 	else
 	{
 		// If the mouse if out of the building UI, we can try to place a building
-		if (!(mousePosition.x > SCREEN_WIDTH
-			&& mousePosition.x < SCREEN_WIDTH
-			&& mousePosition.y > SCREEN_HEIGHT
-			&& mousePosition.y < SCREEN_HEIGHT))
+		if (!(mousePosition.x > _screenResolution.x
+			&& mousePosition.x < _screenResolution.x
+			&& mousePosition.y > _screenResolution.y
+			&& mousePosition.y < _screenResolution.y))
 		{
 			sf::Vector2f cameraIso = WorldToScreen(_camera.x, _camera.y);
 
-			m_buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (SCREEN_WIDTH / 2)) - cameraIso.x * _cameraScale.x),
-				((mousePosition.y - (SCREEN_HEIGHT / 2)) - cameraIso.y * _cameraScale.y),
+			m_buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (_screenResolution.x / 2)) - cameraIso.x * _cameraScale.x),
+				((mousePosition.y - (_screenResolution.y / 2)) - cameraIso.y * _cameraScale.y),
 				_cameraScale);
 		}
 		else
@@ -118,22 +118,22 @@ void BuildWindow::InputPickUpCaseClicked(sf::RenderWindow &_window, bool _isBuil
 
 
 // Building Mode : Inputs management to select the building wanted in the "old scroll" UI
-void BuildWindow::InputBuildingModeOldScrollUI(const float &_scrollDelta, const sf::RenderWindow &_window)
+void BuildWindow::InputBuildingModeOldScrollUI(const float &_scrollDelta, const sf::RenderWindow &_window, const sf::Vector2i &_screenResolution)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
 	// Management of the horizontal click to get the number of the case selected, if the player has selected a case and not outside
-	if ((mousePosition.x - (SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width + 143)) % 109 > 0
-		&& (mousePosition.x - (SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width + 143)) % 109 < 64)
+	if ((mousePosition.x - (_screenResolution.x - (int)m_buildingUI.getGlobalBounds().width + 143)) % 109 > 0
+		&& (mousePosition.x - (_screenResolution.x - (int)m_buildingUI.getGlobalBounds().width + 143)) % 109 < 64)
 	{
 		// Only 0 or 1 can be get because we just display two icons
 
 		// Management of the vertical click to get the number of the case selected, if the player has selected a case and not outside
-		if ((mousePosition.y - (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height + (int)_scrollDelta)) % 130 > 0
-			&& (mousePosition.y - (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height + (int)_scrollDelta)) % 130 < 64)
+		if ((mousePosition.y - (_screenResolution.y - (int)m_buildingUI.getGlobalBounds().height + (int)_scrollDelta)) % 130 > 0
+			&& (mousePosition.y - (_screenResolution.y - (int)m_buildingUI.getGlobalBounds().height + (int)_scrollDelta)) % 130 < 64)
 		{
-			bool numberCaseWidth = (mousePosition.x - (SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width + 143)) / 109;
-			int numberCaseHeight = (mousePosition.y - (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height + (int)_scrollDelta)) / 130;
+			bool numberCaseWidth = (mousePosition.x - (_screenResolution.x - (int)m_buildingUI.getGlobalBounds().width + 143)) / 109;
+			int numberCaseHeight = (mousePosition.y - (_screenResolution.y - (int)m_buildingUI.getGlobalBounds().height + (int)_scrollDelta)) / 130;
 
 			m_IDChosenBuilding = numberCaseWidth + (numberCaseHeight * 2);
 		}
@@ -289,7 +289,7 @@ void BuildWindow::RemoveBuildingOnMap(struct Game *_game, enum Floors _floorFocu
 void BuildWindow::InputBuildWindow(struct Game *_game)
 {
 	// Verification
-	InputPickUpCaseClicked(*_game->m_window, true, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
+	InputPickUpCaseClicked(*_game->m_window, *_game->m_screenReso, true, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
 
 	// Security to avoid an array exit
 	if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), m_buildingCaseSelected))
@@ -556,8 +556,8 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 
 	//std::cout << "Mouse Position : " << mousePosition.x << " & " << mousePosition.y << std::endl;
 
-	m_buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (SCREEN_WIDTH / 2)) - cameraIso.x * _game->m_scale.x),
-								((mousePosition.y - (SCREEN_HEIGHT / 2)) - cameraIso.y * _game->m_scale.y),
+	m_buildingCaseSelected = ScreenToTileMouse(((mousePosition.x - (_game->m_screenReso->x / 2)) - cameraIso.x * _game->m_scale.x),
+								((mousePosition.y - (_game->m_screenReso->y / 2)) - cameraIso.y * _game->m_scale.y),
 								_game->m_scale);
 
 	//std::cout << "Case : " << _game->buildingCaseSelected.x << " & " << _game->buildingCaseSelected.y << std::endl << std::endl;
@@ -662,65 +662,65 @@ void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 void BuildWindow::DisplayBuildWindow(struct Game *_game)
 {
 	// Display of the building selection UI
-	BlitSprite(m_buildingUI, SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width, SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
+	BlitSprite(m_buildingUI, _game->m_screenReso->x - (int)m_buildingUI.getGlobalBounds().width, _game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
 	
 	// Display of the help scroll that indicates every building info
 	if (m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 	{
-		BlitSprite(m_buildingUI, SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2), SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
+		BlitSprite(m_buildingUI, _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2), _game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
 
-		BlitSprite(_game->m_builds.m_buildings[m_IDChosenBuilding].GetIcon(), (SCREEN_WIDTH - (int)m_buildingUI.getGlobalBounds().width * 2) + 135, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 135, 0, *_game->m_window);
+		BlitSprite(_game->m_builds.m_buildings[m_IDChosenBuilding].GetIcon(), (_game->m_screenReso->x - (int)m_buildingUI.getGlobalBounds().width * 2) + 135, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 135, 0, *_game->m_window);
 
 		// Display of the info paper about the building selected
 		if (_game->m_builds.m_buildingsNameTexts != nullptr)
 		{
 			// Display the name
-			BlitString(_game->m_builds.m_buildingsNameTexts[m_IDChosenBuilding], (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 70, *_game->m_window);
+			BlitString(_game->m_builds.m_buildingsNameTexts[m_IDChosenBuilding], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 70, *_game->m_window);
 			
-			BlitSprite(m_separationLine, (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 120, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 120, 0, *_game->m_window);
 
 
 			// Display the size
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 240, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 270, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 134, *_game->m_window);
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 290, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 240, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 270, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 134, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 290, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
 			
 			// Display the entering ressource logo
-			BlitSprite(m_enteringArrow, SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 181, 0, *_game->m_window);
+			BlitSprite(m_enteringArrow, _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 181, 0, *_game->m_window);
 			
 			if (_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded() > 0)
 			{
 				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
+					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
 				}
 			}
 			
 			// Display the exiting ressource logo
-			BlitSprite(m_exitingArrow, SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 216, 0, *_game->m_window);
+			BlitSprite(m_exitingArrow, _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 216, 0, *_game->m_window);
 			
 			if (_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced() > 0)
 			{
 				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced(i + 1)].GetSprite(), SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
+					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced(i + 1)].GetSprite(), _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
 				}
 			}
 
-			BlitSprite(m_separationLine, (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 250, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 250, 0, *_game->m_window);
 
 
 			// Display the description
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + 120, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 260, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 120, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 260, *_game->m_window);
 
-			BlitSprite(m_separationLine, (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 385, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 385, 0, *_game->m_window);
 
 
 			// Display the money cost of the building
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 30, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 30, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
 			
 			_game->m_money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
-			BlitSprite(_game->m_money.GetSprite(), (SCREEN_WIDTH - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 30, (SCREEN_HEIGHT - (int)m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
+			BlitSprite(_game->m_money.GetSprite(), (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 30, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
 			_game->m_money.SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}
@@ -733,17 +733,17 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	// Display of the buildings list
 	for (int i = 0; i < _game->m_builds.GetNumberOfBuildings(); i++)
 	{
-		if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
-			&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height - 40)
+		if ((_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
+			&& (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= _game->m_screenReso->y - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height - 40)
 		{
-			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 
 			if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[i].GetConstructionCost())
 			{
 				sf::Color color = { 255, 255, 255, 150 };
 				m_blackFilter.setColor(color);
 
-				BlitSprite(m_blackFilter, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+				BlitSprite(m_blackFilter, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 			}
 
 			//std::cout << "Stall : " << _game->stall->GetStatus() << std::endl;
@@ -754,31 +754,31 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 				sf::Color color = { 255, 255, 255, 150 };
 				m_blackFilter.setColor(color);
 
-				BlitSprite(m_blackFilter, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+				BlitSprite(m_blackFilter, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 			}
 
 			if (_game->m_builds.m_buildingsNameTexts != nullptr)
 			{
-				BlitString(_game->m_builds.m_buildingsNameTexts[i], (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList + 70, *_game->m_window);
+				BlitString(_game->m_builds.m_buildingsNameTexts[i], (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList + 70, *_game->m_window);
 			}
 		}
 
 	}
 
 	// Display of the destroy button
-	if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
-		&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - m_buildingUIdestroyBuildings.getGlobalBounds().height - 40)
+	if ((_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList >= (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
+		&& (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList <= _game->m_screenReso->y - m_buildingUIdestroyBuildings.getGlobalBounds().height - 40)
 	{
-		BlitSprite(m_buildingUIdestroyBuildings, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (_game->m_builds.GetNumberOfBuildings() % 2) * 109, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList, 0, *_game->m_window);
+		BlitSprite(m_buildingUIdestroyBuildings, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (_game->m_builds.GetNumberOfBuildings() % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList, 0, *_game->m_window);
 	}
 
 	if (m_IDChosenBuilding <= _game->m_builds.GetNumberOfBuildings())
 	{
-		if ((SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList >= (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height + 40)
-			&& (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList <= SCREEN_HEIGHT - m_contour.getGlobalBounds().height - 40)
+		if ((_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList >= (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
+			&& (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList <= _game->m_screenReso->y - m_contour.getGlobalBounds().height - 40)
 		{
 			// Display of the contour when a building is selected to be built
-			BlitSprite(m_contour, (SCREEN_WIDTH - m_buildingUI.getGlobalBounds().width) + 143 + (m_IDChosenBuilding % 2) * 109 - 4, (SCREEN_HEIGHT - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) - 4 + m_scrollBuildingList, 0, *_game->m_window);
+			BlitSprite(m_contour, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (m_IDChosenBuilding % 2) * 109 - 4, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) - 4 + m_scrollBuildingList, 0, *_game->m_window);
 		}
 	}
 
@@ -875,18 +875,18 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 	// Display the "Out of territory" and "Place already occupied" messages
 	if (m_isBuildingCaseOccupied == true
-		&& !(mousePosition.x > SCREEN_WIDTH - (m_buildingUI.getGlobalBounds().width * 2)
-			&& mousePosition.x < SCREEN_WIDTH
-			&& mousePosition.y > SCREEN_HEIGHT - (m_buildingUI.getGlobalBounds().height * 2)
-			&& mousePosition.y < SCREEN_HEIGHT))
+		&& !(mousePosition.x > _game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2)
+			&& mousePosition.x < _game->m_screenReso->x
+			&& mousePosition.y > _game->m_screenReso->y - (m_buildingUI.getGlobalBounds().height * 2)
+			&& mousePosition.y < _game->m_screenReso->y))
 	{
 		if (!_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), m_buildingCaseSelected))
 		{
-			BlitString(m_textBuildingCaseOccupied[1], 500, SCREEN_HEIGHT - 100, *_game->m_window);
+			BlitString(m_textBuildingCaseOccupied[1], 500, _game->m_screenReso->y - 100, *_game->m_window);
 		}
 		else if (m_textBuildingCaseOccupied != nullptr)
 		{
-			BlitString(m_textBuildingCaseOccupied[0], 500, SCREEN_HEIGHT - 100, *_game->m_window);
+			BlitString(m_textBuildingCaseOccupied[0], 500, _game->m_screenReso->y - 100, *_game->m_window);
 		}
 	}
 }

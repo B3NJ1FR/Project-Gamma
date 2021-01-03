@@ -7,6 +7,7 @@
 MainCharacter::MainCharacter()
 {
 	m_sprite = LoadSprite("Data/Assets/Sprites/Entities/Main_Character.png", 5);
+	m_spriteCharaSelected = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
 
 	// A CONFIG / SET TEMPORAIRE
 	m_mapPosition = sf::Vector2f(10, 10);
@@ -102,7 +103,28 @@ void MainCharacter::SetMainCharacterStatus(const enum WorkerStatus &_newStatus, 
 }
 
 
+void MainCharacter::DisplayMainCharacter(const sf::Vector2i& _actualPosition, const sf::Vector3f& _cameraPosition, const sf::Vector2i& _screenSize, const sf::Vector2f& _gameScale, sf::RenderWindow& _window)
+{
+	sf::Vector2f tileCoordinates = WorldToScreen(m_mapPosition);
+	sf::Vector2f cameraIso = WorldToScreen(_cameraPosition.x, _cameraPosition.y);
 
+	m_sprite.setScale(_gameScale);
+
+	// Character sprite
+	BlitSprite(m_sprite,
+		(_screenSize.x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
+		(_screenSize.y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 16,
+		0, _window);
+
+	if (m_isMainCharacterSelected)
+	{
+		// Selected icon sprite
+		BlitSprite(m_spriteCharaSelected,
+			(_screenSize.x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
+			(_screenSize.y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 90,
+			0, _window);
+	}
+}
 
 //void MainCharacter::UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds, BuildingsListPlanned* _buildingsListPlanned, BuildWindow* _buildWindow, Ressources* _ressources)
 //{
@@ -1182,6 +1204,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 		{
 			if (_game->m_actualGameState != VILLA_MANAGEMENT)
 			{
+				_game->m_time->SetTypeOfAcceleration(GAME_PAUSE);
 				_game->m_actualGameState = VILLA_MANAGEMENT;
 			}
 			else

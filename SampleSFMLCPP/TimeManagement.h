@@ -62,10 +62,12 @@ private:
 	enum TypeOfTimeAcceleration m_typeOfAcceleration;
 
 	sf::Sprite m_timesSprite[4];
+	sf::Sprite m_sundial;
+	sf::Sprite m_sundialArrowIndicator;
 
 public:
 	// Constructor & Destructor
-	TimeManagement(sf::Font *_font);
+	TimeManagement(sf::Font *_font, const sf::Vector2i& _screenResolution);
 	~TimeManagement();
 
 	// Setters
@@ -84,9 +86,9 @@ public:
 	void UpdateFrameTime();
 	void UpdateGeneralTime();
 
-	void InputTimeManagement(sf::RenderWindow &_window);
+	void InputTimeManagement(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 	void UpdateMonthToDisplay();
-	void DisplayUITime(sf::RenderWindow &_window);
+	void DisplayUITime(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 
 	void SavingTimeFromFile(std::ofstream *_file);
 	void LoadingTimeFromFile(std::ifstream *_file);

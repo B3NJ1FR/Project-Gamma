@@ -16,7 +16,7 @@ PauseWindow::~PauseWindow()
 
 }
 
-void PauseWindow::DisplayPauseWindow(sf::RenderWindow &_window)
+void PauseWindow::DisplayPauseWindow(sf::RenderWindow &_window, const sf::Vector2i &_screenResolution)
 {
 	sf::Color color = { 255, 255, 255, 175 };
 	m_blackBackground.setColor(color);
@@ -26,11 +26,11 @@ void PauseWindow::DisplayPauseWindow(sf::RenderWindow &_window)
 	m_blackBackground.setColor(newColor);
 
 
-	BlitSprite(m_resumeButton, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 6, 0, _window);
-	BlitSprite(m_loadButton, SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 6) * 2, 0, _window);
-	BlitSprite(m_saveButton, SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 6) * 3, 0, _window);
-	BlitSprite(m_saveNQuitButton, SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 6) * 4, 0, _window);
-	BlitSprite(m_quitButton, SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 6) * 5, 0, _window);
+	BlitSprite(m_resumeButton, _screenResolution.x / 2, _screenResolution.y / 6, 0, _window);
+	BlitSprite(m_loadButton, _screenResolution.x / 2, (_screenResolution.y / 6) * 2, 0, _window);
+	BlitSprite(m_saveButton, _screenResolution.x / 2, (_screenResolution.y / 6) * 3, 0, _window);
+	BlitSprite(m_saveNQuitButton, _screenResolution.x / 2, (_screenResolution.y / 6) * 4, 0, _window);
+	BlitSprite(m_quitButton, _screenResolution.x / 2, (_screenResolution.y / 6) * 5, 0, _window);
 
 }
 
@@ -85,10 +85,10 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 				sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(*_game->m_window);
 
 				// Button Resume
-				if (mousePostionAtScreen.x > SCREEN_WIDTH / 2 - (m_resumeButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < SCREEN_WIDTH / 2 + (m_resumeButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y > SCREEN_HEIGHT / 6 - (m_resumeButton.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < SCREEN_HEIGHT / 6 + (m_resumeButton.getGlobalBounds().height / 2))
+				if (mousePostionAtScreen.x > _game->m_screenReso->x / 2 - (m_resumeButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < _game->m_screenReso->x / 2 + (m_resumeButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y > _game->m_screenReso->y / 6 - (m_resumeButton.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < _game->m_screenReso->y / 6 + (m_resumeButton.getGlobalBounds().height / 2))
 				{
 					if (_game->m_previousGameState == TUTORIAL_MODE)
 					{
@@ -117,28 +117,28 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 				}
 
 				// Button Load
-				if (mousePostionAtScreen.x > SCREEN_WIDTH / 2 - (m_saveButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < SCREEN_WIDTH / 2 + (m_saveButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y >(SCREEN_HEIGHT / 6) * 2 - (m_loadButton.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < (SCREEN_HEIGHT / 6) * 2 + (m_loadButton.getGlobalBounds().height / 2))
+				if (mousePostionAtScreen.x > _game->m_screenReso->x / 2 - (m_saveButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < _game->m_screenReso->x / 2 + (m_saveButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y >(_game->m_screenReso->y / 6) * 2 - (m_loadButton.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < (_game->m_screenReso->y / 6) * 2 + (m_loadButton.getGlobalBounds().height / 2))
 				{
 					_load->LoadTheGame(_game);
 				}
 
 				// Button Save
-				if (mousePostionAtScreen.x > SCREEN_WIDTH / 2 - (m_saveButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < SCREEN_WIDTH / 2 + (m_saveButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y >(SCREEN_HEIGHT / 6) * 3 - (m_saveButton.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < (SCREEN_HEIGHT / 6) * 3 + (m_saveButton.getGlobalBounds().height / 2))
+				if (mousePostionAtScreen.x > _game->m_screenReso->x / 2 - (m_saveButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < _game->m_screenReso->x / 2 + (m_saveButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y >(_game->m_screenReso->y / 6) * 3 - (m_saveButton.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < (_game->m_screenReso->y / 6) * 3 + (m_saveButton.getGlobalBounds().height / 2))
 				{
 					_save->SaveTheGame(_game);
 				}
 
 				// Button Save & Quit
-				if (mousePostionAtScreen.x > SCREEN_WIDTH / 2 - (m_saveNQuitButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < SCREEN_WIDTH / 2 + (m_saveNQuitButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y >(SCREEN_HEIGHT / 6) * 4 - (m_saveNQuitButton.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < (SCREEN_HEIGHT / 6) * 4 + (m_saveNQuitButton.getGlobalBounds().height / 2))
+				if (mousePostionAtScreen.x > _game->m_screenReso->x / 2 - (m_saveNQuitButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < _game->m_screenReso->x / 2 + (m_saveNQuitButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y >(_game->m_screenReso->y / 6) * 4 - (m_saveNQuitButton.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < (_game->m_screenReso->y / 6) * 4 + (m_saveNQuitButton.getGlobalBounds().height / 2))
 				{
 					_save->SaveTheGame(_game);
 					_game->m_window->close();
@@ -146,10 +146,10 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 				}
 
 				// Button Quit
-				if (mousePostionAtScreen.x > SCREEN_WIDTH / 2 - (m_saveNQuitButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.x < SCREEN_WIDTH / 2 + (m_saveNQuitButton.getGlobalBounds().width / 2)
-					&& mousePostionAtScreen.y >(SCREEN_HEIGHT / 6) * 5 - (m_saveNQuitButton.getGlobalBounds().height / 2)
-					&& mousePostionAtScreen.y < (SCREEN_HEIGHT / 6) * 5 + (m_saveNQuitButton.getGlobalBounds().height / 2))
+				if (mousePostionAtScreen.x > _game->m_screenReso->x / 2 - (m_saveNQuitButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.x < _game->m_screenReso->x / 2 + (m_saveNQuitButton.getGlobalBounds().width / 2)
+					&& mousePostionAtScreen.y >(_game->m_screenReso->y / 6) * 5 - (m_saveNQuitButton.getGlobalBounds().height / 2)
+					&& mousePostionAtScreen.y < (_game->m_screenReso->y / 6) * 5 + (m_saveNQuitButton.getGlobalBounds().height / 2))
 				{
 					_game->m_window->close();
 					exit(EXIT_SUCCESS);

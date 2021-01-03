@@ -77,8 +77,16 @@ void TutorialWindow::InitTextOfTutorialFromFile()
 			{
 				if (counter != -1)
 				{
-					finalString[counter] += temporaryString;
-					finalString[counter] += " ";
+					if (temporaryString == "[SAUT_LIGNE]")
+					{
+						finalString[counter] += "\n";
+					}
+					else
+					{
+						finalString[counter] += temporaryString;
+						finalString[counter] += " ";
+					}
+
 				}
 			}
 		}

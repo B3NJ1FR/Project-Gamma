@@ -38,15 +38,14 @@ Data::~Data()
 void Data::GameState()
 {
 	// Display the loading screen during the game loading
-	m_loadingScreen->DisplayLoadingScreen(m_system->m_window);
+	m_loadingScreen->DisplayLoadingScreen(m_system->m_window, m_system->m_screenResolution);
 
 	// Initialisation
-	m_game = new Game();
+	m_game = new Game(m_system->m_screenResolution);
 
 	// Shortcut of the window address put into the game struct
 	std::cout << "Memory Adress before: " << &m_system->m_window;
 	m_game->SetWindowMemoryAddress(&m_system->m_window);
-	//m_game->m_window = &m_system->window;
 	
 
 	if (m_state == MAIN_STATE_LOAD_GAME)

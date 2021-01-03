@@ -144,17 +144,11 @@
     <ClCompile Include="Storehouse.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
-    <ClCompile Include="SellingWindow.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SavingGame.cpp">
       <Filter>Fichiers sources\Game\Internal Game\Save and Load</Filter>
     </ClCompile>
     <ClCompile Include="LoadingGame.cpp">
       <Filter>Fichiers sources\Game\Internal Game\Save and Load</Filter>
-    </ClCompile>
-    <ClCompile Include="PauseWindow.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="BuildWindow.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
@@ -168,12 +162,6 @@
     <ClCompile Include="VillaManagement.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="BuildingsListPlanned.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="TutorialWindow.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Data.cpp">
       <Filter>Fichiers d%27en-tête\Game</Filter>
     </ClCompile>
@@ -183,11 +171,23 @@
     <ClCompile Include="GameDefinitions.cpp">
       <Filter>Fichiers sources\Game</Filter>
     </ClCompile>
-    <ClCompile Include="BuildingManagement.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildingManagement.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildingsListPlanned.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseWindow.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="SellingWindow.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TutorialWindow.cpp">
+      <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,17 +254,11 @@
     <ClInclude Include="Storehouse.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
-    <ClInclude Include="SellingWindow.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="LoadingGame.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game\Save and Load</Filter>
     </ClInclude>
     <ClInclude Include="SavingGame.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game\Save and Load</Filter>
-    </ClInclude>
-    <ClInclude Include="PauseWindow.h">
-      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="BuildWindow.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
@@ -278,23 +272,29 @@
     <ClInclude Include="VillaManagement.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="BuildingsListPlanned.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="TutorialWindow.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Data.h">
       <Filter>Fichiers d%27en-tête\Game</Filter>
     </ClInclude>
     <ClInclude Include="System.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="BuildingManagement.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingManagement.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingsListPlanned.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseWindow.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SellingWindow.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="TutorialWindow.h">
+      <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

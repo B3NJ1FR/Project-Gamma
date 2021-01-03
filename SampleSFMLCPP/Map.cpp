@@ -151,11 +151,43 @@ void Map::InitMapFromFile()
 							}
 						}
 
-						if (x == 5 && y == 8)
+						if (x == 10 && y == 8)
 						{
-							m_map[z][y][x] = 33;
+							// Sol
+							m_map[z - 3][y][x] = 34;
+
+							// Sprite villa
+							m_map[z][y][x] = 35;
+
+							// Collision
 							m_map[z - 2][y][x] = COLLISION;
+							m_map[z - 2][y][x - 1] = COLLISION;
+							m_map[z - 2][y][x - 2] = COLLISION;
+							m_map[z - 2][y][x - 3] = COLLISION;
+							m_map[z - 2][y][x - 4] = COLLISION;
+							m_map[z - 2][y][x - 5] = COLLISION;
+
+							m_map[z - 2][y - 1][x] = COLLISION;
+							m_map[z - 2][y - 1][x - 1] = COLLISION;
+							m_map[z - 2][y - 1][x - 2] = COLLISION;
+							m_map[z - 2][y - 1][x - 3] = COLLISION;
+							m_map[z - 2][y - 1][x - 4] = COLLISION;
+							m_map[z - 2][y - 1][x - 5] = COLLISION;
+
+							// Building ID
 							m_map[z - 1][y][x] = BUILDING_VILLA;
+							m_map[z - 1][y][x - 1] = BUILDING_VILLA;
+							m_map[z - 1][y][x - 2] = BUILDING_VILLA;
+							m_map[z - 1][y][x - 3] = BUILDING_VILLA;
+							m_map[z - 1][y][x - 4] = BUILDING_VILLA;
+							m_map[z - 1][y][x - 5] = BUILDING_VILLA;
+
+							m_map[z - 1][y - 1][x] = BUILDING_VILLA;
+							m_map[z - 1][y - 1][x - 1] = BUILDING_VILLA;
+							m_map[z - 1][y - 1][x - 2] = BUILDING_VILLA;
+							m_map[z - 1][y - 1][x - 3] = BUILDING_VILLA;
+							m_map[z - 1][y - 1][x - 4] = BUILDING_VILLA;
+							m_map[z - 1][y - 1][x - 5] = BUILDING_VILLA;
 						}
 
 					}

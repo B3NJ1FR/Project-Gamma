@@ -27,6 +27,7 @@ struct System
 	bool m_isFullscreen;
 	sf::RenderWindow m_window;
 
+	// Constructor
 	System();
 
 	void RandomTime();

@@ -2,7 +2,7 @@
 
 LoadingScreen::LoadingScreen()
 {
-	m_loadingPicture = LoadSprite("Data/Assets/Sprites/Menu/LoadingScreen/loadingBackground.png", 0);
+	m_loadingPicture = LoadSprite("Data/Assets/Sprites/Menu/LoadingScreen/loadingBackground.png", 1);
 }
 
 LoadingScreen::~LoadingScreen()
@@ -11,12 +11,12 @@ LoadingScreen::~LoadingScreen()
 }
 
 
-void LoadingScreen::DisplayLoadingScreen(sf::RenderWindow &_window)
+void LoadingScreen::DisplayLoadingScreen(sf::RenderWindow &_window, const sf::Vector2i &_screenResolution)
 {
 	_window.clear();
 
 	// Blit the loading picture
-	BlitSprite(m_loadingPicture, 0, 0, 0, _window);
+	BlitSprite(m_loadingPicture, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
 
 	_window.display();
 }

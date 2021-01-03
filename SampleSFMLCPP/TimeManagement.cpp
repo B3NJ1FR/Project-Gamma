@@ -1,7 +1,7 @@
 #include "TimeManagement.h"
 
 
-TimeManagement::TimeManagement(sf::Font *_font)
+TimeManagement::TimeManagement(sf::Font *_font, const sf::Vector2i& _screenResolution)
 {
 	m_gameClock.restart();
 
@@ -16,14 +16,17 @@ TimeManagement::TimeManagement(sf::Font *_font)
 
 	sf::Color colorActivated = { 236, 150, 55, 255 };
 
-	LoadTextString(&m_monthText, "IANUARIUS", _font, 40, colorActivated, sf::Vector2f(1920 - 300, 20));
+	LoadTextString(&m_monthText, "IANUARIUS", _font, 35, colorActivated, sf::Vector2f(_screenResolution.x - 280, 25));
 
-	LoadTextString(&yearText, "", _font, 40, colorActivated, sf::Vector2f(1920 - 370, 20));
+	LoadTextString(&yearText, "", _font, 35, colorActivated, sf::Vector2f(_screenResolution.x - 350, 25));
 
 	m_timesSprite[GAME_PAUSE] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/pause.png", 1);
 	m_timesSprite[GAME_NORMAL_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/one.png", 1);
 	m_timesSprite[GAME_DOUBLE_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/two.png", 1);
 	m_timesSprite[GAME_TRIPLE_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/three.png", 1);
+
+	m_sundial = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/sundial.png", 1);
+	m_sundialArrowIndicator = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/arrow.png", 2);
 
 	SetTypeOfAcceleration(GAME_NORMAL_SPEED);
 }
@@ -41,7 +44,7 @@ void TimeManagement::UpdateFrameTime()
 
 void TimeManagement::UpdateGeneralTime()
 {
-	if (m_accelerator)
+	if (m_accelerator == 1)
 	{
 		m_timer += m_frameTime;
 	}
@@ -136,37 +139,37 @@ void TimeManagement::SetTypeOfAcceleration(const enum TypeOfTimeAcceleration &_t
 
 
 
-void TimeManagement::InputTimeManagement(sf::RenderWindow &_window)
+void TimeManagement::InputTimeManagement(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
 {
 	sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
 
 	// Button New Game
-	if (mousePostionAtScreen.x > 1920 - 595 - (m_timesSprite[GAME_PAUSE].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < 1920 - 595 + (m_timesSprite[GAME_PAUSE].getGlobalBounds().width / 2)
+	if (mousePostionAtScreen.x > _screenResolution.x - 695 - (m_timesSprite[GAME_PAUSE].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 695 + (m_timesSprite[GAME_PAUSE].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_PAUSE].getGlobalBounds().height / 2)
 		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_PAUSE].getGlobalBounds().height / 2))
 	{
 		SetTypeOfAcceleration(GAME_PAUSE);
 	}
 	// Button Continue
-	else if (mousePostionAtScreen.x > 1920 - 545 - (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < 1920 - 545 + (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
+	else if (mousePostionAtScreen.x > _screenResolution.x - 645 - (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 645 + (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().height / 2)
 		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().height / 2))
 	{
 		SetTypeOfAcceleration(GAME_NORMAL_SPEED);
 	}
 	// Button Options	
-	else if (mousePostionAtScreen.x > 1920 - 495 - (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < 1920 - 495 + (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
+	else if (mousePostionAtScreen.x > _screenResolution.x - 595 - (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 595 + (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().height / 2)
 		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().height / 2))
 	{
 		SetTypeOfAcceleration(GAME_DOUBLE_SPEED);
 	}
 	// Button Quit
-	else if (mousePostionAtScreen.x > 1920 - 435 - (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < 1920 - 435 + (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
+	else if (mousePostionAtScreen.x > _screenResolution.x - 535 - (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 535 + (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().height / 2)
 		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().height / 2))
 	{
@@ -231,15 +234,18 @@ void TimeManagement::UpdateMonthToDisplay()
 	}
 }
 
-void TimeManagement::DisplayUITime(sf::RenderWindow &_window)
+void TimeManagement::DisplayUITime(sf::RenderWindow &_window, const sf::Vector2i &_screenResolution)
 {
 	BlitString(m_monthText, _window);
 	BlitString(yearText, _window);
 		
-	BlitSprite(m_timesSprite[GAME_PAUSE], 1920 - 595, 45, 0, _window);
-	BlitSprite(m_timesSprite[GAME_NORMAL_SPEED], 1920 - 545, 45, 0, _window);
-	BlitSprite(m_timesSprite[GAME_DOUBLE_SPEED], 1920 - 495, 45, 0, _window);
-	BlitSprite(m_timesSprite[GAME_TRIPLE_SPEED], 1920 - 435, 45, 0, _window);
+	BlitSprite(m_timesSprite[GAME_PAUSE], _screenResolution.x - 695, 45, 0, _window);
+	BlitSprite(m_timesSprite[GAME_NORMAL_SPEED], _screenResolution.x - 645, 45, 0, _window);
+	BlitSprite(m_timesSprite[GAME_DOUBLE_SPEED], _screenResolution.x - 595, 45, 0, _window);
+	BlitSprite(m_timesSprite[GAME_TRIPLE_SPEED], _screenResolution.x - 535, 45, 0, _window);
+
+	BlitSprite(m_sundial, _screenResolution.x - 435, 45, 0, _window);
+	BlitSprite(m_sundialArrowIndicator, _screenResolution.x - 435, 45, (int)(m_timer.asSeconds() * 4.5f) % (int)(TEMPORARY_TIME * 4.5f) - 45.0f, _window);
 }
 
 

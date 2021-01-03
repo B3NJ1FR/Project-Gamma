@@ -44,6 +44,7 @@ struct Game
 public:
 	// Shortcut of the window address
 	sf::RenderWindow *m_window = nullptr;
+	sf::Vector2i *m_screenReso = nullptr;
 
 	enum CurrentGameState m_actualGameState;
 	enum CurrentGameState m_previousGameState;
@@ -112,7 +113,7 @@ public:
 
 public :
 	// Constructor & Destructor
-	Game();
+	Game(const sf::Vector2i& _screenResolution = sf::Vector2i(1920, 1080));
 	~Game();
 
 	// Setters

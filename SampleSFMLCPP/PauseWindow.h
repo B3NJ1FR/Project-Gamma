@@ -24,5 +24,5 @@ public:
 
 	// Methods
 	void InputPauseWindow(struct Game *_game, SavingGame *_save, LoadingGame *_load);
-	void DisplayPauseWindow(sf::RenderWindow &_window);
+	void DisplayPauseWindow(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 };

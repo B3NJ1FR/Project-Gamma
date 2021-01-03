@@ -12,5 +12,5 @@ public :
 	LoadingScreen();
 	~LoadingScreen();
 
-	void DisplayLoadingScreen(sf::RenderWindow &_window);
+	void DisplayLoadingScreen(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 };

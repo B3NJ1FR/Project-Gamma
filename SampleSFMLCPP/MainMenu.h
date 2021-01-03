@@ -43,8 +43,8 @@ public:
 	// Methods
 	void InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_generalState, System *_system);
 	void UpdateMainMenu(enum GeneralState *_generalState);
-	void DisplayMainMenu(sf::RenderWindow &_window);
-	void DisplayMainMenuOptions(sf::RenderWindow &_window);
+	void DisplayMainMenu(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
+	void DisplayMainMenuOptions(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 
 	void MainMenuState(System* _system, enum GeneralState* _state);
 };
