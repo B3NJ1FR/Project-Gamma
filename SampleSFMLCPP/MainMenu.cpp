@@ -55,7 +55,7 @@ MainMenu::MainMenu()
 	fullscreen = nullptr;
 	temporaryResolution = -1;
 
-	LoadTextString(versionNumber, versionString, &this->font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
+	LoadTextString(versionNumber, versionString, &font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
 
 	isNewGameClicked = false;
 	isLoadGameClicked = false;
@@ -63,6 +63,7 @@ MainMenu::MainMenu()
 
 MainMenu::~MainMenu()
 {
+	std::cout << "Destroy MainMenu\n\n\n";
 	// Deletion of the sprites
 	delete (background.getTexture());
 	delete (buttonNewGame.getTexture());
@@ -71,12 +72,22 @@ MainMenu::~MainMenu()
 	delete (buttonQuit.getTexture());
 	delete (warningMessage.getTexture());
 
-	delete versionNumber;
-	versionNumber = nullptr;
-	delete resolution;
-	resolution = nullptr;
-	delete fullscreen;
-	resolution = nullptr;
+	if (versionNumber != nullptr)
+	{
+		delete versionNumber;
+		versionNumber = nullptr;
+	}
+	if (resolution != nullptr)
+	{
+		delete resolution;
+		resolution = nullptr;
+	}
+
+	if (fullscreen != nullptr)
+	{
+		delete fullscreen;
+		fullscreen = nullptr;
+	}
 }
 
 
@@ -102,8 +113,6 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 			if (event.key.code == sf::Keyboard::Space && isNewGameClicked == true)
 			{
 				*(_generalState) = MAIN_STATE_GAME;
-
-				this->~MainMenu();
 			}
 		}
 
@@ -243,8 +252,6 @@ void MainMenu::UpdateMainMenu(enum GeneralState *_generalState)
 	if (isLoadGameClicked == true)
 	{
 		*(_generalState) = MAIN_STATE_LOAD_GAME;
-
-		this->~MainMenu();
 	}
 }
 
@@ -282,7 +289,7 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window, const sf::Vector2i& _s
 
 
 
-	if (this->isNewGameClicked == true)
+	if (isNewGameClicked == true)
 	{
 		BlitSprite(warningMessage, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
 	}

@@ -65,10 +65,15 @@ private:
 	sf::Sprite m_sundial;
 	sf::Sprite m_sundialArrowIndicator;
 
+	// Constructor
+	TimeManagement();
+
 public:
-	// Constructor & Destructor
-	TimeManagement(sf::Font *_font, const sf::Vector2i& _screenResolution);
+	// Destructor
 	~TimeManagement();
+
+	void Initialisation(sf::Font* _font, const sf::Vector2i& _screenResolution);
+	static TimeManagement* GetSingleton();
 
 	// Setters
 	inline void SetAccelerator(const short int& _accelerator);

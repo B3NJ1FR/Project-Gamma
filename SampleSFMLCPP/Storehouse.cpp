@@ -13,13 +13,13 @@ Storehouse::~Storehouse()
 
 void Storehouse::InitialisationStorehouse(Buildings *_specificBuildingConcerned)
 {
-	std::cout << "List before : " << this->m_list << std::endl;
+	std::cout << "List before : " << m_list << std::endl;
 
-	this->m_list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 
-	std::cout << "List " << this->m_list << " Size : " << this->m_list->size << " Real First : " << this->m_list->first << " & Last : " << this->m_list->last << std::endl << std::endl;
+	std::cout << "List " << m_list << " Size : " << m_list->size << " Real First : " << m_list->first << " & Last : " << m_list->last << std::endl << std::endl;
 
-	this->m_building = _specificBuildingConcerned;
+	m_building = _specificBuildingConcerned;
 
 }
 
@@ -42,28 +42,28 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((Storehouse::sStorehouseData *)newStorehouse->data)->hasBeenBuilt = false;
 	((Storehouse::sStorehouseData *)newStorehouse->data)->isWorkerThere = false;
 
-	((Storehouse::sStorehouseData *)newStorehouse->data)->maximalQuantity = this->m_building->GetRessourceQuantityNeeded();
+	((Storehouse::sStorehouseData *)newStorehouse->data)->maximalQuantity = m_building->GetRessourceQuantityNeeded();
 	((Storehouse::sStorehouseData *)newStorehouse->data)->internalRessourceCounter = RESET;
 
 	newStorehouse->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
-	this->AddElementToLinkedList(this->m_list, newStorehouse, -1);
+	AddElementToLinkedList(m_list, newStorehouse, -1);
 
-	//this->ReadVineLinkedList();
-	//this->ReadLinkedList(this->list);
+	//ReadVineLinkedList();
+	//ReadLinkedList(list);
 }
 
 
 void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ressourceSent)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->m_list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState == BUILT)
 				{
@@ -82,15 +82,15 @@ void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ress
 
 void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->m_list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
 			//std::cout << "Time : " << _lapsedFrameTime << std::endl;
 
-			for (currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				switch (((Storehouse::sStorehouseData *)currentElement->data)->constructionState)
 				{
@@ -102,7 +102,7 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 
 					if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
 					{
-						//std::cout << "Building launched ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						//std::cout << "Building launched ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << building->GetConstructionTimeCost() << std::endl;
 						((Storehouse::sStorehouseData *)currentElement->data)->constructionState = CONSTRUCTION;
 						((Storehouse::sStorehouseData *)currentElement->data)->lifeTime = RESET;
 					}
@@ -117,9 +117,9 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 					}
 
 					// If the building life is higher than the construction time, we launch it's growthing
-					if (((Storehouse::sStorehouseData *)currentElement->data)->lifeTime >= this->m_building->GetConstructionTimeCost())
+					if (((Storehouse::sStorehouseData *)currentElement->data)->lifeTime >= m_building->GetConstructionTimeCost())
 					{
-						//std::cout << "Building built ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << this->building->GetConstructionTimeCost() << std::endl;
+						//std::cout << "Building built ! " << ((Storehouse::sStorehouseData *)currentElement->data)->lifeTime << " " << building->GetConstructionTimeCost() << std::endl;
 						((Storehouse::sStorehouseData *)currentElement->data)->constructionState = BUILT;
 						((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = true;
 					}
@@ -144,7 +144,7 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 		}
 		else
 		{
-			//std::cout << "List : " << this->list->first << std::endl;
+			//std::cout << "List : " << list->first << std::endl;
 		}
 	}
 }
@@ -152,11 +152,11 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 
 void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite == true)
 				{
@@ -178,13 +178,13 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 
 int Storehouse::GetNumberResourcesStocked(const sf::Vector2f &_mapPosition)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->m_list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -208,13 +208,13 @@ int Storehouse::GetNumberResourcesStocked(const sf::Vector2f &_mapPosition)
 
 void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->m_list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -227,17 +227,17 @@ void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, con
 
 //void Storehouse::UpdateBuildingProduction(Ressources *_ressource)
 //{
-//	if (this->list != nullptr)
+//	if (list != nullptr)
 //	{
-//		if (this->list->first != nullptr)
+//		if (list->first != nullptr)
 //		{
-//			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+//			for (LinkedListClass::sElement *currentElement = list->first; currentElement != NULL; currentElement = currentElement->next)
 //			{
 //				// If the building has produced the ressources, we manage it
 //				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
 //				{
 //					// Add quantity produced to the ressource targeted
-//					_ressource->AddQuantityOwned(this->building->GetRessourceQuantityProduced());
+//					_ressource->AddQuantityOwned(building->GetRessourceQuantityProduced());
 //
 //					// Launch the feedback animation of producing
 //
@@ -251,17 +251,17 @@ void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, con
 
 bool Storehouse::ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// We verify if the player location is between the origin and the max size of the building
 				if (_mapPosition.x <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - this->m_building->GetSize().x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - m_building->GetSize().x
 					&& _mapPosition.y <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - this->m_building->GetSize().y)
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					if (_isPreciseCoordinates)
 					{
@@ -330,17 +330,17 @@ void Storehouse::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 
 bool Storehouse::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// We verify if the player location is between the origin and the max size of the building concerned
 				if (_mapPosition.x <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - this->m_building->GetSize().x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - m_building->GetSize().x
 					&& _mapPosition.y <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - this->m_building->GetSize().y)
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					return ((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere;
 				}
@@ -362,11 +362,11 @@ bool Storehouse::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 
 bool Storehouse::CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 				{
@@ -397,11 +397,11 @@ bool Storehouse::CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition)
 }
 //bool Storehouse::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
 //{
-//	if (this->list != nullptr)
+//	if (list != nullptr)
 //	{
-//		if (this->list->first != nullptr)
+//		if (list->first != nullptr)
 //		{
-//			for (LinkedListClass::sElement *currentElement = this->list->first; currentElement != NULL; currentElement = currentElement->next)
+//			for (LinkedListClass::sElement *currentElement = list->first; currentElement != NULL; currentElement = currentElement->next)
 //			{
 //				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 //				{
@@ -433,11 +433,11 @@ bool Storehouse::CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition)
 
 int Storehouse::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				//// If the building has produced the ressources, we manage it
 				//if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
@@ -446,7 +446,7 @@ int Storehouse::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf:
 				//	{
 				//		((Storehouse::sStorehouseData *)currentElement->data)->secondaryTime += _frametime;
 
-				//		if (((Storehouse::sStorehouseData *)currentElement->data)->secondaryTime >= this->building->GetPickupingTimeCost())
+				//		if (((Storehouse::sStorehouseData *)currentElement->data)->secondaryTime >= building->GetPickupingTimeCost())
 				//		{
 				//			// Launch the feedback animation of producing
 
@@ -454,7 +454,7 @@ int Storehouse::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf:
 
 				//			((Storehouse::sStorehouseData *)currentElement->data)->secondaryTime = RESET;
 
-				//			return this->building->GetRessourceQuantityProduced();
+				//			return building->GetRessourceQuantityProduced();
 				//		}
 				//		else
 				//		{
@@ -488,15 +488,15 @@ sf::Vector2i Storehouse::StorehouseFindNearestBuilding(const sf::Vector2f &_mapP
 {
 	sf::Vector2i buildingPosition = { RESET, RESET };
 
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
 			float lastLowerDistance(RESET);
 
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (currentElement == this->m_list->first)
+				if (currentElement == m_list->first)
 				{
 					float distance = DistanceFormula(_mapPosition, ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition);
 
@@ -541,27 +541,23 @@ sf::Vector2i Storehouse::StorehouseFindNearestBuilding(const sf::Vector2f &_mapP
 
 bool Storehouse::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 {
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			int positionCounter(1);
-			bool isBuildingFind(false);
+			bool isBuildingFind = false;
 
-			for (LinkedListClass::sElement *currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				//std::cout << "Map : " << positionCounter << "/" << this->list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+				//std::cout << "Map : " << positionCounter << "/" << list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
 
 				// If the building position is identical to which send, we save his position in the linked list
 				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition
 					&& isBuildingFind == false)
 				{
 					isBuildingFind = true;
-				}
-
-				if (isBuildingFind == false)
-				{
-					positionCounter++;
+					currentElement->status = ELEMENT_DELETION_REQUIRED;
+					break;
 				}
 			}
 
@@ -570,7 +566,7 @@ bool Storehouse::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 			// After having saved the building's position, we ask to destroy it
 			if (isBuildingFind == true)
 			{
-				RemoveElementsOfLinkedList(this->m_list, true, positionCounter);
+				RemoveElementsOfLinkedList(m_list);
 
 				return true;
 			}
@@ -596,15 +592,15 @@ bool Storehouse::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 void Storehouse::SavingVinesListForFile(std::ofstream *_file)
 {
 	// Save the number of vines
-	_file->write((char *)&this->m_list->size, sizeof(int));
+	_file->write((char *)&m_list->size, sizeof(int));
 
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		if (this->m_list->first != nullptr)
+		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = this->m_list->first;
+			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = this->m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				_file->write((char *)(Storehouse::sStorehouseData *)currentElement->data, sizeof(sStorehouseData));
 			}
@@ -616,14 +612,14 @@ void Storehouse::SavingVinesListForFile(std::ofstream *_file)
 void Storehouse::LoadingVinesListFromFile(std::ifstream *_file)
 {
 	// Delete every vines
-	if (this->m_list != nullptr)
+	if (m_list != nullptr)
 	{
-		this->FreeLinkedList(this->m_list);
+		FreeLinkedList(m_list);
 	}
 
 
 	// We reinit the vines list
-	this->m_list = LinkedListInitialisation();
+	m_list = LinkedListInitialisation();
 
 
 	// Save the number of vines
@@ -643,12 +639,12 @@ void Storehouse::LoadingVinesListFromFile(std::ifstream *_file)
 		if (i == 0)
 		{
 			// Add this worker at the top of the list
-			this->AddElementToLinkedList(this->m_list, newStorehouse, 1);
+			AddElementToLinkedList(m_list, newStorehouse, 1);
 		}
 		else
 		{
 			// Add this worker at the end of the list
-			this->AddElementToLinkedList(this->m_list, newStorehouse, -1);
+			AddElementToLinkedList(m_list, newStorehouse, -1);
 		}
 	}
 }

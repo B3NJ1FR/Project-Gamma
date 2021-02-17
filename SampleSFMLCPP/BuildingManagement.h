@@ -5,12 +5,13 @@
 #include "SpecificsBuildings.h"
 #include "Stalls.h"
 #include "Storehouse.h"
-
+#include "Map.h"
 
 class BuildingManagement
 {
 private :
 	unsigned short m_numberOfBuilding;
+
 
 public :
 	Buildings* m_buildings;
@@ -34,5 +35,7 @@ public :
 	
 	// Methods
 	void InitBuildingsFromFile();
+	void UpdateBuildingManagement(Map* _map);
+	
 };
 

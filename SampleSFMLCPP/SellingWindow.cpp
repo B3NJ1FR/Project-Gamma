@@ -35,7 +35,11 @@ SellingWindow::SellingWindow(sf::Font *_font, const sf::Vector2i &_screenResolut
 
 SellingWindow::~SellingWindow()
 {
-
+	delete (m_sellingWindowBackground.getTexture());
+	delete (m_sellingWindowAcceptButton.getTexture());
+	delete (m_sellingWindowRejectButton.getTexture());
+	delete (m_sellingWindowScrollButton.getTexture());
+	delete (m_sellingWindowScrollLine.getTexture());
 }
 
 

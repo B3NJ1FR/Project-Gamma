@@ -406,6 +406,14 @@ void BlitSprite(sf::Sprite _sprite, const float &_posX, const float &_posY, cons
 	_window.draw(_sprite);
 }
 
+void BlitSprite(sf::Sprite _sprite, const float& _posX, const float& _posY, sf::RenderWindow& _window)
+{
+	// Assignment of the position to the sprite
+	_sprite.setPosition((float)_posX, (float)_posY);
+
+	_window.draw(_sprite);
+}
+
 void BlitSprite(sf::Sprite _sprite, const sf::Vector2f &_position, const float &_angle, sf::RenderWindow &_window)
 {
 	// Assignment of the position to the sprite
@@ -417,11 +425,17 @@ void BlitSprite(sf::Sprite _sprite, const sf::Vector2f &_position, const float &
 	_window.draw(_sprite);
 }
 
+
 void BlitSprite(sf::Sprite _sprite, const float &_angle, sf::RenderWindow &_window)
 {
 	// Rotating the sprite if wanted
 	_sprite.setRotation(_angle);
 
+	_window.draw(_sprite);
+}
+
+void BlitSprite(sf::Sprite _sprite, sf::RenderWindow& _window)
+{
 	_window.draw(_sprite);
 }
 

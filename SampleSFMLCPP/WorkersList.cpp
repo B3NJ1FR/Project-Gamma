@@ -25,6 +25,13 @@ WorkersList::~WorkersList()
 	{
 		delete[] m_list;
 	}
+
+	delete (m_sprite.getTexture());
+
+	for (size_t i = 0; i < NUMBER_OF_WORKERS_ACTIONS; i++)
+	{
+		delete (m_actionsIcons[i].getTexture());
+	}
 }
 
 void WorkersList::InitialisationWorkersList()
@@ -35,6 +42,33 @@ void WorkersList::InitialisationWorkersList()
 	
 	std::cout << "List " << m_list << " Size : " << m_list->size << " Real First : " << m_list->first << " & Last : " << m_list->last << std::endl;
 }
+
+
+sf::Sprite WorkersList::GetCurrentWorkerSprite() const
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			LinkedListClass::sElement* currentElement = m_list->first;
+
+			int positionCounter(1);
+
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
+			{
+				if (positionCounter == m_workerNumberSelected)
+				{
+					// IN THE FUTURE : GIVE THE CORRECT SPRITE OF THE CURRENT WORKER
+					return m_sprite;
+				}
+
+				positionCounter++;
+			}
+
+		}
+	}
+}
+
 
 void WorkersList::ReadWorkersLinkedList()
 {
@@ -99,7 +133,7 @@ void WorkersList::UpdateWorkersLife(struct Game *_game)
 	}
 }
 
-void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, sf::RenderWindow &_window)
+void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, const bool &_characterIsSelected, sf::RenderWindow &_window)
 {
 	if (m_list != nullptr)
 	{
@@ -131,41 +165,45 @@ void WorkersList::DisplayWorkersSprite(const sf::Vector2i &_actualPosition, cons
 					}
 					
 
-					if (((Workers *)currentElement->data)->GetWorkerStatus() == IDLE)
+					switch (((Workers*)currentElement->data)->GetWorkerStatus())
 					{
+					case IDLE:
 						BlitSprite(m_actionsIcons[1],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 							0, _window);
-					}
-					else if (((Workers *)currentElement->data)->GetWorkerStatus() == WORKING)
-					{
+						break;
+					case WORKING:
 						//BlitSprite(actionsIcons[2],
 						//	(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 						//	(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 						//	0, _window);
-					}
-					else if (((Workers *)currentElement->data)->GetWorkerStatus() == PICKUP_RESSOURCES)
-					{
+						break;
+					case PICKUP_RESSOURCES:
 						BlitSprite(m_actionsIcons[3],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 							0, _window);
-					}
-					else if (((Workers *)currentElement->data)->GetWorkerStatus() == DEPOSIT_RESSOURCES)
-					{
+						break;
+					case DEPOSIT_RESSOURCES:
 						BlitSprite(m_actionsIcons[4],
 							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
 							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 70,
 							0, _window);
+						break;
+					default:
+						break;
 					}
 
-					if (positionCounter == m_workerNumberSelected)
+					if (!_characterIsSelected)
 					{
-						BlitSprite(m_actionsIcons[0],
-							(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
-							(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 90,
-							0, _window);
+						if (positionCounter == m_workerNumberSelected)
+						{
+							BlitSprite(m_actionsIcons[0],
+								(SCREEN_WIDTH / 2) + (tileCoordinates.x + cameraIso.x) / (1 - _cameraPosition.z),
+								(SCREEN_HEIGHT / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - _cameraPosition.z) - 90,
+								0, _window);
+						}
 					}
 				}
 
@@ -379,7 +417,7 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 			((Workers *)newWorker->data)->SetWorkerStatus(status);
 		}
 
-		// Save the moneys cost
+		// Load the moneys cost
 		int number(RESET);
 		_file->read((char *)&number, sizeof(int));
 		((Workers *)newWorker->data)->SetWorkerMoneyValue(number);
@@ -390,8 +428,7 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 		_file->read((char *)&value, sizeof(bool));
 		((Workers *)newWorker->data)->SetWorkerIsInWorkingPlace(value);
 
-		// Save the position and ending position in map
-
+		// Load the position and ending position in map
 		sf::Vector2f mapPosition;
 		_file->read((char *)&mapPosition.x, sizeof(float));
 		_file->read((char *)&mapPosition.y, sizeof(float));

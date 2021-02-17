@@ -15,13 +15,16 @@ Game::Game(const sf::Vector2i& _screenResolution)
 	TextsInit();
 	RessourcesInitialisation();
 
-	m_time = new TimeManagement(&m_charlemagneFont, *m_screenReso);
+	m_time = TimeManagement::GetSingleton();
+	m_time->Initialisation(&m_charlemagneFont, *m_screenReso);
+
 	m_tutorialWindow = new TutorialWindow(&m_charlemagneFont);
 	m_workersList = new WorkersList;
 	m_mainCharacter = new MainCharacter; // Vérifier le code après la remise en route de BuildManagement
 	m_sellingWindow = new SellingWindow(&m_generalFont, *m_screenReso);
 	m_buildingsListPlanned = new BuildingsListPlanned();
 	m_purchasers = nullptr;
+	m_managerBetweenWorkersAndMain = new ManagerBetweenWorkersAndMain(*m_screenReso);
 
 
 	m_camera.x = -15;
@@ -43,13 +46,20 @@ Game::Game(const sf::Vector2i& _screenResolution)
 
 Game::~Game()
 {
+	std::cout << "\t--------------------------\n\n\n\n\n\t\tGame Destroyed\n\n\n\n\n\t--------------------------\n\n\n";
+
 	if (m_tutorialWindow != nullptr)
 	{
 		delete m_tutorialWindow;
+		m_tutorialWindow = nullptr;
 	}
 
 	if (m_spriteArray != nullptr)
 	{
+		for (int i = 0; i < m_maximalNumberOfSprites; i++)
+		{
+			delete (m_spriteArray[i].getTexture());
+		}
 		delete [] m_spriteArray;
 	}
 
@@ -62,6 +72,11 @@ Game::~Game()
 	{
 		delete m_screenReso;
 	}
+
+	if (m_managerBetweenWorkersAndMain != nullptr)
+	{
+		delete m_managerBetweenWorkersAndMain;
+	}
 }
 
 
@@ -70,7 +85,12 @@ void Game::SetWindowMemoryAddress(sf::RenderWindow* _window)
 {
 	m_window = _window;
 
-	std::cout << "Memory Adress : " << m_window;
+	std::cout << "Memory Adress : " << m_window << "\n";
+}
+
+void Game::SetGeneralState(GeneralState* _state)
+{
+	m_generalState = _state;
 }
 
 
@@ -83,7 +103,6 @@ void Game::SpritesInitialisation()
 	temporaryString.erase();
 
 	int temporaryNumber(RESET);
-	int maximalNumberOfSprites(RESET);
 	int previousID(RESET);
 
 	if (!spritesFile.is_open())
@@ -105,7 +124,7 @@ void Game::SpritesInitialisation()
 			if ((temporaryID == 0 && previousID == 0)
 				|| temporaryID > previousID)
 			{
-				maximalNumberOfSprites = temporaryID;
+				m_maximalNumberOfSprites = temporaryID;
 				previousID = temporaryID;
 			}
 			else
@@ -116,8 +135,8 @@ void Game::SpritesInitialisation()
 	}
 
 	// Dynamic allocation of the array sprite's
-	maximalNumberOfSprites += 1;
-	m_spriteArray = new sf::Sprite[maximalNumberOfSprites];
+	m_maximalNumberOfSprites += 1;
+	m_spriteArray = new sf::Sprite[m_maximalNumberOfSprites];
 
 	// Reset the reading cursor at the begging
 	spritesFile.seekg(0, std::ios::beg);
@@ -132,7 +151,7 @@ void Game::SpritesInitialisation()
 			int temporaryID(RESET);
 			spritesFile >> temporaryID;
 
-			if (temporaryID < maximalNumberOfSprites)
+			if (temporaryID < m_maximalNumberOfSprites)
 			{
 				spritesFile >> temporaryNumber;
 				spritesFile >> temporaryString;

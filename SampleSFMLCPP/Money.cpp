@@ -9,6 +9,6 @@ Money::Money()
 
 Money::~Money()
 {
-
+	delete (m_sprite.getTexture());
 }
 

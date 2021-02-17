@@ -59,9 +59,8 @@ public:
 	void SetIsNewMerchantNeeded(const bool &_newStatus);
 	void AddNewBuilding(sf::Vector2f _mapPosition);
 	void AddStorehousePosition(const sf::Vector2f &_mapPosition);
-	void SetRessourceQuantityToSell(const int &_quantity = RESET);
-
-	void PickUpPriceAccepted(const int &_price);
+	inline void SetRessourceQuantityToSell(const int& _quantity = RESET) { m_ressourceQuantityToSell = _quantity; };
+	inline void PickUpPriceAccepted(const int& _price) { m_priceAccepted = _price; };
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 	bool ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);

@@ -20,16 +20,24 @@ private:
 	short int m_actualMessages;
 
 	bool m_isMessageHasChanged;
+	bool m_isTutorielDisplayFinished;
 
 public:
 	// Constructor & Destructor
 	TutorialWindow(sf::Font *_font);
 	~TutorialWindow();
 
+	// Getters
+	inline bool GetIsTutorialFinished() const { return m_isTutorielDisplayFinished; };
+
 	// Methods
 	void InitTextOfTutorialFromFile();
 
 	void InputTutorialWindow(enum CurrentGameState *_state, sf::RenderWindow &_window);
-	void UpdateTutorialWindow(sf::Font *_font);
+	void UpdateTutorialWindow(enum CurrentGameState* _state, sf::Font *_font);
 	void DisplayTutorialWindow(sf::RenderWindow &_window);
+
+	// Save and Load
+	void SavingTutorialProgressionForFile(std::ofstream* _file);
+	void LoadingTutorialProgressionForFile(std::ifstream* _file);
 };

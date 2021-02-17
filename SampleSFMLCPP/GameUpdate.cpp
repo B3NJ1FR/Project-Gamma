@@ -49,7 +49,7 @@ void GameUpdate(struct Game *_game)
 		}
 		else if (_game->m_actualGameState == TUTORIAL_MODE)
 		{
-			_game->m_tutorialWindow->UpdateTutorialWindow(&_game->m_charlemagneFont);
+			_game->m_tutorialWindow->UpdateTutorialWindow(&_game->m_actualGameState, &_game->m_charlemagneFont);
 		}
 		else if (_game->m_actualGameState == TEST_PATHFINDING_MODE)
 		{
@@ -58,7 +58,8 @@ void GameUpdate(struct Game *_game)
 		else if (_game->m_actualGameState == SELLING_WINDOW
 			&& _game->m_purchasers != nullptr)
 		{
-			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_builds.m_stall->GetActualRessourcesStocked(), *_game->m_screenReso);
+			//_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_builds.m_stall->GetActualRessourcesStocked(), *_game->m_screenReso);
+			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_ressources[AMPHORA_OF_WINE].GetQuantityOwned(), *_game->m_screenReso);
 			_game->m_sellingWindow->UpdateSellingWindowTexts(_game->m_purchasers);
 		}
 		else
@@ -79,6 +80,8 @@ void GameUpdate(struct Game *_game)
 			_game->m_time->UpdateGeneralTime();
 			_game->m_time->UpdateMonthToDisplay();
 
+
+			_game->m_builds.UpdateBuildingManagement(&_game->m_map);
 
 			_game->m_builds.m_vines.UpdateVineLife(_game->m_time->GetFrameTime(), _game->m_time->GetActualMonth());
 			_game->m_builds.m_vines.UpdateVineSprite(_game->m_map.GetMap());

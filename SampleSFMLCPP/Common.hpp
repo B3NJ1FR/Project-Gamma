@@ -37,8 +37,10 @@ bool IsMouseOnSprite(sf::Vector2i _mousePosition, sf::Sprite *_sprite, int _orig
 
 // That function permit to print the picture at screen to some position (x and y), and if wanted, rotating it
 void BlitSprite(sf::Sprite _sprite, const float &_posX, const float &_posY, const float &_angle, sf::RenderWindow &_window);
-void BlitSprite(sf::Sprite _sprite, const sf::Vector2f &_position, const float &_angle, sf::RenderWindow &_window);
+void BlitSprite(sf::Sprite _sprite, const float &_posX, const float &_posY, sf::RenderWindow& _window);
+void BlitSprite(sf::Sprite _sprite, const sf::Vector2f& _position, const float &_angle, sf::RenderWindow &_window);
 void BlitSprite(sf::Sprite _sprite, const float &_angle, sf::RenderWindow &_window);
+void BlitSprite(sf::Sprite _sprite, sf::RenderWindow& _window);
 
 void BlitString(sf::Text _textString, const int &_posX, const int &_posY, sf::RenderWindow &_window);
 void BlitString(sf::Text _textString, sf::RenderWindow &_window);

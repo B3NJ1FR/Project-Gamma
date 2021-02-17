@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuildingDestruction.cpp" />
     <ClCompile Include="BuildingManagement.cpp" />
     <ClCompile Include="Buildings.cpp" />
     <ClCompile Include="BuildingsListPlanned.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="ManagerBetweenWorkersAndMain.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Money.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
@@ -183,6 +185,7 @@
     <ClCompile Include="Stalls.cpp" />
     <ClCompile Include="Storehouse.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="Test.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="TutorialWindow.cpp" />
     <ClCompile Include="VillaManagement.cpp" />
@@ -191,6 +194,7 @@
     <ClCompile Include="WorkersList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuildingDestruction.h" />
     <ClInclude Include="BuildingManagement.h" />
     <ClInclude Include="Buildings.h" />
     <ClInclude Include="BuildingsListPlanned.h" />
@@ -208,6 +212,7 @@
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="ManagerBetweenWorkersAndMain.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Money.h" />
     <ClInclude Include="Pathfinding.h" />
@@ -220,6 +225,7 @@
     <ClInclude Include="Stalls.h" />
     <ClInclude Include="Storehouse.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="Test.h" />
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="TutorialWindow.h" />
     <ClInclude Include="VillaManagement.h" />

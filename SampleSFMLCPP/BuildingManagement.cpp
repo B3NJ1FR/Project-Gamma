@@ -1,5 +1,6 @@
 #include "BuildingManagement.h"
 #include "Buildings.h"
+#include "BuildingDestruction.h"
 
 
 BuildingManagement::BuildingManagement()
@@ -22,6 +23,8 @@ BuildingManagement::BuildingManagement()
 		m_wineStorehouse.InitialisationSpeBuilding(&m_buildings[BUILDING_WINE_STOREHOUSE]);
 		m_storehouse.InitialisationStorehouse(&m_buildings[BUILDING_STOREHOUSE]);
 	}
+
+	BuildingDestruction::GetSingleton()->InitialisationBuildingsToDestroy();
 
 	std::cout << "----- BuildingManagement Initialised ! -----\n\n\n";
 }
@@ -350,4 +353,9 @@ void BuildingManagement::InitBuildingsFromFile()
 	std::cout << "\n\n\tBuildings Initialisation succeed !\n\n\n";
 
 	buildingsFile.close();
+}
+
+void BuildingManagement::UpdateBuildingManagement(Map* _map)
+{
+	BuildingDestruction::GetSingleton()->UpdateBuildingDestruction(this, _map);
 }

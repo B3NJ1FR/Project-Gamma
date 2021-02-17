@@ -189,6 +189,15 @@
     <ClCompile Include="TutorialWindow.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ManagerBetweenWorkersAndMain.cpp">
+      <Filter>Fichiers sources\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildingDestruction.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -295,6 +304,15 @@
     </ClInclude>
     <ClInclude Include="TutorialWindow.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagerBetweenWorkersAndMain.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingDestruction.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

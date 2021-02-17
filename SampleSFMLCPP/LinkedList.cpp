@@ -482,85 +482,16 @@ void LinkedListClass::AddElementToLinkedList(LinkedListClass::sLinkedList *_list
 
 void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_list, bool _particularElement, int _position)
 {
-	if (_list->first != nullptr)
+	if (_list != nullptr)
 	{
-		if (_particularElement == true)
+		if (_list->first != nullptr)
 		{
-			// Last element of the linked list must be deleted
-			if (_position == -1)
+			if (_particularElement == true)
 			{
-				LinkedListClass::sElement *temporary = _list->last;
-
-				// Case if this is the first and last element of the linked list
-				if (temporary == _list->first
-					&& temporary == _list->last)
+				// Last element of the linked list must be deleted
+				if (_position == -1)
 				{
-					free(temporary->data);
-					free(temporary);
-
-					// We init the first and the last element of the linked list
-					_list->first = nullptr;
-					_list->last = nullptr;
-
-					_list->size = RESET;
-				}
-				else if (temporary == _list->last)
-				{
-					LinkedListClass::sElement *current = _list->first;
-
-					while (current->next != temporary)
-					{
-						current = current->next;
-					}
-
-					current->next = nullptr;
-					_list->last = current;
-
-					free(temporary->data);
-					free(temporary);
-
-					(_list->size)--;
-				}
-			}
-			// First element of the linked list must be deleted
-			else if (_position == 1)
-			{
-				LinkedListClass::sElement *temporary = _list->first;
-
-				// Case if this is the first and last element of the linked list
-				if (temporary == _list->first
-					&& temporary == _list->last)
-				{
-					free(temporary->data);
-					free(temporary);
-
-					// We init the first and the last element of the linked list
-					_list->first = nullptr;
-					_list->last = nullptr;
-
-					_list->size = RESET;
-				}
-				// Case if this is the first element of the linked list
-				else if (temporary == _list->first)
-				{
-					LinkedListClass::sElement *nextElement = temporary->next;
-
-					_list->first = temporary->next;
-					free(temporary->data);
-					free(temporary);
-
-					(_list->size)--;
-
-					temporary = nextElement;
-				}
-
-			}
-			// Any element of the linked list must be deleted
-			else
-			{
-				if (_position == _list->size)
-				{
-					LinkedListClass::sElement *temporary = _list->last;
+					LinkedListClass::sElement* temporary = _list->last;
 
 					// Case if this is the first and last element of the linked list
 					if (temporary == _list->first
@@ -577,7 +508,7 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 					}
 					else if (temporary == _list->last)
 					{
-						LinkedListClass::sElement *current = _list->first;
+						LinkedListClass::sElement* current = _list->first;
 
 						while (current->next != temporary)
 						{
@@ -593,63 +524,11 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 						(_list->size)--;
 					}
 				}
-				else if (_position > _list->size
-					|| _position == 0
-					|| _position < -1)
+				// First element of the linked list must be deleted
+				else if (_position == 1)
 				{
-					std::cout << "Error due to a linked list output at position : " << _position << std::endl;
+					LinkedListClass::sElement* temporary = _list->first;
 
-					// Implémentation du fichier log errors et ajout de l'erreur
-					std::string errorMessage;
-					errorMessage.append("LINKED LIST   |   Error due to a linked list in RemoveElementsOfLinkedList function's because we want to remove an element at position : ");
-					errorMessage.append(std::to_string(_position));
-
-					AddElementToErrorsLogFile(errorMessage);
-				}
-				else
-				{
-					int positionCounter(1);
-
-					LinkedListClass::sElement *temporary = _list->first;
-					LinkedListClass::sElement *current = _list->first;
-
-					while (positionCounter < _position)
-					{
-						std::cout << "Pos : " << positionCounter << std::endl;
-
-						if (positionCounter != 1)
-						{
-							current = current->next;
-						}
-
-						temporary = temporary->next;
-						positionCounter++;
-					}
-
-					LinkedListClass::sElement *nextElement = temporary->next;
-
-					current->next = temporary->next;
-
-					free(temporary->data);
-					free(temporary);
-
-					(_list->size)--;
-
-					temporary = nextElement;
-				}
-			}
-
-		}
-		else
-		{
-			LinkedListClass::sElement *temporary = _list->first;
-
-			// If the first element isn't empty,
-			// that mean that the linked list is composed of one element or more
-			while (temporary != NULL)
-			{
-				if (temporary->status == ELEMENT_DELETION_REQUIRED)
-				{
 					// Case if this is the first and last element of the linked list
 					if (temporary == _list->first
 						&& temporary == _list->last)
@@ -666,7 +545,7 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 					// Case if this is the first element of the linked list
 					else if (temporary == _list->first)
 					{
-						LinkedListClass::sElement *nextElement = temporary->next;
+						LinkedListClass::sElement* nextElement = temporary->next;
 
 						_list->first = temporary->next;
 						free(temporary->data);
@@ -676,32 +555,80 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 
 						temporary = nextElement;
 					}
-					else if (temporary == _list->last)
+
+				}
+				// Any element of the linked list must be deleted
+				else
+				{
+					if (_position == _list->size)
 					{
-						LinkedListClass::sElement *current = _list->first;
+						LinkedListClass::sElement* temporary = _list->last;
 
-						while (current->next != temporary)
+						// Case if this is the first and last element of the linked list
+						if (temporary == _list->first
+							&& temporary == _list->last)
 						{
-							current = current->next;
+							free(temporary->data);
+							free(temporary);
+
+							// We init the first and the last element of the linked list
+							_list->first = nullptr;
+							_list->last = nullptr;
+
+							_list->size = RESET;
 						}
+						else if (temporary == _list->last)
+						{
+							LinkedListClass::sElement* current = _list->first;
 
-						current->next = nullptr;
-						_list->last = current;
+							while (current->next != temporary)
+							{
+								current = current->next;
+							}
 
-						free(temporary->data);
-						free(temporary);
+							current->next = nullptr;
+							_list->last = current;
 
-						(_list->size)--;
+							free(temporary->data);
+							free(temporary);
+
+							(_list->size)--;
+						}
+					}
+					else if (_position > _list->size
+						|| _position == 0
+						|| _position < -1)
+					{
+						std::cout << "Error due to a linked list output at position : " << _position << std::endl;
+
+						// Implémentation du fichier log errors et ajout de l'erreur
+						std::string errorMessage;
+						errorMessage.append("LINKED LIST   |   Error due to a linked list in RemoveElementsOfLinkedList function's because we want to remove an element at position : ");
+						errorMessage.append(std::to_string(_position));
+
+						AddElementToErrorsLogFile(errorMessage);
 					}
 					else
 					{
-						LinkedListClass::sElement *nextElement = temporary->next;
-						LinkedListClass::sElement *current = _list->first;
+						int positionCounter(1);
 
-						while (current->next != temporary)
+						LinkedListClass::sElement* temporary = _list->first;
+						LinkedListClass::sElement* current = _list->first;
+
+						while (positionCounter < _position)
 						{
-							current = current->next;
+							std::cout << "Pos : " << positionCounter << std::endl;
+
+							if (positionCounter != 1)
+							{
+								current = current->next;
+							}
+
+							temporary = temporary->next;
+							positionCounter++;
 						}
+
+						LinkedListClass::sElement* nextElement = temporary->next;
 
 						current->next = temporary->next;
 
@@ -713,25 +640,104 @@ void LinkedListClass::RemoveElementsOfLinkedList(LinkedListClass::sLinkedList *_
 						temporary = nextElement;
 					}
 				}
-				else
+
+			}
+			else
+			{
+				LinkedListClass::sElement* temporary = _list->first;
+
+				// If the first element isn't empty,
+				// that mean that the linked list is composed of one element or more
+				while (temporary != nullptr)
 				{
-					// We're moving forward in the linked list to other element
-					temporary = temporary->next;
+					if (temporary->status == ELEMENT_DELETION_REQUIRED)
+					{
+						// Case if this is the first and last element of the linked list
+						if (temporary == _list->first
+							&& temporary == _list->last)
+						{
+							free(temporary->data);
+							free(temporary);
+							temporary = nullptr;
+
+							// We init the first and the last element of the linked list
+							_list->first = nullptr;
+							_list->last = nullptr;
+
+							_list->size = RESET;
+						}
+						// Case if this is the first element of the linked list
+						else if (temporary == _list->first)
+						{
+							LinkedListClass::sElement* nextElement = temporary->next;
+
+							_list->first = temporary->next;
+							free(temporary->data);
+							free(temporary);
+
+							(_list->size)--;
+
+							temporary = nextElement;
+						}
+						else if (temporary == _list->last)
+						{
+							LinkedListClass::sElement* current = _list->first;
+
+							while (current->next != temporary)
+							{
+								current = current->next;
+							}
+
+							current->next = nullptr;
+							_list->last = current;
+
+							free(temporary->data);
+							free(temporary);
+							temporary = nullptr;
+
+							(_list->size)--;
+						}
+						else
+						{
+							LinkedListClass::sElement* nextElement = temporary->next;
+							LinkedListClass::sElement* current = _list->first;
+
+							while (current->next != temporary && current->next != nullptr)
+							{
+								current = current->next;
+							}
+
+							current->next = temporary->next;
+
+							free(temporary->data);
+							free(temporary);
+
+							(_list->size)--;
+
+							temporary = nextElement;
+						}
+					}
+					else
+					{
+						// We're moving forward in the linked list to other element
+						temporary = temporary->next;
+					}
 				}
 			}
 		}
-	}
-	else
-	{
-		std::cout << "Error due to the linked list don't have any element and we need to remove some at position : " << _position << std::endl;
+		else
+		{
+			std::cout << "Error due to the linked list don't have any element and we need to remove some at position : " << _position << std::endl;
 
-		// Implémentation du fichier log errors et ajout de l'erreur
-		std::string errorMessage;
-		errorMessage.append("LINKED LIST   |   Error due to the linked list in RemoveElementsOfLinkedList function's because the list don't have any element and we need to remove some at position : ");
-		errorMessage.append(std::to_string(_position));
+			// Implémentation du fichier log errors et ajout de l'erreur
+			std::string errorMessage;
+			errorMessage.append("LINKED LIST   |   Error due to the linked list in RemoveElementsOfLinkedList function's because the list don't have any element and we need to remove some at position : ");
+			errorMessage.append(std::to_string(_position));
 
-		AddElementToErrorsLogFile(errorMessage);
+			AddElementToErrorsLogFile(errorMessage);
+		}
 	}
+	
 }
 
 //// Desallocation of every element of the linked list sent

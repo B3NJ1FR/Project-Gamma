@@ -7,6 +7,7 @@ TutorialWindow::TutorialWindow(sf::Font *_font)
 	m_actualMessages = RESET;
 	m_counterMessages = RESET;
 	m_isMessageHasChanged = true;
+	m_isTutorielDisplayFinished = false;
 
 	m_messages = nullptr;
 	m_pressSpaceMessage = "Press Space to Continue";
@@ -20,10 +21,14 @@ TutorialWindow::TutorialWindow(sf::Font *_font)
 
 TutorialWindow::~TutorialWindow()
 {
+	delete (m_backgroundMessage.getTexture());
+
 	if (m_messages != nullptr)
 	{
-		delete m_messages;
+		delete [] m_messages;
+		m_messages = nullptr;
 	}
+	std::cout << "[Game] - TutorialWindow destroyed\n";
 }
 
 void TutorialWindow::InitTextOfTutorialFromFile()
@@ -134,6 +139,7 @@ void TutorialWindow::InputTutorialWindow(enum CurrentGameState *_state, sf::Rend
 				}
 				else
 				{
+					m_isTutorielDisplayFinished = true;
 					*(_state) = NORMAL_MODE;
 				}
 			}
@@ -141,8 +147,13 @@ void TutorialWindow::InputTutorialWindow(enum CurrentGameState *_state, sf::Rend
 	}
 }
 
-void TutorialWindow::UpdateTutorialWindow(sf::Font *_font)
+void TutorialWindow::UpdateTutorialWindow(enum CurrentGameState* _state, sf::Font *_font)
 {
+	if (m_isTutorielDisplayFinished)
+	{
+		*(_state) = NORMAL_MODE;
+	}
+
 	if (m_isMessageHasChanged == true
 		&& m_actualMessages <= m_counterMessages - 1)
 	{
@@ -161,4 +172,33 @@ void TutorialWindow::DisplayTutorialWindow(sf::RenderWindow &_window)
 	
 	BlitString(m_text, m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height - 10, _window);
 	BlitString(m_textPressSpace, m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height + 95, _window);
+}
+
+
+void TutorialWindow::SavingTutorialProgressionForFile(std::ofstream* _file)
+{
+	bool isTutorialFinished = m_isTutorielDisplayFinished;
+	_file->write((char*)&isTutorialFinished, sizeof(bool));
+
+	if (!m_isTutorielDisplayFinished)
+	{
+		int counterOfMessages = m_actualMessages;
+		_file->write((char*)&counterOfMessages, sizeof(int));
+	}
+}
+
+void TutorialWindow::LoadingTutorialProgressionForFile(std::ifstream* _file)
+{
+	bool isTutorialFinished = false;
+	_file->read((char*)&isTutorialFinished, sizeof(bool));
+	m_isTutorielDisplayFinished = isTutorialFinished;
+
+	if (!m_isTutorielDisplayFinished)
+	{
+		int counterOfMessages = 0;
+		_file->read((char*)&counterOfMessages, sizeof(int));
+		m_actualMessages = counterOfMessages;
+
+		m_isMessageHasChanged = true;
+	}
 }

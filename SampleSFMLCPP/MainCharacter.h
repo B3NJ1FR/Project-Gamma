@@ -49,7 +49,6 @@ public:
 
 	inline sf::Vector2f GetMainCharacterEndingPosition() const { return m_mapEndPosition; };
 	inline sf::Sprite GetSprite() const { return m_sprite; };
-	inline sf::Sprite GetSpriteSelected() const { return m_spriteCharaSelected; };
 	inline bool GetIsMainCharacterSelected() const { return m_isMainCharacterSelected; };
 	inline enum WorkerStatus GetWorkerStatus() const { return m_actualStatus; };
 	inline bool GetIsCurrentlyBuilding() const { return m_isCurrentlyBuilding; };

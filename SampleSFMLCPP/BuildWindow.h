@@ -66,7 +66,6 @@ public:
 	
 	void SetBuildingOnMap(Map* _map, BuildingManagement* _builds, enum Floors _floorFocused, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i &_mapPosition);
 	void SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
-	void RemoveBuildingOnMap(struct Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition);
 	
 	void UpdateTextsBuildWindow(struct Game *_game);
 

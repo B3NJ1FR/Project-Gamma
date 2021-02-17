@@ -34,4 +34,8 @@ public:
 
 	void DeleteCurrentFirstBuildingInList();
 	inline bool IsBuildingListIsEmpty() { return ((m_listOfBuildingsPlanned != nullptr) && (m_listOfBuildingsPlanned->first != nullptr)) ? false : true; };
+
+	// Save and Load
+	void SavingBuildingsListPlannedForFile(std::ofstream* _file);
+	void LoadingBuildingsListPlannedForFile(std::ifstream* _file);
 };

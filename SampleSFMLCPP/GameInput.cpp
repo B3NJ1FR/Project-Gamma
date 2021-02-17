@@ -86,6 +86,7 @@ void GameInput(struct Game *_game)
 				if (event.key.code == sf::Keyboard::Escape && _game->m_actualGameState == VILLA_MANAGEMENT)
 				{
 					_game->m_actualGameState = NORMAL_MODE;
+					_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
 				}
 				else if (event.key.code == sf::Keyboard::Escape)
 				{
@@ -107,7 +108,14 @@ void GameInput(struct Game *_game)
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == NORMAL_MODE)
 				{
-					_game->m_mainCharacter->SetIsMainCharacterSelected(_game->m_mainCharacter->GetIsMainCharacterSelected() ? false : true);
+					/*if (_game->m_workersList->GetNumberOfWorkers() > 0)
+					{
+						_game->m_mainCharacter->SetIsMainCharacterSelected(_game->m_mainCharacter->GetIsMainCharacterSelected() ? false : true);
+					}
+					else
+					{
+						_game->m_mainCharacter->SetIsMainCharacterSelected(true);
+					}*/
 				}
 
 				/*if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
@@ -226,13 +234,14 @@ void GameInput(struct Game *_game)
 				if (event.key.code == sf::Keyboard::Add
 					|| event.key.code == sf::Keyboard::A)
 				{
-					_game->m_workersList->ChangeWorkerNumberSelectedAdd();
+					_game->m_managerBetweenWorkersAndMain->CheckClickKeys(true, _game->m_mainCharacter, _game->m_workersList);
+
 				}
 				// TEST
 				if (event.key.code == sf::Keyboard::Subtract
 					|| event.key.code == sf::Keyboard::E)
 				{
-					_game->m_workersList->ChangeWorkerNumberSelectedSubtract();
+					_game->m_managerBetweenWorkersAndMain->CheckClickKeys(false, _game->m_mainCharacter, _game->m_workersList);					
 				}
 
 
@@ -310,10 +319,10 @@ void GameInput(struct Game *_game)
 					{
 						// We check if the scrolling doesn't leave the area
 						// The max is dynamically calculated in function of the number of building present in the game
-						if (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) >= -130 * (_game->m_builds.GetNumberOfBuildings() / 2) + 80
-							&& (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5) <= 80))
+						if (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 25) >= -130 * (_game->m_builds.GetNumberOfBuildings() / 2) + 80
+							&& (_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 25) <= 80))
 						{
-							_game->m_buildWindow.SetScrollBuildingList(_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 5));
+							_game->m_buildWindow.SetScrollBuildingList(_game->m_buildWindow.GetScrollBuildingList() - (event.mouseWheelScroll.delta * 25));
 						}
 					}
 					else
@@ -356,9 +365,12 @@ void GameInput(struct Game *_game)
 						}
 
 						_game->m_time->InputTimeManagement(*_game->m_window, *_game->m_screenReso);
+
+						_game->m_managerBetweenWorkersAndMain->CheckClickOnArrows(_game->m_mainCharacter, _game->m_workersList, *_game->m_window);
 					}
 					else if (_game->m_actualGameState == BUILD_MODE)
 					{
+						_game->m_buildWindow.InputBuildWindow(_game);
 						_game->m_buildWindow.InputBuildingModeOldScrollUI(_game->m_buildWindow.GetScrollBuildingList(), *_game->m_window, *_game->m_screenReso);
 					}
 					else if (_game->m_actualGameState == TEST_PATHFINDING_MODE)
@@ -445,11 +457,7 @@ void GameInput(struct Game *_game)
 		// Case clicked in build mode
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (_game->m_actualGameState == BUILD_MODE)
-			{
-				_game->m_buildWindow.InputBuildWindow(_game);
-			}
-			else if (_game->m_actualGameState == SELLING_WINDOW)
+			if (_game->m_actualGameState == SELLING_WINDOW)
 			{
 				_game->m_sellingWindow->InputSellingWindow(&_game->m_builds.m_stall->m_isOfferAccepted, &_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window, *_game->m_screenReso);
 			}

@@ -1,5 +1,6 @@
 #include "BuildWindow.h"
 #include "GameDefinitions.h"
+#include "BuildingDestruction.h"
 
 
 BuildWindow::BuildWindow()
@@ -19,7 +20,26 @@ BuildWindow::BuildWindow()
 
 BuildWindow::~BuildWindow()
 {
+	delete (m_buildingUI.getTexture());
+	delete (m_buildingUIclosed.getTexture());
+	delete (m_buildingUIdestroyBuildings.getTexture());
+	delete (m_blackFilter.getTexture());
+	delete (m_contour.getTexture());
+	delete (m_enteringArrow.getTexture());
+	delete (m_exitingArrow.getTexture());
+	delete (m_separationLine.getTexture());
 
+	if (m_textBuildingCaseOccupied != nullptr)
+	{
+		//delete m_textBuildingCaseOccupied;
+		m_textBuildingCaseOccupied = nullptr;
+	}
+
+	if (m_textBuildingHelps != nullptr)
+	{
+		//delete m_textBuildingHelps;
+		m_textBuildingHelps = nullptr;
+	}
 }
 
 void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
@@ -259,30 +279,6 @@ void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBu
 	}
 }
 
-void BuildWindow::RemoveBuildingOnMap(struct Game *_game, enum Floors _floorFocused, const int &_typeOfBuilding, const sf::Vector3i &_statsToApply, const sf::Vector2i &_mapPosition)
-{
-	_game->m_map.GetMap()[_floorFocused + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _statsToApply.z;
-
-	// EN FAIRE UNE FONCTION
-	for (int y = 0; y < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().y; y++)
-	{
-		for (int x = 0; x < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().x; x++)
-		{
-			if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _mapPosition))
-			{
-				// Set the correct collision
-				_game->m_map.GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.x;
-
-				// Set the correct building ID
-				_game->m_map.GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.y;
-			}
-			else
-			{
-				std::cout << "\n\n\n\tError during building destruction\n\n\n";
-			}
-		}
-	}
-}
 
 
 
@@ -367,63 +363,11 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 			// Add the building if the place is empty
 			if (m_isBuildingCaseOccupied == false)
 			{
-				////----------------------------------------------------------------------------------------------
-
-				//// Deplacer
-				//// Clear the ground by putting sand floor
-				//for (int y = 0; y < _game->buildings[IDChosenBuilding].GetSize().y; y++)
-				//{
-				//	for (int x = 0; x < _game->buildings[IDChosenBuilding].GetSize().x; x++)
-				//	{
-				//		_game->map[ZERO_FLOOR + SPRITE_ID][buildingCaseSelected.y - y][buildingCaseSelected.x - x] = 1;
-				//	}
-				//}
-
-				//// Modifier couche pour ID
-				//SetOrRemoveBuildingOnMap(_game, true, FIRST_FLOOR, IDChosenBuilding, sf::Vector3i(COLLISION, IDChosenBuilding, RESET));
-
-				//// Deplacer
-				//// If the building selected is the vines, we add informations to the concerned linkedlist
-				//if (IDChosenBuilding == BUILDING_VINES)
-				//{
-				//	_game->vines.AddNewVineToList((sf::Vector2f)buildingCaseSelected);
-				//}
-				//else if (IDChosenBuilding == BUILDING_GRAPE_STOMPING_VATS)
-				//{
-				//	_game->stompingVats.AddNewBuildingToList((sf::Vector2f)buildingCaseSelected);
-				//}
-				//else if (IDChosenBuilding == BUILDING_WINE_PRESS)
-				//{
-				//	_game->winePress.AddNewBuildingToList((sf::Vector2f)buildingCaseSelected);
-				//}
-				//else if (IDChosenBuilding == BUILDING_WINE_STOREHOUSE)
-				//{
-				//	_game->wineStorehouse.AddNewBuildingToList((sf::Vector2f)buildingCaseSelected);
-				//}
-				//else if (IDChosenBuilding == BUILDING_STOREHOUSE)
-				//{
-				//	_game->storehouse.AddNewBuildingToList((sf::Vector2f)buildingCaseSelected);
-				//}
-				//else if (IDChosenBuilding == BUILDING_STALL)
-				//{
-				//	_game->stall->AddNewBuilding((sf::Vector2f)buildingCaseSelected);
-				//}
-
-				//// Conserver
-				//// We remove the money needed to construct the building
-				//_game->money.SubtractMoney(_game->buildings[IDChosenBuilding].GetConstructionCost());
-				//
-				//// Deplacer
-				//// Update the workers path if there is a modification
-				//isNewBuildingHasBeenConstructed = true;
-
-				////----------------------------------------------------------------------------------------------
-
 				//----------------------------------------------------------------------------------------------
 
 				if (m_IDChosenBuilding == BUILDING_STALL)
 				{
-					_game->m_builds.m_stall->SetConstructionStatus(PLANNED);
+					_game->m_builds.m_stall->SetConstructionStatus(BuildingStatus::PLANNED);
 				}
 
 				// We add the current building to the planned list
@@ -445,106 +389,13 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 		// Condition to determine if the destructor mode has been selected
 		else if (m_IDChosenBuilding == _game->m_builds.GetNumberOfBuildings())
 		{
-			bool isOccupiedArea = false;
-
 			// Collisions verifications
 			if (_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] != NO_COLLISION)
 			{
-				isOccupiedArea = true;
+				int buildingIDFocused = _game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
+
+				BuildingDestruction::GetSingleton()->AddNewBuildingToDestroy((sf::Vector2f)m_buildingCaseSelected, buildingIDFocused);
 			}
-
-			if (isOccupiedArea == true)
-			{
-				int buildingIDFocused;
-
-				buildingIDFocused = _game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
-
-				switch (buildingIDFocused)
-				{
-				case BUILDING_VINES:
-
-					if (_game->m_builds.m_vines.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
-					{
-						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
-					}
-					else
-					{
-						std::cout << "Can't destroyed this building\n\n\n";
-					}
-
-					break;
-				case BUILDING_GRAPE_STOMPING_VATS:
-
-					if (_game->m_builds.m_stompingVats.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
-					{
-						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
-					}
-					else
-					{
-						std::cout << "Can't destroyed this building\n\n\n";
-					}
-
-					break;
-				case BUILDING_WINE_PRESS:
-
-					if (_game->m_builds.m_winePress.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
-					{
-						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
-					}
-					else
-					{
-						std::cout << "Can't destroyed this building\n\n\n";
-					}
-
-					break;
-				case BUILDING_WINE_STOREHOUSE:
-
-					if (_game->m_builds.m_wineStorehouse.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
-					{
-						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
-					}
-					else
-					{
-						std::cout << "Can't destroyed this building\n\n\n";
-					}
-
-					break;
-
-				case BUILDING_STOREHOUSE:
-
-					if (_game->m_builds.m_storehouse.DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
-					{
-						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
-					}
-					else
-					{
-						std::cout << "Can't destroyed this building\n\n\n";
-					}
-
-					break;
-
-				case BUILDING_STALL:
-
-					if (_game->m_builds.m_stall->DestroyedBuildingSelected((sf::Vector2f)m_buildingCaseSelected) == true)
-					{
-						RemoveBuildingOnMap(_game, Floors::FIRST_FLOOR, buildingIDFocused, sf::Vector3i(NO_COLLISION, RESET, RESET), m_buildingCaseSelected);
-					}
-					else
-					{
-						std::cout << "Can't destroyed this building\n\n\n";
-					}
-
-					break;
-
-				default:
-					break;
-				}
-			}
-			else
-			{
-
-			}
-
 		}
 	}
 }
@@ -717,10 +568,10 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 
 			// Display the money cost of the building
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 30, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 45, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
 			
 			_game->m_money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
-			BlitSprite(_game->m_money.GetSprite(), (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 30, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
+			BlitSprite(_game->m_money.GetSprite(), (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 45, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
 			_game->m_money.SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}

@@ -8,9 +8,9 @@
 Data::Data()
 {
 	// Allocation of every parts
-	m_system = new System;
-	m_mainMenu = new MainMenu();
-	m_loadingScreen = new LoadingScreen;
+	CreateNewSystem();
+	CreateNewMainMenu();
+	CreateNewLoadingScreen();
 
 	m_state = MAIN_STATE_MENU;
 
@@ -32,6 +32,60 @@ Data::~Data()
 }
 
 
+void Data::CreateNewSystem()
+{
+	if (m_system == nullptr)
+	{
+		m_system = new System;
+	}
+}
+
+void Data::CreateNewMainMenu()
+{
+	if (m_mainMenu == nullptr)
+	{
+		DeleteGame();
+		m_mainMenu = new MainMenu;
+	}
+}
+
+void Data::CreateNewLoadingScreen()
+{
+	if (m_loadingScreen == nullptr)
+	{
+		m_loadingScreen = new LoadingScreen;
+	}
+}
+
+void Data::CreateNewGame()
+{
+	if (m_game == nullptr)
+	{
+		DeleteMainMenu();
+		m_game = new Game(m_system->m_screenResolution);
+	}
+}
+
+
+void Data::DeleteMainMenu()
+{
+	if (m_mainMenu != nullptr)
+	{
+		delete m_mainMenu;
+		m_mainMenu = nullptr;
+	}
+}
+
+void Data::DeleteGame()
+{
+	if (m_game != nullptr)
+	{
+		delete m_game;
+		m_game = nullptr;
+	}
+}
+
+
 
 
 
@@ -40,12 +94,15 @@ void Data::GameState()
 	// Display the loading screen during the game loading
 	m_loadingScreen->DisplayLoadingScreen(m_system->m_window, m_system->m_screenResolution);
 
+	std::cout << "Here";
+
 	// Initialisation
-	m_game = new Game(m_system->m_screenResolution);
+	CreateNewGame();
 
 	// Shortcut of the window address put into the game struct
 	std::cout << "Memory Adress before: " << &m_system->m_window;
 	m_game->SetWindowMemoryAddress(&m_system->m_window);
+	m_game->SetGeneralState(&m_state);
 	
 
 	if (m_state == MAIN_STATE_LOAD_GAME)

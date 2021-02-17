@@ -121,6 +121,23 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 		std::cout << "Purchaser loaded !\n";
 	}
 
+
+	// Loading of the Buildings list planned
+	_game->m_buildingsListPlanned->LoadingBuildingsListPlannedForFile(&saveFile);
+
+	if (_game->m_buildingsListPlanned->GetBuildingPositionInMap() != sf::Vector2i(-1, -1))
+	{
+		_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
+		_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
+		_game->m_mainCharacter->SetIsCurrentlyBuilding(true);
+	}
+
+	std::cout << "Buildings list planned loaded and character launched !\n";
+
+	// Saving of the Tutorial progression
+	_game->m_tutorialWindow->LoadingTutorialProgressionForFile(&saveFile);
+	std::cout << "Tutorial progression saved !\n";
+
 	std::cout << "\n\nGame loaded successfully !\n\n\n";
 
 	saveFile.close();

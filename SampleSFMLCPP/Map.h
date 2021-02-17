@@ -60,5 +60,7 @@ public :
 
 	void SavingMapFromFile(std::ofstream* _file);
 	void LoadingMapFromFile(std::ifstream* _file);
+
+	bool IsCoordinatesIsInMap(const sf::Vector2i& _mapPosition);
 };
 

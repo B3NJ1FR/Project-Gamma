@@ -102,6 +102,14 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 	std::cout << "Purchasers saved !\n";
 
+	// Saving of the Buildings list planned
+	_game->m_buildingsListPlanned->SavingBuildingsListPlannedForFile(&saveFile);
+	std::cout << "Buildings list planned saved !\n";
+
+	// Saving of the Tutorial progression
+	_game->m_tutorialWindow->SavingTutorialProgressionForFile(&saveFile);
+	std::cout << "Tutorial progression saved !\n";
+
 	std::cout << "\n\nGame saved successfully !\n\n\n";
 
 	saveFile.close();

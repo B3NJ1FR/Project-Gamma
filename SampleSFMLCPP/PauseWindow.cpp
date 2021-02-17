@@ -13,6 +13,12 @@ PauseWindow::PauseWindow()
 
 PauseWindow::~PauseWindow()
 {
+	delete (m_blackBackground.getTexture());
+	delete (m_resumeButton.getTexture());
+	delete (m_loadButton.getTexture());
+	delete (m_saveButton.getTexture());
+	delete (m_saveNQuitButton.getTexture());
+	delete (m_quitButton.getTexture());
 
 }
 
@@ -25,6 +31,13 @@ void PauseWindow::DisplayPauseWindow(sf::RenderWindow &_window, const sf::Vector
 	sf::Color newColor = { 255, 255, 255, 255 };
 	m_blackBackground.setColor(newColor);
 
+	sf::Vector2f newScale = { _screenResolution.y / 1080.f, _screenResolution.y / 1080.f };
+
+	m_resumeButton.setScale(newScale);
+	m_loadButton.setScale(newScale);
+	m_saveButton.setScale(newScale);
+	m_saveNQuitButton.setScale(newScale);
+	m_quitButton.setScale(newScale);
 
 	BlitSprite(m_resumeButton, _screenResolution.x / 2, _screenResolution.y / 6, 0, _window);
 	BlitSprite(m_loadButton, _screenResolution.x / 2, (_screenResolution.y / 6) * 2, 0, _window);
@@ -151,8 +164,9 @@ void PauseWindow::InputPauseWindow(struct Game *_game, SavingGame *_save, Loadin
 					&& mousePostionAtScreen.y >(_game->m_screenReso->y / 6) * 5 - (m_saveNQuitButton.getGlobalBounds().height / 2)
 					&& mousePostionAtScreen.y < (_game->m_screenReso->y / 6) * 5 + (m_saveNQuitButton.getGlobalBounds().height / 2))
 				{
-					_game->m_window->close();
-					exit(EXIT_SUCCESS);
+					*_game->m_generalState = MAIN_STATE_MENU;
+
+					std::cout << "\n\n\n\nBack to the Main Menu ....\n\n\n\n\n";
 				}
 			}
 		}

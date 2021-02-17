@@ -31,7 +31,8 @@ Buildings::Buildings()
 
 Buildings::~Buildings()
 {
-
+	delete (m_sprite.getTexture());
+	delete (m_icon.getTexture());
 }
 
 void Buildings::SetRessourceIDNeeded(int* _resssourceID, const unsigned char& _numberRessources)

@@ -252,3 +252,18 @@ void Map::LoadingMapFromFile(std::ifstream* _file)
 
 	std::cout << "Map loaded !\n";
 }
+
+bool Map::IsCoordinatesIsInMap(const sf::Vector2i& _mapPosition)
+{
+	if (_mapPosition.x >= 0
+		&& _mapPosition.x < m_numberColumns
+		&& _mapPosition.y >= 0
+		&& _mapPosition.y < m_numberLines)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

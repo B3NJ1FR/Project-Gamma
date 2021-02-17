@@ -107,7 +107,6 @@ void BuildingsListPlanned::AddBuildingPlannedToList(const sf::Vector2i &_mapPosi
 	// Save the position in map
 	((struct DataBuildings *)newBuilding->data)->m_mapPosition = _mapPosition;
 
-	// Init of the worker status
 	((struct DataBuildings *)newBuilding->data)->m_buildingID = _buildingID;
 	
 	((struct DataBuildings *)newBuilding->data)->m_buildingSize = _buildingSize;
@@ -130,5 +129,84 @@ void BuildingsListPlanned::DeleteCurrentFirstBuildingInList()
 			// Deletion of the first element of the list
 			RemoveElementsOfLinkedList(m_listOfBuildingsPlanned, true, 1);
 		}
+	}
+}
+
+void BuildingsListPlanned::SavingBuildingsListPlannedForFile(std::ofstream* _file)
+{
+	// Save the number of buildings planned
+	int listSize = m_listOfBuildingsPlanned->size;
+	_file->write((char*)&listSize, sizeof(int));
+
+	if (m_listOfBuildingsPlanned != nullptr)
+	{
+		if (m_listOfBuildingsPlanned->first != nullptr)
+		{
+			LinkedListClass::sElement* currentElement = m_listOfBuildingsPlanned->first;
+
+			for (currentElement = m_listOfBuildingsPlanned->first; currentElement != nullptr; currentElement = currentElement->next)
+			{
+				// Save the position in map
+				sf::Vector2i mapPosition = ((struct DataBuildings*)currentElement->data)->m_mapPosition;
+				_file->write((char*)&mapPosition.x, sizeof(int));
+				_file->write((char*)&mapPosition.y, sizeof(int));
+
+				// Save the building size
+				sf::Vector2i buildingSize = ((struct DataBuildings*)currentElement->data)->m_buildingSize;
+				_file->write((char*)&buildingSize.x, sizeof(int));
+				_file->write((char*)&buildingSize.y, sizeof(int));
+
+				// Save the building id
+				int intNumber = ((struct DataBuildings*)currentElement->data)->m_buildingID;
+				_file->write((char*)&intNumber, sizeof(int));
+			}
+		}
+	}
+}
+
+void BuildingsListPlanned::LoadingBuildingsListPlannedForFile(std::ifstream* _file)
+{
+	// Delete the current list
+	if (m_listOfBuildingsPlanned != nullptr)
+	{
+		FreeLinkedList(m_listOfBuildingsPlanned);
+	}
+
+	// We reinit the buildings planned list
+	m_listOfBuildingsPlanned = LinkedListInitialisation();
+
+
+	// Load the number of buildings who were currently be built
+	int listSize = 0;
+	_file->read((char*)&listSize, sizeof(int));
+
+	for (int i = 0; i < listSize; i++)
+	{
+		LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
+		newBuilding->data = new struct DataBuildings;
+
+		// Load the position in map
+		sf::Vector2i mapPosition;
+		_file->read((char*)&mapPosition.x, sizeof(int));
+		_file->read((char*)&mapPosition.y, sizeof(int));
+		((struct DataBuildings*)newBuilding->data)->m_mapPosition = mapPosition;
+
+		// Load the building size
+		sf::Vector2i buildingSize;
+		_file->read((char*)&buildingSize.x, sizeof(int));
+		_file->read((char*)&buildingSize.y, sizeof(int));
+		((struct DataBuildings*)newBuilding->data)->m_buildingSize = buildingSize;
+
+		// Load the building id
+		int buildingID(RESET);
+		_file->read((char*)&buildingID, sizeof(int));
+		((struct DataBuildings*)newBuilding->data)->m_buildingID = buildingID;
+
+
+		newBuilding->status = ELEMENT_ACTIVE;
+
+
+		// Add this new building at the end of the list
+		AddElementToLinkedList(m_listOfBuildingsPlanned, newBuilding, -1);
 	}
 }

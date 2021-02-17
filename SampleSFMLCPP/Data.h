@@ -8,16 +8,27 @@
 
 struct Data
 {
-	System* m_system;
-	Game* m_game;
-	MainMenu* m_mainMenu;
-	LoadingScreen* m_loadingScreen;
+	System* m_system = nullptr;
+	Game* m_game = nullptr;
+	MainMenu* m_mainMenu = nullptr;
+	LoadingScreen* m_loadingScreen = nullptr;
 
 	GeneralState m_state;
 
 	// Constructor & Destructor
 	Data();
 	~Data();
+
+
+	// Create
+	void CreateNewSystem();
+	void CreateNewMainMenu();
+	void CreateNewLoadingScreen();
+	void CreateNewGame();
+
+	// Delete
+	void DeleteMainMenu();
+	void DeleteGame();
 
 	// Methods
 	void GameState();

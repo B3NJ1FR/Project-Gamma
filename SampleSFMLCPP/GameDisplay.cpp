@@ -271,7 +271,7 @@ void Game::DisplayDecor()
 						}
 
 						// Display of the workers
-						m_workersList->DisplayWorkersSprite(sf::Vector2i(x, y), m_camera, m_scale, *m_window);
+						m_workersList->DisplayWorkersSprite(sf::Vector2i(x, y), m_camera, m_scale, m_mainCharacter->GetIsMainCharacterSelected(), *m_window);
 					}
 				}
 			}
@@ -378,6 +378,21 @@ void Game::Display()
 
 	DisplayUIGeneral();
 	m_time->DisplayUITime(*m_window, *m_screenReso);
+
+	// --------------- Display of the manager between main character and workers --------------- 
+
+	if (m_mainCharacter->GetIsMainCharacterSelected())
+	{
+		m_managerBetweenWorkersAndMain->DisplayInsidePortraitFrame(m_mainCharacter->GetSprite(), *m_window);
+	}
+	else
+	{
+		m_managerBetweenWorkersAndMain->DisplayInsidePortraitFrame(m_workersList->GetCurrentWorkerSprite(), *m_window);
+	}
+
+	m_managerBetweenWorkersAndMain->DisplayManagerBetweenWorkersAndMain(*m_window);
+
+
 
 	if (m_isDebuggerModeActive == true)
 	{

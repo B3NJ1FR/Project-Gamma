@@ -60,11 +60,11 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 }
 void VillaManagement::DisplayVillaManagement(sf::RenderWindow &_window)
 {
-	BlitSprite(m_backgroundSprite, 0, _window);
+	BlitSprite(m_backgroundSprite, _window);
 
-	BlitSprite(m_tableSprite, 0, _window);
+	BlitSprite(m_tableSprite, _window);
 	
-	BlitSprite(m_bookshelfSprite, 0, _window);
+	BlitSprite(m_bookshelfSprite, _window);
 
-	BlitSprite(m_entranceSprite, 0, _window);
+	BlitSprite(m_entranceSprite, _window);
 }

@@ -1,7 +1,18 @@
 #include "TimeManagement.h"
 
 
-TimeManagement::TimeManagement(sf::Font *_font, const sf::Vector2i& _screenResolution)
+TimeManagement::TimeManagement()
+{
+	
+}
+
+
+TimeManagement::~TimeManagement()
+{
+
+}
+
+void TimeManagement::Initialisation(sf::Font* _font, const sf::Vector2i& _screenResolution)
 {
 	m_gameClock.restart();
 
@@ -10,7 +21,7 @@ TimeManagement::TimeManagement(sf::Font *_font, const sf::Vector2i& _screenResol
 
 	m_actualMonth = IANUARIUS;
 	m_numberOfYears = RESET;
-	
+
 	m_isMonthHasChanged = false;
 	m_isYearHasChanged = true;
 
@@ -32,10 +43,13 @@ TimeManagement::TimeManagement(sf::Font *_font, const sf::Vector2i& _screenResol
 }
 
 
-TimeManagement::~TimeManagement()
-{
 
+TimeManagement* TimeManagement::GetSingleton()
+{
+	static TimeManagement uniqueInstance;
+	return &uniqueInstance;
 }
+
 
 void TimeManagement::UpdateFrameTime()
 {	
@@ -245,7 +259,7 @@ void TimeManagement::DisplayUITime(sf::RenderWindow &_window, const sf::Vector2i
 	BlitSprite(m_timesSprite[GAME_TRIPLE_SPEED], _screenResolution.x - 535, 45, 0, _window);
 
 	BlitSprite(m_sundial, _screenResolution.x - 435, 45, 0, _window);
-	BlitSprite(m_sundialArrowIndicator, _screenResolution.x - 435, 45, (int)(m_timer.asSeconds() * 4.5f) % (int)(TEMPORARY_TIME * 4.5f) - 45.0f, _window);
+	BlitSprite(m_sundialArrowIndicator, _screenResolution.x - 435, 30, (int)(m_timer.asSeconds() * 3.75f) % (int)(TEMPORARY_TIME * 3.75f) - 20.0f, _window);
 }
 
 

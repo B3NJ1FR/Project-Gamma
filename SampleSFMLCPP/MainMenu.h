@@ -25,9 +25,9 @@ private:
 	sf::Sprite buttonReturn;
 	sf::Sprite warningMessage;
 
-	sf::Text *versionNumber;
-	sf::Text *resolution;
-	sf::Text *fullscreen;
+	sf::Text *versionNumber = nullptr;
+	sf::Text *resolution = nullptr;
+	sf::Text *fullscreen = nullptr;
 	sf::Font font;
 
 	int temporaryResolution;

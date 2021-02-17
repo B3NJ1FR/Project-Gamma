@@ -18,6 +18,7 @@
 #include "PauseWindow.h"
 #include "BuildWindow.h"
 #include "TutorialWindow.h"
+#include "ManagerBetweenWorkersAndMain.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -45,6 +46,7 @@ public:
 	// Shortcut of the window address
 	sf::RenderWindow *m_window = nullptr;
 	sf::Vector2i *m_screenReso = nullptr;
+	GeneralState *m_generalState = nullptr;
 
 	enum CurrentGameState m_actualGameState;
 	enum CurrentGameState m_previousGameState;
@@ -57,6 +59,7 @@ public:
 
 	// Sprites Array
 	sf::Sprite* m_spriteArray;
+	int m_maximalNumberOfSprites;
 
 	// Map
 	Map m_map; // WE DONT LOAD THE MAP
@@ -84,10 +87,11 @@ public:
 	// Time management
 	TimeManagement *m_time;
 
-	// Workers
+	// Entities
 	WorkersList *m_workersList;
 	Purchasers *m_purchasers;
 	MainCharacter *m_mainCharacter;
+	ManagerBetweenWorkersAndMain *m_managerBetweenWorkersAndMain;
 
 	// Selling Window
 	SellingWindow *m_sellingWindow;
@@ -118,6 +122,7 @@ public :
 
 	// Setters
 	void SetWindowMemoryAddress(sf::RenderWindow* _window);
+	void SetGeneralState(GeneralState* _state);
 
 	// Methods
 	void SpritesInitialisation();

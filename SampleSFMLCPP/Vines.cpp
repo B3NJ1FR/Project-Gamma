@@ -647,8 +647,7 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 	{
 		if (m_list->first != nullptr)
 		{
-			int positionCounter(1);
-			bool isBuildingFind(false);
+			bool isBuildingFind = false;
 			
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
@@ -659,11 +658,8 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 					&& isBuildingFind == false)
 				{
 					isBuildingFind = true;
-				}
-				
-				if (isBuildingFind == false)
-				{
-					positionCounter++;
+					currentElement->status = ELEMENT_DELETION_REQUIRED;
+					break;
 				}
 			}
 
@@ -672,7 +668,7 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 			// After having saved the building's position, we ask to destroy it
 			if (isBuildingFind == true)
 			{
-				RemoveElementsOfLinkedList(m_list, true, positionCounter);
+				RemoveElementsOfLinkedList(m_list);
 
 				return true;
 			}
