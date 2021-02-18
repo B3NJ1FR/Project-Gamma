@@ -78,6 +78,9 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	((Vines::sVines *)newVine->data)->isWeeded = false;
 	((Vines::sVines *)newVine->data)->isCared = false;
 
+	((Vines::sVines *)newVine->data)->numberOfWorkersNeededToWorks = m_vineBuilding->GetNumberWorkersNeeded();
+	((Vines::sVines *)newVine->data)->currentNumberOfWorkersPresent = 0;
+
 	newVine->status = ELEMENT_ACTIVE;
 
 	// Add this new vine at the end of the list
@@ -429,6 +432,43 @@ void Vines::UpdateVineProduction(Ressources *_ressource)
 	}
 }
 
+bool Vines::IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent
+						>= ((Vines::sVines*)currentElement->data)->numberOfWorkersNeededToWorks)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool Vines::ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_thisIsAWorker)
 {
 	if (m_list != nullptr)
@@ -465,6 +505,22 @@ bool Vines::ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, cons
 	}	
 }
 
+void Vines::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
+				{
+					((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent += 1;
+				}
+			}
+		}
+	}
+}
 void Vines::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 {
 	if (m_list != nullptr)
@@ -475,10 +531,48 @@ void Vines::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 			{
 				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
 				{
-					((Vines::sVines*)currentElement->data)->isWorkerThere = false;
+					((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent -= 1;
+					
+					if (((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent == 0)
+					{
+						((Vines::sVines*)currentElement->data)->isWorkerThere = false;
+					}
+					else if (((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent < 0)
+					{
+						((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent = 0;
+					}
 				}
 			}
 		}
+	}
+}
+
+int Vines::GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition == ((Vines::sVines*)currentElement->data)->mapPosition)
+				{
+					return ((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent;
+				}
+			}
+
+			return 0;
+
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
 	}
 }
 
@@ -724,7 +818,7 @@ void Vines::LoadingVinesListFromFile(std::ifstream *_file)
 	m_list = LinkedListInitialisation();
 
 
-	// Save the number of vines
+	// Load the number of vines
 	int previousListSize(RESET);
 	_file->read((char *)&previousListSize, sizeof(int));
 

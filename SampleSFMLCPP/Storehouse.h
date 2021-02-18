@@ -18,6 +18,9 @@ public:
 		bool isChangingSprite;
 		bool hasBeenBuilt;
 		bool isWorkerThere;
+
+		int numberOfWorkersNeededToWorks;
+		int currentNumberOfWorkersPresent;
 		
 		int maximalQuantity; // Maximal threshold
 		int internalRessourceCounter;
@@ -39,7 +42,10 @@ public:
 	int GetNumberResourcesStocked(const sf::Vector2f &_mapPosition);
 	void AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity);
 
+	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 	bool ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
+	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const;
 	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition);

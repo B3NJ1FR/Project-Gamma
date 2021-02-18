@@ -34,14 +34,13 @@ void BuildingDestruction::AddNewBuildingToDestroy(const sf::Vector2f& _coordinat
 		LinkedListClass::sElement* newBuildingToDestroy = new LinkedListClass::sElement;
 		newBuildingToDestroy->data = new BuildingToDestroyData;
 
-		// Save the position in map
 		((BuildingToDestroyData*)newBuildingToDestroy->data)->m_coordinates = _coordinates;
 		((BuildingToDestroyData*)newBuildingToDestroy->data)->m_ID = _buildingID;
 		((BuildingToDestroyData*)newBuildingToDestroy->data)->m_destructionTimer = 2.0f;
 
 		newBuildingToDestroy->status = ELEMENT_ACTIVE;
 
-		// Add this new vine at the end of the list
+		// Add this new building at the end of the list
 		AddElementToLinkedList(m_listOfBuildingsToDestroy, newBuildingToDestroy, -1);
 
 		m_isSomeBuildingNeedToBeDestroyed = true;
@@ -288,6 +287,71 @@ void BuildingDestruction::RemoveBuildingOnMap(BuildingManagement *_builds, Map* 
 			{
 				std::cout << "\n\n\n\tError during building destruction\n\n\n";
 			}
+		}
+	}
+}
+
+
+void BuildingDestruction::SavingForFile(std::ofstream* _file)
+{
+	// Save the number of buildings listed to be destroyed
+	_file->write((char*)&m_listOfBuildingsToDestroy->size, sizeof(int));
+
+	// Save the content of the list
+	if (m_listOfBuildingsToDestroy != nullptr)
+	{
+		if (m_listOfBuildingsToDestroy->first != nullptr)
+		{
+			LinkedListClass::sElement* currentElement = m_listOfBuildingsToDestroy->first;
+
+			for (currentElement = m_listOfBuildingsToDestroy->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				_file->write((char*)(BuildingToDestroyData*)currentElement->data, sizeof(BuildingToDestroyData));
+			}
+		}
+	}
+}
+
+void BuildingDestruction::LoadingFromFile(std::ifstream* _file)
+{
+	// Clear the current list
+	if (m_listOfBuildingsToDestroy != nullptr)
+	{
+		FreeLinkedList(m_listOfBuildingsToDestroy);
+	}
+
+
+	// We reinit the list
+	m_listOfBuildingsToDestroy = LinkedListInitialisation();
+
+
+	// Load the number of buildings
+	int previousListSize(RESET);
+	_file->read((char*)&previousListSize, sizeof(int));
+
+	// We add every workers data to the list
+	for (int i = RESET; i < previousListSize; i++)
+	{
+		LinkedListClass::sElement* newBuildingToDestroy = new LinkedListClass::sElement;
+		newBuildingToDestroy->data = new BuildingToDestroyData;
+
+		_file->read((char*)(BuildingToDestroyData*)newBuildingToDestroy->data, sizeof(BuildingToDestroyData));
+
+		newBuildingToDestroy->status = ELEMENT_ACTIVE;
+
+		m_isSomeBuildingNeedToBeDestroyed = true;
+
+		std::cout << "New building to destroy !\n";
+
+		if (i == 0)
+		{
+			// Add this building at the beggining of the list
+			AddElementToLinkedList(m_listOfBuildingsToDestroy, newBuildingToDestroy, 1);
+		}
+		else
+		{
+			// Add this building at the end of the list
+			AddElementToLinkedList(m_listOfBuildingsToDestroy, newBuildingToDestroy, -1);
 		}
 	}
 }

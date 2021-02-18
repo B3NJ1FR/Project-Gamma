@@ -5,6 +5,8 @@ ManagerBetweenWorkersAndMain::ManagerBetweenWorkersAndMain(const sf::Vector2i& _
 	m_portraitFrame = LoadSprite("Data/Assets/Sprites/UI/Manager/portraitFrame.png", sf::Vector2f(150, _screenResolution.y - 100), 1);
 	m_changementLeftArrow = LoadSprite("Data/Assets/Sprites/UI/Manager/left_arrow.png", sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y), 1);
 	m_changementRightArrow = LoadSprite("Data/Assets/Sprites/UI/Manager/right_arrow.png", sf::Vector2f(m_portraitFrame.getPosition().x + SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y), 1);
+	m_keyA = LoadSprite("Data/Assets/Sprites/UI/Manager/key_A.png", sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y + 40), 1);
+	m_keyE = LoadSprite("Data/Assets/Sprites/UI/Manager/key_E.png", sf::Vector2f(m_portraitFrame.getPosition().x + SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y + 40), 1);
 
 	m_valueNumberWorkerOrMainSelected = RESET;
 }
@@ -14,6 +16,8 @@ ManagerBetweenWorkersAndMain::~ManagerBetweenWorkersAndMain()
 	delete (m_changementLeftArrow.getTexture());
 	delete (m_changementRightArrow.getTexture());
 	delete (m_portraitFrame.getTexture());
+	delete (m_keyA.getTexture());
+	delete (m_keyE.getTexture());
 }
 
 void ManagerBetweenWorkersAndMain::CheckClickOnArrows(MainCharacter *_mainCharacter, WorkersList *_workersList, sf::RenderWindow& _window)
@@ -144,8 +148,10 @@ void ManagerBetweenWorkersAndMain::DisplayManagerBetweenWorkersAndMain(sf::Rende
 {
 	// Display the two arrow and the portrait frame inside
 	BlitSprite(m_changementLeftArrow, _window);
+	BlitSprite(m_keyA, _window);
 	BlitSprite(m_portraitFrame, _window);
 	BlitSprite(m_changementRightArrow, _window);
+	BlitSprite(m_keyE, _window);
 }
 
 void ManagerBetweenWorkersAndMain::DisplayInsidePortraitFrame(sf::Sprite _spriteIntoPortraitFrame, sf::RenderWindow& _window)

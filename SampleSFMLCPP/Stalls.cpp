@@ -172,6 +172,24 @@ bool Stalls::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 
 }
 
+bool Stalls::IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const
+{
+	// We verify if the player location is between the origin and the max size of the building concerned
+	if (_mapPosition.x <= m_mapPosition.x
+		&& _mapPosition.x >= m_mapPosition.x - m_building->GetSize().x
+		&& _mapPosition.y <= m_mapPosition.y
+		&& _mapPosition.y >= m_mapPosition.y - m_building->GetSize().y)
+	{
+		if (m_currentNumberOfWorkersPresent >= m_numberOfWorkersNeededToWorks)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
 
 bool Stalls::ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
@@ -212,6 +230,18 @@ bool Stalls::ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const b
 	}
 }
 
+void Stalls::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition)
+{
+	if (_mapPosition.x <= m_mapPosition.x
+		&& _mapPosition.x >= m_mapPosition.x - m_building->GetSize().x
+		&& _mapPosition.y <= m_mapPosition.y
+		&& _mapPosition.y >= m_mapPosition.y - m_building->GetSize().y)
+	{
+		m_currentNumberOfWorkersPresent += 1;
+	}
+}
+
+
 void Stalls::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 {
 	// We verify if the player location is between the origin and the max size of the building concerned
@@ -220,7 +250,25 @@ void Stalls::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 		&& _mapPosition.y <= m_mapPosition.y
 		&& _mapPosition.y >= m_mapPosition.y - m_building->GetSize().y)
 	{
-		m_isWorkerThere = false;
+		m_currentNumberOfWorkersPresent -= 1;
+
+		if (m_currentNumberOfWorkersPresent == 0)
+		{
+			m_isWorkerThere = false;
+		}
+		else if (m_currentNumberOfWorkersPresent < 0)
+		{
+			m_currentNumberOfWorkersPresent = 0;
+		}
+	}
+}
+
+
+int Stalls::GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const
+{
+	if (_mapPosition == m_mapPosition)
+	{
+		return m_currentNumberOfWorkersPresent;
 	}
 }
 

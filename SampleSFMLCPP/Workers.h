@@ -27,6 +27,7 @@ private :
 	bool m_isLauchingMovement; // Temporaire
 	bool m_isItWorkingPlace;
 	bool m_isWorkerWasWorkingInBuilding;
+	bool m_isEnteredIntoBuilding;
 
 	enum TypesOfRessources *m_ressourceHeld;
 	int *m_quantityRessourceHeld;
@@ -42,15 +43,15 @@ public:
 	~Workers();
 
 	// Setters
-	void SetWorkerPosition(const sf::Vector2f& _mapPosition) { m_mapPosition = _mapPosition; };
-	void SetWorkerStatus(const enum WorkerStatus& _newStatus) { m_actualStatus = _newStatus; };
+	inline void SetWorkerPosition(const sf::Vector2f& _mapPosition) { m_mapPosition = _mapPosition; };
+	inline void SetWorkerStatus(const enum WorkerStatus& _newStatus) { m_actualStatus = _newStatus; };
 
-	void SetWorkerMoneyValue(const int& _moneyValue) { m_moneyValue = _moneyValue; };
+	inline void SetWorkerMoneyValue(const int& _moneyValue) { m_moneyValue = _moneyValue; };
 
-	void SetWorkerMoneyCostPerMonth(const int& _moneyCostPerMonth) { m_moneyCostPerMonth = _moneyCostPerMonth; };
-	void SetWorkerIsInWorkingPlace(const bool& _isItWorkingPlace) { m_isItWorkingPlace = _isItWorkingPlace; };
-	void SetTimeToDeposit(const float& _time) { m_timeToDeposit = _time; };
-	void AddTimeToDeposit(const float& _frametime) { m_timeToDeposit += _frametime; };
+	inline void SetWorkerMoneyCostPerMonth(const int& _moneyCostPerMonth) { m_moneyCostPerMonth = _moneyCostPerMonth; };
+	inline void SetWorkerIsInWorkingPlace(const bool& _isItWorkingPlace) { m_isItWorkingPlace = _isItWorkingPlace; };
+	inline void SetTimeToDeposit(const float& _time) { m_timeToDeposit = _time; };
+	inline void AddTimeToDeposit(const float& _frametime) { m_timeToDeposit += _frametime; };
 	void SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short ***_map);
 
 	// Getters

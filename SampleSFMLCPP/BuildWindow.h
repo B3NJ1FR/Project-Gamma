@@ -59,14 +59,13 @@ public:
 	inline void SetIDChosenBuilding(const int& _buildingID) { m_IDChosenBuilding = _buildingID; };
 
 	// Methods
-	bool IsBuildingCheckboxIsInMap(const sf::Vector2i &_mapSize, const sf::Vector2i &_mapPosition);
-
 	void InputBuildingModeOldScrollUI(const float& _scrollDelta, const sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 	void InputPickUpCaseClicked(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution, bool _isBuildingUINeeded, const sf::Vector2f& _camera, const sf::Vector2f& _cameraScale);
 	
 	void SetBuildingOnMap(Map* _map, BuildingManagement* _builds, enum Floors _floorFocused, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i &_mapPosition);
 	void SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
-	
+	void SetGhostDestructionBuildingOnMap(Map* _map, BuildingManagement* _builds, int _typeOfBuilding, const sf::Vector2i& _mapPosition);
+
 	void UpdateTextsBuildWindow(struct Game *_game);
 
 	void InputBuildWindow(struct Game *_game);

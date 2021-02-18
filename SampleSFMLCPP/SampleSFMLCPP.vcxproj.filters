@@ -196,7 +196,7 @@
       <Filter>Fichiers sources\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="BuildingDestruction.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -312,7 +312,7 @@
       <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="BuildingDestruction.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

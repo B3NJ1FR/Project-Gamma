@@ -14,7 +14,7 @@ void UpdateTexts(struct Game *_game)
 		UpdateDynamicsTexts(&_game->m_debbugTexts[5], _game->m_buildWindow.GetBuildingCheckboxSelected().x, _game->m_buildWindow.GetBuildingCheckboxSelected().y);
 
 		// Security to avoid an array exit
-		if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _game->m_buildWindow.GetBuildingCheckboxSelected()))
+		if (_game->m_map.IsCoordinatesIsInMap(_game->m_buildWindow.GetBuildingCheckboxSelected()))
 		{
 			UpdateDynamicsTexts(&_game->m_debbugTexts[7], _game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
 			UpdateDynamicsTexts(&_game->m_debbugTexts[9], _game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);

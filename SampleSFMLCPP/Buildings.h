@@ -47,6 +47,8 @@ protected :
 	int *m_ressourceIDProduced;
 	int *m_ressourceQuantityProduced;
 
+	int m_numberOfWorkersNeededToWorks;
+
 public :
 
 	// Constructor & Destructor
@@ -71,6 +73,7 @@ public :
 	void SetRessourceQuantityNeeded(int *_resssourceQuantity = 0);
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
+	inline void SetNumberWorkersNeeded(int _numberOfWorkers = 1) { m_numberOfWorkersNeededToWorks = _numberOfWorkers; };
 
 	inline std::string GetName() const { return m_name; };
 	inline std::string GetDescription() const { return m_description; };
@@ -84,6 +87,7 @@ public :
 	inline float GetPickupingTimeCost() const { return m_timeToPickUpRessources; };
 	inline unsigned int GetRessourceNumberNeeded() const { return m_numberRessourceNeeded; };
 	inline unsigned int GetRessourceNumberProduced() const { return m_numberRessourceProduced; };
+	inline int GetNumberWorkersNeeded() const { return m_numberOfWorkersNeededToWorks; };
 	
 	int GetRessourceIDNeeded(const unsigned char &_value = 1) const;
 	int GetRessourceQuantityNeeded(const unsigned char &_value = 1) const;

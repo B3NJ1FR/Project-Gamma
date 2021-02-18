@@ -8,6 +8,7 @@ Workers::Workers()
 	m_isLauchingMovement = false;
 	m_isItWorkingPlace = false;
 	m_isWorkerWasWorkingInBuilding = false;
+	m_isEnteredIntoBuilding = false;
 
 	m_isPressingEnd = false;
 	m_isPressingStart = false;
@@ -152,6 +153,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				_builds->m_stall->WorkerLeavingThisPosition(m_mapPosition);
 			}
 
+			m_isEnteredIntoBuilding = false;
 			m_isWorkerWasWorkingInBuilding = false;
 		}
 
@@ -460,6 +462,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// We send at the vines building the confirmation that a worker is there
 			if (_builds->m_vines.ConfirmVinePresenceAtPosition(m_mapPosition, true) == true)
 			{
+				if (!m_isEnteredIntoBuilding)
+				{
+					_builds->m_vines.WorkerEnteringInThisPosition(m_mapPosition);
+
+					m_isEnteredIntoBuilding = true;
+				}
+
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
@@ -480,6 +489,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// We send at the stomping vats building the confirmation that a worker is there
 			if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				if (!m_isEnteredIntoBuilding)
+				{
+					_builds->m_stompingVats.WorkerEnteringInThisPosition(m_mapPosition);
+					
+					m_isEnteredIntoBuilding = true;
+				}
+
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
@@ -500,6 +516,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// We send at the wine press building the confirmation that a worker is there
 			if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				if (!m_isEnteredIntoBuilding)
+				{
+					_builds->m_winePress.WorkerEnteringInThisPosition(m_mapPosition);
+
+					m_isEnteredIntoBuilding = true;
+				}
+
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
@@ -521,6 +544,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// We send at the wine storehouse building the confirmation that a worker is there
 			if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				if (!m_isEnteredIntoBuilding)
+				{
+					_builds->m_wineStorehouse.WorkerEnteringInThisPosition(m_mapPosition);
+
+					m_isEnteredIntoBuilding = true;
+				}
+
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 							   				 
@@ -540,6 +570,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// We send at the storehouse building the confirmation that a worker is there
 			if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				if (!m_isEnteredIntoBuilding)
+				{
+					_builds->m_storehouse.WorkerEnteringInThisPosition(m_mapPosition);
+
+					m_isEnteredIntoBuilding = true;
+				}
+
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 			}
@@ -554,6 +591,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// We send at the wine storehouse building the confirmation that a worker is there
 			if (_builds->m_stall->ConfirmPresenceAtPosition(m_mapPosition, false, true) == true)
 			{
+				if (!m_isEnteredIntoBuilding)
+				{
+					_builds->m_stall->WorkerEnteringInThisPosition(m_mapPosition);
+
+					m_isEnteredIntoBuilding = true;
+				}
+
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 			}

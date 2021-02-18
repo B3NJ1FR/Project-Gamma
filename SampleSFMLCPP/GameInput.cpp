@@ -100,8 +100,15 @@ void GameInput(struct Game *_game)
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == BUILD_MODE)
 				{
-					_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
-					_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
+					if (!_game->m_buildingsListPlanned->IsBuildingListIsEmpty())
+					{
+						_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
+						_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
+					}
+					else
+					{
+						_game->m_mainCharacter->SetMainCharacterStatus(IDLE, false);
+					}
 
 					_game->m_actualGameState = NORMAL_MODE;
 					_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
@@ -350,7 +357,7 @@ void GameInput(struct Game *_game)
 						_game->m_buildWindow.InputPickUpCaseClicked(*_game->m_window, *_game->m_screenReso, false, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
 
 						// Security to avoid an array exit
-						if (_game->m_buildWindow.IsBuildingCheckboxIsInMap(sf::Vector2i(_game->m_map.GetNumberOfColumns(), _game->m_map.GetNumberOfLines()), _game->m_buildWindow.GetBuildingCheckboxSelected()))
+						if (_game->m_map.IsCoordinatesIsInMap(_game->m_buildWindow.GetBuildingCheckboxSelected()))
 						{
 							if (_game->m_mainCharacter->GetIsMainCharacterSelected() == true)
 							{

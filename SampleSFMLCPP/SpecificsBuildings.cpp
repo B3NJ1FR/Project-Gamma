@@ -6,6 +6,7 @@
 SpecificsBuildings::SpecificsBuildings()
 {
 	m_workerIsThereSprite = LoadSprite("Data/Assets/Sprites/Entities/worker_working.png", 1);
+	m_workerInsideSprite = LoadSprite("Data/Assets/Sprites/Entities/worker_inside_building.png", 1);
 }
 
 
@@ -29,30 +30,33 @@ void SpecificsBuildings::InitialisationSpeBuilding(Buildings *_specificBuildingC
 void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 {
 	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
-	newBuilding->data = new SpecificsBuildings::sBuildingData;
+	newBuilding->data = new sBuildingData;
 
 	// Save the position in map
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->mapPosition = _mapPosition;
+	((sBuildingData *)newBuilding->data)->mapPosition = _mapPosition;
 
 	// Init of the building construction status after being placed on map
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->constructionState = PLANNED;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualState = BUILDING_READY_TO_PRODUCE;
+	((sBuildingData *)newBuilding->data)->constructionState = BuildingStatus::PLANNED;
+	((sBuildingData *)newBuilding->data)->actualState = MainBuildingStatus::BUILDING_READY_TO_PRODUCE;
 
 	// A MODIFIER PAR VALEUR SEUIL
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->quantitativeThreshold = m_building->GetRessourceQuantityNeeded();
+	((sBuildingData *)newBuilding->data)->quantitativeThreshold = m_building->GetRessourceQuantityNeeded();
 	// A CONFIGURER
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->maximalQuantity = 5;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalImportRessourceCounter = RESET;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->internalExportRessourceCounter = RESET;
+	((sBuildingData *)newBuilding->data)->maximalQuantity = 5;
+	((sBuildingData *)newBuilding->data)->internalImportRessourceCounter = RESET;
+	((sBuildingData *)newBuilding->data)->internalExportRessourceCounter = RESET;
 
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->lifeTime = RESET;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->actualProductionTime = RESET;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->secondaryTime = RESET;
+	((sBuildingData *)newBuilding->data)->numberOfWorkersNeededToWorks = m_building->GetNumberWorkersNeeded();
+	((sBuildingData *)newBuilding->data)->currentNumberOfWorkersPresent = 0;
+	
+	((sBuildingData *)newBuilding->data)->lifeTime = RESET;
+	((sBuildingData *)newBuilding->data)->actualProductionTime = RESET;
+	((sBuildingData *)newBuilding->data)->secondaryTime = RESET;
 
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isChangingSprite = false;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->hasBeenBuilt = false;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isProduced = false;
-	((SpecificsBuildings::sBuildingData *)newBuilding->data)->isWorkerThere = false;
+	((sBuildingData *)newBuilding->data)->isChangingSprite = false;
+	((sBuildingData *)newBuilding->data)->hasBeenBuilt = false;
+	((sBuildingData *)newBuilding->data)->isProduced = false;
+	((sBuildingData *)newBuilding->data)->isWorkerThere = false;
 
 	newBuilding->status = ELEMENT_ACTIVE;
 
@@ -108,12 +112,17 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime += _frametime;
-
-							if (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime > m_building->GetProductionTimeCost())
+							// We verify the number of worker present in the building is higher or equal than which is needed
+							if (((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent
+								>= ((SpecificsBuildings::sBuildingData*)currentElement->data)->numberOfWorkersNeededToWorks)
 							{
-								((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
-								((SpecificsBuildings::sBuildingData *)currentElement->data)->actualProductionTime = RESET;
+								((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime += _frametime;
+
+								if (((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime > m_building->GetProductionTimeCost())
+								{
+									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
+									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime = RESET;
+								}
 							}
 						}
 
@@ -323,10 +332,79 @@ bool SpecificsBuildings::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 	}
 }
 
-sf::Sprite SpecificsBuildings::GetSpriteWorkerIsThere()
+
+int SpecificsBuildings::GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const
 {
-	return m_workerIsThereSprite;
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					return ((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent;
+				}
+			}
+
+			return 0;
+
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
 }
+
+bool SpecificsBuildings::IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					if (((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent
+						>= ((SpecificsBuildings::sBuildingData*)currentElement->data)->numberOfWorkersNeededToWorks)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
@@ -384,6 +462,26 @@ bool SpecificsBuildings::ConfirmSpecificBuildingPresenceAtPosition(const sf::Vec
 	}
 }
 
+void SpecificsBuildings::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent += 1;
+				}
+			}
+		}
+	}
+}
 void SpecificsBuildings::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 {
 	if (m_list != nullptr)
@@ -398,7 +496,16 @@ void SpecificsBuildings::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosit
 					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
 					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
-					((SpecificsBuildings::sBuildingData*)currentElement->data)->isWorkerThere = false;					
+					((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent -= 1;
+
+					if (((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent == 0)
+					{
+						((SpecificsBuildings::sBuildingData*)currentElement->data)->isWorkerThere = false;
+					}
+					else if (((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent < 0)
+					{
+						((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent = 0;
+					}
 				}
 			}
 		}

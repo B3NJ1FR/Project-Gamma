@@ -38,6 +38,9 @@ public:
 		int internalImportRessourceCounter;
 		int internalExportRessourceCounter;
 
+		int numberOfWorkersNeededToWorks;
+		int currentNumberOfWorkersPresent;
+
 		float lifeTime;
 		float actualProductionTime;
 		float secondaryTime;
@@ -61,9 +64,13 @@ public:
 	void UpdateBuildingProduction(Ressources *_ressource);
 
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
-	sf::Sprite GetSpriteWorkerIsThere();
+	inline sf::Sprite GetSpriteWorkerIsThere() const { return m_workerIsThereSprite; };
+	inline sf::Sprite GetSpriteWorkerInside() const { return m_workerInsideSprite; };
+	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const;
+	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 
 	bool ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
 	void WorkerLeavingThisPosition(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition);
@@ -72,6 +79,8 @@ public:
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
+
+
 	void SavingSpecificsBuildingsListForFile(std::ofstream *_file);
 	void LoadingSpecificsBuildingsListFromFile(std::ifstream *_file);
 
@@ -79,4 +88,5 @@ private:
 	LinkedListClass::sLinkedList *m_list;
 	Buildings *m_building;
 	sf::Sprite m_workerIsThereSprite;
+	sf::Sprite m_workerInsideSprite;
 };

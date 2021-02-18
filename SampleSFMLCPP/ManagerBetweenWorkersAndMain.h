@@ -12,6 +12,8 @@ private:
 	sf::Sprite m_changementLeftArrow;
 	sf::Sprite m_changementRightArrow;
 	sf::Sprite m_portraitFrame;
+	sf::Sprite m_keyA;
+	sf::Sprite m_keyE;
 
 	int m_valueNumberWorkerOrMainSelected;
 

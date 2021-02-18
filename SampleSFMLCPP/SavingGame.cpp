@@ -1,5 +1,6 @@
 #include "SavingGame.h"
 #include "GameDefinitions.h"
+#include "BuildingDestruction.h"
 
 
 SavingGame::SavingGame()
@@ -109,6 +110,10 @@ void SavingGame::SaveTheGame(struct Game *_game)
 	// Saving of the Tutorial progression
 	_game->m_tutorialWindow->SavingTutorialProgressionForFile(&saveFile);
 	std::cout << "Tutorial progression saved !\n";
+
+	// Saving of the Building Destruction List
+	BuildingDestruction::GetSingleton()->SavingForFile(&saveFile);
+	std::cout << "Building Destruction List saved !\n";
 
 	std::cout << "\n\nGame saved successfully !\n\n\n";
 

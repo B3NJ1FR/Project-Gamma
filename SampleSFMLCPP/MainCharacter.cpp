@@ -990,11 +990,13 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 		}
 		else
 		{
-			m_waitingTimer += _game->m_time->GetFrameTime();
+			m_waitingTimer += TimeManagement::GetSingleton()->GetFrameTime();
 
 			// If the main character is waiting, but have buildings planned to be built, we check and launch his movement
 			if (m_isCurrentlyBuilding)
 			{
+				std::cout << "Idle else\n";
+
 				// Test if the list is empty or not
 				if (_game->m_buildingsListPlanned->IsBuildingListIsEmpty())
 				{
@@ -1207,10 +1209,9 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 				_game->m_time->SetTypeOfAcceleration(GAME_PAUSE);
 				_game->m_actualGameState = VILLA_MANAGEMENT;
 			}
-			else
-			{
-				SetMainCharacterStatus(IDLE);
-			}
+
+			SetMainCharacterStatus(IDLE);
+			std::cout << "End\n";
 		}
 		else
 		{

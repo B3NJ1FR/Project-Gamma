@@ -29,6 +29,9 @@ private:
 	int m_maximalQuantity; // Maximal threshold
 	int m_internalRessourceCounter;
 
+	int m_numberOfWorkersNeededToWorks;
+	int m_currentNumberOfWorkersPresent;
+
 	float m_lifeTime;
 	float m_actualProductionTime;
 
@@ -63,9 +66,12 @@ public:
 	inline void PickUpPriceAccepted(const int& _price) { m_priceAccepted = _price; };
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
+	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 	bool ConfirmPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
+	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
 	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
 
+	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const;
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	enum StallStatus GetStatus();
 	enum BuildingStatus GetConstructionStatus();

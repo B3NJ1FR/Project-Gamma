@@ -73,6 +73,9 @@ public:
 		bool isPloughed;
 		bool isWeeded;
 		bool isCared;
+
+		int numberOfWorkersNeededToWorks;
+		int currentNumberOfWorkersPresent;
 	};
 	typedef struct VinesData sVines;
 
@@ -87,8 +90,11 @@ public:
 	void UpdateVineSprite(unsigned short ***_map);
 	void UpdateVineProduction(Ressources *_ressource);
 
+	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 	bool ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_thisIsAWorker = false);
+	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
 	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
+	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const; 
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition);

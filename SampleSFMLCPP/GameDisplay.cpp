@@ -78,7 +78,7 @@ void Game::DisplayDecor()
 											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 											0, *m_window);
 									}
-									else
+									else if (m_map.GetMap()[z - 2][y][x] != BUILDING_WILL_BE_DESTROYED)
 									{
 										sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
 										sf::Vector2f cameraIso = WorldToScreen(m_camera.x, m_camera.y);
@@ -136,7 +136,7 @@ void Game::DisplayDecor()
 											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
 											0, *m_window);
 									}
-									else
+									else if(m_map.GetMap()[z - 2][y][x] != BUILDING_WILL_BE_DESTROYED)
 									{
 										sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
 										sf::Vector2f cameraIso = WorldToScreen(m_camera.x, m_camera.y);
@@ -164,7 +164,7 @@ void Game::DisplayDecor()
 
 							if (m_builds.m_vines.ConfirmVinePresenceAtPosition(sf::Vector2f(x, y)))
 							{
-								if (m_builds.m_vines.GetWorkerIsThere(sf::Vector2f(x, y)))
+								if (m_builds.m_vines.IsBuildingIsWorking(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerIsThere(),
 										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
@@ -174,53 +174,113 @@ void Game::DisplayDecor()
 							}
 							else if (m_builds.m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(sf::Vector2f(x, y), true))
 							{
-								if (m_builds.m_stompingVats.GetWorkerIsThere(sf::Vector2f(x, y)))
+								if (m_builds.m_stompingVats.IsBuildingIsWorking(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerIsThere(),
 										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
 										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
+
+									int quantityOfWorkersInside = m_builds.m_stompingVats.GetNumberOfWorkersPresents(sf::Vector2f(x, y));
+									
+									for (int i = 0; i < quantityOfWorkersInside; i++)
+									{
+										float position = quantityOfWorkersInside * (i - (quantityOfWorkersInside / 2.0f) + 0.5f) * (25.0f / quantityOfWorkersInside);
+
+										BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerInside(),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z) - position,
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 75,
+											0, *m_window);
+									}
 								}
 							}
 							else if (m_builds.m_winePress.ConfirmSpecificBuildingPresenceAtPosition(sf::Vector2f(x, y), true))
 							{
-								if (m_builds.m_winePress.GetWorkerIsThere(sf::Vector2f(x, y)))
+								if (m_builds.m_winePress.IsBuildingIsWorking(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_winePress.GetSpriteWorkerIsThere(),
 										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
 										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
+									
+									int quantityOfWorkersInside = m_builds.m_winePress.GetNumberOfWorkersPresents(sf::Vector2f(x, y));
+
+									for (int i = 0; i < quantityOfWorkersInside; i++)
+									{
+										float position = quantityOfWorkersInside * (i - (quantityOfWorkersInside / 2.0f) + 0.5f) * (25.0f / quantityOfWorkersInside);
+
+										BlitSprite(m_builds.m_winePress.GetSpriteWorkerInside(),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z) - position,
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 75,
+											0, *m_window);
+									}
 								}
 
 							}
 							else if (m_builds.m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(sf::Vector2f(x, y), true))
 							{
-								if (m_builds.m_wineStorehouse.GetWorkerIsThere(sf::Vector2f(x, y)))
+								if (m_builds.m_wineStorehouse.IsBuildingIsWorking(sf::Vector2f(x, y)))
 								{
 									BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerIsThere(),
 										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
 										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
+									
+									int quantityOfWorkersInside = m_builds.m_wineStorehouse.GetNumberOfWorkersPresents(sf::Vector2f(x, y));
+
+									for (int i = 0; i < quantityOfWorkersInside; i++)
+									{
+										float position = quantityOfWorkersInside * (i - (quantityOfWorkersInside / 2.0f) + 0.5f) * (25.0f / quantityOfWorkersInside);
+
+										BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerInside(),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z) - position,
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 75,
+											0, *m_window);
+									}
 								}
 							}
 							else if (m_builds.m_stall->ConfirmPresenceAtPosition(sf::Vector2f(x, y), true))
 							{
-								if (m_builds.m_stall->GetWorkerIsThere(sf::Vector2f(x, y)))
+								if (m_builds.m_stall->IsBuildingIsWorking(sf::Vector2f(x, y)))
 								{
-									BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerIsThere(),
+									BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerIsThere(),
 										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
 										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
+									
+									int quantityOfWorkersInside = m_builds.m_stall->GetNumberOfWorkersPresents(sf::Vector2f(x, y));
+
+									for (int i = 0; i < quantityOfWorkersInside; i++)
+									{
+										float position = quantityOfWorkersInside * (i - (quantityOfWorkersInside / 2.0f) + 0.5f) * (25.0f / quantityOfWorkersInside);
+
+										BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerInside(),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z) - position,
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 75,
+											0, *m_window);
+									}
 								}
 							}
 							else if (m_builds.m_storehouse.ConfirmStorehousePresenceAtPosition(sf::Vector2f(x, y), true))
 							{
-								if (m_builds.m_storehouse.GetWorkerIsThere(sf::Vector2f(x, y)))
+								if (m_builds.m_storehouse.IsBuildingIsWorking(sf::Vector2f(x, y)))
 								{
-									BlitSprite(m_builds.m_wineStorehouse.GetSpriteWorkerIsThere(),
+									BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerIsThere(),
 										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
 										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 110,
 										(int)(m_time->GetGeneralTime() * 100) % 180, *m_window);
+
+									int quantityOfWorkersInside = m_builds.m_storehouse.GetNumberOfWorkersPresents(sf::Vector2f(x, y));
+
+									for (int i = 0; i < quantityOfWorkersInside; i++)
+									{
+										float position = quantityOfWorkersInside * (i - (quantityOfWorkersInside / 2.0f) + 0.5f) * (25.0f / quantityOfWorkersInside);
+
+										BlitSprite(m_builds.m_stompingVats.GetSpriteWorkerInside(),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z) - position,
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z) - 75,
+											0, *m_window);
+									}
 								}
 							}
 						}

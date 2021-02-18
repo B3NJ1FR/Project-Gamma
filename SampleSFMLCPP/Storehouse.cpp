@@ -38,6 +38,9 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 
 	((Storehouse::sStorehouseData *)newStorehouse->data)->lifeTime = RESET;
 
+	((Storehouse::sStorehouseData *)newStorehouse->data)->numberOfWorkersNeededToWorks = m_building->GetNumberWorkersNeeded();
+	((Storehouse::sStorehouseData *)newStorehouse->data)->currentNumberOfWorkersPresent = RESET;
+
 	((Storehouse::sStorehouseData *)newStorehouse->data)->isChangingSprite = false;
 	((Storehouse::sStorehouseData *)newStorehouse->data)->hasBeenBuilt = false;
 	((Storehouse::sStorehouseData *)newStorehouse->data)->isWorkerThere = false;
@@ -249,6 +252,46 @@ void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, con
 //	}
 //}
 
+bool Storehouse::IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					if (((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent
+						>= ((Storehouse::sStorehouseData*)currentElement->data)->numberOfWorkersNeededToWorks)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+
+			return false;
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool Storehouse::ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates, const bool &_thisIsAWorker)
 {
 	if (m_list != nullptr)
@@ -305,6 +348,57 @@ bool Storehouse::ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPos
 	}
 }
 
+void Storehouse::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent += 1;
+				}
+			}
+		}
+	}
+}
+
+int Storehouse::GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					return ((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent;
+				}
+			}
+
+			return 0;
+
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 void Storehouse::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 {
@@ -320,7 +414,16 @@ void Storehouse::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
 					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
-					((Storehouse::sStorehouseData*)currentElement->data)->isWorkerThere = false;
+					((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent -= 1;
+
+					if (((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent == 0)
+					{
+						((Storehouse::sStorehouseData*)currentElement->data)->isWorkerThere = false;
+					}
+					else if (((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent < 0)
+					{
+						((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent = 0;
+					}
 				}
 			}
 		}

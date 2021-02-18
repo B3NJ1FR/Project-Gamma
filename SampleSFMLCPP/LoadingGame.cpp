@@ -1,5 +1,6 @@
 #include "LoadingGame.h"
 #include "GameDefinitions.h"
+#include "BuildingDestruction.h"
 
 // WE DONT LOAD THE MAP
 
@@ -134,9 +135,14 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 
 	std::cout << "Buildings list planned loaded and character launched !\n";
 
-	// Saving of the Tutorial progression
+	// Loading of the Tutorial progression
 	_game->m_tutorialWindow->LoadingTutorialProgressionForFile(&saveFile);
-	std::cout << "Tutorial progression saved !\n";
+	std::cout << "Tutorial progression loaded !\n";
+
+	// Loading of the Building Destruction List
+	BuildingDestruction::GetSingleton()->LoadingFromFile(&saveFile);
+	std::cout << "Building Destruction List loaded !\n";
+
 
 	std::cout << "\n\nGame loaded successfully !\n\n\n";
 
