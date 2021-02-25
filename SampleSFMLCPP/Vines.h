@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ressources.h"
+#include "Storage.h"
 #include "TimeManagement.h"
 #include "Buildings.h"
 #include "LinkedList.h"
@@ -59,6 +59,7 @@ public:
 		sf::Vector2f mapPosition;
 		enum VineStateOfGeneralLife generalState;
 		enum VineStateOfAnnualLife annualState;
+		Storage* storage = nullptr;
 
 		float lifeTime;
 		float actualProductionTime;
@@ -83,6 +84,9 @@ public:
 	Vines();
 	~Vines();
 
+	// Getters
+	Storage* GetStorage(const sf::Vector2f& _mapPosition);
+
 	void InitialisationVines(Buildings *_vine);
 	void ReadVineLinkedList();
 	void AddNewVineToList(sf::Vector2f _mapPosition);
@@ -98,7 +102,7 @@ public:
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition);
-	int VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
+	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 

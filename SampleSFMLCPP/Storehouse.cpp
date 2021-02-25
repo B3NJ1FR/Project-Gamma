@@ -7,9 +7,49 @@ Storehouse::Storehouse()
 
 Storehouse::~Storehouse()
 {
-
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				if (((Storehouse::sStorehouseData*)currentElement->data)->storage != nullptr)
+				{
+					// Delete the storage from the list
+					delete ((Storehouse::sStorehouseData*)currentElement->data)->storage;
+					((Storehouse::sStorehouseData*)currentElement->data)->storage = nullptr;
+				}
+			}
+		}
+	}
 }
 
+Storage* Storehouse::GetStorage(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					if (((Storehouse::sStorehouseData*)currentElement->data)->storage != nullptr)
+					{
+						return ((Storehouse::sStorehouseData*)currentElement->data)->storage;
+					}
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
 
 void Storehouse::InitialisationStorehouse(Buildings *_specificBuildingConcerned)
 {
@@ -35,6 +75,9 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	// Init of the building construction status after being placed on map
 	((Storehouse::sStorehouseData *)newStorehouse->data)->constructionState = PLANNED;
 
+	// Allocation of the storage
+	((Storehouse::sStorehouseData *)newStorehouse->data)->storage = new Storage(1, AMPHORA_OF_WINE);
+	((Storehouse::sStorehouseData *)newStorehouse->data)->storage->SetName("Storehouse");
 
 	((Storehouse::sStorehouseData *)newStorehouse->data)->lifeTime = RESET;
 
@@ -189,7 +232,11 @@ int Storehouse::GetNumberResourcesStocked(const sf::Vector2f &_mapPosition)
 
 			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					// Filling of the building
 					return ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter;
@@ -219,7 +266,11 @@ void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, con
 
 			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				if (((Storehouse::sStorehouseData *)currentElement->data)->mapPosition == _mapPosition)
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += _quantity;
 				}
@@ -534,7 +585,7 @@ bool Storehouse::CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition)
 //}
 
 
-int Storehouse::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
+int Storehouse::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
 	if (m_list != nullptr)
 	{
@@ -587,7 +638,7 @@ int Storehouse::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf:
 }
 
 
-sf::Vector2i Storehouse::StorehouseFindNearestBuilding(const sf::Vector2f &_mapPosition)
+sf::Vector2i Storehouse::FindNearestBuilding(const sf::Vector2f &_mapPosition)
 {
 	sf::Vector2i buildingPosition = { RESET, RESET };
 

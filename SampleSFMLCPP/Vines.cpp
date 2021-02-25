@@ -2,6 +2,7 @@
 #include "GameDefinitions.h"
 #include "ErrorsLogFile.h"
 #include "TimeManagement.h"
+#include "RessourcesManager.h"
 
 
 
@@ -14,7 +15,46 @@ Vines::Vines()
 
 Vines::~Vines()
 {
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				if (((Vines::sVines*)currentElement->data)->storage != nullptr)
+				{
+					// Delete the storage from the list
+					delete ((Vines::sVines*)currentElement->data)->storage;
+					((Vines::sVines*)currentElement->data)->storage = nullptr;
+				}
+			}
+		}
+	}
+}
 
+
+Storage* Vines::GetStorage(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Vines::sVines*)currentElement->data)->storage != nullptr)
+					{
+						return ((Vines::sVines*)currentElement->data)->storage;
+					}
+				}
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 void Vines::InitialisationVines(Buildings *_vine)
@@ -63,6 +103,10 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 
 	// En fonction de la période actuelle, mettre l'annuel state concerné en conséquence
 	((Vines::sVines *)newVine->data)->annualState = NEED_PRUNE;
+
+	// Allocation of the storage
+	((Vines::sVines *)newVine->data)->storage = new Storage(1, GRAPE_VINE);
+	((Vines::sVines *)newVine->data)->storage->SetName("Vines");
 
 	((Vines::sVines *)newVine->data)->lifeTime = RESET;
 	((Vines::sVines *)newVine->data)->actualProductionTime = RESET;
@@ -675,7 +719,7 @@ bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 	}
 }
 
-int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
+bool Vines::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
 	if (m_list != nullptr)
 	{
@@ -703,35 +747,31 @@ int Vines::VinesSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPos
 
 							((Vines::sVines *)currentElement->data)->isProduced = false;
 
+							int quantityProduced = m_vineBuilding->GetRessourceQuantityProduced();
 
-							return m_vineBuilding->GetRessourceQuantityProduced();
+							((Vines::sVines*)currentElement->data)->storage->AddOrSubtractResource(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE), quantityProduced);
+							return true;
 
 						}
 						else
 						{
-							return 0;
+							return false;
 						}
 					}
 					else
 					{
-						return 0;
+						return false;
 					}
 				}
-
 			}
 
-			return 0;
+			return false;
+		}
 
-		}
-		else
-		{
-			return 0;
-		}
+		return false;
 	}
-	else
-	{
-		return 0;
-	}
+	
+	return false;
 }
 
 

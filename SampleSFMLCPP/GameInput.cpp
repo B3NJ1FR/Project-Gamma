@@ -1,5 +1,6 @@
 #include "GameInput.h"
 #include "GameDefinitions.h"
+#include "RessourcesManager.h"
 
 void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _mapSize)
 {
@@ -251,6 +252,11 @@ void GameInput(struct Game *_game)
 					_game->m_managerBetweenWorkersAndMain->CheckClickKeys(false, _game->m_mainCharacter, _game->m_workersList);					
 				}
 
+				if (event.key.code == sf::Keyboard::Subtract
+					|| event.key.code == sf::Keyboard::I)
+				{
+					RessourcesManager::GetSingleton()->DisplayAllStoragesContent();
+				}
 
 				/*if (event.key.code == sf::Keyboard::M)
 				{

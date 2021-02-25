@@ -1,5 +1,7 @@
 #include "Workers.h"
 #include "BuildingManagement.h"
+#include "Ressources.h"
+#include "RessourcesManager.h"
 
 
 Workers::Workers()
@@ -13,6 +15,9 @@ Workers::Workers()
 	m_isPressingEnd = false;
 	m_isPressingStart = false;
 
+
+	m_storage = new Storage();
+	m_storage->SetName("Worker");
 
 	m_ressourceHeld = nullptr;
 	m_quantityRessourceHeld = nullptr;
@@ -35,6 +40,11 @@ Workers::~Workers()
 	if (m_targetedBuilding != nullptr)
 	{
 		delete[] m_targetedBuilding;
+	}
+
+	if (m_storage != nullptr)
+	{
+		delete m_storage;
 	}
 }
 
@@ -499,7 +509,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
-				if (_builds->m_stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_stompingVats.CheckHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -526,7 +536,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 
-				if (_builds->m_winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_winePress.CheckHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -554,7 +564,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				m_isWorkerWasWorkingInBuilding = true;
 				//std::cout << "Working ...\n";
 							   				 
-				if (_builds->m_wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
+				if (_builds->m_wineStorehouse.CheckHasProducedRessource(m_mapPosition) == true)
 				{
 					SetWorkerStatus(PICKUP_RESSOURCES);
 				}
@@ -621,29 +631,31 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 		if (m_currentBuilding == BUILDING_VINES)
 		{
 			// That mean the worker has already picked up a ressource
-			if (m_ressourceHeld != nullptr)
+			if (!m_storage->IsStorageEmpty())
 			{
-				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-				if (*(m_ressourceHeld) == BUNCH_OF_GRAPE)
+				if (m_storage->IsResourceExistHere(BUNCH_OF_GRAPE))
 				{
-					int ressourceProduced = _builds->m_vines.VinesSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-					*(m_quantityRessourceHeld) += ressourceProduced;
-					*(m_targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
-					
-					m_isItWorkingPlace = false;
-					
-					sf::Vector2i targetedPosition = _builds->m_stompingVats.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
-
-					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					if (_builds->m_vines.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
-						ActiveLauchingMovement();
+						Storage::TransferOfTheWholeResource(_builds->m_vines.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
+
+						*(m_targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
+
+						m_isItWorkingPlace = false;
+
+						sf::Vector2i targetedPosition = _builds->m_stompingVats.FindNearestBuilding(m_mapPosition);
+
+						if (targetedPosition != sf::Vector2i(RESET, RESET))
+						{
+							SetEndingPosition(targetedPosition, _map->GetMap());
+							ActiveLauchingMovement();
+						}
+
+						SetWorkerStatus(IDLE);
+
+						std::cout << "Worker, picked up ressources already carried\n";
 					}
-
-					SetWorkerStatus(IDLE);
-
-					std::cout << "Worker, picked up ressources\n";
 				}
 				else
 				{
@@ -653,23 +665,18 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->m_vines.VinesSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
-				if (ressourceProduced != 0 && ressourceProduced > 0)
+				if (_builds->m_vines.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 				{
-					m_ressourceHeld = new enum TypesOfRessources;
-					m_quantityRessourceHeld = new int;
-					m_targetedBuilding = new enum TypeOfBuilding;
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
+					Storage::TransferOfTheWholeResource(_builds->m_vines.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
 
-					*(m_ressourceHeld) = BUNCH_OF_GRAPE;
-					*(m_quantityRessourceHeld) = ressourceProduced;
+					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
 
 					m_isItWorkingPlace = false;
 
-					
-					sf::Vector2i targetedPosition = _builds->m_stompingVats.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_stompingVats.FindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -682,10 +689,6 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->m_vines.CheckVineHasProducedRessource(m_mapPosition) == true)
-				{
-					SetWorkerStatus(PICKUP_RESSOURCES);
-				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
 				else if (_builds->m_vines.CheckVineHasProducedRessource(m_mapPosition) == false)
 				{
@@ -700,30 +703,34 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 		}
 		else if (m_currentBuilding == BUILDING_GRAPE_STOMPING_VATS)
 		{
+			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 			// That mean the worker has already picked up a ressource
-			if (m_ressourceHeld != nullptr)
+			if (!m_storage->IsStorageEmpty())
 			{
-				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-				if (*(m_ressourceHeld) == GRAPES_MUST)
+				if (m_storage->IsResourceExistHere(GRAPES_MUST))
 				{
-					int ressourceProduced = _builds->m_stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-					*(m_quantityRessourceHeld) += ressourceProduced;
-					*(m_targetedBuilding) = BUILDING_WINE_PRESS;
-
-					m_isItWorkingPlace = false;
-
-					sf::Vector2i targetedPosition = _builds->m_winePress.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
-
-					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPES_MUST))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
-						ActiveLauchingMovement();
+						Storage::TransferOfTheWholeResource(_builds->m_stompingVats.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPES_MUST));
+
+						*(m_targetedBuilding) = BUILDING_WINE_PRESS;
+
+						m_isItWorkingPlace = false;
+
+						sf::Vector2i targetedPosition = _builds->m_winePress.FindNearestBuilding(m_mapPosition);
+
+						if (targetedPosition != sf::Vector2i(RESET, RESET))
+						{
+							SetEndingPosition(targetedPosition, _map->GetMap());
+							ActiveLauchingMovement();
+						}
+
+						SetWorkerStatus(IDLE);
+
+						std::cout << "Worker, picked up ressources already carried\n";
 					}
-
-					SetWorkerStatus(IDLE);
-
-					std::cout << "Worker, picked up ressources\n";
 				}
 				else
 				{
@@ -733,22 +740,18 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->m_stompingVats.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
-				if (ressourceProduced != 0 && ressourceProduced > 0)
+				if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPES_MUST))
 				{
-					m_ressourceHeld = new enum TypesOfRessources;
-					m_quantityRessourceHeld = new int;
-					m_targetedBuilding = new enum TypeOfBuilding;
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPES_MUST));
+					Storage::TransferOfTheWholeResource(_builds->m_stompingVats.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPES_MUST));
 
-					*(m_ressourceHeld) = GRAPES_MUST;
-					*(m_quantityRessourceHeld) = ressourceProduced;
+					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_WINE_PRESS;
 
 					m_isItWorkingPlace = false;
-					
-					sf::Vector2i targetedPosition = _builds->m_winePress.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+
+					sf::Vector2i targetedPosition = _builds->m_winePress.FindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -761,12 +764,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->m_stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
-				{
-					SetWorkerStatus(PICKUP_RESSOURCES);
-				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->m_stompingVats.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_stompingVats.CheckHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -774,36 +773,113 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, error during pick up of ressources\n";
 				}
 			}
+
+			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			//// That mean the worker has already picked up a ressource
+			//if (m_ressourceHeld != nullptr)
+			//{
+			//	// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+			//	if (*(m_ressourceHeld) == GRAPES_MUST)
+			//	{
+			//		int ressourceProduced = _builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime());
+
+			//		*(m_quantityRessourceHeld) += ressourceProduced;
+			//		*(m_targetedBuilding) = BUILDING_WINE_PRESS;
+
+			//		m_isItWorkingPlace = false;
+
+			//		sf::Vector2i targetedPosition = _builds->m_winePress.FindNearestBuilding(m_mapPosition);
+
+			//		if (targetedPosition != sf::Vector2i(RESET, RESET))
+			//		{
+			//			SetEndingPosition(targetedPosition, _map->GetMap());
+			//			ActiveLauchingMovement();
+			//		}
+
+			//		SetWorkerStatus(IDLE);
+
+			//		std::cout << "Worker, picked up ressources\n";
+			//	}
+			//	else
+			//	{
+			//		std::cout << "The current worker already has a ressource in hands\n\n";
+			//		SetWorkerStatus(IDLE);
+			//	}
+			//}
+			//else
+			//{
+			//	int ressourceProduced = _builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime());
+
+			//	// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
+			//	if (ressourceProduced != 0 && ressourceProduced > 0)
+			//	{
+			//		m_ressourceHeld = new enum TypesOfRessources;
+			//		m_quantityRessourceHeld = new int;
+			//		m_targetedBuilding = new enum TypeOfBuilding;
+
+			//		*(m_ressourceHeld) = GRAPES_MUST;
+			//		*(m_quantityRessourceHeld) = ressourceProduced;
+			//		*(m_targetedBuilding) = BUILDING_WINE_PRESS;
+
+			//		m_isItWorkingPlace = false;
+			//		
+			//		sf::Vector2i targetedPosition = _builds->m_winePress.FindNearestBuilding(m_mapPosition);
+
+			//		if (targetedPosition != sf::Vector2i(RESET, RESET))
+			//		{
+			//			SetEndingPosition(targetedPosition, _map->GetMap());
+			//			ActiveLauchingMovement();
+			//		}
+
+			//		SetWorkerStatus(IDLE);
+
+			//		std::cout << "Worker, picked up ressources\n";
+			//	}
+			//	// We check if the building is still in the produced state
+			//	else if (_builds->m_stompingVats.CheckHasProducedRessource(m_mapPosition) == true)
+			//	{
+			//		SetWorkerStatus(PICKUP_RESSOURCES);
+			//	}
+			//	// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
+			//	else if (_builds->m_stompingVats.CheckHasProducedRessource(m_mapPosition) == false)
+			//	{
+			//		// For security, we reaffect the worker to the WORKING status
+			//		SetWorkerStatus(WORKING);
+
+			//		std::cout << "Worker, error during pick up of ressources\n";
+			//	}
+			//}
 
 		}
 		else if (m_currentBuilding == BUILDING_WINE_PRESS)
 		{
 			// That mean the worker has already picked up a ressource
-			if (m_ressourceHeld != nullptr)
+			if (!m_storage->IsStorageEmpty())
 			{
-				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-				if (*(m_ressourceHeld) == GRAPE_JUICE)
+				if (m_storage->IsResourceExistHere(GRAPE_JUICE))
 				{
-					int ressourceProduced = _builds->m_winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-					*(m_quantityRessourceHeld) += ressourceProduced;
-					*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
-					
-					m_isItWorkingPlace = false;
-
-					sf::Vector2i targetedPosition = _builds->m_wineStorehouse.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
-
-					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPE_JUICE))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
-						ActiveLauchingMovement();
+						Storage::TransferOfTheWholeResource(_builds->m_winePress.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPE_JUICE));
+
+						*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
+
+						m_isItWorkingPlace = false;
+
+						sf::Vector2i targetedPosition = _builds->m_wineStorehouse.FindNearestBuilding(m_mapPosition);
+
+						if (targetedPosition != sf::Vector2i(RESET, RESET))
+						{
+							SetEndingPosition(targetedPosition, _map->GetMap());
+							ActiveLauchingMovement();
+						}
+
+						SetWorkerStatus(IDLE);
+
+						std::cout << "Worker, picked up ressources already carried\n";
 					}
-
-					SetWorkerStatus(IDLE);
-
-					std::cout << "Worker, picked up ressources\n";
-
-					
 				}
 				else
 				{
@@ -813,22 +889,18 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->m_winePress.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
-				if (ressourceProduced != 0 && ressourceProduced > 0)
+				if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPE_JUICE))
 				{
-					m_ressourceHeld = new enum TypesOfRessources;
-					m_quantityRessourceHeld = new int;
-					m_targetedBuilding = new enum TypeOfBuilding;
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPE_JUICE));
+					Storage::TransferOfTheWholeResource(_builds->m_winePress.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPE_JUICE));
 
-					*(m_ressourceHeld) = GRAPE_JUICE;
-					*(m_quantityRessourceHeld) = ressourceProduced;
+					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
 
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->m_wineStorehouse.SpecificsBuildingsFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_wineStorehouse.FindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -841,12 +913,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->m_winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
-				{
-					SetWorkerStatus(PICKUP_RESSOURCES);
-				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->m_winePress.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_winePress.CheckHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -854,36 +922,115 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, error during pick up of ressources\n";
 				}
 			}
+
+			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			//// That mean the worker has already picked up a ressource
+			//if (m_ressourceHeld != nullptr)
+			//{
+			//	// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+			//	if (*(m_ressourceHeld) == GRAPE_JUICE)
+			//	{
+			//		int ressourceProduced = _builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime());
+
+			//		*(m_quantityRessourceHeld) += ressourceProduced;
+			//		*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
+			//		
+			//		m_isItWorkingPlace = false;
+
+			//		sf::Vector2i targetedPosition = _builds->m_wineStorehouse.FindNearestBuilding(m_mapPosition);
+
+			//		if (targetedPosition != sf::Vector2i(RESET, RESET))
+			//		{
+			//			SetEndingPosition(targetedPosition, _map->GetMap());
+			//			ActiveLauchingMovement();
+			//		}
+
+			//		SetWorkerStatus(IDLE);
+
+			//		std::cout << "Worker, picked up ressources\n";
+
+			//		
+			//	}
+			//	else
+			//	{
+			//		std::cout << "The current worker already has a ressource in hands\n\n";
+			//		SetWorkerStatus(IDLE);
+			//	}
+			//}
+			//else
+			//{
+			//	int ressourceProduced = _builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime());
+
+			//	// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
+			//	if (ressourceProduced != 0 && ressourceProduced > 0)
+			//	{
+			//		m_ressourceHeld = new enum TypesOfRessources;
+			//		m_quantityRessourceHeld = new int;
+			//		m_targetedBuilding = new enum TypeOfBuilding;
+
+			//		*(m_ressourceHeld) = GRAPE_JUICE;
+			//		*(m_quantityRessourceHeld) = ressourceProduced;
+			//		*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
+
+			//		m_isItWorkingPlace = false;
+
+			//		sf::Vector2i targetedPosition = _builds->m_wineStorehouse.FindNearestBuilding(m_mapPosition);
+
+			//		if (targetedPosition != sf::Vector2i(RESET, RESET))
+			//		{
+			//			SetEndingPosition(targetedPosition, _map->GetMap());
+			//			ActiveLauchingMovement();
+			//		}
+
+			//		SetWorkerStatus(IDLE);
+
+			//		std::cout << "Worker, picked up ressources\n";
+			//	}
+			//	// We check if the building is still in the produced state
+			//	else if (_builds->m_winePress.CheckHasProducedRessource(m_mapPosition) == true)
+			//	{
+			//		SetWorkerStatus(PICKUP_RESSOURCES);
+			//	}
+			//	// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
+			//	else if (_builds->m_winePress.CheckHasProducedRessource(m_mapPosition) == false)
+			//	{
+			//		// For security, we reaffect the worker to the WORKING status
+			//		SetWorkerStatus(WORKING);
+
+			//		std::cout << "Worker, error during pick up of ressources\n";
+			//	}
+			//}
 
 		}
 		else if (m_currentBuilding == BUILDING_WINE_STOREHOUSE)
 		{
 			// That mean the worker has already picked up a ressource
-			if (m_ressourceHeld != nullptr)
+			if (!m_storage->IsStorageEmpty())
 			{
-				// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-				if (*(m_ressourceHeld) == AMPHORA_OF_WINE)
+				if (m_storage->IsResourceExistHere(AMPHORA_OF_WINE))
 				{
-					int ressourceProduced = _builds->m_wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-					*(m_quantityRessourceHeld) += ressourceProduced;
-					*(m_targetedBuilding) = BUILDING_STOREHOUSE;
-					
-					m_isItWorkingPlace = false;
-
-					sf::Vector2i targetedPosition = _builds->m_storehouse.StorehouseFindNearestBuilding(m_mapPosition);
-
-					if (targetedPosition != sf::Vector2i(RESET, RESET))
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), AMPHORA_OF_WINE))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
-						ActiveLauchingMovement();
+						Storage::TransferOfTheWholeResource(_builds->m_wineStorehouse.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+						*(m_targetedBuilding) = BUILDING_STOREHOUSE;
+
+						m_isItWorkingPlace = false;
+
+						sf::Vector2i targetedPosition = _builds->m_storehouse.FindNearestBuilding(m_mapPosition);
+
+						if (targetedPosition != sf::Vector2i(RESET, RESET))
+						{
+							SetEndingPosition(targetedPosition, _map->GetMap());
+							ActiveLauchingMovement();
+						}
+
+						SetWorkerStatus(IDLE);
+
+						std::cout << "Worker, picked up ressources already carried\n";
 					}
-
-					SetWorkerStatus(IDLE);
-
-					std::cout << "Worker, picked up ressources\n";
-
-					
 				}
 				else
 				{
@@ -893,22 +1040,18 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				int ressourceProduced = _builds->m_wineStorehouse.SpecificsBuildingsSendRessourceProducedToPresentWorker(m_mapPosition, _time->GetFrameTime());
-
-				// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
-				if (ressourceProduced != 0 && ressourceProduced > 0)
+				if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), AMPHORA_OF_WINE))
 				{
-					m_ressourceHeld = new enum TypesOfRessources;
-					m_quantityRessourceHeld = new int;
-					m_targetedBuilding = new enum TypeOfBuilding;
+					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+					Storage::TransferOfTheWholeResource(_builds->m_wineStorehouse.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
 
-					*(m_ressourceHeld) = AMPHORA_OF_WINE;
-					*(m_quantityRessourceHeld) = ressourceProduced;
+					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_STOREHOUSE;
 
 					m_isItWorkingPlace = false;
 
-					sf::Vector2i targetedPosition = _builds->m_storehouse.StorehouseFindNearestBuilding(m_mapPosition);
+					sf::Vector2i targetedPosition = _builds->m_storehouse.FindNearestBuilding(m_mapPosition);
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
@@ -921,12 +1064,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, picked up ressources\n";
 				}
 				// We check if the building is still in the produced state
-				else if (_builds->m_wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == true)
-				{
-					SetWorkerStatus(PICKUP_RESSOURCES);
-				}
 				// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
-				else if (_builds->m_wineStorehouse.CheckSpecificBuildingHasProducedRessource(m_mapPosition) == false)
+				else if (_builds->m_wineStorehouse.CheckHasProducedRessource(m_mapPosition) == false)
 				{
 					// For security, we reaffect the worker to the WORKING status
 					SetWorkerStatus(WORKING);
@@ -934,6 +1073,85 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 					std::cout << "Worker, error during pick up of ressources\n";
 				}
 			}
+
+
+
+			//// That mean the worker has already picked up a ressource
+			//if (m_ressourceHeld != nullptr)
+			//{
+			//	// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
+			//	if (*(m_ressourceHeld) == AMPHORA_OF_WINE)
+			//	{
+			//		int ressourceProduced = _builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime());
+
+			//		*(m_quantityRessourceHeld) += ressourceProduced;
+			//		*(m_targetedBuilding) = BUILDING_STOREHOUSE;
+			//		
+			//		m_isItWorkingPlace = false;
+
+			//		sf::Vector2i targetedPosition = _builds->m_storehouse.FindNearestBuilding(m_mapPosition);
+
+			//		if (targetedPosition != sf::Vector2i(RESET, RESET))
+			//		{
+			//			SetEndingPosition(targetedPosition, _map->GetMap());
+			//			ActiveLauchingMovement();
+			//		}
+
+			//		SetWorkerStatus(IDLE);
+
+			//		std::cout << "Worker, picked up ressources\n";
+
+			//		
+			//	}
+			//	else
+			//	{
+			//		std::cout << "The current worker already has a ressource in hands\n\n";
+			//		SetWorkerStatus(IDLE);
+			//	}
+			//}
+			//else
+			//{
+			//	int ressourceProduced = _builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime());
+
+			//	// If this variable is higher than 0, that mean that the building has produced some ressources and the worker picked up it
+			//	if (ressourceProduced != 0 && ressourceProduced > 0)
+			//	{
+			//		m_ressourceHeld = new enum TypesOfRessources;
+			//		m_quantityRessourceHeld = new int;
+			//		m_targetedBuilding = new enum TypeOfBuilding;
+
+			//		*(m_ressourceHeld) = AMPHORA_OF_WINE;
+			//		*(m_quantityRessourceHeld) = ressourceProduced;
+			//		*(m_targetedBuilding) = BUILDING_STOREHOUSE;
+
+			//		m_isItWorkingPlace = false;
+
+			//		sf::Vector2i targetedPosition = _builds->m_storehouse.FindNearestBuilding(m_mapPosition);
+
+			//		if (targetedPosition != sf::Vector2i(RESET, RESET))
+			//		{
+			//			SetEndingPosition(targetedPosition, _map->GetMap());
+			//			ActiveLauchingMovement();
+			//		}
+
+			//		SetWorkerStatus(IDLE);
+
+			//		std::cout << "Worker, picked up ressources\n";
+			//	}
+			//	// We check if the building is still in the produced state
+			//	else if (_builds->m_wineStorehouse.CheckHasProducedRessource(m_mapPosition) == true)
+			//	{
+			//		SetWorkerStatus(PICKUP_RESSOURCES);
+			//	}
+			//	// If the result is false, that mean the building isn't there or has been destroyed or isn't ready to produce
+			//	else if (_builds->m_wineStorehouse.CheckHasProducedRessource(m_mapPosition) == false)
+			//	{
+			//		// For security, we reaffect the worker to the WORKING status
+			//		SetWorkerStatus(WORKING);
+
+			//		std::cout << "Worker, error during pick up of ressources\n";
+			//	}
+			//}
 		}
 		else
 		{
@@ -944,182 +1162,171 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 
 	case DEPOSIT_RESSOURCES:
 		
-		if (m_ressourceHeld != nullptr)
+		if (m_storage != nullptr)
 		{
-			switch (*(m_ressourceHeld))
+			for (int i = 0; i < m_storage->GetNumberOfResources(); i++)
 			{
-			case GRAPE_VINE:
-				break;
-			case BUNCH_OF_GRAPE:
-
-				if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
+				switch (Ressources::GetEnumFromName(m_storage[0].GetName()))
 				{
-					AddTimeToDeposit(_time->GetFrameTime());
+				case GRAPE_VINE:
+					break;
+				case BUNCH_OF_GRAPE:
 
-					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
+					if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 					{
-						std::cout << "Worker, want to deposit ressources\n";
+						m_timeToDeposit += _time->GetFrameTime();
 
-						_ressources[*(m_ressourceHeld)].AddOrSubtractQuantityOwned(*(m_quantityRessourceHeld));
+						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
+						{
+							std::cout << "Worker, want to deposit ressources\n";
 
-						SetTimeToDeposit(RESET);
+							Storage::TransferOfTheWholeResource(m_storage, _builds->m_stompingVats.GetStorage(m_mapPosition), Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
+							m_storage->RemoveResourceOfStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
 
-						// Reset of the main data
-						delete m_ressourceHeld;
-						delete m_quantityRessourceHeld;
-						delete m_targetedBuilding;
+							SetTimeToDeposit(RESET);
 
-						m_ressourceHeld = nullptr;
-						m_quantityRessourceHeld = nullptr;
-						m_targetedBuilding = nullptr;
+							// Reset of the main data
+							delete m_targetedBuilding;
+							m_targetedBuilding = nullptr;
 
-						SetWorkerStatus(WORKING);
+							SetWorkerStatus(WORKING);
+						}
 					}
-				}
-				else
-				{
-					SetWorkerStatus(IDLE);
-				}
-
-				break;
-			case GRAPES_MUST:
-
-				if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
-				{
-					AddTimeToDeposit(_time->GetFrameTime());
-
-					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
+					else
 					{
-						std::cout << "Worker, want to deposit ressources\n";
-
-						_ressources[*(m_ressourceHeld)].AddOrSubtractQuantityOwned(*(m_quantityRessourceHeld));
-
-						SetTimeToDeposit(RESET);
-
-						// Reset of the main data
-						delete m_ressourceHeld;
-						delete m_quantityRessourceHeld;
-						delete m_targetedBuilding;
-
-						m_ressourceHeld = nullptr;
-						m_quantityRessourceHeld = nullptr;
-						m_targetedBuilding = nullptr;
-
-						SetWorkerStatus(WORKING);
+						SetWorkerStatus(IDLE);
 					}
-				}
-				else
-				{
-					SetWorkerStatus(IDLE);
-				}
 
-				break;
-			case GRAPE_JUICE:
+					break;
+				case GRAPES_MUST:
 
-				if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
-				{
-					AddTimeToDeposit(_time->GetFrameTime());
-
-					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+					if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 					{
-						std::cout << "Worker, want to deposit ressources\n";
+						m_timeToDeposit += _time->GetFrameTime();
 
-						_ressources[*(m_ressourceHeld)].AddOrSubtractQuantityOwned(*(m_quantityRessourceHeld));
+						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
+						{
+							std::cout << "Worker, want to deposit ressources\n";
 
-						SetTimeToDeposit(RESET);
+							Storage::TransferOfTheWholeResource(m_storage, _builds->m_winePress.GetStorage(m_mapPosition), Ressources::GetNameFromEnum(GRAPES_MUST));
+							m_storage->RemoveResourceOfStorage(Ressources::GetNameFromEnum(GRAPES_MUST));
 
-						// Reset of the main data
-						delete m_ressourceHeld;
-						delete m_quantityRessourceHeld;
-						delete m_targetedBuilding;
+							SetTimeToDeposit(RESET);
 
-						m_ressourceHeld = nullptr;
-						m_quantityRessourceHeld = nullptr;
-						m_targetedBuilding = nullptr;
+							// Reset of the main data
+							delete m_targetedBuilding;
+							m_targetedBuilding = nullptr;
 
-						SetWorkerStatus(WORKING);
+							SetWorkerStatus(WORKING);
+						}
 					}
-				}
-				else
-				{
-					SetWorkerStatus(IDLE);
-				}
-
-				break;
-			case PURE_GRAPE_JUICE:
-
-				break;
-			case GRAPE_MARC:
-
-				break;
-			case DOLIUM:
-
-				break;
-			case AMPHORAS:
-
-				AddTimeToDeposit(_time->GetFrameTime());
-
-				if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
-				{
-					std::cout << "Worker, want to deposit ressources\n";
-
-					_ressources[*(m_ressourceHeld)].AddOrSubtractQuantityOwned(*(m_quantityRessourceHeld));
-
-					SetTimeToDeposit(RESET);
-
-					// Reset of the main data
-					delete m_ressourceHeld;
-					delete m_quantityRessourceHeld;
-					delete m_targetedBuilding;
-
-					m_ressourceHeld = nullptr;
-					m_quantityRessourceHeld = nullptr;
-					m_targetedBuilding = nullptr;
-
-					SetWorkerStatus(WORKING);
-				}
-
-				break;
-			case AMPHORA_OF_WINE:
-				
-				if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true))
-				{
-					AddTimeToDeposit(_time->GetFrameTime());
-
-					if (GetTimeToDeposit() >= _builds->m_buildings[BUILDING_STOREHOUSE].GetDepositingTimeCost())
+					else
 					{
-						std::cout << "Worker, deposit amphora of wine ressources\n";
-
-						_ressources[*(m_ressourceHeld)].AddOrSubtractQuantityOwned(*(m_quantityRessourceHeld));
-
-						SetTimeToDeposit(RESET);
-
-						// Reset of the main data
-						delete m_ressourceHeld;
-						delete m_quantityRessourceHeld;
-						delete m_targetedBuilding;
-
-						m_ressourceHeld = nullptr;
-						m_quantityRessourceHeld = nullptr;
-						m_targetedBuilding = nullptr;
-
-						SetWorkerStatus(WORKING);
+						SetWorkerStatus(IDLE);
 					}
-				}
-				else
-				{
-					SetWorkerStatus(IDLE);
-				}
 
-				break;
-			case TOOLS:
-				break;
-			case WICKER_BASKET:
-				break;
-			default:
-				break;
+					break;
+				case GRAPE_JUICE:
+
+					if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
+					{
+						m_timeToDeposit += _time->GetFrameTime();
+
+						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+						{
+							std::cout << "Worker, want to deposit ressources\n";
+
+							Storage::TransferOfTheWholeResource(m_storage, _builds->m_wineStorehouse.GetStorage(m_mapPosition), Ressources::GetNameFromEnum(GRAPE_JUICE));
+							m_storage->RemoveResourceOfStorage(Ressources::GetNameFromEnum(GRAPE_JUICE));
+
+							SetTimeToDeposit(RESET);
+
+							// Reset of the main data
+							delete m_targetedBuilding;
+							m_targetedBuilding = nullptr;
+
+							SetWorkerStatus(WORKING);
+						}
+					}
+					else
+					{
+						SetWorkerStatus(IDLE);
+					}
+
+					break;
+				case PURE_GRAPE_JUICE:
+
+					break;
+				case GRAPE_MARC:
+
+					break;
+				case DOLIUM:
+
+					break;
+				case AMPHORAS:
+					if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
+					{
+						m_timeToDeposit += _time->GetFrameTime();
+
+						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
+						{
+							std::cout << "Worker, want to deposit ressources\n";
+
+							Storage::TransferOfTheWholeResource(m_storage, _builds->m_wineStorehouse.GetStorage(m_mapPosition), Ressources::GetNameFromEnum(AMPHORAS));
+							m_storage->RemoveResourceOfStorage(Ressources::GetNameFromEnum(AMPHORAS));
+
+							SetTimeToDeposit(RESET);
+
+							// Reset of the main data
+							delete m_targetedBuilding;
+							m_targetedBuilding = nullptr;
+
+							SetWorkerStatus(WORKING);
+						}
+					}
+					else
+					{
+						SetWorkerStatus(IDLE);
+					}
+
+					break;
+				case AMPHORA_OF_WINE:
+
+					if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true))
+					{
+						m_timeToDeposit += _time->GetFrameTime();
+
+						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_STOREHOUSE].GetDepositingTimeCost())
+						{
+							std::cout << "Worker, deposit amphora of wine ressources\n";
+
+							Storage::TransferOfTheWholeResource(m_storage, _builds->m_storehouse.GetStorage(m_mapPosition), Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+							m_storage->RemoveResourceOfStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+							SetTimeToDeposit(RESET);
+
+							// Reset of the main data
+							delete m_targetedBuilding;
+							m_targetedBuilding = nullptr;
+
+							SetWorkerStatus(WORKING);
+						}
+					}
+					else
+					{
+						SetWorkerStatus(IDLE);
+					}
+
+					break;
+				case TOOLS:
+					break;
+				case WICKER_BASKET:
+					break;
+				default:
+					break;
+				}
 			}
-						
+
 		}
 		else
 		{

@@ -1139,16 +1139,17 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 						_game->m_builds.m_vines.AddNewVineToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_GRAPE_STOMPING_VATS:
-						_game->m_builds.m_stompingVats.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.m_stompingVats.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap(), GRAPES_MUST);
 						break;
 					case BUILDING_WINE_PRESS:
-						_game->m_builds.m_winePress.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.m_winePress.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap(), GRAPE_JUICE);
 						break;
 					case BUILDING_WINE_STOREHOUSE:
-						_game->m_builds.m_wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.m_wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap(), AMPHORA_OF_WINE);
 						break;
 					case BUILDING_STOREHOUSE:
 						_game->m_builds.m_storehouse.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						_game->m_builds.m_storehouse.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap())->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORAS));
 						_game->m_builds.m_stall->AddStorehousePosition((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_STALL:

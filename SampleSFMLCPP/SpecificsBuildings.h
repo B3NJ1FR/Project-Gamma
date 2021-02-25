@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ressources.h"
+#include "Storage.h"
 #include "Buildings.h"
 #include "LinkedList.h"
 
@@ -33,6 +33,8 @@ public:
 		enum BuildingStatus constructionState;
 		enum MainBuildingStatus actualState;
 
+		Storage* storage = nullptr;
+
 		int quantitativeThreshold; // Seuil minimum de lancement
 		int maximalQuantity; // Seuil maximal
 		int internalImportRessourceCounter;
@@ -56,8 +58,11 @@ public:
 	SpecificsBuildings();
 	~SpecificsBuildings();
 
+	// Getters
+	Storage* GetStorage(const sf::Vector2f& _mapPosition);
+
 	void InitialisationSpeBuilding(Buildings *_specificBuildingConcerned);
-	void AddNewBuildingToList(sf::Vector2f _mapPosition);
+	void AddNewBuildingToList(sf::Vector2f _mapPosition, enum TypesOfRessources _ressource);
 	void UpdateBuildingConstruction(const float &_frametime);
 	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource, Ressources *_ressourceProduced);
 	void UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building);
@@ -72,10 +77,10 @@ public:
 	bool ConfirmSpecificBuildingPresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
 	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
 	void WorkerLeavingThisPosition(const sf::Vector2f &_mapPosition);
-	bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
+	bool CheckHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition);
-	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
-	sf::Vector2i SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition);
+	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime, enum TypesOfRessources _ressource);
+	sf::Vector2i FindNearestBuilding(const sf::Vector2f &_mapPosition);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 

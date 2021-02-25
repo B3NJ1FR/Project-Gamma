@@ -4,6 +4,7 @@
 
 enum TypesOfRessources
 {
+	RESSOURCE_NOT_DEFINED = -1,
 	GRAPE_VINE,
 	BUNCH_OF_GRAPE,
 	GRAPES_MUST,
@@ -28,6 +29,9 @@ private :
 public :
 	// Constructor & Destructor
 	Ressources();
+	Ressources(std::string _name);
+	Ressources(enum TypesOfRessources _name);
+	Ressources(const Ressources& _ressourceToCopy);
 	~Ressources();
 
 	// Setters
@@ -37,7 +41,9 @@ public :
 	void AddOrSubtractQuantityOwned(int _quantityToAdd);
 	
 	// Getters
-	inline sf::Sprite GetSprite() const { return m_sprite; };
+	static std::string GetNameFromEnum(enum TypesOfRessources _enumName);
+	static enum TypesOfRessources GetEnumFromName(std::string _enumName);
 	inline std::string GetName() const { return m_name; };
+	inline sf::Sprite GetSprite() const { return m_sprite; };
 	inline int GetQuantityOwned() const { return m_quantityOwned; };
 };

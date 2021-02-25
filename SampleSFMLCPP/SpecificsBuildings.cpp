@@ -1,5 +1,6 @@
 #include "SpecificsBuildings.h"
 #include "GameDefinitions.h"
+#include "RessourcesManager.h"
 
 
 
@@ -12,9 +13,54 @@ SpecificsBuildings::SpecificsBuildings()
 
 SpecificsBuildings::~SpecificsBuildings()
 {
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				if (((sBuildingData*)currentElement->data)->storage != nullptr)
+				{
+					// Delete the storage from the list
+					delete ((sBuildingData*)currentElement->data)->storage;
+					((sBuildingData*)currentElement->data)->storage = nullptr;
+				}
+			}
+		}
+	}
 }
 
-void SpecificsBuildings::InitialisationSpeBuilding(Buildings *_specificBuildingConcerned)
+
+
+Storage* SpecificsBuildings::GetStorage(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We verify if the player location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					if (((sBuildingData*)currentElement->data)->storage != nullptr)
+					{
+						return ((sBuildingData*)currentElement->data)->storage;
+					}
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+
+void SpecificsBuildings::InitialisationSpeBuilding(Buildings* _specificBuildingConcerned)
 {
 	std::cout << "List before : " << m_list << std::endl;
 
@@ -26,8 +72,7 @@ void SpecificsBuildings::InitialisationSpeBuilding(Buildings *_specificBuildingC
 
 }
 
-
-void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
+void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition, enum TypesOfRessources _ressource)
 {
 	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
 	newBuilding->data = new sBuildingData;
@@ -38,6 +83,10 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	// Init of the building construction status after being placed on map
 	((sBuildingData *)newBuilding->data)->constructionState = BuildingStatus::PLANNED;
 	((sBuildingData *)newBuilding->data)->actualState = MainBuildingStatus::BUILDING_READY_TO_PRODUCE;
+
+	// Allocation of the storage
+	((sBuildingData *)newBuilding->data)->storage = new Storage(1, _ressource);
+	((sBuildingData *)newBuilding->data)->storage->SetName("Specific");
 
 	// A MODIFIER PAR VALEUR SEUIL
 	((sBuildingData *)newBuilding->data)->quantitativeThreshold = m_building->GetRessourceQuantityNeeded();
@@ -512,7 +561,7 @@ void SpecificsBuildings::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosit
 	}
 }
 
-bool SpecificsBuildings::CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition)
+bool SpecificsBuildings::CheckHasProducedRessource(const sf::Vector2f &_mapPosition)
 {
 	if (m_list != nullptr)
 	{
@@ -584,7 +633,7 @@ bool SpecificsBuildings::CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f 
 	}
 }
 
-int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime)
+bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime, enum TypesOfRessources _ressource)
 {
 	if (m_list != nullptr)
 	{
@@ -611,6 +660,11 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
 
 							return m_building->GetRessourceQuantityProduced() * ((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter;
+
+							int quantityProduced = m_building->GetRessourceQuantityProduced();
+
+							((SpecificsBuildings::sBuildingData *)currentElement->data)->storage->AddOrSubtractResource(Ressources::GetNameFromEnum(_ressource), quantityProduced);
+							return true;
 						}
 						else
 						{
@@ -640,7 +694,7 @@ int SpecificsBuildings::SpecificsBuildingsSendRessourceProducedToPresentWorker(c
 }
 
 
-sf::Vector2i SpecificsBuildings::SpecificsBuildingsFindNearestBuilding(const sf::Vector2f &_mapPosition)
+sf::Vector2i SpecificsBuildings::FindNearestBuilding(const sf::Vector2f &_mapPosition)
 {
 	sf::Vector2i buildingPosition = { RESET, RESET };
 

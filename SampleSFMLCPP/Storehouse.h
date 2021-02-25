@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ressources.h"
+#include "Storage.h"
 #include "SpecificsBuildings.h"
 #include "LinkedList.h"
 
@@ -12,6 +12,8 @@ public:
 	{
 		sf::Vector2f mapPosition;
 		enum BuildingStatus constructionState;
+
+		Storage* storage = nullptr;
 
 		float lifeTime;
 
@@ -30,6 +32,9 @@ public:
 	// Constructor & Destructor
 	Storehouse();
 	~Storehouse();
+
+	// Getters
+	Storage* GetStorage(const sf::Vector2f& _mapPosition);
 
 	void InitialisationStorehouse(Buildings *_specificBuildingConcerned);
 	
@@ -50,8 +55,8 @@ public:
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition);
 	//bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);
-	int SpecificsBuildingsSendRessourceProducedToPresentWorker(const sf::Vector2f &_mapPosition, const float &_frametime);
-	sf::Vector2i StorehouseFindNearestBuilding(const sf::Vector2f &_mapPosition);
+	int UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime);
+	sf::Vector2i FindNearestBuilding(const sf::Vector2f &_mapPosition);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 

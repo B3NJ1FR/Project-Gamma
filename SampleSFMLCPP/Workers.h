@@ -3,7 +3,7 @@
 #include "Entities.h"
 #include "Map.h"
 #include "TimeManagement.h"
-#include "Ressources.h"
+#include "Storage.h"
 #include "BuildingManagement.h"
 
 enum WorkerCaste
@@ -31,6 +31,9 @@ private :
 
 	enum TypesOfRessources *m_ressourceHeld;
 	int *m_quantityRessourceHeld;
+
+	// The entities' storages aren't referenced into the Ressources Manager
+	Storage* m_storage = nullptr;
 
 	TypeOfBuilding m_currentBuilding;
 	TypeOfBuilding *m_targetedBuilding;

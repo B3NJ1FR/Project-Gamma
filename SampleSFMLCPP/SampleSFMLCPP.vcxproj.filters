@@ -198,6 +198,12 @@
     <ClCompile Include="BuildingDestruction.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
+    <ClCompile Include="Storage.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="RessourcesManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -313,6 +319,12 @@
     </ClInclude>
     <ClInclude Include="BuildingDestruction.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="RessourcesManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
