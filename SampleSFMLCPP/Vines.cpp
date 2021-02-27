@@ -105,7 +105,8 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	((Vines::sVines *)newVine->data)->annualState = NEED_PRUNE;
 
 	// Allocation of the storage
-	((Vines::sVines *)newVine->data)->storage = new Storage(1, GRAPE_VINE);
+	((Vines::sVines *)newVine->data)->storage = new Storage();
+	((Vines::sVines *)newVine->data)->storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE), ResourceData::RESOURCE_PRODUCED);
 	((Vines::sVines *)newVine->data)->storage->SetName("Vines");
 
 	((Vines::sVines *)newVine->data)->lifeTime = RESET;
@@ -750,6 +751,7 @@ bool Vines::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const flo
 							int quantityProduced = m_vineBuilding->GetRessourceQuantityProduced();
 
 							((Vines::sVines*)currentElement->data)->storage->AddOrSubtractResource(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE), quantityProduced);
+							
 							return true;
 
 						}

@@ -236,7 +236,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_targetedBuilding != nullptr)
 				{
 					if (*(m_targetedBuilding) == m_currentBuilding
-						&& m_ressourceHeld != nullptr)
+						&& !m_storage->IsStorageEmpty())
 					{
 						SetWorkerStatus(DEPOSIT_RESSOURCES);
 					}
@@ -711,7 +711,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(GRAPES_MUST))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPES_MUST))
+					if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_stompingVats.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPES_MUST));
 
@@ -740,7 +740,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPES_MUST))
+				if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPES_MUST));
@@ -860,7 +860,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(GRAPE_JUICE))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPE_JUICE))
+					if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_winePress.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPE_JUICE));
 
@@ -889,7 +889,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), GRAPE_JUICE))
+				if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPE_JUICE));
@@ -1011,7 +1011,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(AMPHORA_OF_WINE))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), AMPHORA_OF_WINE))
+					if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_wineStorehouse.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
 
@@ -1040,7 +1040,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime(), AMPHORA_OF_WINE))
+				if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
@@ -1166,7 +1166,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 		{
 			for (int i = 0; i < m_storage->GetNumberOfResources(); i++)
 			{
-				switch (Ressources::GetEnumFromName(m_storage[0].GetName()))
+				switch (Ressources::GetEnumFromName(m_storage->GetResource(i)->GetName()))
 				{
 				case GRAPE_VINE:
 					break;
@@ -1183,11 +1183,14 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 							Storage::TransferOfTheWholeResource(m_storage, _builds->m_stompingVats.GetStorage(m_mapPosition), Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
 							m_storage->RemoveResourceOfStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
 
+							std::cout << "Deposit ressources !\n";
 							SetTimeToDeposit(RESET);
 
 							// Reset of the main data
 							delete m_targetedBuilding;
 							m_targetedBuilding = nullptr;
+
+							m_timeToDeposit = RESET;
 
 							SetWorkerStatus(WORKING);
 						}
@@ -1217,6 +1220,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 							delete m_targetedBuilding;
 							m_targetedBuilding = nullptr;
 
+							m_timeToDeposit = RESET;
+
 							SetWorkerStatus(WORKING);
 						}
 					}
@@ -1244,6 +1249,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 							// Reset of the main data
 							delete m_targetedBuilding;
 							m_targetedBuilding = nullptr;
+
+							m_timeToDeposit = RESET;
 
 							SetWorkerStatus(WORKING);
 						}
@@ -1281,6 +1288,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 							delete m_targetedBuilding;
 							m_targetedBuilding = nullptr;
 
+							m_timeToDeposit = RESET;
+
 							SetWorkerStatus(WORKING);
 						}
 					}
@@ -1308,6 +1317,8 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 							// Reset of the main data
 							delete m_targetedBuilding;
 							m_targetedBuilding = nullptr;
+
+							m_timeToDeposit = RESET;
 
 							SetWorkerStatus(WORKING);
 						}

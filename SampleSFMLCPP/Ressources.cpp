@@ -1,27 +1,28 @@
 #include "Ressources.h"
 
 
-Ressources::Ressources()
+
+Ressources::Ressources() : m_quantityReserved(RESET)
 {
 	m_quantityOwned = RESET;
 	m_name = "";
 }
 
 
-Ressources::Ressources(std::string _name)
+Ressources::Ressources(std::string _name) : m_quantityReserved(RESET)
 {
 	m_quantityOwned = RESET;
 	m_name = _name;
 }
 
 
-Ressources::Ressources(enum TypesOfRessources _name)
+Ressources::Ressources(enum TypesOfRessources _name) : m_quantityReserved(RESET)
 {
 	m_quantityOwned = RESET;
 	m_name = GetNameFromEnum(_name);
 }
 
-Ressources::Ressources(const Ressources& _ressourceToCopy)
+Ressources::Ressources(const Ressources& _ressourceToCopy) : m_quantityReserved(RESET)
 {
 	m_quantityOwned = _ressourceToCopy.GetQuantityOwned();
 	m_name = _ressourceToCopy.GetName();
@@ -38,6 +39,13 @@ void Ressources::AddOrSubtractQuantityOwned(int _quantityToAdd)
 	if (m_quantityOwned + _quantityToAdd >= 0)
 	{
 		m_quantityOwned += _quantityToAdd;
+	}
+}
+void Ressources::AddOrSubtractQuantityReserved(int _quantityToAdd)
+{
+	if (m_quantityReserved + _quantityToAdd >= 0)
+	{
+		m_quantityReserved += _quantityToAdd;
 	}
 }
 
@@ -134,5 +142,24 @@ enum TypesOfRessources Ressources::GetEnumFromName(std::string _enumName)
 	else
 	{
 		return RESSOURCE_NOT_DEFINED;
+	}
+}
+
+
+void Ressources::TransferFromOwnedToReserved(unsigned int _quantity)
+{
+	if (m_quantityOwned - _quantity >= 0)
+	{
+		m_quantityOwned -= _quantity;
+		m_quantityReserved += _quantity;
+	}
+}
+
+void Ressources::TransferFromReservedToQuantity(unsigned int _quantity)
+{
+	if (m_quantityReserved - _quantity >= 0)
+	{
+		m_quantityReserved -= _quantity;
+		m_quantityOwned += _quantity;
 	}
 }

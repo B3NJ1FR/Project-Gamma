@@ -142,7 +142,7 @@ void TimeManagement::SetTypeOfAcceleration(const enum TypeOfTimeAcceleration &_t
 		m_timesSprite[GAME_DOUBLE_SPEED].setColor(colorDesactivated);
 		m_timesSprite[GAME_TRIPLE_SPEED].setColor(colorActivated);
 
-		m_accelerator = 5;
+		m_accelerator = 20;
 
 		break;
 	default:

@@ -995,8 +995,6 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 			// If the main character is waiting, but have buildings planned to be built, we check and launch his movement
 			if (m_isCurrentlyBuilding)
 			{
-				std::cout << "Idle else\n";
-
 				// Test if the list is empty or not
 				if (_game->m_buildingsListPlanned->IsBuildingListIsEmpty())
 				{
@@ -1131,6 +1129,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 
 
 
+					Storage* storage = nullptr;
 
 					// We add informations to the concerned linkedlist
 					switch (_game->m_buildingsListPlanned->GetBuildingID())
@@ -1139,21 +1138,41 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 						_game->m_builds.m_vines.AddNewVineToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_GRAPE_STOMPING_VATS:
-						_game->m_builds.m_stompingVats.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap(), GRAPES_MUST);
+						_game->m_builds.m_stompingVats.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage = _game->m_builds.m_stompingVats.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE), ResourceData::RESOURCE_NEEDED);
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPES_MUST), ResourceData::RESOURCE_PRODUCED);
 						break;
 					case BUILDING_WINE_PRESS:
-						_game->m_builds.m_winePress.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap(), GRAPE_JUICE);
+						_game->m_builds.m_winePress.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage = _game->m_builds.m_winePress.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPES_MUST), ResourceData::RESOURCE_NEEDED);
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPE_JUICE), ResourceData::RESOURCE_PRODUCED);
 						break;
 					case BUILDING_WINE_STOREHOUSE:
-						_game->m_builds.m_wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap(), AMPHORA_OF_WINE);
+						_game->m_builds.m_wineStorehouse.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage = _game->m_builds.m_wineStorehouse.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPE_JUICE), ResourceData::RESOURCE_NEEDED);
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORAS), ResourceData::RESOURCE_NEEDED);
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_PRODUCED);
 						break;
 					case BUILDING_STOREHOUSE:
 						_game->m_builds.m_storehouse.AddNewBuildingToList((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
-						_game->m_builds.m_storehouse.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap())->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORAS));
+
+						storage = _game->m_builds.m_storehouse.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
 						_game->m_builds.m_stall->AddStorehousePosition((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_STALL:
 						_game->m_builds.m_stall->AddNewBuilding((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						//_game->m_builds.m_stall.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap())->AddNewResourceToStorage(1, AMPHORA_OF_WINE);
 						break;
 						/*case BUILDING_VILLA:
 							break;

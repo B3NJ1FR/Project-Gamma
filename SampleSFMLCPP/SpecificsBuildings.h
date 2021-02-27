@@ -37,7 +37,6 @@ public:
 
 		int quantitativeThreshold; // Seuil minimum de lancement
 		int maximalQuantity; // Seuil maximal
-		int internalImportRessourceCounter;
 		int internalExportRessourceCounter;
 
 		int numberOfWorkersNeededToWorks;
@@ -51,6 +50,7 @@ public:
 		bool hasBeenBuilt;
 		bool isProduced;
 		bool isWorkerThere;
+		bool isProductionTransformed;
 	};
 	typedef struct BuildingData sBuildingData;
 
@@ -62,11 +62,11 @@ public:
 	Storage* GetStorage(const sf::Vector2f& _mapPosition);
 
 	void InitialisationSpeBuilding(Buildings *_specificBuildingConcerned);
-	void AddNewBuildingToList(sf::Vector2f _mapPosition, enum TypesOfRessources _ressource);
+	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource, Ressources *_ressourceProduced);
+	void UpdateInternalCycles(const float &_frametime);
 	void UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building);
-	void UpdateBuildingProduction(Ressources *_ressource);
+	void UpdateBuildingProduction();
 
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	inline sf::Sprite GetSpriteWorkerIsThere() const { return m_workerIsThereSprite; };
@@ -79,7 +79,7 @@ public:
 	void WorkerLeavingThisPosition(const sf::Vector2f &_mapPosition);
 	bool CheckHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition);
-	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime, enum TypesOfRessources _ressource);
+	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime);
 	sf::Vector2i FindNearestBuilding(const sf::Vector2f &_mapPosition);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);

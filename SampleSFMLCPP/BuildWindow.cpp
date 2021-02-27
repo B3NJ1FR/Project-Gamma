@@ -432,8 +432,9 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 			{
 				for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
 				{
-					if (_game->m_map.IsCoordinatesIsInMap(m_buildingCaseSelected))
+					if (_game->m_map.IsCoordinatesIsInMap(sf::Vector2i(m_buildingCaseSelected.y - y, m_buildingCaseSelected.x - x)))
 					{
+						// GROS CRASH LA vvvv
 						// Check case occupation concerning collisions
 						if (_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 						{

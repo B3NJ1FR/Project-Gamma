@@ -72,7 +72,7 @@ void SpecificsBuildings::InitialisationSpeBuilding(Buildings* _specificBuildingC
 
 }
 
-void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition, enum TypesOfRessources _ressource)
+void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 {
 	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
 	newBuilding->data = new sBuildingData;
@@ -85,14 +85,13 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition, enum Ty
 	((sBuildingData *)newBuilding->data)->actualState = MainBuildingStatus::BUILDING_READY_TO_PRODUCE;
 
 	// Allocation of the storage
-	((sBuildingData *)newBuilding->data)->storage = new Storage(1, _ressource);
+	((sBuildingData *)newBuilding->data)->storage = new Storage();
 	((sBuildingData *)newBuilding->data)->storage->SetName("Specific");
 
 	// A MODIFIER PAR VALEUR SEUIL
 	((sBuildingData *)newBuilding->data)->quantitativeThreshold = m_building->GetRessourceQuantityNeeded();
 	// A CONFIGURER
 	((sBuildingData *)newBuilding->data)->maximalQuantity = 5;
-	((sBuildingData *)newBuilding->data)->internalImportRessourceCounter = RESET;
 	((sBuildingData *)newBuilding->data)->internalExportRessourceCounter = RESET;
 
 	((sBuildingData *)newBuilding->data)->numberOfWorkersNeededToWorks = m_building->GetNumberWorkersNeeded();
@@ -106,6 +105,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition, enum Ty
 	((sBuildingData *)newBuilding->data)->hasBeenBuilt = false;
 	((sBuildingData *)newBuilding->data)->isProduced = false;
 	((sBuildingData *)newBuilding->data)->isWorkerThere = false;
+	((sBuildingData *)newBuilding->data)->isProductionTransformed = false;
 
 	newBuilding->status = ELEMENT_ACTIVE;
 
@@ -117,7 +117,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition, enum Ty
 }
 
 
-void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressources *_ressourceSent, Ressources *_ressourceProduced)
+void SpecificsBuildings::UpdateInternalCycles(const float &_frametime)
 {
 	if (m_list != nullptr)
 	{
@@ -129,31 +129,65 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT)
 				{
+					Storage* storage = ((SpecificsBuildings::sBuildingData*)currentElement->data)->storage;
+					std::vector<Ressources*> arrayOfResources;
+					int counter = 0;
+					bool isRelaunchProduction = false;
+
 					switch (((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState)
 					{
 					case BUILDING_READY_TO_PRODUCE:
 
-						// If the workers are there, we launch the next state
-						if (_ressourceSent->GetQuantityOwned() > ((SpecificsBuildings::sBuildingData *)currentElement->data)->quantitativeThreshold)
+						arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
+
+						// We verify that we have enough of each resource to start the production
+						for (Ressources* resource : arrayOfResources)
 						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_FILLING;
+							// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
+							// A MODIFIER
+							if (resource->GetQuantityOwned() > ((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold)
+							{
+								++counter;
+							}
+						}
+						arrayOfResources.clear();
+
+						// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
+						// A MODIFIER
+						if (counter >= 1)
+						{
+							((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_FILLING;
+							std::cout << "Building start to fill\n";
 						}
 
 						break;
 					case BUILDING_FILLING:
 
+						// If the workers are there, we start to fill the building
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 						{
-							if (_ressourceSent->GetQuantityOwned() - 1 >= 0)
-							{
-								_ressourceSent->AddOrSubtractQuantityOwned(-1);
-								((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter += 1;
-							}
-						}
+							arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
 
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter >= ((SpecificsBuildings::sBuildingData *)currentElement->data)->maximalQuantity)
-						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_WORKS;
+							// We verify that we have enough of each resource to start the production
+							for (Ressources* resource : arrayOfResources)
+							{
+								if (resource->GetQuantityOwned() - 1 >= 0)
+								{
+									resource->TransferFromOwnedToReserved(1);
+
+									// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
+									// A MODIFIER
+
+									if ((resource->GetQuantityOwned() == 0 || resource->GetQuantityReserved() == ((SpecificsBuildings::sBuildingData*)currentElement->data)->maximalQuantity)
+										&& resource->GetQuantityReserved() >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold)
+									{
+										((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_WORKS;
+										std::cout << "Building start to work\n";
+									}
+								}
+							}
+							arrayOfResources.clear();
+
 						}
 
 						break;
@@ -170,7 +204,9 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 								if (((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime > m_building->GetProductionTimeCost())
 								{
 									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
+									((SpecificsBuildings::sBuildingData*)currentElement->data)->isProductionTransformed = false;
 									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime = RESET;
+									std::cout << "Building collection production\n";
 								}
 							}
 						}
@@ -178,21 +214,38 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime, Ressource
 						break;
 					case BUILDING_COLLECTING_PRODUCTION:
 						
-						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter > 0
-							&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
+						arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
+
+						// We verify that we have enough of each resource to start the production
+						for (Ressources* resource : arrayOfResources)
 						{
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = true;
+							if (resource->GetQuantityReserved() > 0
+								&& ((SpecificsBuildings::sBuildingData*)currentElement->data)->isWorkerThere == true)
+							{
+								((SpecificsBuildings::sBuildingData*)currentElement->data)->isProduced = true;
+							}
 						}
+						arrayOfResources.clear();
 
 						break;
 					case BUILDING_NEED_TO_BE_CLEANED:
 
-						((SpecificsBuildings::sBuildingData  *)currentElement->data)->isChangingSprite = true;
-						((SpecificsBuildings::sBuildingData  *)currentElement->data)->isWorkerThere = false;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = false;
+						
+						arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
 
-						((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter = RESET;
+						// If we have enough of each resource to re-start the production, we re-launch it
+						for (Ressources* resource : arrayOfResources)
+						{
+							if (resource->GetQuantityReserved() >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold)
+							{
+								isRelaunchProduction = true;
+							}
+						}
+						arrayOfResources.clear();
 
-						((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_READY_TO_PRODUCE;
+						((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = isRelaunchProduction ? BUILDING_WORKS : BUILDING_READY_TO_PRODUCE;
 
 						break;
 					default:
@@ -324,7 +377,7 @@ void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum
 }
 
 
-void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
+void SpecificsBuildings::UpdateBuildingProduction()
 {
 	if (m_list != nullptr)
 	{
@@ -333,15 +386,42 @@ void SpecificsBuildings::UpdateBuildingProduction(Ressources *_ressource)
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
-				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true
+					&& ((SpecificsBuildings::sBuildingData*)currentElement->data)->isProductionTransformed == false)
 				{
-					//// Add quantity produced to the ressource targeted
-					//_ressource->AddQuantityOwned(building->GetRessourceQuantityProduced());
+					Storage* storage = ((SpecificsBuildings::sBuildingData*)currentElement->data)->storage;
+					std::vector<Ressources*> arrayOfResources;
 
-					//// Launch the feedback animation of producing
+					arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
 
+					// We verify that we have enough of each resource to start the production
+					for (Ressources* resource : arrayOfResources)
+					{
+						if (resource->GetQuantityReserved() > 0)
+						{
+							// We delete the resources reserved to this production
+							resource->AddOrSubtractQuantityReserved(-((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold);
+							((SpecificsBuildings::sBuildingData*)currentElement->data)->isProductionTransformed = true;
+						}
+					}
+					arrayOfResources.clear();
 
-					//((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
+					arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_PRODUCED);
+
+					// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
+					// A MODIFIER
+					int quantityProduced = m_building->GetRessourceQuantityProduced();
+
+					// We verify that we have enough of each resource to start the production
+					for (Ressources* resource : arrayOfResources)
+					{
+						// We add the resources created during this production
+						resource->AddOrSubtractQuantityOwned(quantityProduced);
+					}
+
+					arrayOfResources.clear();
+
+					// Launch the feedback animation of producing
 				}
 			}
 		}
@@ -633,7 +713,7 @@ bool SpecificsBuildings::CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f 
 	}
 }
 
-bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime, enum TypesOfRessources _ressource)
+bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime)
 {
 	if (m_list != nullptr)
 	{
@@ -659,37 +739,34 @@ bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPositi
 
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
 
-							return m_building->GetRessourceQuantityProduced() * ((SpecificsBuildings::sBuildingData *)currentElement->data)->internalImportRessourceCounter;
+							//std::cout << "[SPE BUILDING] : Set the production to need to be cleaned\n";
 
-							int quantityProduced = m_building->GetRessourceQuantityProduced();
-
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->storage->AddOrSubtractResource(Ressources::GetNameFromEnum(_ressource), quantityProduced);
 							return true;
 						}
 						else
 						{
-							return 0;
+							return false;
 						}
 					}
 					else
 					{
-						return 0;
+						return false;
 					}
 				}
 
 			}
 
-			return 0;
+			return false;
 
 		}
 		else
 		{
-			return 0;
+			return false;
 		}
 	}
 	else
 	{
-		return 0;
+		return false;
 	}
 }
 

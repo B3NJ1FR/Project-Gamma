@@ -391,6 +391,28 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_s
 			{
 				for (int i = 0; i < m_numberStorehousesCoordinates; i++)
 				{
+					//std::vector<Ressources*> arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
+					//int counter = 0;
+
+					//// We verify that we have enough of each resource to start the production
+					//for (Ressources* resource : arrayOfResources)
+					//{
+					//	// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
+					//	// A MODIFIER
+					//	if (resource->GetQuantityOwned() > ((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold)
+					//	{
+					//		++counter;
+					//	}
+					//}
+					//arrayOfResources.clear();
+
+					//// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
+					//// A MODIFIER
+					//if (counter >= 1)
+					//{
+					//	((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_FILLING;
+					//}
+
 					//std::cout << _storehouse->GetNumberResourcesStocked(m_storehousesCoordinates[i]) << std::endl;
 
 					//if (_storehouse->GetNumberResourcesStocked(m_storehousesCoordinates[i]) >= m_quantitativeThreshold)
@@ -398,7 +420,7 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_s
 					{
 						m_isNewMerchantNeeded = true;
 
-						m_internalImportRessourceCounterSaved = _storehouse->GetNumberResourcesStocked(m_storehousesCoordinates[i]);
+						m_internalImportRessourceCounterSaved = _storehouse->GetStorage(m_storehousesCoordinates[i])->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned();
 
 						std::cout << "Pret a attendre purchaser\n";
 
@@ -445,11 +467,13 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_s
 
 				if (m_storehousesCoordinates != nullptr)
 				{
-					// We exchange the amphoras of wine against sesterce money
-					if (_storehouse->GetNumberResourcesStocked(*m_storehousesCoordinates) - 1 >= m_internalImportRessourceCounterSaved - m_ressourceQuantityToSell)
+					Ressources* resource = _storehouse->GetStorage(*m_storehousesCoordinates)->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+					// We exchange sesterce money against amphoras of wine
+					if (resource->GetQuantityOwned() - 1 >= m_internalImportRessourceCounterSaved - m_ressourceQuantityToSell)
 					{
 						_money->AddMoney(m_priceAccepted);
-						_storehouse->AddNumberResourcesStocked(*m_storehousesCoordinates, -1);
+						resource->AddOrSubtractQuantityOwned(-1);
 					}
 					else
 					{

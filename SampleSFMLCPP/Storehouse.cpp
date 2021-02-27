@@ -76,7 +76,7 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((Storehouse::sStorehouseData *)newStorehouse->data)->constructionState = PLANNED;
 
 	// Allocation of the storage
-	((Storehouse::sStorehouseData *)newStorehouse->data)->storage = new Storage(1, AMPHORA_OF_WINE);
+	((Storehouse::sStorehouseData *)newStorehouse->data)->storage = new Storage();
 	((Storehouse::sStorehouseData *)newStorehouse->data)->storage->SetName("Storehouse");
 
 	((Storehouse::sStorehouseData *)newStorehouse->data)->lifeTime = RESET;
@@ -101,7 +101,7 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 }
 
 
-void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ressourceSent)
+void Storehouse::UpdateInternalCycles(const float &_frametime)
 {
 	if (m_list != nullptr)
 	{
@@ -113,13 +113,13 @@ void Storehouse::UpdateInternalCycles(const float &_frametime, Ressources *_ress
 			{
 				if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState == BUILT)
 				{
-					// Filling of the building
-					if (_ressourceSent->GetQuantityOwned() - 1 >= 0
-						&& ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter + 1 <= ((Storehouse::sStorehouseData *)currentElement->data)->maximalQuantity)
-					{
-						_ressourceSent->AddOrSubtractQuantityOwned(-1);
-						((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += 1;
-					}
+					//// Filling of the building
+					//if (_ressourceSent->GetQuantityOwned() - 1 >= 0
+					//	&& ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter + 1 <= ((Storehouse::sStorehouseData *)currentElement->data)->maximalQuantity)
+					//{
+					//	_ressourceSent->AddOrSubtractQuantityOwned(-1);
+					//	((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += 1;
+					//}
 				}
 			}
 		}
@@ -221,63 +221,6 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 	}
 }
 
-
-int Storehouse::GetNumberResourcesStocked(const sf::Vector2f &_mapPosition)
-{
-	if (m_list != nullptr)
-	{
-		if (m_list->first != nullptr)
-		{
-			LinkedListClass::sElement *currentElement = m_list->first;
-
-			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				// We verify if the player location is between the origin and the max size of the building concerned
-				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
-					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
-				{
-					// Filling of the building
-					return ((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter;
-				}
-			}
-
-			return 0;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-void Storehouse::AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity)
-{
-	if (m_list != nullptr)
-	{
-		if (m_list->first != nullptr)
-		{
-			LinkedListClass::sElement *currentElement = m_list->first;
-
-			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				// We verify if the player location is between the origin and the max size of the building concerned
-				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
-					&& _mapPosition.y <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
-				{
-					((Storehouse::sStorehouseData *)currentElement->data)->internalRessourceCounter += _quantity;
-				}
-			}
-		}
-	}
-}
 
 //void Storehouse::UpdateBuildingProduction(Ressources *_ressource)
 //{

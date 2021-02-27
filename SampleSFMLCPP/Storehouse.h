@@ -40,12 +40,9 @@ public:
 	
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(const float &_frametime, Ressources *_ressource);
+	void UpdateInternalCycles(const float &_frametime);
 	void UpdateBuildingSprite(unsigned short ***_map);
 	//void UpdateBuildingProduction(Ressources *_ressource);
-
-	int GetNumberResourcesStocked(const sf::Vector2f &_mapPosition);
-	void AddNumberResourcesStocked(const sf::Vector2f &_mapPosition, const int &_quantity);
 
 	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 	bool ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
