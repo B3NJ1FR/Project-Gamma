@@ -47,8 +47,8 @@ public:
 	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 	bool ConfirmStorehousePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_isPreciseCoordinates = false, const bool &_thisIsAWorker = false);
 	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
-	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const;
 	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
+	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const;
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckStorehouseHasBeenBuilt(const sf::Vector2f &_mapPosition);
 	//bool CheckSpecificBuildingHasProducedRessource(const sf::Vector2f &_mapPosition);

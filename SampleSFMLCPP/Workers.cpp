@@ -636,9 +636,11 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(BUNCH_OF_GRAPE))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_vines.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+					if (_builds->m_vines.UpdateRessourcePickuping(m_mapPosition))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_vines.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
+
+						_builds->m_vines.RessourcePickedUp(m_mapPosition);
 
 						*(m_targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
 

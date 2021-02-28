@@ -84,9 +84,9 @@ void GameUpdate(struct Game *_game)
 
 			_game->m_builds.UpdateBuildingManagement(&_game->m_map);
 
-			_game->m_builds.m_vines.UpdateVineLife(_game->m_time->GetFrameTime(), _game->m_time->GetActualMonth());
+			_game->m_builds.m_vines.UpdateVineLife();
 			_game->m_builds.m_vines.UpdateVineSprite(_game->m_map.GetMap());
-			_game->m_builds.m_vines.UpdateVineProduction(&_game->m_ressources[BUNCH_OF_GRAPE]);
+			_game->m_builds.m_vines.UpdateVineProduction();
 
 			_game->m_builds.m_stompingVats.UpdateBuildingConstruction(_game->m_time->GetFrameTime());
 			_game->m_builds.m_stompingVats.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_GRAPE_STOMPING_VATS);

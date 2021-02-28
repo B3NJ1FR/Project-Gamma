@@ -606,6 +606,8 @@ void SpecificsBuildings::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPo
 					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent += 1;
+
+					break;
 				}
 			}
 		}
@@ -635,6 +637,8 @@ void SpecificsBuildings::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosit
 					{
 						((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent = 0;
 					}
+
+					break;
 				}
 			}
 		}
@@ -738,8 +742,6 @@ bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPositi
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime = RESET;
 
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
-
-							//std::cout << "[SPE BUILDING] : Set the production to need to be cleaned\n";
 
 							return true;
 						}

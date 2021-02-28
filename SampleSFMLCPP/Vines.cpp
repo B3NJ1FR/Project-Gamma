@@ -11,8 +11,6 @@ Vines::Vines()
 
 }
 
-
-
 Vines::~Vines()
 {
 	if (m_list != nullptr)
@@ -103,6 +101,8 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 
 	// En fonction de la période actuelle, mettre l'annuel state concerné en conséquence
 	((Vines::sVines *)newVine->data)->annualState = NEED_PRUNE;
+	((Vines::sVines *)newVine->data)->internalState = InternalState::STATE_INIT;
+	((Vines::sVines *)newVine->data)->previousMonth = TimeManagement::GetSingleton()->GetActualMonth();
 
 	// Allocation of the storage
 	((Vines::sVines *)newVine->data)->storage = new Storage();
@@ -116,6 +116,7 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	((Vines::sVines *)newVine->data)->isChangingSprite = false;
 	((Vines::sVines *)newVine->data)->isProduced = false;
 	((Vines::sVines *)newVine->data)->isWorkerThere = false;
+	((Vines::sVines *)newVine->data)->isProdCanBeCollected = false;
 
 
 	((Vines::sVines *)newVine->data)->isPruned = false;
@@ -135,205 +136,410 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	//ReadLinkedList(list);
 }
 
-void Vines::UpdateVineLife(const float &_frametime, enum MonthsInOneYear _actualMonth)
+void Vines::UpdateVineLife()
 {
 	if (m_list != nullptr)
 	{
 		if (m_list->first != nullptr)
 		{
-			LinkedListClass::sElement *currentElement = m_list->first;
+			TimeManagement* pTimeManagement = TimeManagement::GetSingleton();
 
-			//std::cout << "Time : " << _lapsedFrameTime << std::endl;
-
-			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				switch (((Vines::sVines *)currentElement->data)->generalState)
+				Vines::sVines* vineData = ((Vines::sVines*)currentElement->data);
+
+				switch (vineData->generalState)
 				{
 				case PLANTED:
 
-					if (((Vines::sVines *)currentElement->data)->isWorkerThere == true)
+					if (vineData->isWorkerThere == true)
 					{
-						((Vines::sVines *)currentElement->data)->lifeTime += _frametime;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
+						vineData->lifeTime += pTimeManagement->GetFrameTime();
+						vineData->isWorkerThere = false;
 					}
 
 					// If the vine life is higher than the construction time, we launch it's growthing
-					if (((Vines::sVines *)currentElement->data)->lifeTime >= m_vineBuilding->GetConstructionTimeCost())
+					if (vineData->lifeTime >= m_vineBuilding->GetConstructionTimeCost())
 					{
-						//std::cout << "Vines built ! " << ((Vines::sVines *)currentElement->data)->lifeTime << " " << vineBuilding->GetConstructionTimeCost() << std::endl;
-						((Vines::sVines *)currentElement->data)->generalState = THREE_YEARS_GROWTHING;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
+						//std::cout << "Vines built ! " << vineData->lifeTime << " " << vineBuilding->GetConstructionTimeCost() << std::endl;
+						vineData->generalState = THREE_YEARS_GROWTHING;
+						vineData->isChangingSprite = true;
+						vineData->isWorkerThere = false;
 					}
 
 					break;
 				case THREE_YEARS_GROWTHING:
 
-					((Vines::sVines *)currentElement->data)->lifeTime += _frametime;
+					vineData->lifeTime += pTimeManagement->GetFrameTime();
 					
 					// If the vine life is higher than the three years of growthing, we call that this is ready to produce
-					if (((Vines::sVines *)currentElement->data)->lifeTime >= VINE_LIFE_3Y_GROWTHING_TO_READY_TO_PRODUCE)
+					if (vineData->lifeTime >= VINE_LIFE_3Y_GROWTHING_TO_READY_TO_PRODUCE)
 					{
 						//std::cout << "Vines ready to produce !\n\n";
-						((Vines::sVines *)currentElement->data)->generalState = READY_TO_PRODUCE;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->annualState = CARED; // Temporaire
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
+						vineData->generalState = READY_TO_PRODUCE;
+						vineData->isChangingSprite = true;
+						vineData->annualState = CARED; // Temporaire
+						vineData->isWorkerThere = false;
 					}
 
 					break;
 				case READY_TO_PRODUCE:
 
-					((Vines::sVines *)currentElement->data)->lifeTime += _frametime;
+					vineData->lifeTime += pTimeManagement->GetFrameTime();
 
-					switch (_actualMonth)
+					if (vineData->previousMonth != pTimeManagement->GetActualMonth())
 					{
-					case IANUARIUS:
-						((Vines::sVines *)currentElement->data)->annualState = NEED_PRUNE;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+						vineData->previousMonth = pTimeManagement->GetActualMonth();
+
+						switch (vineData->previousMonth)
+						{
+						case IANUARIUS:
+							vineData->annualState = NEED_PRUNE;
+							vineData->internalState = InternalState::STATE_INIT;
+							break;
+						case FEBRUARIUS:
+							break;
+						case MARTIUS:
+							vineData->annualState = NEED_PLOUGHING;
+							vineData->internalState = InternalState::STATE_INIT;
+							break;
+						case APRILIS:
+							break;
+						case MAïUS:
+							vineData->annualState = NEED_WEEDING;
+							vineData->internalState = InternalState::STATE_INIT;
+							break;
+						case IUNIUS:
+							break;
+						case QUINTILIS:
+							vineData->annualState = NEED_CARE;
+							vineData->internalState = InternalState::STATE_INIT;
+							break;
+						case SEXTILIS:
+							break;
+						case SEPTEMBER:
+							vineData->annualState = NEED_HARVEST;
+							vineData->internalState = InternalState::STATE_INIT;
+							break;
+						case OCTOBER:
+							break;
+						case NOVEMBER:
+							// If the production hasn't been recolted, the grapes are rotting
+							if (vineData->annualState == NEED_HARVEST)
+							{
+								vineData->annualState = ROTTEN_HARVESTS;
+								vineData->internalState = InternalState::STATE_INIT;
+							}
+							break;
+						case DECEMBER:
+							break;
+						default:
+							break;
+						}
+					}
+					
+
+
+
+					switch (vineData->annualState)
+					{
+					case NEED_PRUNE:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								if (vineData->isWorkerThere == true)
+								{
+									// Changer de status
+									vineData->isPruned = true;
+									vineData->annualState = PRUNED;
+									vineData->internalState = InternalState::STATE_INIT;
+								}
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case FEBRUARIUS:
+					case PRUNED:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								vineData->internalState = InternalState::STATE_EXIT;
+								break;
+							case InternalState::STATE_EXIT:
+
+								vineData->internalState = InternalState::STATE_WAITING;
+								break;
+							case InternalState::STATE_WAITING:
+
+								break;
+							default:
+								break;
+							}
 						break;
-					case MARTIUS:
-						((Vines::sVines *)currentElement->data)->annualState = NEED_PLOUGHING;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+					case NEED_PLOUGHING:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								if (vineData->isWorkerThere == true)
+								{
+									// Changer de status
+									vineData->isPloughed = true;
+									vineData->annualState = PLOUGHED;
+									vineData->internalState = InternalState::STATE_INIT;
+								}
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case APRILIS:
+					case PLOUGHED:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								vineData->internalState = InternalState::STATE_EXIT;
+								break;
+							case InternalState::STATE_EXIT:
+
+								vineData->internalState = InternalState::STATE_WAITING;
+								break;
+							case InternalState::STATE_WAITING:
+
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case MAïUS:
-						((Vines::sVines *)currentElement->data)->annualState = NEED_WEEDING;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+					case NEED_WEEDING:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								if (vineData->isWorkerThere == true)
+								{
+									// Changer de status
+									vineData->isWeeded = true;
+									vineData->annualState = WEEDED;
+									vineData->internalState = InternalState::STATE_INIT;
+								}
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case IUNIUS:
+					case WEEDED:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								vineData->internalState = InternalState::STATE_EXIT;
+								break;
+							case InternalState::STATE_EXIT:
+
+								vineData->internalState = InternalState::STATE_WAITING;
+								break;
+							case InternalState::STATE_WAITING:
+
+								break;
+							default:
+								break;
+							}
 						break;
-					case QUINTILIS:
-						((Vines::sVines *)currentElement->data)->annualState = NEED_CARE;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+					case NEED_CARE:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								if (vineData->isWorkerThere == true)
+								{
+									// Changer de status
+									vineData->isCared = true;
+									vineData->annualState = CARED;
+									vineData->internalState = InternalState::STATE_INIT;
+								}
+								break;
+							default:
+								break;
+							}
 						break;
-					case SEXTILIS:
+					case CARED:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								vineData->internalState = InternalState::STATE_EXIT;
+								break;
+							case InternalState::STATE_EXIT:
+
+								vineData->internalState = InternalState::STATE_WAITING;
+								break;
+							case InternalState::STATE_WAITING:
+
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case SEPTEMBER:
-						((Vines::sVines *)currentElement->data)->annualState = NEED_HARVEST;
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
+					case NEED_HARVEST:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->secondaryTime = RESET;
+								vineData->actualProductionTime = RESET;
+
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								if (vineData->isWorkerThere == true)
+								{
+									vineData->secondaryTime += pTimeManagement->GetFrameTime();
+
+									if (vineData->secondaryTime >= m_vineBuilding->GetPickupingTimeCost())
+									{
+										vineData->isProduced = true;
+
+										vineData->secondaryTime = RESET;
+
+										vineData->annualState = HARVESTED;
+										vineData->internalState = InternalState::STATE_INIT;
+									}
+								}
+
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case OCTOBER:
+					case HARVESTED:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								vineData->internalState = InternalState::STATE_EXIT;
+								break;
+							case InternalState::STATE_EXIT:
+
+								// Reset of the monthly states for this current year
+								vineData->isPruned = false;
+								vineData->isPloughed = false;
+								vineData->isWeeded = false;
+								vineData->isCared = false;
+
+								vineData->internalState = InternalState::STATE_WAITING;
+								break;
+							case InternalState::STATE_WAITING:
+
+								break;
+							default:
+								break;
+							}
+
 						break;
-					case NOVEMBER:
+					case ROTTEN_HARVESTS:
+						
+							switch (vineData->internalState)
+							{
+							case InternalState::STATE_INIT:
+
+								vineData->isChangingSprite = true;
+
+								// Reset of the monthly states for this current year
+								vineData->isPruned = false;
+								vineData->isPloughed = false;
+								vineData->isWeeded = false;
+								vineData->isCared = false;
+
+								vineData->internalState = InternalState::STATE_UPDATE;
+								break;
+							case InternalState::STATE_UPDATE:
+
+								vineData->internalState = InternalState::STATE_EXIT;
+								break;
+							case InternalState::STATE_EXIT:
+
+								vineData->internalState = InternalState::STATE_WAITING;
+								break;
+							case InternalState::STATE_WAITING:
+
+								break;
+							default:
+								break;
+							}
 						break;
-					case DECEMBER:
+					case PUTTING_IN_WINE_STOREHOUSE:
 						break;
 					default:
 						break;
 					}
-
-
-					if (((Vines::sVines *)currentElement->data)->annualState == NEED_PRUNE
-						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
-					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-
-						// Changer de status
-						((Vines::sVines *)currentElement->data)->annualState = PRUNED;
-						((Vines::sVines *)currentElement->data)->isPruned = true;
-					}
-
-					if (((Vines::sVines *)currentElement->data)->annualState == PRUNED)
-					{
-
-					}
-
-
-					if (((Vines::sVines *)currentElement->data)->annualState == NEED_PLOUGHING
-						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
-					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-
-						// Changer de status
-						((Vines::sVines *)currentElement->data)->annualState = PLOUGHED;
-						((Vines::sVines *)currentElement->data)->isPloughed = true;
-					}
-
-					if (((Vines::sVines *)currentElement->data)->annualState == PLOUGHED)
-					{
-
-					}
-
-
-					if (((Vines::sVines *)currentElement->data)->annualState == NEED_WEEDING
-						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
-					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-
-						// Changer de status
-						((Vines::sVines *)currentElement->data)->annualState = WEEDED;
-						((Vines::sVines *)currentElement->data)->isWeeded = true;
-					}
-
-					if (((Vines::sVines *)currentElement->data)->annualState == WEEDED)
-					{
-
-					}
-
-
-					if (((Vines::sVines *)currentElement->data)->annualState == NEED_CARE
-						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
-					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-
-						// Changer de status
-						((Vines::sVines *)currentElement->data)->annualState = CARED;
-						((Vines::sVines *)currentElement->data)->isCared = true;
-					}
-
-					if (((Vines::sVines *)currentElement->data)->annualState == CARED)
-					{
-						/*((Vines::sVines *)currentElement->data)->actualProductionTime += _frametime;
-						
-						if (((Vines::sVines *)currentElement->data)->actualProductionTime >= vineBuilding->GetProductionTimeCost())
-						{
-							((Vines::sVines *)currentElement->data)->actualProductionTime = RESET;
-							((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-							((Vines::sVines *)currentElement->data)->annualState = NEED_HARVEST;
-						}
-						else
-						{
-							((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-						}*/
-					}
-
-
-
-					if (((Vines::sVines *)currentElement->data)->annualState == NEED_HARVEST
-						&& ((Vines::sVines *)currentElement->data)->isWorkerThere == true)
-					{
-						((Vines::sVines *)currentElement->data)->secondaryTime = RESET;
-						((Vines::sVines *)currentElement->data)->actualProductionTime = RESET;
-
-						((Vines::sVines *)currentElement->data)->isProduced = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;						
-					}
-
-					if (((Vines::sVines *)currentElement->data)->annualState == HARVESTED)
-					{
-						((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-						((Vines::sVines *)currentElement->data)->isWorkerThere = false;
-
-						// Changer de status
-						//((Vines::sVines *)currentElement->data)->annualState = CARED; // Temporaire
-
-
-						// Reset of the monthly states
-						((Vines::sVines *)currentElement->data)->isPruned = false;
-						((Vines::sVines *)currentElement->data)->isPloughed = false;
-						((Vines::sVines *)currentElement->data)->isWeeded = false;
-						((Vines::sVines *)currentElement->data)->isCared = false;
-					}
-
-
+				
+					
 					break;
 				case NOT_MAINTAINED:
 					break;
@@ -383,7 +589,7 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 							break;
 						case READY_TO_PRODUCE:
 
-
+							std::cout << "Vine : " << ((Vines::sVines*)currentElement->data)->annualState << std::endl;
 							switch (((Vines::sVines *)currentElement->data)->annualState)
 							{
 							case NEED_PRUNE:
@@ -426,6 +632,10 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
 								break;
+							case ROTTEN_HARVESTS:
+								_map[3 + 2][(int)((Vines::sVines*)currentElement->data)->mapPosition.y]
+									[(int)((Vines::sVines*)currentElement->data)->mapPosition.x] = 9;
+								break;
 							case PUTTING_IN_WINE_STOREHOUSE:
 								break;
 							default:
@@ -453,7 +663,7 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 }
 
 
-void Vines::UpdateVineProduction(Ressources *_ressource)
+void Vines::UpdateVineProduction()
 {
 	if (m_list != nullptr)
 	{
@@ -462,15 +672,29 @@ void Vines::UpdateVineProduction(Ressources *_ressource)
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
-				if (((Vines::sVines *)currentElement->data)->isProduced == true)
+				if (((Vines::sVines*)currentElement->data)->isProduced == true)
 				{
-					// Add quantity produced to the ressource targeted
-					//_ressource->AddQuantityOwned(vineBuilding->GetRessourceQuantityProduced());
+					Storage* storage = ((Vines::sVines*)currentElement->data)->storage;
+					std::vector<Ressources*> arrayOfResources;
+
+					arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_PRODUCED);
+
+					// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
+					// A MODIFIER
+					int quantityProduced = m_vineBuilding->GetRessourceQuantityProduced();
+
+					// We verify that we have enough of each resource to start the production
+					for (Ressources* resource : arrayOfResources)
+					{
+						// We add the resources created during this production
+						resource->AddOrSubtractQuantityOwned(quantityProduced);
+						((Vines::sVines*)currentElement->data)->isProduced = false;
+						((Vines::sVines*)currentElement->data)->isProdCanBeCollected = true;
+					}
+
+					arrayOfResources.clear();
 
 					// Launch the feedback animation of producing
-
-
-					//((Vines::sVines *)currentElement->data)->isProduced = false;
 				}
 			}
 		}
@@ -531,10 +755,7 @@ bool Vines::ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, cons
 
 					return true;
 				}
-
-
 			}
-
 
 			return false;
 		
@@ -561,6 +782,8 @@ void Vines::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition)
 				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
 				{
 					((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent += 1;
+
+					break;
 				}
 			}
 		}
@@ -586,6 +809,8 @@ void Vines::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 					{
 						((Vines::sVines*)currentElement->data)->currentNumberOfWorkersPresent = 0;
 					}
+
+					break;
 				}
 			}
 		}
@@ -720,7 +945,7 @@ bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 	}
 }
 
-bool Vines::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime)
+bool Vines::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition)
 {
 	if (m_list != nullptr)
 	{
@@ -731,29 +956,13 @@ bool Vines::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const flo
 				// If the building has produced the ressources, we manage it
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
 				{
-					if (((Vines::sVines *)currentElement->data)->isProduced == true)
+					if (((Vines::sVines *)currentElement->data)->isProdCanBeCollected == true)
 					{
-						((Vines::sVines *)currentElement->data)->secondaryTime += _frametime;
+						((Vines::sVines *)currentElement->data)->secondaryTime += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (((Vines::sVines *)currentElement->data)->secondaryTime >= m_vineBuilding->GetPickupingTimeCost())
 						{
-							// Changer de sprite
-							((Vines::sVines *)currentElement->data)->isChangingSprite = true;
-							((Vines::sVines *)currentElement->data)->annualState = HARVESTED;
-
-							((Vines::sVines *)currentElement->data)->secondaryTime = RESET;
-
-							// Launch the feedback animation of producing
-
-
-							((Vines::sVines *)currentElement->data)->isProduced = false;
-
-							int quantityProduced = m_vineBuilding->GetRessourceQuantityProduced();
-
-							((Vines::sVines*)currentElement->data)->storage->AddOrSubtractResource(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE), quantityProduced);
-							
 							return true;
-
 						}
 						else
 						{
@@ -774,6 +983,51 @@ bool Vines::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const flo
 	}
 	
 	return false;
+}
+
+
+// Check if the storage is still containing resources produced but not picked up 
+// If it's the case, we leave the "isProdCanBeCollected" value to true to allow to an other worker to pick up the resources
+void Vines::RessourcePickedUp(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// If the building has produced the ressources, we manage it
+				if (((Vines::sVines*)currentElement->data)->mapPosition == _mapPosition)
+				{
+					if (((Vines::sVines*)currentElement->data)->isProdCanBeCollected == true)
+					{
+						Storage* storage = ((Vines::sVines*)currentElement->data)->storage;
+						std::vector<Ressources*> arrayOfResources;
+
+						arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_PRODUCED);
+
+						// We verify that we have enough of each resource to start the production
+						for (Ressources* resource : arrayOfResources)
+						{
+							// We add the resources created during this production
+							if (resource->GetQuantityOwned() == 0)
+							{
+								// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
+								// A MODIFIER
+								((Vines::sVines*)currentElement->data)->isProdCanBeCollected = false;
+							}
+						}
+
+						arrayOfResources.clear();
+					}
+
+					break;
+				}
+			}
+
+		}
+
+	}
 }
 
 

@@ -356,6 +356,8 @@ void Storehouse::WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition)
 					&& _mapPosition.y >= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent += 1;
+
+					break;
 				}
 			}
 		}
@@ -418,6 +420,8 @@ void Storehouse::WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition)
 					{
 						((Storehouse::sStorehouseData*)currentElement->data)->currentNumberOfWorkersPresent = 0;
 					}
+
+					break;
 				}
 			}
 		}

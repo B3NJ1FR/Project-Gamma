@@ -30,7 +30,16 @@ enum VineStateOfAnnualLife
 	CARED,
 	NEED_HARVEST, // Vendange
 	HARVESTED,
+	ROTTEN_HARVESTS,
 	PUTTING_IN_WINE_STOREHOUSE, // Mise en Chai
+};
+
+enum class InternalState
+{
+	STATE_INIT,
+	STATE_UPDATE,
+	STATE_EXIT,
+	STATE_WAITING,
 };
 
 // Calendrier des Vignes
@@ -59,6 +68,9 @@ public:
 		sf::Vector2f mapPosition;
 		enum VineStateOfGeneralLife generalState;
 		enum VineStateOfAnnualLife annualState;
+		InternalState internalState;
+		MonthsInOneYear previousMonth;
+
 		Storage* storage = nullptr;
 
 		float lifeTime;
@@ -69,6 +81,7 @@ public:
 		bool hasBeenBuilt;
 		bool isProduced;
 		bool isWorkerThere;
+		bool isProdCanBeCollected;
 
 		bool isPruned;
 		bool isPloughed;
@@ -90,9 +103,9 @@ public:
 	void InitialisationVines(Buildings *_vine);
 	void ReadVineLinkedList();
 	void AddNewVineToList(sf::Vector2f _mapPosition);
-	void UpdateVineLife(const float &_frametime, enum MonthsInOneYear _actualMonth);
+	void UpdateVineLife();
 	void UpdateVineSprite(unsigned short ***_map);
-	void UpdateVineProduction(Ressources *_ressource);
+	void UpdateVineProduction();
 
 	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;
 	bool ConfirmVinePresenceAtPosition(const sf::Vector2f &_mapPosition, const bool &_thisIsAWorker = false);
@@ -102,7 +115,8 @@ public:
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition);
-	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime);
+	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition);
+	void RessourcePickedUp(const sf::Vector2f &_mapPosition);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 
