@@ -25,6 +25,8 @@
 
 #define CAMERA_SPEED 5
 
+#define DEBUG_RES_UI_HEIGHT 83
+
 enum CurrentGameState
 {
 	TUTORIAL_MODE,

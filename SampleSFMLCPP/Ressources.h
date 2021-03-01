@@ -54,4 +54,7 @@ public :
 	// Methods
 	void TransferFromOwnedToReserved(unsigned int _quantity);
 	void TransferFromReservedToQuantity(unsigned int _quantity);
+
+	void SavingForFile(std::ofstream* _file);
+	void LoadingFromFile(std::ifstream* _file);
 };

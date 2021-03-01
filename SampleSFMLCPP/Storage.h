@@ -32,6 +32,7 @@ public:
 	// Setters
 	inline void SetName(std::string _storageName) { m_storageName = _storageName; }
 	void AddNewResourceToStorage(std::string _ressourceName, ResourceData _data = ResourceData::RESOURCE_NORMAL);
+	void AddNewResourceToStorage(std::string _ressourceName, Ressources _ressource, ResourceData _data = ResourceData::RESOURCE_NORMAL);
 	void AddNewResourceToStorage(int _quantityOfRessources, enum TypesOfRessources _ressources, ...);
 	void RemoveResourceOfStorage(std::string _ressourceName);
 	void AddOrSubtractResource(std::string _ressourceName, int _quantity);
@@ -54,5 +55,8 @@ public:
 	bool IsResourceExistHere(std::string _ressourceName);
 	bool IsResourceExistHere(enum TypesOfRessources _ressourceName);
 	bool IsStorageEmpty();
+
+	void SavingForFile(std::ofstream* _file);
+	void LoadingFromFile(std::ifstream* _file);
 };
 

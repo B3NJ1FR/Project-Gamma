@@ -8,7 +8,8 @@
 
 Vines::Vines()
 {
-
+	m_list = nullptr;
+	m_vineBuilding = nullptr;
 }
 
 Vines::~Vines()
@@ -456,9 +457,8 @@ void Vines::UpdateVineLife()
 
 									if (vineData->secondaryTime >= m_vineBuilding->GetPickupingTimeCost())
 									{
-										vineData->isProduced = true;
-
 										vineData->secondaryTime = RESET;
+										vineData->isProduced = true;
 
 										vineData->annualState = HARVESTED;
 										vineData->internalState = InternalState::STATE_INIT;
@@ -584,56 +584,55 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 						case PLANTED:
 							break;
 						case THREE_YEARS_GROWTHING:
-							_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+							_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 8;
 							break;
 						case READY_TO_PRODUCE:
 
-							std::cout << "Vine : " << ((Vines::sVines*)currentElement->data)->annualState << std::endl;
 							switch (((Vines::sVines *)currentElement->data)->annualState)
 							{
 							case NEED_PRUNE:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 12;
 								break;
 							case PRUNED:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
 								break;
 							case NEED_PLOUGHING:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 13;
 								break;
 							case PLOUGHED:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
 								break;
 							case NEED_WEEDING:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 14;
 								break;
 							case WEEDED:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
 								break;
 							case NEED_CARE:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 15;
 								break;
 							case CARED:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
 								break;
 							case NEED_HARVEST:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 10;
 								break;
 							case HARVESTED:
-								_map[3 + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
 								break;
 							case ROTTEN_HARVESTS:
-								_map[3 + 2][(int)((Vines::sVines*)currentElement->data)->mapPosition.y]
+								_map[FIRST_FLOOR + 2][(int)((Vines::sVines*)currentElement->data)->mapPosition.y]
 									[(int)((Vines::sVines*)currentElement->data)->mapPosition.x] = 9;
 								break;
 							case PUTTING_IN_WINE_STOREHOUSE:
@@ -688,8 +687,10 @@ void Vines::UpdateVineProduction()
 					{
 						// We add the resources created during this production
 						resource->AddOrSubtractQuantityOwned(quantityProduced);
+
 						((Vines::sVines*)currentElement->data)->isProduced = false;
 						((Vines::sVines*)currentElement->data)->isProdCanBeCollected = true;
+						((Vines::sVines*)currentElement->data)->secondaryTime = RESET;
 					}
 
 					arrayOfResources.clear();
@@ -920,7 +921,7 @@ bool Vines::CheckVineHasProducedRessource(const sf::Vector2f &_mapPosition)
 			{
 				if (((Vines::sVines *)currentElement->data)->mapPosition == _mapPosition)
 				{
-					if (((Vines::sVines *)currentElement->data)->isProduced == true)
+					if (((Vines::sVines *)currentElement->data)->isProdCanBeCollected == true)
 					{
 						return true;
 					}
@@ -1002,9 +1003,7 @@ void Vines::RessourcePickedUp(const sf::Vector2f& _mapPosition)
 					if (((Vines::sVines*)currentElement->data)->isProdCanBeCollected == true)
 					{
 						Storage* storage = ((Vines::sVines*)currentElement->data)->storage;
-						std::vector<Ressources*> arrayOfResources;
-
-						arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_PRODUCED);
+						std::vector<Ressources*> arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_PRODUCED);
 
 						// We verify that we have enough of each resource to start the production
 						for (Ressources* resource : arrayOfResources)
@@ -1094,7 +1093,14 @@ void Vines::SavingVinesListForFile(std::ofstream *_file)
 
 			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				_file->write((char *)(Vines::sVines *)currentElement->data, sizeof(sVines));
+				Vines::sVines* vinesData = (Vines::sVines*)currentElement->data;
+				_file->write((char *)vinesData, sizeof(sVines));
+
+				if (vinesData->storage != nullptr)
+				{
+					_file->write((char*)vinesData->storage, sizeof(Storage*));
+					vinesData->storage->SavingForFile(_file);
+				}
 			}
 		}
 	}
@@ -1125,6 +1131,15 @@ void Vines::LoadingVinesListFromFile(std::ifstream *_file)
 		newVine->data = new Vines::sVines;
 		
 		_file->read((char *)(Vines::sVines *)newVine->data, sizeof(sVines));
+
+		_file->read((char*)((Vines::sVines*)newVine->data)->storage, sizeof(Storage*));
+		
+		if (((Vines::sVines*)newVine->data)->storage != nullptr)
+		{
+			((Vines::sVines*)newVine->data)->storage = new Storage();
+			((Vines::sVines*)newVine->data)->storage->LoadingFromFile(_file);
+		}
+
 
 		newVine->status = ELEMENT_ACTIVE;
 		

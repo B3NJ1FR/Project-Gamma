@@ -667,11 +667,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_vines.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+				if (_builds->m_vines.UpdateRessourcePickuping(m_mapPosition))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
 					Storage::TransferOfTheWholeResource(_builds->m_vines.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(BUNCH_OF_GRAPE));
+
+					_builds->m_vines.RessourcePickedUp(m_mapPosition);
 
 					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_GRAPE_STOMPING_VATS;
@@ -713,9 +715,11 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(GRAPES_MUST))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+					if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_stompingVats.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPES_MUST));
+
+						_builds->m_stompingVats.RessourcePickedUp(m_mapPosition);
 
 						*(m_targetedBuilding) = BUILDING_WINE_PRESS;
 
@@ -742,11 +746,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+				if (_builds->m_stompingVats.UpdateRessourcePickuping(m_mapPosition))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPES_MUST));
 					Storage::TransferOfTheWholeResource(_builds->m_stompingVats.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPES_MUST));
+
+					_builds->m_stompingVats.RessourcePickedUp(m_mapPosition);
 
 					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_WINE_PRESS;
@@ -862,9 +868,11 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(GRAPE_JUICE))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+					if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_winePress.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPE_JUICE));
+
+						_builds->m_winePress.RessourcePickedUp(m_mapPosition);
 
 						*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
 
@@ -891,11 +899,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+				if (_builds->m_winePress.UpdateRessourcePickuping(m_mapPosition))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(GRAPE_JUICE));
 					Storage::TransferOfTheWholeResource(_builds->m_winePress.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(GRAPE_JUICE));
+
+					_builds->m_winePress.RessourcePickedUp(m_mapPosition);
 
 					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_WINE_STOREHOUSE;
@@ -1013,9 +1023,11 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				if (m_storage->IsResourceExistHere(AMPHORA_OF_WINE))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
-					if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+					if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition))
 					{
 						Storage::TransferOfTheWholeResource(_builds->m_wineStorehouse.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+						_builds->m_wineStorehouse.RessourcePickedUp(m_mapPosition);
 
 						*(m_targetedBuilding) = BUILDING_STOREHOUSE;
 
@@ -1042,11 +1054,13 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			}
 			else
 			{
-				if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition, _time->GetFrameTime()))
+				if (_builds->m_wineStorehouse.UpdateRessourcePickuping(m_mapPosition))
 				{
 					// TEMPORAIRE -> DEVOIR METTRE UNE QUANTITÉ MAX A TRANSPORTER
 					m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
 					Storage::TransferOfTheWholeResource(_builds->m_wineStorehouse.GetStorage(m_mapPosition), m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+					_builds->m_wineStorehouse.RessourcePickedUp(m_mapPosition);
 
 					m_targetedBuilding = new enum TypeOfBuilding;
 					*(m_targetedBuilding) = BUILDING_STOREHOUSE;

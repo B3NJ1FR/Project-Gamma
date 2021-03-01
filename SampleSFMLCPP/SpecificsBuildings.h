@@ -50,7 +50,7 @@ public:
 		bool hasBeenBuilt;
 		bool isProduced;
 		bool isWorkerThere;
-		bool isProductionTransformed;
+		bool isProdCanBeCollected;
 	};
 	typedef struct BuildingData sBuildingData;
 
@@ -79,7 +79,8 @@ public:
 	void WorkerLeavingThisPosition(const sf::Vector2f &_mapPosition);
 	bool CheckHasProducedRessource(const sf::Vector2f &_mapPosition);
 	bool CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f &_mapPosition);
-	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime);
+	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition);
+	void RessourcePickedUp(const sf::Vector2f& _mapPosition);
 	sf::Vector2i FindNearestBuilding(const sf::Vector2f &_mapPosition);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);

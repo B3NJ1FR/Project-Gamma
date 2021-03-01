@@ -106,6 +106,18 @@ void Storage::AddNewResourceToStorage(std::string _ressourceName, ResourceData _
 	}
 }
 
+void Storage::AddNewResourceToStorage(std::string _ressourceName, Ressources _ressource, ResourceData _data)
+{
+	TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
+
+	// Verification if the new ressources doesn't already exist in the map
+	if (iterator == m_mapOfResources.end())
+	{
+		Ressources* temporaryRess = new Ressources(_ressource);
+		m_mapOfResources.insert(std::pair<std::string, std::pair<Ressources*, ResourceData>>(temporaryRess->GetName(), std::pair<Ressources*, ResourceData>(temporaryRess, _data)));
+	}
+}
+
 void Storage::AddNewResourceToStorage(int _quantityOfRessources, enum TypesOfRessources _ressources, ...)
 {
 	int resultSum = 0;
@@ -333,4 +345,65 @@ bool Storage::TransferOfTheWholeResource(Storage* _source, Storage* _destination
 	_source->AddOrSubtractResource(_ressourceName, -quantity);
 
 	return true;
+}
+
+void Storage::SavingForFile(std::ofstream* _file)
+{
+	// Save the storage name
+	_file->write((char*)&m_storageName, sizeof(std::string));
+
+	// Save the number of resources present in this storage
+	int sizeOfMapOfStorage = m_mapOfResources.size();
+	_file->write((char*)&sizeOfMapOfStorage, sizeof(int));
+
+	for (TypeMapStringResources::iterator iterator = m_mapOfResources.begin();
+		iterator != m_mapOfResources.end();
+		iterator++)
+	{
+		// Save each resource name
+		_file->write((char*)&iterator->first, sizeof(std::string));
+
+		// Save each resource content data
+		iterator->second.first->SavingForFile(_file);
+
+		// Save each type of resource data
+		_file->write((char*)&iterator->second.second, sizeof(ResourceData));
+	}
+}
+
+
+void Storage::LoadingFromFile(std::ifstream* _file)
+{
+	// Save the storage name
+	_file->read((char*)&m_storageName, sizeof(std::string));
+
+	// Save the number of resources present in this storage
+	int sizeOfMapOfStorage = 0;
+	_file->read((char*)&sizeOfMapOfStorage, sizeof(int));
+
+	std::string resourceName = "";
+	ResourceData resourceData = ResourceData::RESOURCE_NORMAL;
+
+	for (int i = 0; i < sizeOfMapOfStorage; i++)
+	{
+		Ressources resource;
+
+		// Save each resource name
+		resourceName.clear();
+		_file->read((char*)&resourceName, sizeof(std::string));
+
+		// Save each resource content data
+		resource.LoadingFromFile(_file);
+
+		// Save each type of resource data
+		resourceData = ResourceData::RESOURCE_NORMAL;
+		_file->read((char*)&resourceData, sizeof(ResourceData));
+
+		AddNewResourceToStorage(resourceName, resource, resourceData);
+	}
+
+	if (sizeOfMapOfStorage == m_mapOfResources.size())
+	{
+		std::cout << "[STORAGE] - Successfully loaded !\n";
+	}
 }

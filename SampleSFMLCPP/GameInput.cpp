@@ -87,7 +87,7 @@ void GameInput(struct Game *_game)
 				if (event.key.code == sf::Keyboard::Escape && _game->m_actualGameState == VILLA_MANAGEMENT)
 				{
 					_game->m_actualGameState = NORMAL_MODE;
-					_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+					_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 				}
 				else if (event.key.code == sf::Keyboard::Escape)
 				{
@@ -112,7 +112,7 @@ void GameInput(struct Game *_game)
 					}
 
 					_game->m_actualGameState = NORMAL_MODE;
-					_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+					_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 				}
 				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == NORMAL_MODE)
 				{
@@ -181,13 +181,13 @@ void GameInput(struct Game *_game)
 				// Set the game at the Pause State	
 				if (event.key.code == sf::Keyboard::P)
 				{
-					if (_game->m_time->GetTypeOfAcceleration() != GAME_PAUSE)
+					if (_game->m_time->GetTypeOfAcceleration() != TypeOfTimeAcceleration::GAME_PAUSE)
 					{
-						_game->m_time->SetTypeOfAcceleration(GAME_PAUSE);
+						_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_PAUSE);
 					}
 					else
 					{
-						_game->m_time->SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+						_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 					}
 				}
 
@@ -238,25 +238,32 @@ void GameInput(struct Game *_game)
 						_game->actualGameState = SELLING_WINDOW;
 					}*/
 				}
-				// TEST
+
 				if (event.key.code == sf::Keyboard::Add
 					|| event.key.code == sf::Keyboard::A)
 				{
 					_game->m_managerBetweenWorkersAndMain->CheckClickKeys(true, _game->m_mainCharacter, _game->m_workersList);
 
 				}
-				// TEST
 				if (event.key.code == sf::Keyboard::Subtract
 					|| event.key.code == sf::Keyboard::E)
 				{
 					_game->m_managerBetweenWorkersAndMain->CheckClickKeys(false, _game->m_mainCharacter, _game->m_workersList);					
 				}
 
-				if (event.key.code == sf::Keyboard::Subtract
-					|| event.key.code == sf::Keyboard::I)
+				// DEBUG RESOURCES
+				if (_game->m_isDebuggerModeActive)
 				{
-					RessourcesManager::GetSingleton()->DisplayAllStoragesContent();
+					if (event.key.code == sf::Keyboard::I)
+					{
+						RessourcesManager::GetSingleton()->DisplayAllStoragesContent();
+					}
+					if (event.key.code == sf::Keyboard::U)
+					{
+						RessourcesManager::GetSingleton()->DisplayWorkersStoragesContent();
+					}
 				}
+				
 
 				/*if (event.key.code == sf::Keyboard::M)
 				{

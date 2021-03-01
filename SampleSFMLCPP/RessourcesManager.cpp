@@ -69,3 +69,33 @@ void RessourcesManager::DisplayAllStoragesContent()
 
 	std::cout << std::endl << std::endl;
 }
+
+void RessourcesManager::DisplayBuildingsStoragesContent()
+{
+	unsigned int sumOfRessources = 0;
+
+	for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
+	{
+		if ((*iterator)->GetName() != "Worker")
+		{
+			std::cout << *(*iterator);
+		}
+	}
+
+	std::cout << std::endl << std::endl;
+}
+
+void RessourcesManager::DisplayWorkersStoragesContent()
+{
+	unsigned int sumOfRessources = 0;
+
+	for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
+	{
+		if ((*iterator)->GetName() == "Worker")
+		{
+			std::cout << *(*iterator);
+		}
+	}
+
+	std::cout << std::endl << std::endl;
+}

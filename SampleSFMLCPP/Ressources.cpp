@@ -163,3 +163,23 @@ void Ressources::TransferFromReservedToQuantity(unsigned int _quantity)
 		m_quantityOwned += _quantity;
 	}
 }
+
+
+void Ressources::SavingForFile(std::ofstream* _file)
+{
+	// Save the resource name
+	_file->write((char*)&m_name, sizeof(std::string));
+	_file->write((char*)&m_quantityOwned, sizeof(int));
+	_file->write((char*)&m_quantityReserved, sizeof(int));
+}
+
+void Ressources::LoadingFromFile(std::ifstream* _file)
+{
+	// Save the resource name
+	_file->read((char*)&m_name, sizeof(std::string));
+	_file->read((char*)&m_quantityOwned, sizeof(int));
+	_file->read((char*)&m_quantityReserved, sizeof(int));
+
+	// A MODIFIER
+	// CHARGER LE SPRITE CORRESPONDANT FROM RESSMANAGER
+}

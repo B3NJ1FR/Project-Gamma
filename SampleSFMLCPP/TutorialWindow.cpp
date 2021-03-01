@@ -168,10 +168,10 @@ void TutorialWindow::UpdateTutorialWindow(enum CurrentGameState* _state, sf::Fon
 
 void TutorialWindow::DisplayTutorialWindow(sf::RenderWindow &_window)
 {
-	BlitSprite(m_backgroundMessage, m_backgroundMessage.getGlobalBounds().width, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height, 0, _window);
+	BlitSprite(m_backgroundMessage, (int)m_backgroundMessage.getGlobalBounds().width, SCREEN_HEIGHT - (int)m_backgroundMessage.getGlobalBounds().height, 0, _window);
 	
-	BlitString(m_text, m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height - 10, _window);
-	BlitString(m_textPressSpace, m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - m_backgroundMessage.getGlobalBounds().height + 95, _window);
+	BlitString(m_text, (int)m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - (int)m_backgroundMessage.getGlobalBounds().height - 10, _window);
+	BlitString(m_textPressSpace, (int)m_backgroundMessage.getGlobalBounds().width - 5, SCREEN_HEIGHT - (int)m_backgroundMessage.getGlobalBounds().height + 95, _window);
 }
 
 
@@ -182,8 +182,8 @@ void TutorialWindow::SavingTutorialProgressionForFile(std::ofstream* _file)
 
 	if (!m_isTutorielDisplayFinished)
 	{
-		int counterOfMessages = m_actualMessages;
-		_file->write((char*)&counterOfMessages, sizeof(int));
+		short counterOfMessages = m_actualMessages;
+		_file->write((char*)&counterOfMessages, sizeof(short));
 	}
 }
 
@@ -195,8 +195,8 @@ void TutorialWindow::LoadingTutorialProgressionForFile(std::ifstream* _file)
 
 	if (!m_isTutorielDisplayFinished)
 	{
-		int counterOfMessages = 0;
-		_file->read((char*)&counterOfMessages, sizeof(int));
+		short counterOfMessages = 0;
+		_file->read((char*)&counterOfMessages, sizeof(short));
 		m_actualMessages = counterOfMessages;
 
 		m_isMessageHasChanged = true;

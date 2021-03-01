@@ -1226,7 +1226,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 		{
 			if (_game->m_actualGameState != VILLA_MANAGEMENT)
 			{
-				_game->m_time->SetTypeOfAcceleration(GAME_PAUSE);
+				_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_PAUSE);
 				_game->m_actualGameState = VILLA_MANAGEMENT;
 			}
 

@@ -196,20 +196,21 @@ void Game::TextsInit()
 
 
 	// ---------------- UI TEXTS ---------------- 
-	LoadTextString(&m_UITexts[0], "Sesterces :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(130, 33));
-	LoadTextString(&m_UITexts[1], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(305, 33));
+	sf::Color colorYellow = { 236, 150, 55, 255 };
+	LoadTextString(&m_UITexts[0], "Sesterces :", &m_charlemagneFont, 25, colorYellow, sf::Vector2f(130, 33));
+	LoadTextString(&m_UITexts[1], "", &m_charlemagneFont, 25, colorYellow, sf::Vector2f(305, 33));
 
-	LoadTextString(&m_UITexts[2], "Bunchs of Grape :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(435, 33));
-	LoadTextString(&m_UITexts[3], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(720, 33));
+	LoadTextString(&m_UITexts[2], "Bunchs of Grape :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(435, DEBUG_RES_UI_HEIGHT));
+	LoadTextString(&m_UITexts[3], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(720, DEBUG_RES_UI_HEIGHT));
 
-	LoadTextString(&m_UITexts[4], "Grapes Must :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(840, 33));
-	LoadTextString(&m_UITexts[5], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1055, 33));
+	LoadTextString(&m_UITexts[4], "Grapes Must :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(840, DEBUG_RES_UI_HEIGHT));
+	LoadTextString(&m_UITexts[5], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1055, DEBUG_RES_UI_HEIGHT));
 
-	LoadTextString(&m_UITexts[6], "Grape Juice :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1155, 33));
-	LoadTextString(&m_UITexts[7], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1355, 33));
+	LoadTextString(&m_UITexts[6], "Grape Juice :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1155, DEBUG_RES_UI_HEIGHT));
+	LoadTextString(&m_UITexts[7], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1355, DEBUG_RES_UI_HEIGHT));
 
-	LoadTextString(&m_UITexts[8], "Amphora of Wine :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1500, 33));
-	LoadTextString(&m_UITexts[9], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1795, 33));
+	LoadTextString(&m_UITexts[8], "Amphora of Wine :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1500, DEBUG_RES_UI_HEIGHT));
+	LoadTextString(&m_UITexts[9], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1795, DEBUG_RES_UI_HEIGHT));
 
 }
 

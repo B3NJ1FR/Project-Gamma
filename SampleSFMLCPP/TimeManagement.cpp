@@ -3,7 +3,14 @@
 
 TimeManagement::TimeManagement()
 {
-	
+	m_accelerator = 1;
+	m_actualMonth = IANUARIUS;
+	m_numberOfYears = RESET;
+
+	m_isMonthHasChanged = false;
+	m_isYearHasChanged = true;
+
+	m_typeOfAcceleration = TypeOfTimeAcceleration::GAME_NORMAL_SPEED;
 }
 
 
@@ -27,19 +34,19 @@ void TimeManagement::Initialisation(sf::Font* _font, const sf::Vector2i& _screen
 
 	sf::Color colorActivated = { 236, 150, 55, 255 };
 
-	LoadTextString(&m_monthText, "IANUARIUS", _font, 35, colorActivated, sf::Vector2f(_screenResolution.x - 280, 25));
+	LoadTextString(&m_monthText, "IANUARIUS", _font, 35, colorActivated, sf::Vector2f((float)_screenResolution.x - 280.0f, 25.0f));
 
-	LoadTextString(&yearText, "", _font, 35, colorActivated, sf::Vector2f(_screenResolution.x - 350, 25));
+	LoadTextString(&yearText, "", _font, 35, colorActivated, sf::Vector2f((float)_screenResolution.x - 350.0f, 25.0f));
 
-	m_timesSprite[GAME_PAUSE] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/pause.png", 1);
-	m_timesSprite[GAME_NORMAL_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/one.png", 1);
-	m_timesSprite[GAME_DOUBLE_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/two.png", 1);
-	m_timesSprite[GAME_TRIPLE_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/three.png", 1);
+	m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/pause.png", 1);
+	m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/one.png", 1);
+	m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/two.png", 1);
+	m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED] = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/three.png", 1);
 
 	m_sundial = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/sundial.png", 1);
 	m_sundialArrowIndicator = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/arrow.png", 2);
 
-	SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+	SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 }
 
 
@@ -109,39 +116,40 @@ void TimeManagement::SetTypeOfAcceleration(const enum TypeOfTimeAcceleration &_t
 
 	switch (m_typeOfAcceleration)
 	{
-	case GAME_PAUSE:
-		m_timesSprite[GAME_PAUSE].setColor(colorActivated);
-		m_timesSprite[GAME_NORMAL_SPEED].setColor(colorDesactivated);
-		m_timesSprite[GAME_DOUBLE_SPEED].setColor(colorDesactivated);
-		m_timesSprite[GAME_TRIPLE_SPEED].setColor(colorDesactivated);
+	case TypeOfTimeAcceleration::GAME_PAUSE:
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].setColor(colorActivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].setColor(colorDesactivated);
 
 		m_accelerator = 0;
 
 		break;
-	case GAME_NORMAL_SPEED:
-		m_timesSprite[GAME_PAUSE].setColor(colorDesactivated);
-		m_timesSprite[GAME_NORMAL_SPEED].setColor(colorActivated);
-		m_timesSprite[GAME_DOUBLE_SPEED].setColor(colorDesactivated);
-		m_timesSprite[GAME_TRIPLE_SPEED].setColor(colorDesactivated);
+	case TypeOfTimeAcceleration::GAME_NORMAL_SPEED:
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].setColor(colorActivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].setColor(colorDesactivated);
 
 		m_accelerator = 1;
 
 		break;
-	case GAME_DOUBLE_SPEED:
-		m_timesSprite[GAME_PAUSE].setColor(colorDesactivated);
-		m_timesSprite[GAME_NORMAL_SPEED].setColor(colorDesactivated);
-		m_timesSprite[GAME_DOUBLE_SPEED].setColor(colorActivated);
-		m_timesSprite[GAME_TRIPLE_SPEED].setColor(colorDesactivated);
+	case TypeOfTimeAcceleration::GAME_DOUBLE_SPEED:
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].setColor(colorActivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].setColor(colorDesactivated);
 
 		m_accelerator = 3;
 
 		break;
-	case GAME_TRIPLE_SPEED:
-		m_timesSprite[GAME_PAUSE].setColor(colorDesactivated);
-		m_timesSprite[GAME_NORMAL_SPEED].setColor(colorDesactivated);
-		m_timesSprite[GAME_DOUBLE_SPEED].setColor(colorDesactivated);
-		m_timesSprite[GAME_TRIPLE_SPEED].setColor(colorActivated);
+	case TypeOfTimeAcceleration::GAME_TRIPLE_SPEED:
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].setColor(colorDesactivated);
+		m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].setColor(colorActivated);
 
+		//m_accelerator = 5;
 		m_accelerator = 20;
 
 		break;
@@ -158,36 +166,36 @@ void TimeManagement::InputTimeManagement(sf::RenderWindow &_window, const sf::Ve
 	sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
 
 	// Button New Game
-	if (mousePostionAtScreen.x > _screenResolution.x - 695 - (m_timesSprite[GAME_PAUSE].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < _screenResolution.x - 695 + (m_timesSprite[GAME_PAUSE].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_PAUSE].getGlobalBounds().height / 2)
-		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_PAUSE].getGlobalBounds().height / 2))
+	if (mousePostionAtScreen.x > _screenResolution.x - 695 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 695 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().height / 2)
+		&& mousePostionAtScreen.y < 45 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().height / 2))
 	{
-		SetTypeOfAcceleration(GAME_PAUSE);
+		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_PAUSE);
 	}
 	// Button Continue
-	else if (mousePostionAtScreen.x > _screenResolution.x - 645 - (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < _screenResolution.x - 645 + (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().height / 2)
-		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_NORMAL_SPEED].getGlobalBounds().height / 2))
+	else if (mousePostionAtScreen.x > _screenResolution.x - 645 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 645 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().height / 2)
+		&& mousePostionAtScreen.y < 45 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().height / 2))
 	{
-		SetTypeOfAcceleration(GAME_NORMAL_SPEED);
+		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 	}
 	// Button Options	
-	else if (mousePostionAtScreen.x > _screenResolution.x - 595 - (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < _screenResolution.x - 595 + (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().height / 2)
-		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_DOUBLE_SPEED].getGlobalBounds().height / 2))
+	else if (mousePostionAtScreen.x > _screenResolution.x - 595 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 595 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().height / 2)
+		&& mousePostionAtScreen.y < 45 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().height / 2))
 	{
-		SetTypeOfAcceleration(GAME_DOUBLE_SPEED);
+		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_DOUBLE_SPEED);
 	}
 	// Button Quit
-	else if (mousePostionAtScreen.x > _screenResolution.x - 535 - (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.x < _screenResolution.x - 535 + (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
-		&& mousePostionAtScreen.y > 45 - (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().height / 2)
-		&& mousePostionAtScreen.y < 45 + (m_timesSprite[GAME_TRIPLE_SPEED].getGlobalBounds().height / 2))
+	else if (mousePostionAtScreen.x > _screenResolution.x - 535 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.x < _screenResolution.x - 535 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
+		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().height / 2)
+		&& mousePostionAtScreen.y < 45 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().height / 2))
 	{
-		SetTypeOfAcceleration(GAME_TRIPLE_SPEED);
+		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_TRIPLE_SPEED);
 	}
 }
 
@@ -253,13 +261,13 @@ void TimeManagement::DisplayUITime(sf::RenderWindow &_window, const sf::Vector2i
 	BlitString(m_monthText, _window);
 	BlitString(yearText, _window);
 		
-	BlitSprite(m_timesSprite[GAME_PAUSE], _screenResolution.x - 695, 45, 0, _window);
-	BlitSprite(m_timesSprite[GAME_NORMAL_SPEED], _screenResolution.x - 645, 45, 0, _window);
-	BlitSprite(m_timesSprite[GAME_DOUBLE_SPEED], _screenResolution.x - 595, 45, 0, _window);
-	BlitSprite(m_timesSprite[GAME_TRIPLE_SPEED], _screenResolution.x - 535, 45, 0, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE], (float)_screenResolution.x - 695.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED], (float)_screenResolution.x - 645.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED], (float)_screenResolution.x - 595.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED], (float)_screenResolution.x - 535.0f, 45.0f, 0.0f, _window);
 
-	BlitSprite(m_sundial, _screenResolution.x - 435, 45, 0, _window);
-	BlitSprite(m_sundialArrowIndicator, _screenResolution.x - 435, 30, (int)(m_timer.asSeconds() * 3.75f) % (int)(TEMPORARY_TIME * 3.75f) - 20.0f, _window);
+	BlitSprite(m_sundial, (float)_screenResolution.x - 435.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_sundialArrowIndicator, (float)_screenResolution.x - 435.0f, 30.0f, (int)(m_timer.asSeconds() * 3.75f) % (int)(TEMPORARY_TIME * 3.75f) - 20.0f, _window);
 }
 
 

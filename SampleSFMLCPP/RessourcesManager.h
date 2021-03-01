@@ -27,5 +27,7 @@ public :
 
 	// Methods
 	void DisplayAllStoragesContent();
+	void DisplayBuildingsStoragesContent();
+	void DisplayWorkersStoragesContent();
 };
 

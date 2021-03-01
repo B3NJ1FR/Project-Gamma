@@ -70,11 +70,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\Executables\x64\Debug</OutDir>
+    <OutDir>..\Executables\x64\Debug\</OutDir>
     <TargetName>VindemiaAntiquus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\Executables\x64\Release</OutDir>
+    <OutDir>..\Executables\x64\Release\</OutDir>
     <TargetName>VindemiaAntiquus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

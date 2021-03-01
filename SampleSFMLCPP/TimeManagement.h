@@ -34,7 +34,7 @@ enum MonthsInOneYear
 //	November : (novembre) 30 jours
 //	December : (décembre) 31 jours
 
-enum TypeOfTimeAcceleration
+enum class TypeOfTimeAcceleration
 {
 	GAME_PAUSE,
 	GAME_NORMAL_SPEED,

@@ -105,7 +105,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 	((sBuildingData *)newBuilding->data)->hasBeenBuilt = false;
 	((sBuildingData *)newBuilding->data)->isProduced = false;
 	((sBuildingData *)newBuilding->data)->isWorkerThere = false;
-	((sBuildingData *)newBuilding->data)->isProductionTransformed = false;
+	((sBuildingData *)newBuilding->data)->isProdCanBeCollected = false;
 
 	newBuilding->status = ELEMENT_ACTIVE;
 
@@ -203,9 +203,12 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime)
 
 								if (((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime > m_building->GetProductionTimeCost())
 								{
-									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
-									((SpecificsBuildings::sBuildingData*)currentElement->data)->isProductionTransformed = false;
 									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime = RESET;
+									((SpecificsBuildings::sBuildingData*)currentElement->data)->secondaryTime = RESET;
+									((SpecificsBuildings::sBuildingData*)currentElement->data)->isProduced = true;
+
+									((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_COLLECTING_PRODUCTION;
+									
 									std::cout << "Building collection production\n";
 								}
 							}
@@ -214,18 +217,7 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime)
 						break;
 					case BUILDING_COLLECTING_PRODUCTION:
 						
-						arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
-
-						// We verify that we have enough of each resource to start the production
-						for (Ressources* resource : arrayOfResources)
-						{
-							if (resource->GetQuantityReserved() > 0
-								&& ((SpecificsBuildings::sBuildingData*)currentElement->data)->isWorkerThere == true)
-							{
-								((SpecificsBuildings::sBuildingData*)currentElement->data)->isProduced = true;
-							}
-						}
-						arrayOfResources.clear();
+						
 
 						break;
 					case BUILDING_NEED_TO_BE_CLEANED:
@@ -386,8 +378,7 @@ void SpecificsBuildings::UpdateBuildingProduction()
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				// If the building has produced the ressources, we manage it
-				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true
-					&& ((SpecificsBuildings::sBuildingData*)currentElement->data)->isProductionTransformed == false)
+				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
 				{
 					Storage* storage = ((SpecificsBuildings::sBuildingData*)currentElement->data)->storage;
 					std::vector<Ressources*> arrayOfResources;
@@ -401,7 +392,6 @@ void SpecificsBuildings::UpdateBuildingProduction()
 						{
 							// We delete the resources reserved to this production
 							resource->AddOrSubtractQuantityReserved(-((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold);
-							((SpecificsBuildings::sBuildingData*)currentElement->data)->isProductionTransformed = true;
 						}
 					}
 					arrayOfResources.clear();
@@ -417,6 +407,12 @@ void SpecificsBuildings::UpdateBuildingProduction()
 					{
 						// We add the resources created during this production
 						resource->AddOrSubtractQuantityOwned(quantityProduced);
+
+						// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
+						// A MODIFIER
+						((SpecificsBuildings::sBuildingData*)currentElement->data)->isProduced = false;
+						((SpecificsBuildings::sBuildingData*)currentElement->data)->isProdCanBeCollected = true;
+						std::cout << "Here";
 					}
 
 					arrayOfResources.clear();
@@ -655,7 +651,7 @@ bool SpecificsBuildings::CheckHasProducedRessource(const sf::Vector2f &_mapPosit
 			{
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 				{
-					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProdCanBeCollected == true)
 					{
 						return true;
 					}
@@ -717,7 +713,7 @@ bool SpecificsBuildings::CheckSpecificsBuildingsHasBeenBuilt(const sf::Vector2f 
 	}
 }
 
-bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition, const float &_frametime)
+bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPosition)
 {
 	if (m_list != nullptr)
 	{
@@ -728,17 +724,14 @@ bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPositi
 				// If the building has produced the ressources, we manage it
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition)
 				{
-					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced == true)
+					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isProdCanBeCollected == true)
 					{
-						((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime += _frametime;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime >= m_building->GetPickupingTimeCost())
 						{
 							// Launch the feedback animation of producing
-
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = true;
-							((SpecificsBuildings::sBuildingData *)currentElement->data)->isProduced = false;
-
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->secondaryTime = RESET;
 
 							((SpecificsBuildings::sBuildingData *)currentElement->data)->actualState = BUILDING_NEED_TO_BE_CLEANED;
@@ -769,6 +762,52 @@ bool SpecificsBuildings::UpdateRessourcePickuping(const sf::Vector2f &_mapPositi
 	else
 	{
 		return false;
+	}
+}
+
+// Check if the storage is still containing resources produced but not picked up 
+// If it's the case, we leave the "isProdCanBeCollected" value to true to allow to an other worker to pick up the resources
+void SpecificsBuildings::RessourcePickedUp(const sf::Vector2f& _mapPosition)
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// If the building has produced the ressources, we manage it
+				// We verify the location is between the origin and the max size of the building concerned
+				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					if (((SpecificsBuildings::sBuildingData*)currentElement->data)->isProdCanBeCollected == true)
+					{
+						Storage* storage = ((SpecificsBuildings::sBuildingData*)currentElement->data)->storage;
+						std::vector<Ressources*> arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_PRODUCED);
+
+						// We verify that we have enough of each resource to start the production
+						for (Ressources* resource : arrayOfResources)
+						{
+							// We add the resources created during this production
+							if (resource->GetQuantityOwned() == 0)
+							{
+								// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
+								// A MODIFIER
+								((SpecificsBuildings::sBuildingData*)currentElement->data)->isProdCanBeCollected = false;
+							}
+						}
+
+						arrayOfResources.clear();
+					}
+
+					break;
+				}
+			}
+
+		}
+
 	}
 }
 
@@ -837,7 +876,7 @@ bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosit
 
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
-				//std::cout << "Map : " << positionCounter << "/" << list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
+				//std::cout << "Map : " << positionCounter << "/" << list->size << " -> "<< ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x << " " << ((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y << std::endl;
 
 				// If the building position is identical to which send, we save his position in the linked list
 				if (((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition == _mapPosition

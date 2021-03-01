@@ -152,8 +152,8 @@ void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, enum 
 			if (_map->IsCoordinatesIsInMap(_mapPosition))
 			{
 				// Set the collisions and buildings id for the building
-				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
-				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
+				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_collisionID;
+				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
 				
 				// Set the building sprite
 				switch (_typeOfBuilding)
@@ -186,8 +186,8 @@ void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, enum 
 				
 
 				// Set the collisions and buildings id for the ground
-				_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _collisionID;
-				_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _typeOfBuilding;
+				_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_collisionID;
+				_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
 
 				// Set the ground sprite adapted to the building selected
 				switch (_typeOfBuilding)
@@ -238,13 +238,13 @@ void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBu
 			{
 				// Set the collisions and buildings id for the building
 				_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
-				_game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = _typeOfBuilding;
+				_game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
 				_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x];
 
 
 				// Set the collisions and buildings id for the ground
 				_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
-				_game->m_map.GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = _typeOfBuilding;
+				_game->m_map.GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
 			}
 			else if (_game->m_map.IsCoordinatesIsInMap(_mapPosition))
 			{
@@ -521,22 +521,22 @@ void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 void BuildWindow::DisplayBuildWindow(struct Game *_game)
 {
 	// Display of the building selection UI
-	BlitSprite(m_buildingUI, _game->m_screenReso->x - (int)m_buildingUI.getGlobalBounds().width, _game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
+	BlitSprite(m_buildingUI, (float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width, (float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height, 0.0f, *_game->m_window);
 	
 	// Display of the help scroll that indicates every building info
 	if (m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 	{
-		BlitSprite(m_buildingUI, _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2), _game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height, 0, *_game->m_window);
+		BlitSprite(m_buildingUI, (float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2), (float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height, 0.0f, *_game->m_window);
 
-		BlitSprite(_game->m_builds.m_buildings[m_IDChosenBuilding].GetIcon(), (_game->m_screenReso->x - (int)m_buildingUI.getGlobalBounds().width * 2) + 135, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 135, 0, *_game->m_window);
+		BlitSprite(_game->m_builds.m_buildings[m_IDChosenBuilding].GetIcon(), ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width * 2) + 135, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 135, 0.0f, *_game->m_window);
 
 		// Display of the info paper about the building selected
 		if (_game->m_builds.m_buildingsNameTexts != nullptr)
 		{
 			// Display the name
-			BlitString(_game->m_builds.m_buildingsNameTexts[m_IDChosenBuilding], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 70, *_game->m_window);
+			BlitString(_game->m_builds.m_buildingsNameTexts[m_IDChosenBuilding], (_game->m_screenReso->x - (int)(m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 70, *_game->m_window);
 			
-			BlitSprite(m_separationLine, (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 120, 0, *_game->m_window);
+			BlitSprite(m_separationLine, ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 120.0f, 0.0f, *_game->m_window);
 
 
 			// Display the size
@@ -545,41 +545,41 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 290, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
 			
 			// Display the entering ressource logo
-			BlitSprite(m_enteringArrow, _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 181, 0, *_game->m_window);
+			BlitSprite(m_enteringArrow, (float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 230, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 181, 0, *_game->m_window);
 			
 			if (_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded() > 0)
 			{
 				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
+					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), (float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
 				}
 			}
 			
 			// Display the exiting ressource logo
-			BlitSprite(m_exitingArrow, _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 230, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 216, 0, *_game->m_window);
+			BlitSprite(m_exitingArrow, (float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 230, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 216, 0, *_game->m_window);
 			
 			if (_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced() > 0)
 			{
 				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced(i + 1)].GetSprite(), _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
+					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced((unsigned char)i + 1)].GetSprite(), _game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
 				}
 			}
 
-			BlitSprite(m_separationLine, (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 250, 0, *_game->m_window);
+			BlitSprite(m_separationLine, (_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 250, 0, *_game->m_window);
 
 
 			// Display the description
 			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 120, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 260, *_game->m_window);
 
-			BlitSprite(m_separationLine, (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)), (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 385, 0, *_game->m_window);
+			BlitSprite(m_separationLine, ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 385, 0, *_game->m_window);
 
 
 			// Display the money cost of the building
 			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 45, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
 			
 			_game->m_money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
-			BlitSprite(_game->m_money.GetSprite(), (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 45, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
+			BlitSprite(_game->m_money.GetSprite(), ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) + 45, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
 			_game->m_money.SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}
@@ -592,17 +592,17 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	// Display of the buildings list
 	for (int i = 0; i < _game->m_builds.GetNumberOfBuildings(); i++)
 	{
-		if ((_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
-			&& (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= _game->m_screenReso->y - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height - 40)
+		if (((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
+			&& ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= (float)_game->m_screenReso->y - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height - 40)
 		{
-			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 
 			if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[i].GetConstructionCost())
 			{
 				sf::Color color = { 255, 255, 255, 150 };
 				m_blackFilter.setColor(color);
 
-				BlitSprite(m_blackFilter, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+				BlitSprite(m_blackFilter, ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 			}
 
 			//std::cout << "Stall : " << _game->stall->GetStatus() << std::endl;
@@ -613,12 +613,12 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 				sf::Color color = { 255, 255, 255, 150 };
 				m_blackFilter.setColor(color);
 
-				BlitSprite(m_blackFilter, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
+				BlitSprite(m_blackFilter, ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 			}
 
 			if (_game->m_builds.m_buildingsNameTexts != nullptr)
 			{
-				BlitString(_game->m_builds.m_buildingsNameTexts[i], (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList + 70, *_game->m_window);
+				BlitString(_game->m_builds.m_buildingsNameTexts[i], ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109 + 32, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList + 70, *_game->m_window);
 			}
 		}
 
@@ -628,7 +628,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	if ((_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList >= (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
 		&& (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList <= _game->m_screenReso->y - m_buildingUIdestroyBuildings.getGlobalBounds().height - 40)
 	{
-		BlitSprite(m_buildingUIdestroyBuildings, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (_game->m_builds.GetNumberOfBuildings() % 2) * 109, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList, 0, *_game->m_window);
+		BlitSprite(m_buildingUIdestroyBuildings, ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (_game->m_builds.GetNumberOfBuildings() % 2) * 109, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (_game->m_builds.GetNumberOfBuildings() / 2) + m_scrollBuildingList, 0, *_game->m_window);
 	}
 
 	if (m_IDChosenBuilding <= _game->m_builds.GetNumberOfBuildings())
@@ -637,7 +637,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			&& (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) + m_scrollBuildingList <= _game->m_screenReso->y - m_contour.getGlobalBounds().height - 40)
 		{
 			// Display of the contour when a building is selected to be built
-			BlitSprite(m_contour, (_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (m_IDChosenBuilding % 2) * 109 - 4, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) - 4 + m_scrollBuildingList, 0, *_game->m_window);
+			BlitSprite(m_contour, ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (m_IDChosenBuilding % 2) * 109 - 4, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (m_IDChosenBuilding / 2) - 4 + m_scrollBuildingList, 0, *_game->m_window);
 		}
 	}
 
