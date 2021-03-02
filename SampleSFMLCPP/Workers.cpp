@@ -19,8 +19,6 @@ Workers::Workers()
 	m_storage = new Storage();
 	m_storage->SetName("Worker");
 
-	m_ressourceHeld = nullptr;
-	m_quantityRessourceHeld = nullptr;
 	m_targetedBuilding = nullptr;
 
 	SetTimeToDeposit(RESET);
@@ -32,11 +30,6 @@ Workers::Workers()
 
 Workers::~Workers()
 {
-	if (m_ressourceHeld != nullptr)
-	{
-		delete[] m_ressourceHeld;
-	}
-
 	if (m_targetedBuilding != nullptr)
 	{
 		delete[] m_targetedBuilding;
@@ -202,28 +195,31 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 		break;
 
 	case MOVEMENT:
+
+		if (_map->IsCoordinatesIsInMap((sf::Vector2i)m_mapPosition))
+		{		
+			// Speed modification depending on the type of soil
+			if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
+			{
+				speed = _time->GetFrameTime() * 2.25f;
+			}
+			else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
+			{
+				speed = _time->GetFrameTime() * 3.5f;
+			}
+			else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
+			{
+				speed = _time->GetFrameTime() * 5;
+			}
+			else
+			{
+				speed = _time->GetFrameTime() * 1.5f;
+			}
+
+			//std::cout << "MOVEMENT\n";
+			m_path->WalkProcess(&m_mapPosition, speed);
+		}
 		
-		// Speed modification depending on the type of soil
-		if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
-		{
-			speed = _time->GetFrameTime() * 2.25f;
-		}
-		else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
-		{
-			speed = _time->GetFrameTime() * 3.5f;
-		}
-		else if(_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
-		{
-			speed = _time->GetFrameTime() * 5;
-		}
-		else
-		{
-			speed = _time->GetFrameTime() * 1.5f;
-		}
-
-		//std::cout << "MOVEMENT\n";
-		m_path->WalkProcess(&m_mapPosition, speed);
-
 
 
 		// If the path ask to be deleted, that mean that the worker has reached his destination
@@ -285,7 +281,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				else
 				{
 					// Temporaire
-					if (m_ressourceHeld != nullptr)
+					if (!m_storage->IsStorageEmpty())
 					{
 						// A REVOIR CAR IL DEPOSE LES RESSOURCES AU SOL
 						SetWorkerStatus(DEPOSIT_RESSOURCES);
@@ -336,7 +332,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// Else, the worker just wait at the IDLE status
 			else
 			{
-				if (m_ressourceHeld != nullptr)
+				if (!m_storage->IsStorageEmpty())
 				{
 					// A REVOIR CAR IL DEPOSE LES RESSOURCES AU SOL
 					SetWorkerStatus(DEPOSIT_RESSOURCES);
@@ -1370,3 +1366,22 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 	}
 }
 
+void Workers::DestroyStorage()
+{
+	if (m_storage != nullptr)
+	{
+		delete m_storage;
+		m_storage = nullptr;
+	}
+}
+
+void Workers::CreateNewStorage()
+{
+	DestroyStorage();
+
+	if (m_storage == nullptr)
+	{
+		m_storage = new Storage();
+		m_storage->SetName("Worker");
+	}
+}

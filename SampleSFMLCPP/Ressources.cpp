@@ -2,29 +2,32 @@
 
 
 
-Ressources::Ressources() : m_quantityReserved(RESET)
+Ressources::Ressources() 
 {
+	m_quantityReserved = RESET;
 	m_quantityOwned = RESET;
 	m_name = "";
 }
 
 
-Ressources::Ressources(std::string _name) : m_quantityReserved(RESET)
+Ressources::Ressources(std::string _name)
 {
+	m_quantityReserved = RESET;
 	m_quantityOwned = RESET;
 	m_name = _name;
 }
 
 
-Ressources::Ressources(enum TypesOfRessources _name) : m_quantityReserved(RESET)
+Ressources::Ressources(enum TypesOfRessources _name)
 {
 	m_quantityOwned = RESET;
 	m_name = GetNameFromEnum(_name);
 }
 
-Ressources::Ressources(const Ressources& _ressourceToCopy) : m_quantityReserved(RESET)
+Ressources::Ressources(const Ressources& _ressourceToCopy)
 {
 	m_quantityOwned = _ressourceToCopy.GetQuantityOwned();
+	m_quantityReserved = _ressourceToCopy.GetQuantityReserved();
 	m_name = _ressourceToCopy.GetName();
 	m_sprite = _ressourceToCopy.GetSprite();
 }
@@ -168,7 +171,7 @@ void Ressources::TransferFromReservedToQuantity(unsigned int _quantity)
 void Ressources::SavingForFile(std::ofstream* _file)
 {
 	// Save the resource name
-	_file->write((char*)&m_name, sizeof(std::string));
+	SavingStringIntoBinaryFile(_file, m_name);
 	_file->write((char*)&m_quantityOwned, sizeof(int));
 	_file->write((char*)&m_quantityReserved, sizeof(int));
 }
@@ -176,7 +179,7 @@ void Ressources::SavingForFile(std::ofstream* _file)
 void Ressources::LoadingFromFile(std::ifstream* _file)
 {
 	// Save the resource name
-	_file->read((char*)&m_name, sizeof(std::string));
+	m_name = LoadingStringFromBinaryFile(_file);
 	_file->read((char*)&m_quantityOwned, sizeof(int));
 	_file->read((char*)&m_quantityReserved, sizeof(int));
 

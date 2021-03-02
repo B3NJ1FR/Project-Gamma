@@ -499,3 +499,25 @@ float DistanceFormula(const sf::Vector2f &_1stMapPosition, const sf::Vector2f &_
 {
 	return sqrt((pow(abs(_1stMapPosition.x - _2ndMapPosition.x), 2) + pow(abs(_1stMapPosition.y - _2ndMapPosition.y), 2)));
 }
+
+
+void SavingStringIntoBinaryFile(std::ofstream* _file, std::string _stringConcerned)
+{
+	std::string temporaryString = _stringConcerned;
+	int stringLength = temporaryString.size();
+
+	_file->write((char*)&stringLength, sizeof(int));
+	_file->write(temporaryString.c_str(), stringLength);
+}
+
+std::string LoadingStringFromBinaryFile(std::ifstream* _file)
+{
+	std::string stringToLoad;
+	int stringLength = 0;
+
+	_file->read((char*)&stringLength, sizeof(int));
+	stringToLoad.resize(stringLength);
+	_file->read((char*)stringToLoad.c_str(), stringLength);
+
+	return stringToLoad;
+}

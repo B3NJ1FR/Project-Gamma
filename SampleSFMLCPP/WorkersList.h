@@ -32,6 +32,7 @@ public:
 	void ChangeWorkerNumberSelectedSubtract();
 	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map);
 	void CheckAndUpdateWorkersPath(unsigned short ***_map);
+	void ClearStorages();
 
 	// Save and Load
 	void SavingWorkersListForFile(std::ofstream *_file);

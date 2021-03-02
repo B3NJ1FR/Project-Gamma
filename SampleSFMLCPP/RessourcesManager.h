@@ -29,5 +29,6 @@ public :
 	void DisplayAllStoragesContent();
 	void DisplayBuildingsStoragesContent();
 	void DisplayWorkersStoragesContent();
+	void ClearAllStorages();
 };
 

@@ -34,15 +34,18 @@ Storage::Storage(int _quantityOfRessources, enum TypesOfRessources _ressources, 
 
 Storage::~Storage()
 {
-	for (TypeMapStringResources::iterator iterator = m_mapOfResources.begin(); iterator != m_mapOfResources.end(); iterator++)
+	if (!m_mapOfResources.empty())
 	{
-		if (iterator->second.first != nullptr)
+		for (TypeMapStringResources::iterator iterator = m_mapOfResources.begin(); iterator != m_mapOfResources.end(); iterator++)
 		{
-			// Remove the storage from the list
-			RessourcesManager::GetSingleton()->RemoveStorage(this);
+			if (iterator->second.first != nullptr)
+			{
+				// Remove the storage from the list
+				RessourcesManager::GetSingleton()->RemoveStorage(this);
 
-			// Delete the storage from the list
-			delete iterator->second.first;
+				// Delete the storage from the list
+				delete iterator->second.first;
+			}
 		}
 	}
 }
@@ -347,10 +350,12 @@ bool Storage::TransferOfTheWholeResource(Storage* _source, Storage* _destination
 	return true;
 }
 
+
+
 void Storage::SavingForFile(std::ofstream* _file)
 {
 	// Save the storage name
-	_file->write((char*)&m_storageName, sizeof(std::string));
+	SavingStringIntoBinaryFile(_file, m_storageName);
 
 	// Save the number of resources present in this storage
 	int sizeOfMapOfStorage = m_mapOfResources.size();
@@ -361,7 +366,7 @@ void Storage::SavingForFile(std::ofstream* _file)
 		iterator++)
 	{
 		// Save each resource name
-		_file->write((char*)&iterator->first, sizeof(std::string));
+		SavingStringIntoBinaryFile(_file, iterator->first);
 
 		// Save each resource content data
 		iterator->second.first->SavingForFile(_file);
@@ -375,13 +380,13 @@ void Storage::SavingForFile(std::ofstream* _file)
 void Storage::LoadingFromFile(std::ifstream* _file)
 {
 	// Save the storage name
-	_file->read((char*)&m_storageName, sizeof(std::string));
+	m_storageName = LoadingStringFromBinaryFile(_file);
 
 	// Save the number of resources present in this storage
 	int sizeOfMapOfStorage = 0;
 	_file->read((char*)&sizeOfMapOfStorage, sizeof(int));
 
-	std::string resourceName = "";
+	std::string resourceName;
 	ResourceData resourceData = ResourceData::RESOURCE_NORMAL;
 
 	for (int i = 0; i < sizeOfMapOfStorage; i++)
@@ -390,7 +395,7 @@ void Storage::LoadingFromFile(std::ifstream* _file)
 
 		// Save each resource name
 		resourceName.clear();
-		_file->read((char*)&resourceName, sizeof(std::string));
+		resourceName = LoadingStringFromBinaryFile(_file);
 
 		// Save each resource content data
 		resource.LoadingFromFile(_file);
@@ -402,8 +407,8 @@ void Storage::LoadingFromFile(std::ifstream* _file)
 		AddNewResourceToStorage(resourceName, resource, resourceData);
 	}
 
-	if (sizeOfMapOfStorage == m_mapOfResources.size())
+	/*if (sizeOfMapOfStorage == m_mapOfResources.size())
 	{
 		std::cout << "[STORAGE] - Successfully loaded !\n";
-	}
+	}*/
 }

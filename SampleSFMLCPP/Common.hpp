@@ -54,4 +54,6 @@ sf::Vector2i ScreenToTileMouse(sf::Vector2f _position, sf::Vector2f _scale);
 float DistanceFormula(const float &_1stX, const float &_2ndX, const float &_1stY, const float &_2ndY);
 float DistanceFormula(const sf::Vector2f &_1stMapPosition, const sf::Vector2f &_2ndMapPosition);
 
+void SavingStringIntoBinaryFile(std::ofstream* _file, std::string _stringConcerned);
+std::string LoadingStringFromBinaryFile(std::ifstream* _file);
 

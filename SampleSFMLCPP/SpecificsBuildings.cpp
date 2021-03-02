@@ -15,19 +15,7 @@ SpecificsBuildings::~SpecificsBuildings()
 {
 	if (m_list != nullptr)
 	{
-		if (m_list->first != nullptr)
-		{
-			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				// We remove all storages
-				if (((sBuildingData*)currentElement->data)->storage != nullptr)
-				{
-					// Delete the storage from the list
-					delete ((sBuildingData*)currentElement->data)->storage;
-					((sBuildingData*)currentElement->data)->storage = nullptr;
-				}
-			}
-		}
+		ClearStorages();
 	}
 }
 
@@ -915,6 +903,25 @@ bool SpecificsBuildings::DestroyedBuildingSelected(const sf::Vector2f &_mapPosit
 
 
 
+void SpecificsBuildings::ClearStorages()
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				if (((SpecificsBuildings::sBuildingData*)currentElement->data)->storage != nullptr)
+				{
+					// Delete the storage from the list
+					delete ((SpecificsBuildings::sBuildingData*)currentElement->data)->storage;
+					((SpecificsBuildings::sBuildingData*)currentElement->data)->storage = nullptr;
+				}
+			}
+		}
+	}
+}
 
 void SpecificsBuildings::SavingSpecificsBuildingsListForFile(std::ofstream *_file)
 {
@@ -930,6 +937,12 @@ void SpecificsBuildings::SavingSpecificsBuildingsListForFile(std::ofstream *_fil
 			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				_file->write((char *)(SpecificsBuildings::sBuildingData *)currentElement->data, sizeof(sBuildingData));
+				_file->write((char*)&((SpecificsBuildings::sBuildingData*)currentElement->data)->storage, sizeof(Storage*));
+
+				if (((SpecificsBuildings::sBuildingData*)currentElement->data)->storage != nullptr)
+				{
+					((SpecificsBuildings::sBuildingData*)currentElement->data)->storage->SavingForFile(_file);
+				}
 			}
 		}
 	}
@@ -941,6 +954,7 @@ void SpecificsBuildings::LoadingSpecificsBuildingsListFromFile(std::ifstream *_f
 	// Delete every vines
 	if (m_list != nullptr)
 	{
+		ClearStorages();
 		FreeLinkedList(m_list);
 	}
 
@@ -960,6 +974,17 @@ void SpecificsBuildings::LoadingSpecificsBuildingsListFromFile(std::ifstream *_f
 		newBuilding->data = new SpecificsBuildings::sBuildingData;
 
 		_file->read((char *)(SpecificsBuildings::sBuildingData *)newBuilding->data, sizeof(sBuildingData));
+
+		// Load the storage of the building
+		Storage* buildingStorage = nullptr;
+		_file->read((char*)&buildingStorage, sizeof(Storage*));
+
+		if (buildingStorage != nullptr)
+		{
+			((SpecificsBuildings::sBuildingData *)newBuilding->data)->storage = new Storage();
+			((SpecificsBuildings::sBuildingData *)newBuilding->data)->storage->LoadingFromFile(_file);
+		}
+
 
 		newBuilding->status = ELEMENT_ACTIVE;
 

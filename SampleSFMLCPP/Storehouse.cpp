@@ -9,19 +9,7 @@ Storehouse::~Storehouse()
 {
 	if (m_list != nullptr)
 	{
-		if (m_list->first != nullptr)
-		{
-			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				// We remove all storages
-				if (((Storehouse::sStorehouseData*)currentElement->data)->storage != nullptr)
-				{
-					// Delete the storage from the list
-					delete ((Storehouse::sStorehouseData*)currentElement->data)->storage;
-					((Storehouse::sStorehouseData*)currentElement->data)->storage = nullptr;
-				}
-			}
-		}
+		ClearStorages();
 	}
 }
 
@@ -689,6 +677,26 @@ bool Storehouse::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 
 
 
+void Storehouse::ClearStorages()
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				if (((Storehouse::sStorehouseData*)currentElement->data)->storage != nullptr)
+				{
+					// Delete the storage from the list
+					delete ((Storehouse::sStorehouseData*)currentElement->data)->storage;
+					((Storehouse::sStorehouseData*)currentElement->data)->storage = nullptr;
+				}
+			}
+		}
+	}
+}
+
 
 void Storehouse::SavingVinesListForFile(std::ofstream *_file)
 {
@@ -704,6 +712,12 @@ void Storehouse::SavingVinesListForFile(std::ofstream *_file)
 			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				_file->write((char *)(Storehouse::sStorehouseData *)currentElement->data, sizeof(sStorehouseData));
+				_file->write((char*)&((Storehouse::sStorehouseData*)currentElement->data)->storage, sizeof(Storage*));
+
+				if (((Storehouse::sStorehouseData*)currentElement->data)->storage != nullptr)
+				{
+					((Storehouse::sStorehouseData*)currentElement->data)->storage->SavingForFile(_file);
+				}
 			}
 		}
 	}
@@ -715,13 +729,12 @@ void Storehouse::LoadingVinesListFromFile(std::ifstream *_file)
 	// Delete every vines
 	if (m_list != nullptr)
 	{
+		ClearStorages();
 		FreeLinkedList(m_list);
 	}
 
-
 	// We reinit the vines list
 	m_list = LinkedListInitialisation();
-
 
 	// Save the number of vines
 	int previousListSize(RESET);
@@ -734,6 +747,16 @@ void Storehouse::LoadingVinesListFromFile(std::ifstream *_file)
 		newStorehouse->data = new Storehouse::sStorehouseData;
 
 		_file->read((char *)(Storehouse::sStorehouseData *)newStorehouse->data, sizeof(sStorehouseData));
+
+		// Load the storage of the storehouse
+		Storage* storehouseStorage = nullptr;
+		_file->read((char*)&storehouseStorage, sizeof(Storage*));
+
+		if (storehouseStorage != nullptr)
+		{
+			((Storehouse::sStorehouseData *)newStorehouse->data)->storage = new Storage();
+			((Storehouse::sStorehouseData *)newStorehouse->data)->storage->LoadingFromFile(_file);
+		}
 
 		newStorehouse->status = ELEMENT_ACTIVE;
 

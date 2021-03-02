@@ -262,6 +262,10 @@ void GameInput(struct Game *_game)
 					{
 						RessourcesManager::GetSingleton()->DisplayWorkersStoragesContent();
 					}
+					if (event.key.code == sf::Keyboard::Y)
+					{
+						RessourcesManager::GetSingleton()->DisplayBuildingsStoragesContent();
+					}
 				}
 				
 

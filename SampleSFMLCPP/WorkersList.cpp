@@ -32,6 +32,11 @@ WorkersList::~WorkersList()
 	{
 		delete (m_actionsIcons[i].getTexture());
 	}
+
+	if (m_list != nullptr)
+	{
+		ClearStorages();
+	}
 }
 
 void WorkersList::InitialisationWorkersList()
@@ -292,6 +297,21 @@ void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 	}
 }
 
+void WorkersList::ClearStorages()
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				((Workers*)currentElement->data)->DestroyStorage();
+			}
+		}
+	}
+}
+
 
 void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 {
@@ -339,7 +359,14 @@ void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 				float floatingNumber = ((Workers *)currentElement->data)->GetTimeToDeposit();
 				_file->write((char *) &floatingNumber, sizeof(float));
 
-				
+				// Saving the storage of the worker
+				Storage* workerStorage = ((Workers*)currentElement->data)->GetStorage();
+				_file->write((char*)&workerStorage, sizeof(Storage*));
+
+				if (workerStorage != nullptr)
+				{
+					workerStorage->SavingForFile(_file);
+				}
 			}
 
 			//std::cout << "Number of workers : " << m_list->size;
@@ -373,6 +400,7 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 			}
 		}
 
+		ClearStorages();
 		FreeLinkedList(m_list);
 	}
 	
@@ -438,6 +466,16 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 		float floatingNumber(RESET);
 		_file->read((char *)&floatingNumber, sizeof(float));
 		((Workers *)newWorker->data)->SetTimeToDeposit(floatingNumber);
+
+		// Loading the storage of the worker
+		Storage* workerStorage = nullptr;
+		_file->read((char*)&workerStorage, sizeof(Storage*));
+
+		if (workerStorage != nullptr)
+		{
+			// We don't need to allocate Storage because it's done at the Worker's allocation
+			((Workers *)newWorker->data)->GetStorage()->LoadingFromFile(_file);
+		}
 
 		newWorker->status = ELEMENT_ACTIVE;
 

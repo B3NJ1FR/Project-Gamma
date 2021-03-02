@@ -335,7 +335,6 @@ void BuildingManagement::InitBuildingsFromFile()
 					}
 					else if (temporaryString == "WORKERS")
 					{
-						std::cout << "LAAAAAAAAA\n\n\n\n\n\n\n";
 						buildingsFile >> temporaryNumber;
 						m_buildings[buildingID].SetNumberWorkersNeeded(temporaryNumber);
 					}

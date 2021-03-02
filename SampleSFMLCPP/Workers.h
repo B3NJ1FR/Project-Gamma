@@ -29,9 +29,6 @@ private :
 	bool m_isWorkerWasWorkingInBuilding;
 	bool m_isEnteredIntoBuilding;
 
-	enum TypesOfRessources *m_ressourceHeld;
-	int *m_quantityRessourceHeld;
-
 	// The entities' storages aren't referenced into the Ressources Manager
 	Storage* m_storage = nullptr;
 
@@ -66,6 +63,7 @@ public:
 	inline enum WorkerStatus GetWorkerStatus() const { return m_actualStatus; };
 	inline float GetTimeToDeposit() const { return m_timeToDeposit; };
 	inline enum TypeOfBuilding GetWorkerActualBuilding() const { return m_currentBuilding; };
+	inline Storage* GetStorage() const { return m_storage; }
 
 	// Methods
 	void InitPathfinding(Map* _map);
@@ -76,4 +74,7 @@ public:
 	void ActiveLauchingMovement(); // TEMPORAIRE
 	bool m_isPressingStart; // Temporaire
 	bool m_isPressingEnd; // Temporaire
+
+	void DestroyStorage();
+	void CreateNewStorage();
 };

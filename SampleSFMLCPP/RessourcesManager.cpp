@@ -99,3 +99,15 @@ void RessourcesManager::DisplayWorkersStoragesContent()
 
 	std::cout << std::endl << std::endl;
 }
+
+void RessourcesManager::ClearAllStorages()
+{
+	for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
+	{
+		// Remove the storage from the vector
+		if (*iterator != nullptr)
+		{
+			m_vectorStorages.erase(iterator);
+		}
+	}
+}

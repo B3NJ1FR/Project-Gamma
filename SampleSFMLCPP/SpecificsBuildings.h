@@ -84,6 +84,7 @@ public:
 	sf::Vector2i FindNearestBuilding(const sf::Vector2f &_mapPosition);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
+	void ClearStorages();
 
 
 

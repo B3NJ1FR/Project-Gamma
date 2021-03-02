@@ -14,22 +14,7 @@ Vines::Vines()
 
 Vines::~Vines()
 {
-	if (m_list != nullptr)
-	{
-		if (m_list->first != nullptr)
-		{
-			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
-			{
-				// We remove all storages
-				if (((Vines::sVines*)currentElement->data)->storage != nullptr)
-				{
-					// Delete the storage from the list
-					delete ((Vines::sVines*)currentElement->data)->storage;
-					((Vines::sVines*)currentElement->data)->storage = nullptr;
-				}
-			}
-		}
-	}
+	ClearStorages();
 }
 
 
@@ -1077,7 +1062,25 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 	}
 }
 
-
+void Vines::ClearStorages()
+{
+	if (m_list != nullptr)
+	{
+		if (m_list->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				// We remove all storages
+				if (((Vines::sVines*)currentElement->data)->storage != nullptr)
+				{
+					// Delete the storage from the list
+					delete ((Vines::sVines*)currentElement->data)->storage;
+					((Vines::sVines*)currentElement->data)->storage = nullptr;
+				}
+			}
+		}
+	}
+}
 
 
 void Vines::SavingVinesListForFile(std::ofstream *_file)
@@ -1095,10 +1098,10 @@ void Vines::SavingVinesListForFile(std::ofstream *_file)
 			{
 				Vines::sVines* vinesData = (Vines::sVines*)currentElement->data;
 				_file->write((char *)vinesData, sizeof(sVines));
+				_file->write((char *)&vinesData->storage, sizeof(Storage*));
 
 				if (vinesData->storage != nullptr)
 				{
-					_file->write((char*)vinesData->storage, sizeof(Storage*));
 					vinesData->storage->SavingForFile(_file);
 				}
 			}
@@ -1112,6 +1115,7 @@ void Vines::LoadingVinesListFromFile(std::ifstream *_file)
 	// Delete every vines
 	if (m_list != nullptr)
 	{
+		ClearStorages();
 		FreeLinkedList(m_list);
 	}
 
@@ -1132,14 +1136,15 @@ void Vines::LoadingVinesListFromFile(std::ifstream *_file)
 		
 		_file->read((char *)(Vines::sVines *)newVine->data, sizeof(sVines));
 
-		_file->read((char*)((Vines::sVines*)newVine->data)->storage, sizeof(Storage*));
-		
-		if (((Vines::sVines*)newVine->data)->storage != nullptr)
+		// Load the storage of the vine
+		Storage* vineStorage = nullptr;
+		_file->read((char*)&vineStorage, sizeof(Storage*));
+
+		if (vineStorage != nullptr)
 		{
 			((Vines::sVines*)newVine->data)->storage = new Storage();
 			((Vines::sVines*)newVine->data)->storage->LoadingFromFile(_file);
 		}
-
 
 		newVine->status = ELEMENT_ACTIVE;
 		
