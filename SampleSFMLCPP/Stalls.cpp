@@ -2,6 +2,7 @@
 #include "GameDefinitions.h"
 #include "Money.h"
 #include "Map.h"
+#include "TimeManagement.h"
 
 
 
@@ -9,9 +10,34 @@ Stalls::Stalls(Buildings *_specificBuildingConcerned)
 {	
 	m_building = _specificBuildingConcerned;
 
-	m_constructionState = BUILDING_DESTROYED;
+	m_storage = nullptr;
+
+	m_mapPosition = sf::Vector2f(0, 0);
+	m_constructionState = BuildingStatus::BUILDING_DESTROYED;
+	m_actualState = StallStatus::STALL_NOT_CONSTRUCTED;
+
+	m_quantitativeThreshold = RESET;
+	m_maximalQuantity = RESET;
+	m_internalRessourceCounter = RESET;
+
+	m_numberOfWorkersNeededToWorks = RESET;
+	m_currentNumberOfWorkersPresent = RESET;
+
+	m_lifeTime = RESET;
+	m_actualProductionTime = RESET;
+
+	m_isChangingSprite = false;
 	m_hasBeenBuilt = false;
+	m_isWorkerThere = false;
+	m_isPurchaserThere = false;
+
+	m_priceAccepted = RESET;
+	m_internalImportRessourceCounterSaved = RESET;
+	m_ressourceQuantityToSell = RESET;
+	m_isNewMerchantNeeded = false;
+
 	m_storehousesCoordinates = nullptr;
+	m_numberStorehousesCoordinates = 0;
 }
 
 
@@ -35,30 +61,25 @@ Stalls::~Stalls()
 
 		m_storehousesCoordinates = nullptr;
 	}
+
+	ClearStorages();
 }
 
 
 void Stalls::InitialisationStall(Buildings *_stallBuildingConcerned)
 {
 	m_building = _stallBuildingConcerned;
-
-	m_constructionState = BUILDING_DESTROYED;
-	m_hasBeenBuilt = false;
 }
-
-
 
 void Stalls::SetConstructionStatus(const enum BuildingStatus &_newStatus)
 {
 	m_constructionState = _newStatus;
 }
 
-
 void Stalls::SetStatus(const enum StallStatus &_newStatus)
 {
 	m_actualState = _newStatus;
 }
-
 
 void Stalls::SetIsNewMerchantNeeded(const bool &_newStatus)
 {
@@ -70,6 +91,11 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 {
 	// Save the position in map
 	m_mapPosition = _mapPosition;
+
+	// Allocation of the storage
+	m_storage = new Storage();
+	m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
+	m_storage->SetName("Stall");
 
 	// Init of the building construction status after being placed on map
 	m_constructionState = PLANNED;
@@ -109,7 +135,7 @@ void Stalls::AddStorehousePosition(const sf::Vector2f &_mapPosition)
 	else
 	{
 		// We create a new list
-		sf::Vector2f *newListOfCoordinates = new sf::Vector2f[this->m_numberStorehousesCoordinates + 1];
+		sf::Vector2f *newListOfCoordinates = new sf::Vector2f[m_numberStorehousesCoordinates + 1]();
 
 		// We copy the old data
 		for (int i = 0; i < m_numberStorehousesCoordinates; i++)
@@ -312,16 +338,6 @@ bool Stalls::GetIsNewMerchantNeeded()
 }
 
 
-sf::Vector2i Stalls::GetMapPosition()
-{
-	return (sf::Vector2i)m_mapPosition;
-}
-
-
-
-
-
-
 
 void Stalls::UpdateBuildingConstruction(const float &_frametime)
 {
@@ -379,7 +395,7 @@ void Stalls::UpdateBuildingConstruction(const float &_frametime)
 
 
 
-void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_state, const float &_frametime, Ressources *_ressourceSent, Purchasers *_purchasers, Storehouse *_storehouse)
+void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, Purchasers *_purchasers, Storehouse *_storehouse)
 {
 	if (m_constructionState == BUILT)
 	{
@@ -391,35 +407,11 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_s
 			{
 				for (int i = 0; i < m_numberStorehousesCoordinates; i++)
 				{
-					//std::vector<Ressources*> arrayOfResources = storage->GetResourceFromData(ResourceData::RESOURCE_NEEDED);
-					//int counter = 0;
-
-					//// We verify that we have enough of each resource to start the production
-					//for (Ressources* resource : arrayOfResources)
-					//{
-					//	// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
-					//	// A MODIFIER
-					//	if (resource->GetQuantityOwned() > ((SpecificsBuildings::sBuildingData*)currentElement->data)->quantitativeThreshold)
-					//	{
-					//		++counter;
-					//	}
-					//}
-					//arrayOfResources.clear();
-
-					//// DANS LE CAS DE 2 RESSOURCES OU PLUS REQUISES, NE FONCTIONNERA PAS
-					//// A MODIFIER
-					//if (counter >= 1)
-					//{
-					//	((SpecificsBuildings::sBuildingData*)currentElement->data)->actualState = BUILDING_FILLING;
-					//}
-
-					//std::cout << _storehouse->GetNumberResourcesStocked(m_storehousesCoordinates[i]) << std::endl;
-
-					//if (_storehouse->GetNumberResourcesStocked(m_storehousesCoordinates[i]) >= m_quantitativeThreshold)
-					if (_ressourceSent->GetQuantityOwned() >= m_quantitativeThreshold)
+					if (m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned() >= m_quantitativeThreshold)
 					{
 						m_isNewMerchantNeeded = true;
 
+						// A MODIFIER
 						m_internalImportRessourceCounterSaved = _storehouse->GetStorage(m_storehousesCoordinates[i])->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned();
 
 						std::cout << "Pret a attendre purchaser\n";
@@ -427,14 +419,13 @@ void Stalls::UpdateInternalCycles(class Money *_money, enum CurrentGameState *_s
 						m_actualState = STALL_SEND_REQUEST_PURCHASER;
 					}
 				}
-				
 			}
 			
 			break;
 
 		case STALL_SEND_REQUEST_PURCHASER:
 			
-			m_actualProductionTime += _frametime;
+			m_actualProductionTime += TimeManagement::GetSingleton()->GetFrameTime();
 
 			if (_purchasers != nullptr)
 			{
@@ -521,8 +512,27 @@ void Stalls::UpdateBuildingSprite(unsigned short ***_map)
 }
 
 
+void Stalls::ClearStorages()
+{
+	if (m_storage != nullptr)
+	{
+		// Delete the storage from the list
+		delete m_storage;
+		m_storage = nullptr;
+	}
+}
+
+
 void Stalls::SavingStallForFile(std::ofstream *_file)
 {
+	// Saving the storage
+	_file->write((char*)&m_storage, sizeof(Storage*));
+
+	if (m_storage != nullptr)
+	{
+		m_storage->SavingForFile(_file);
+	}
+
 	_file->write((char *)&m_constructionState, sizeof(enum BuildingStatus));
 
 	if (m_constructionState != BUILDING_DESTROYED)
@@ -533,20 +543,16 @@ void Stalls::SavingStallForFile(std::ofstream *_file)
 
 		_file->write((char *)&m_actualState, sizeof(enum StallStatus));
 
-
 		_file->write((char *)&m_quantitativeThreshold, sizeof(int));
 		_file->write((char *)&m_maximalQuantity, sizeof(int));
 		_file->write((char *)&m_internalRessourceCounter, sizeof(int));
 
-
 		_file->write((char *)&m_lifeTime, sizeof(float));
 		_file->write((char *)&m_actualProductionTime, sizeof(float));
-
 
 		_file->write((char *)&m_isChangingSprite, sizeof(bool));
 		_file->write((char *)&m_isWorkerThere, sizeof(bool));
 		_file->write((char *)&m_isPurchaserThere, sizeof(bool));
-
 
 		_file->write((char *)&m_priceAccepted, sizeof(int));
 		_file->write((char *)&m_internalImportRessourceCounterSaved, sizeof(int));
@@ -558,6 +564,16 @@ void Stalls::SavingStallForFile(std::ofstream *_file)
 
 void Stalls::LoadingStallFromFile(std::ifstream *_file)
 {
+	// Load the storage of the stall
+	Storage* stallStorage = nullptr;
+	_file->read((char*)&stallStorage, sizeof(Storage*));
+
+	if (stallStorage != nullptr)
+	{
+		m_storage = new Storage();
+		m_storage->LoadingFromFile(_file);
+	}
+
 	_file->read((char *)&m_constructionState, sizeof(enum BuildingStatus));
 
 	if (m_constructionState != BUILDING_DESTROYED)

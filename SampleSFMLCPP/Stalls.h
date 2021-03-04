@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Ressources.h"
+#include "Storage.h"
 #include "Buildings.h"
+#include "Money.h"
 #include "Storehouse.h"
 #include "Purchasers.h"
 
 
 enum StallStatus
 {
+	STALL_NOT_CONSTRUCTED = -1,
 	STALL_WAITING,
 	STALL_SEND_REQUEST_PURCHASER,
 	STALL_PURCHASER_IS_PRESENT,
@@ -19,7 +21,8 @@ class Stalls
 {
 private:
 	Buildings *m_building;
-	
+
+	Storage* m_storage = nullptr;
 
 	sf::Vector2f m_mapPosition;
 	enum BuildingStatus m_constructionState;
@@ -57,6 +60,7 @@ public:
 
 	void InitialisationStall(Buildings *_specificBuildingConcerned);
 
+	// Setters
 	void SetConstructionStatus(const enum BuildingStatus &_newStatus);
 	void SetStatus(const enum StallStatus &_newStatus);
 	void SetIsNewMerchantNeeded(const bool &_newStatus);
@@ -71,18 +75,21 @@ public:
 	void WorkerEnteringInThisPosition(const sf::Vector2f& _mapPosition);
 	void WorkerLeavingThisPosition(const sf::Vector2f& _mapPosition);
 
+	// Getters
 	int GetNumberOfWorkersPresents(const sf::Vector2f& _mapPosition) const;
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);
 	enum StallStatus GetStatus();
 	enum BuildingStatus GetConstructionStatus();
 	int GetActualRessourcesStocked();
 	bool GetIsNewMerchantNeeded();
-	sf::Vector2i GetMapPosition();
+	inline sf::Vector2i GetMapPosition() const { return (sf::Vector2i)m_mapPosition; }
+	inline Storage* GetStorage() const { return m_storage; }
 
 	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(class Money *_money, enum CurrentGameState *_state, const float &_frametime, Ressources *_ressource, Purchasers *_purchasers, Storehouse *_storehouse);
+	void UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, Purchasers *_purchasers, Storehouse *_storehouse);
 	void UpdateBuildingSprite(unsigned short ***_map);
 
+	void ClearStorages();
 
 	void SavingStallForFile(std::ofstream *_file);
 	void LoadingStallFromFile(std::ifstream *_file);

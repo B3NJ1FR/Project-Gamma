@@ -1,4 +1,5 @@
 #include "GameDefinitions.h"
+#include "RessourcesManager.h"
 
 Game::Game(const sf::Vector2i& _screenResolution)
 {
@@ -13,10 +14,11 @@ Game::Game(const sf::Vector2i& _screenResolution)
 
 	SpritesInitialisation();
 	TextsInit();
-	RessourcesInitialisation();
+	RessourcesManager::GetSingleton()->Initialisation();
 
 	m_time = TimeManagement::GetSingleton();
 	m_time->Initialisation(&m_charlemagneFont, *m_screenReso);
+
 
 	m_tutorialWindow = new TutorialWindow(&m_charlemagneFont);
 	m_workersList = new WorkersList;
@@ -61,11 +63,6 @@ Game::~Game()
 			delete (m_spriteArray[i].getTexture());
 		}
 		delete [] m_spriteArray;
-	}
-
-	if (m_ressources != nullptr)
-	{
-		delete [] m_ressources;
 	}
 
 	if (m_screenReso != nullptr)
@@ -212,91 +209,4 @@ void Game::TextsInit()
 	LoadTextString(&m_UITexts[8], "Amphora of Wine :", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1500, DEBUG_RES_UI_HEIGHT));
 	LoadTextString(&m_UITexts[9], "", &m_charlemagneFont, 25, sf::Color::White, sf::Vector2f(1795, DEBUG_RES_UI_HEIGHT));
 
-}
-
-
-void Game::RessourcesInitialisation()
-{
-	std::ifstream ressourcesFile("Data/Configurations/Ressources.data", std::ios::in);
-
-	std::string temporaryString;
-	temporaryString.erase();
-
-	int temporaryNumber(RESET);
-	int maximalNumberOfRessources(RESET);
-	int previousID(RESET);
-
-	if (!ressourcesFile.is_open())
-	{
-		std::cout << "Error accessing Ressources.data file" << std::endl;
-
-		exit(EXIT_FAILURE);
-	}
-
-	while (!ressourcesFile.eof())
-	{
-		ressourcesFile >> temporaryString;
-
-		if (temporaryString == "RESSOURCE")
-		{
-			int temporaryID(RESET);
-			ressourcesFile >> temporaryID;
-
-			if ((temporaryID == 0 && previousID == 0)
-				|| temporaryID > previousID)
-			{
-				maximalNumberOfRessources = temporaryID;
-				previousID = temporaryID;
-			}
-			else
-			{
-				std::cout << std::endl << std::endl << "\t\tSTEP 1 : The sprite file has an error with the ID : " << temporaryID << std::endl << std::endl << std::endl;
-			}
-		}
-	}
-
-	// Dynamic allocation of the array sprite's
-	m_numberTypesOfRessources = maximalNumberOfRessources + 1;
-	m_ressources = new Ressources[m_numberTypesOfRessources];
-
-	// Reset the reading cursor at the begging
-	ressourcesFile.seekg(0, std::ios::beg);
-
-	std::cout << "\n\n\n\tRessources loading ...\n\n";
-
-	// Reading and loading of the sprites
-	while (!ressourcesFile.eof())
-	{
-		ressourcesFile >> temporaryString;
-
-		if (temporaryString == "RESSOURCE")
-		{
-			// We pickup the ressource id
-			int temporaryID(RESET);
-			ressourcesFile >> temporaryID;
-
-			// We pickup the ressource name
-			ressourcesFile >> temporaryString;
-			m_ressources[temporaryID].SetName(temporaryString);
-
-			// We pickup the starting quantity
-			ressourcesFile >> temporaryNumber;
-			m_ressources[temporaryID].SetInitialQuantityOwned(temporaryNumber);
-			std::cout << temporaryID << "/" << m_numberTypesOfRessources << " - " << temporaryString << " " << temporaryNumber << std::endl;
-
-
-			ressourcesFile >> temporaryString;
-
-			if (temporaryString == "SPRITE")
-			{
-				// We pickup the ressource name
-				ressourcesFile >> temporaryString;
-				m_ressources[temporaryID].SetSprite(temporaryString);
-			}
-		}
-	}
-
-	ressourcesFile.close();
-
-	std::cout << "\n\tRessources loaded !\n\n\n";
 }

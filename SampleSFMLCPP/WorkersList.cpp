@@ -132,7 +132,7 @@ void WorkersList::UpdateWorkersLife(struct Game *_game)
 			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				((Workers *)currentElement->data)->InitPathfinding(&_game->m_map);
-				((Workers *)currentElement->data)->UpdatePathAndActivities(&_game->m_map, _game->m_time, &_game->m_builds, _game->m_ressources);
+				((Workers *)currentElement->data)->UpdatePathAndActivities(&_game->m_map, _game->m_time, &_game->m_builds);
 			}
 		}
 	}

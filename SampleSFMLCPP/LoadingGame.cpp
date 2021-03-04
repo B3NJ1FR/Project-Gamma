@@ -48,19 +48,6 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	_game->m_map.LoadingMapFromFile(&saveFile);
 
 
-	// Loading of the ressources data
-	saveFile.read((char *) &_game->m_numberTypesOfRessources, sizeof(unsigned int));
-
-	for (int i = 0; i < _game->m_numberTypesOfRessources; i++)
-	{
-		int quantityOwned(RESET);
-
-		saveFile.read((char *) &quantityOwned, sizeof(int));
-		_game->m_ressources[i].SetInitialQuantityOwned(quantityOwned);
-	}
-
-	std::cout << "Ressources loaded !\n";
-
 	// Loading of the money data
 	int money(RESET);
 	saveFile.read((char *) &money, sizeof(int));

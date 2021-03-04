@@ -59,8 +59,7 @@ void GameUpdate(struct Game *_game)
 		else if (_game->m_actualGameState == SELLING_WINDOW
 			&& _game->m_purchasers != nullptr)
 		{
-			//_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_builds.m_stall->GetActualRessourcesStocked(), *_game->m_screenReso);
-			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_ressources[AMPHORA_OF_WINE].GetQuantityOwned(), *_game->m_screenReso);
+			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_builds.m_stall->GetStorage()->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned(), *_game->m_screenReso);
 			_game->m_sellingWindow->UpdateSellingWindowTexts(_game->m_purchasers);
 		}
 		else
@@ -88,24 +87,24 @@ void GameUpdate(struct Game *_game)
 			_game->m_builds.m_vines.UpdateVineSprite(_game->m_map.GetMap());
 			_game->m_builds.m_vines.UpdateVineProduction();
 
-			_game->m_builds.m_stompingVats.UpdateBuildingConstruction(_game->m_time->GetFrameTime());
+			_game->m_builds.m_stompingVats.UpdateBuildingConstruction();
 			_game->m_builds.m_stompingVats.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_GRAPE_STOMPING_VATS);
-			_game->m_builds.m_stompingVats.UpdateInternalCycles(_game->m_time->GetFrameTime());
+			_game->m_builds.m_stompingVats.UpdateInternalCycles();
 			_game->m_builds.m_stompingVats.UpdateBuildingProduction();
 
-			_game->m_builds.m_winePress.UpdateBuildingConstruction(_game->m_time->GetFrameTime());
+			_game->m_builds.m_winePress.UpdateBuildingConstruction();
 			_game->m_builds.m_winePress.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_WINE_PRESS);
-			_game->m_builds.m_winePress.UpdateInternalCycles(_game->m_time->GetFrameTime());
+			_game->m_builds.m_winePress.UpdateInternalCycles();
 			_game->m_builds.m_winePress.UpdateBuildingProduction();
 
-			_game->m_builds.m_wineStorehouse.UpdateBuildingConstruction(_game->m_time->GetFrameTime());
+			_game->m_builds.m_wineStorehouse.UpdateBuildingConstruction();
 			_game->m_builds.m_wineStorehouse.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_WINE_STOREHOUSE);
-			_game->m_builds.m_wineStorehouse.UpdateInternalCycles(_game->m_time->GetFrameTime());
+			_game->m_builds.m_wineStorehouse.UpdateInternalCycles();
 			_game->m_builds.m_wineStorehouse.UpdateBuildingProduction();
 
 			_game->m_builds.m_stall->UpdateBuildingConstruction(_game->m_time->GetFrameTime());
 			_game->m_builds.m_stall->UpdateBuildingSprite(_game->m_map.GetMap());
-			_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_time->GetFrameTime(), &_game->m_ressources[AMPHORA_OF_WINE], _game->m_purchasers, &_game->m_builds.m_storehouse);
+			_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchasers, &_game->m_builds.m_storehouse);
 
 			_game->m_builds.m_storehouse.UpdateBuildingConstruction(_game->m_time->GetFrameTime());
 			_game->m_builds.m_storehouse.UpdateBuildingSprite(_game->m_map.GetMap());

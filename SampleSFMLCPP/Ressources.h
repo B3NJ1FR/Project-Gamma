@@ -37,6 +37,7 @@ public :
 
 	// Setters
 	inline void SetSprite(const std::string& _spriteFileName, const int _spriteOriginPosition = 0) { m_sprite = LoadSprite(_spriteFileName, _spriteOriginPosition); };
+	void SetSprite(sf::Sprite _spriteToCopy);
 	inline void SetName(const std::string& _name) { m_name = _name; };
 	inline void SetInitialQuantityOwned(int _quantityOwned = 0) { m_quantityOwned = _quantityOwned; };
 	inline void SetInitialQuantityReserved(int _quantityReserved = 0) { m_quantityReserved = _quantityReserved; };

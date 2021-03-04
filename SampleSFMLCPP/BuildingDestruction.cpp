@@ -3,7 +3,8 @@
 
 BuildingDestruction::BuildingDestruction()
 {
-
+	m_isSomeBuildingNeedToBeDestroyed = false;
+	m_listOfBuildingsToDestroy = nullptr;
 }
 
 BuildingDestruction* BuildingDestruction::GetSingleton()
@@ -268,7 +269,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 
 void BuildingDestruction::RemoveBuildingOnMap(BuildingManagement *_builds, Map* _map, enum Floors _floorFocused, const int& _typeOfBuilding, const sf::Vector3i& _statsToApply, const sf::Vector2i& _mapPosition)
 {
-	_map->GetMap()[_floorFocused + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _statsToApply.z;
+	_map->GetMap()[_floorFocused + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_statsToApply.z;
 
 	// EN FAIRE UNE FONCTION
 	for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
@@ -278,10 +279,10 @@ void BuildingDestruction::RemoveBuildingOnMap(BuildingManagement *_builds, Map* 
 			if (_map->IsCoordinatesIsInMap(_mapPosition))
 			{
 				// Set the correct collision
-				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.x;
+				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_statsToApply.x;
 
 				// Set the correct building ID
-				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = _statsToApply.y;
+				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_statsToApply.y;
 			}
 			else
 			{

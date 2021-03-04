@@ -69,7 +69,7 @@ public:
 	void InitPathfinding(Map* _map);
 
 	void DisplayWorker();
-	void UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds, Ressources* _ressources);
+	void UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds);
 
 	void ActiveLauchingMovement(); // TEMPORAIRE
 	bool m_isPressingStart; // Temporaire

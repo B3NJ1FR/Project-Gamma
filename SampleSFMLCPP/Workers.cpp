@@ -113,7 +113,7 @@ void Workers::InitPathfinding(Map *_map)
 	}
 }
 
-void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds, Ressources* _ressources)
+void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds)
 {
 	float speed(RESET);
 

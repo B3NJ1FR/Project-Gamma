@@ -9,13 +9,18 @@ class RessourcesManager
 {
 private :
 	std::vector<Storage*> m_vectorStorages;
-
+	std::vector<Ressources*> m_vectorRessources;
+	
 	// Constructor
 	RessourcesManager();
 
 public :
 	// Destructor
 	~RessourcesManager();
+
+	// Initialisator
+	void Initialisation();
+	void RessourcesInitialisation();
 
 	// Setters
 	void AddNewStorage(Storage* _newStorage);
@@ -24,6 +29,8 @@ public :
 	// Getters
 	static RessourcesManager* GetSingleton();
 	unsigned int GetResourceQuantity(std::string _ressourceName);
+	sf::Sprite GetResourceSprite(TypesOfRessources _ressourceName);
+	sf::Sprite GetResourceSprite(std::string _ressourceName);
 
 	// Methods
 	void DisplayAllStoragesContent();

@@ -70,9 +70,6 @@ public:
 	sf::Vector3f m_camera;
 	sf::Vector2f m_scale;
 
-	// Ressources
-	Ressources* m_ressources;
-	unsigned int m_numberTypesOfRessources;
 
 	// Fonts
 	sf::Font m_generalFont;
@@ -129,7 +126,6 @@ public :
 	// Methods
 	void SpritesInitialisation();
 	void TextsInit();
-	void RessourcesInitialisation();
 
 	// Game States
 	void Display();

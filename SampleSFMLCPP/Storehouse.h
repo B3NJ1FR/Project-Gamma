@@ -39,8 +39,8 @@ public:
 	void InitialisationStorehouse(Buildings *_specificBuildingConcerned);
 	
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
-	void UpdateBuildingConstruction(const float &_frametime);
-	void UpdateInternalCycles(const float &_frametime);
+	void UpdateBuildingConstruction();
+	void UpdateInternalCycles();
 	void UpdateBuildingSprite(unsigned short ***_map);
 	//void UpdateBuildingProduction(Ressources *_ressource);
 

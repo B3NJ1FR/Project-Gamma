@@ -253,6 +253,8 @@ void BuildingManagement::InitBuildingsFromFile()
 
 							m_buildings[buildingID].SetRessourceIDNeeded(resssourceID, counterRessources);
 
+							std::cout << " Test : " << *resssourceID << ' ' << counterRessources<< std::endl;
+ 
 							m_buildings[buildingID].SetRessourceQuantityNeeded(resssourceQuantity);
 						}
 						else
@@ -270,7 +272,7 @@ void BuildingManagement::InitBuildingsFromFile()
 							}
 
 							m_buildings[buildingID].SetRessourceIDNeeded(resssourceID, counterRessources);
-
+							std::cout << " Test : " << *resssourceID << ' ' << counterRessources << std::endl;
 							m_buildings[buildingID].SetRessourceQuantityNeeded(resssourceQuantity);
 						}
 

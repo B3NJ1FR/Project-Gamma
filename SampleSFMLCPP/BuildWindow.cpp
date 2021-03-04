@@ -1,6 +1,8 @@
 #include "BuildWindow.h"
 #include "GameDefinitions.h"
 #include "BuildingDestruction.h"
+#include "RessourcesManager.h"
+
 
 
 BuildWindow::BuildWindow()
@@ -551,7 +553,8 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			{
 				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberNeeded(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)].GetSprite(), (float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
+					sf::Sprite tempoSprite = RessourcesManager::GetSingleton()->GetResourceSprite((TypesOfRessources)(_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDNeeded(i + 1)));
+					BlitSprite(tempoSprite, (float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 165, 0, *_game->m_window);
 				}
 			}
 			
@@ -562,7 +565,8 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			{
 				for (int i = 0; i < _game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceNumberProduced(); i++)
 				{
-					BlitSprite(_game->m_ressources[_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced((unsigned char)i + 1)].GetSprite(), _game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
+					sf::Sprite tempoSprite = RessourcesManager::GetSingleton()->GetResourceSprite((TypesOfRessources)(_game->m_builds.m_buildings[m_IDChosenBuilding].GetRessourceIDProduced(i + 1)));
+					BlitSprite(tempoSprite, _game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + 255 + i * 32, (_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 200, 0, *_game->m_window);
 				}
 			}
 

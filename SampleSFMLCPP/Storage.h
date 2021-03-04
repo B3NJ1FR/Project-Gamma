@@ -39,7 +39,7 @@ public:
 	void SetResourceData(std::string _ressourceName, ResourceData _data);
 	
 	// Getters
-	inline int GetNumberOfResources() const { return m_mapOfResources.size(); }
+	inline int GetNumberOfResources() const { return (int)m_mapOfResources.size(); }
 	inline std::string GetName() const { return m_storageName; }
 	inline TypeMapStringResources GetMapOfResources() const { return m_mapOfResources; }
 	int GetResourceQuantity(std::string _ressourceName);

@@ -393,14 +393,18 @@ void Storage::LoadingFromFile(std::ifstream* _file)
 	{
 		Ressources resource;
 
-		// Save each resource name
+		// Load each resource name
 		resourceName.clear();
 		resourceName = LoadingStringFromBinaryFile(_file);
 
-		// Save each resource content data
+		// Load each resource content data
 		resource.LoadingFromFile(_file);
 
-		// Save each type of resource data
+		// Reload the sprite corresponding
+		// TO TEST
+		resource.SetSprite(RessourcesManager::GetSingleton()->GetResourceSprite(resourceName));
+
+		// Load each type of resource data
 		resourceData = ResourceData::RESOURCE_NORMAL;
 		_file->read((char*)&resourceData, sizeof(ResourceData));
 

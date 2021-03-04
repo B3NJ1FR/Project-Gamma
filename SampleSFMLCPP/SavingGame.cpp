@@ -45,17 +45,6 @@ void SavingGame::SaveTheGame(struct Game *_game)
 	// Save the map
 	_game->m_map.SavingMapFromFile(&saveFile);
 
-	// Saving of the ressources data
-	saveFile.write((char *) &_game->m_numberTypesOfRessources, sizeof(unsigned int));
-
-	for (int i = 0; i < _game->m_numberTypesOfRessources; i++)
-	{
-		int quantity = _game->m_ressources[i].GetQuantityOwned();
-		saveFile.write((char *) &quantity, sizeof(int));
-	}
-
-	std::cout << "Ressources saved !\n";
-
 	// Saving of the money data
 	int money = _game->m_money.GetMoneyQuantity();
 	saveFile.write((char *) &money, sizeof(int));

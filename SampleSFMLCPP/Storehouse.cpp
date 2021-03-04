@@ -1,4 +1,5 @@
 #include "Storehouse.h"
+#include "TimeManagement.h"
 
 Storehouse::Storehouse()
 {
@@ -48,7 +49,6 @@ void Storehouse::InitialisationStorehouse(Buildings *_specificBuildingConcerned)
 	std::cout << "List " << m_list << " Size : " << m_list->size << " Real First : " << m_list->first << " & Last : " << m_list->last << std::endl << std::endl;
 
 	m_building = _specificBuildingConcerned;
-
 }
 
 
@@ -89,7 +89,7 @@ void Storehouse::AddNewBuildingToList(sf::Vector2f _mapPosition)
 }
 
 
-void Storehouse::UpdateInternalCycles(const float &_frametime)
+void Storehouse::UpdateInternalCycles()
 {
 	if (m_list != nullptr)
 	{
@@ -114,7 +114,7 @@ void Storehouse::UpdateInternalCycles(const float &_frametime)
 	}
 }
 
-void Storehouse::UpdateBuildingConstruction(const float &_frametime)
+void Storehouse::UpdateBuildingConstruction()
 {
 	if (m_list != nullptr)
 	{
@@ -146,7 +146,7 @@ void Storehouse::UpdateBuildingConstruction(const float &_frametime)
 
 					if (((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere == true)
 					{
-						((Storehouse::sStorehouseData *)currentElement->data)->lifeTime += _frametime;
+						((Storehouse::sStorehouseData *)currentElement->data)->lifeTime += TimeManagement::GetSingleton()->GetFrameTime();
 						((Storehouse::sStorehouseData *)currentElement->data)->isWorkerThere = false;
 					}
 

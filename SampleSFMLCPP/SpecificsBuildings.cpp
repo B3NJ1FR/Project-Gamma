@@ -105,7 +105,7 @@ void SpecificsBuildings::AddNewBuildingToList(sf::Vector2f _mapPosition)
 }
 
 
-void SpecificsBuildings::UpdateInternalCycles(const float &_frametime)
+void SpecificsBuildings::UpdateInternalCycles()
 {
 	if (m_list != nullptr)
 	{
@@ -187,7 +187,7 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime)
 							if (((SpecificsBuildings::sBuildingData*)currentElement->data)->currentNumberOfWorkersPresent
 								>= ((SpecificsBuildings::sBuildingData*)currentElement->data)->numberOfWorkersNeededToWorks)
 							{
-								((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime += _frametime;
+								((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime += TimeManagement::GetSingleton()->GetFrameTime();
 
 								if (((SpecificsBuildings::sBuildingData*)currentElement->data)->actualProductionTime > m_building->GetProductionTimeCost())
 								{
@@ -241,7 +241,7 @@ void SpecificsBuildings::UpdateInternalCycles(const float &_frametime)
 	}
 }
 
-void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
+void SpecificsBuildings::UpdateBuildingConstruction()
 {
 	if (m_list != nullptr)
 	{
@@ -274,7 +274,7 @@ void SpecificsBuildings::UpdateBuildingConstruction(const float &_frametime)
 
 					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere == true)
 					{
-						((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime += _frametime;
+						((SpecificsBuildings::sBuildingData *)currentElement->data)->lifeTime += TimeManagement::GetSingleton()->GetFrameTime();
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->isWorkerThere = false;
 					}
 

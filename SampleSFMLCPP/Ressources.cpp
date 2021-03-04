@@ -36,6 +36,11 @@ Ressources::~Ressources()
 
 }
 
+void Ressources::SetSprite(sf::Sprite _spriteToCopy)
+{
+	sf::Texture* temporaryTexture = new sf::Texture(*_spriteToCopy.getTexture());
+	m_sprite.setTexture(*temporaryTexture);
+}
 
 void Ressources::AddOrSubtractQuantityOwned(int _quantityToAdd)
 {
@@ -182,7 +187,4 @@ void Ressources::LoadingFromFile(std::ifstream* _file)
 	m_name = LoadingStringFromBinaryFile(_file);
 	_file->read((char*)&m_quantityOwned, sizeof(int));
 	_file->read((char*)&m_quantityReserved, sizeof(int));
-
-	// A MODIFIER
-	// CHARGER LE SPRITE CORRESPONDANT FROM RESSMANAGER
 }
