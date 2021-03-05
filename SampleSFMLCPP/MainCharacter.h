@@ -33,7 +33,7 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
-	void InitPathfinding(Map * _map);
+	void InitPathfinding();
 
 	// Setters
 	inline void SetMainCharacterPosition(const sf::Vector2f& _mapPosition) { m_mapPosition = _mapPosition; };

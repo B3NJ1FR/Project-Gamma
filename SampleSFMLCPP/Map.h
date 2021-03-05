@@ -39,14 +39,18 @@ private :
 	unsigned short m_numberLines;
 	unsigned short m_numberColumns;
 
+	// Constructor
+	Map();
+
 public :
 
-	// Constructor & Destructor
-	Map();
+	// Destructor
 	~Map();
 
+	static Map* GetSingleton();
+
 	// Setters
-	inline void SetNumberOfLayers(unsigned char _nbOfLayers) {  m_numberLayers = _nbOfLayers; }
+	inline void SetNumberOfLayers(unsigned char _nbOfLayers) { m_numberLayers = _nbOfLayers; }
 	inline void SetNumberOfLines(unsigned char _nbOfLines) { m_numberLines = _nbOfLines; }
 	inline void SetNumberOfColumns(unsigned char _nbOfColumns) { m_numberColumns = _nbOfColumns; }
 
@@ -54,7 +58,9 @@ public :
 	inline unsigned short GetNumberOfLayers() const { return m_numberLayers;  }
 	inline unsigned short GetNumberOfLines() const { return m_numberLines;  }
 	inline unsigned short GetNumberOfColumns() const { return m_numberColumns;  }
+	inline sf::Vector2i GetMapSize() const { return sf::Vector2i(m_numberColumns, m_numberLines);  }
 	inline unsigned short*** GetMap() { return m_map;  }
+	unsigned short** GetMapLayer(unsigned short _mapHeightWanted);
 
 	// Methods
 	void InitMapFromFile();

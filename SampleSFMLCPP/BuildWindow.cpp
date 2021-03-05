@@ -239,22 +239,22 @@ void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBu
 			if (x == 0 && y == 0)
 			{
 				// Set the collisions and buildings id for the building
-				_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
-				_game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
-				_game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x];
+				_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
+				_game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
+				_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x];
 
 
 				// Set the collisions and buildings id for the ground
-				_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
-				_game->m_map.GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
+				_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
+				_game->m_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
 			}
-			else if (_game->m_map.IsCoordinatesIsInMap(_mapPosition))
+			else if (_game->m_map->IsCoordinatesIsInMap(_mapPosition))
 			{
 				// Set the collisions and buildings id for the building
-				_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
+				_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
 				
 				// Set the collisions and buildings id for the ground
-				_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
+				_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
 			}
 			else
 			{
@@ -294,7 +294,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 	InputPickUpCaseClicked(*_game->m_window, *_game->m_screenReso, true, sf::Vector2f(_game->m_camera.x, _game->m_camera.y), _game->m_scale);
 
 	// Security to avoid an array exit
-	if (_game->m_map.IsCoordinatesIsInMap(m_buildingCaseSelected))
+	if (_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
 	{
 		if (m_IDChosenBuilding >= 0
 			&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
@@ -310,9 +310,9 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 			else if (_game->m_money.GetMoneyQuantity() >= _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost())
 			{
 				// Collisions verifications
-				if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == PATH
-					|| _game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == STONE_PATH
-					|| _game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == ROAD)
+				if (_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == PATH
+					|| _game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == STONE_PATH
+					|| _game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == ROAD)
 				{
 					isAreaEmpty = false;
 				}
@@ -322,10 +322,10 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 					{
 						for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
 						{
-							if (_game->m_map.IsCoordinatesIsInMap(m_buildingCaseSelected))
+							if (_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
 							{
 								// Check case occupation concerning collisions
-								if (_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
+								if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 								{
 									// The case is occupied
 									isAreaEmpty = false;
@@ -335,7 +335,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 									x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 								}
 								// Check case occupation concerning roads
-								else if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
+								else if (_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 								{
 									// The case is occupied
 									isAreaEmpty = false;
@@ -396,14 +396,14 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 		else if (m_IDChosenBuilding == _game->m_builds.GetNumberOfBuildings())
 		{
 			// Collisions verifications
-			if (_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] != NO_COLLISION)
+			if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] != NO_COLLISION)
 			{
-				int buildingIDFocused = _game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
+				int buildingIDFocused = _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
 
 				BuildingDestruction::GetSingleton()->AddNewBuildingToDestroy((sf::Vector2f)m_buildingCaseSelected, buildingIDFocused);
 
 				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
-				SetGhostDestructionBuildingOnMap(&_game->m_map, &_game->m_builds, buildingIDFocused, m_buildingCaseSelected);
+				SetGhostDestructionBuildingOnMap(_game->m_map, &_game->m_builds, buildingIDFocused, m_buildingCaseSelected);
 			}
 		}
 	}
@@ -423,7 +423,7 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 	//std::cout << "Case : " << _game->buildingCaseSelected.x << " & " << _game->buildingCaseSelected.y << std::endl << std::endl;
 
 	// Security to avoid an array exit
-	if (_game->m_map.IsCoordinatesIsInMap(m_buildingCaseSelected))
+	if (_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
 	{
 		if (m_IDChosenBuilding >= 0
 			&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
@@ -434,11 +434,11 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 			{
 				for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
 				{
-					if (_game->m_map.IsCoordinatesIsInMap(sf::Vector2i(m_buildingCaseSelected.y - y, m_buildingCaseSelected.x - x)))
+					if (_game->m_map->IsCoordinatesIsInMap(sf::Vector2i(m_buildingCaseSelected.y - y, m_buildingCaseSelected.x - x)))
 					{
 						// GROS CRASH LA vvvv
 						// Check case occupation concerning collisions
-						if (_game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
+						if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 						{
 							// The case is occupied
 							isAreaEmpty = false;
@@ -447,7 +447,7 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 							y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
 							x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 						}
-						else if(_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
+						else if(_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 						{
 							// The case is occupied
 							isAreaEmpty = false;
@@ -743,7 +743,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			&& mousePosition.y > _game->m_screenReso->y - (m_buildingUI.getGlobalBounds().height * 2)
 			&& mousePosition.y < _game->m_screenReso->y))
 	{
-		if (!_game->m_map.IsCoordinatesIsInMap(m_buildingCaseSelected))
+		if (!_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
 		{
 			BlitString(m_textBuildingCaseOccupied[1], 500, _game->m_screenReso->y - 100, *_game->m_window);
 		}

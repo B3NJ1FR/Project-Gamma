@@ -15,7 +15,6 @@ Workers::Workers()
 	m_isPressingEnd = false;
 	m_isPressingStart = false;
 
-
 	m_storage = new Storage();
 	m_storage->SetName("Worker");
 
@@ -94,7 +93,7 @@ void Workers::ActiveLauchingMovement() // TEMPORAIRE
 }
 
 
-void Workers::InitPathfinding(Map *_map)
+void Workers::InitPathfinding()
 {
 	if (m_isLauchingMovement == true)
 	{
@@ -106,14 +105,14 @@ void Workers::InitPathfinding(Map *_map)
 
 		m_path = new Pathfinding;
 
-		m_path->InitMapCopyPathfinding(sf::Vector2i(_map->GetNumberOfColumns(), _map->GetNumberOfLines()), _map->GetMap(), (FIRST_FLOOR + COLLISIONS_ID)); // TEMPORAIRE
+		m_path->InitMapCopyPathfinding(FIRST_FLOOR + COLLISIONS_ID); // TEMPORAIRE
 		
 		m_path->SetPathStartingPosition((sf::Vector2i)m_mapPosition); // TEMPORAIRE
 		m_path->SetPathEndingPosition((sf::Vector2i)m_mapEndPosition); // TEMPORAIRE
 	}
 }
 
-void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds)
+void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 {
 	float speed(RESET);
 
@@ -201,19 +200,19 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 			// Speed modification depending on the type of soil
 			if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
 			{
-				speed = _time->GetFrameTime() * 2.25f;
+				speed = TimeManagement::GetSingleton()->GetFrameTime() * 2.25f;
 			}
 			else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
 			{
-				speed = _time->GetFrameTime() * 3.5f;
+				speed = TimeManagement::GetSingleton()->GetFrameTime() * 3.5f;
 			}
 			else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
 			{
-				speed = _time->GetFrameTime() * 5;
+				speed = TimeManagement::GetSingleton()->GetFrameTime() * 5;
 			}
 			else
 			{
-				speed = _time->GetFrameTime() * 1.5f;
+				speed = TimeManagement::GetSingleton()->GetFrameTime() * 1.5f;
 			}
 
 			//std::cout << "MOVEMENT\n";
@@ -1186,7 +1185,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 
 					if (_builds->m_stompingVats.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 					{
-						m_timeToDeposit += _time->GetFrameTime();
+						m_timeToDeposit += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_GRAPE_STOMPING_VATS].GetDepositingTimeCost())
 						{
@@ -1217,7 +1216,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 
 					if (_builds->m_winePress.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 					{
-						m_timeToDeposit += _time->GetFrameTime();
+						m_timeToDeposit += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_WINE_PRESS].GetDepositingTimeCost())
 						{
@@ -1247,7 +1246,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 
 					if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 					{
-						m_timeToDeposit += _time->GetFrameTime();
+						m_timeToDeposit += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
 						{
@@ -1285,7 +1284,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 				case AMPHORAS:
 					if (_builds->m_wineStorehouse.ConfirmSpecificBuildingPresenceAtPosition(m_mapPosition, false, true))
 					{
-						m_timeToDeposit += _time->GetFrameTime();
+						m_timeToDeposit += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_WINE_STOREHOUSE].GetDepositingTimeCost())
 						{
@@ -1315,7 +1314,7 @@ void Workers::UpdatePathAndActivities(Map* _map, TimeManagement* _time, Building
 
 					if (_builds->m_storehouse.ConfirmStorehousePresenceAtPosition(m_mapPosition, false, true))
 					{
-						m_timeToDeposit += _time->GetFrameTime();
+						m_timeToDeposit += TimeManagement::GetSingleton()->GetFrameTime();
 
 						if (m_timeToDeposit >= _builds->m_buildings[BUILDING_STOREHOUSE].GetDepositingTimeCost())
 						{

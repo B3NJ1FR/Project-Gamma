@@ -19,13 +19,17 @@ Game::Game(const sf::Vector2i& _screenResolution)
 	m_time = TimeManagement::GetSingleton();
 	m_time->Initialisation(&m_charlemagneFont, *m_screenReso);
 
+	m_map = Map::GetSingleton();
 
 	m_tutorialWindow = new TutorialWindow(&m_charlemagneFont);
 	m_workersList = new WorkersList;
 	m_mainCharacter = new MainCharacter; // Vérifier le code après la remise en route de BuildManagement
 	m_sellingWindow = new SellingWindow(&m_generalFont, *m_screenReso);
 	m_buildingsListPlanned = new BuildingsListPlanned();
-	m_purchasers = nullptr;
+	
+	m_purchaserManager = PurchasersManager::GetSingleton();
+	m_purchaserManager->Initialisation();
+
 	m_managerBetweenWorkersAndMain = new ManagerBetweenWorkersAndMain(*m_screenReso);
 
 

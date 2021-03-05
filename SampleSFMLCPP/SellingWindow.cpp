@@ -143,7 +143,7 @@ void SellingWindow::DisplaySellingWindow(sf::RenderWindow &_window, const sf::Ve
 }
 
 
-void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
+void SellingWindow::InputSellingWindow(enum CurrentGameState *_state, Stalls *_stall, sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
 {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
@@ -155,9 +155,9 @@ void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameS
 	{
 		std::cout << "Marchant offer accepted !\n\n";
 
-		*(_isOfferAccepted) = true;
 		*(_state) = NORMAL_MODE;
 
+		_stall->SetIsOfferAccepted(true);
 		_stall->PickUpPriceAccepted(m_priceAccepted);
 		_stall->SetRessourceQuantityToSell(m_quantityConvertedToSell);
 		_stall->SetStatus(STALL_OFFER_HANDLED);
@@ -176,7 +176,7 @@ void SellingWindow::InputSellingWindow(bool *_isOfferAccepted, enum CurrentGameS
 	{
 		std::cout << "Marchant offer refused !\n\n";
 
-		*(_isOfferAccepted) = false;
+		_stall->SetIsOfferAccepted(false);
 		*(_state) = NORMAL_MODE;
 
 		_stall->SetStatus(STALL_OFFER_HANDLED);

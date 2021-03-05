@@ -11,10 +11,13 @@ RessourcesManager::~RessourcesManager()
 	
 	for (std::vector<Ressources*>::iterator iterator = m_vectorRessources.begin(); iterator != m_vectorRessources.end(); iterator++)
 	{
-		if (*iterator != nullptr)
+		if ((*iterator)->GetName() == "")
+		{
+			m_vectorRessources.erase(iterator);
+		}
+		else if (*iterator != nullptr)
 		{ 
 			delete *iterator;
-			m_vectorRessources.erase(iterator);
 		}
 	}
 
@@ -144,17 +147,21 @@ void RessourcesManager::RemoveStorage(Storage* _oldStorage)
 	}
 }
 
-unsigned int RessourcesManager::GetResourceQuantity(std::string _ressourceName)
+unsigned int RessourcesManager::GetResourceQuantity(std::string _ressourceName, std::string _specificBuildingName)
 {
 	unsigned int sumOfRessources = 0;
 
 	for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
 	{
-		int ressourceQuantity = (*iterator)->GetResourceQuantity(_ressourceName);
-
-		if (ressourceQuantity >= 0)
+		if (_specificBuildingName == std::string("")
+			|| _specificBuildingName == (*iterator)->GetName())
 		{
-			sumOfRessources += ressourceQuantity;
+			int ressourceQuantity = (*iterator)->GetResourceQuantity(_ressourceName);
+
+			if (ressourceQuantity >= 0)
+			{
+				sumOfRessources += ressourceQuantity;
+			}
 		}
 	}
 

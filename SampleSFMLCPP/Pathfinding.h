@@ -51,7 +51,7 @@ private :
 
 	bool isActive;
 
-	unsigned short **temporaryMap;
+	unsigned short **temporaryMap = nullptr;
 	sf::Sprite blackBackground; // Temporaire
 	sf::Sprite tile[7]; // Temporaire
 
@@ -76,7 +76,7 @@ public:
 
 	void PathfindingReset();
 
-	void InitMapCopyPathfinding(const sf::Vector2i& _mapSize, unsigned short ***_map, unsigned short _mapHeight);
+	void InitMapCopyPathfinding(unsigned short _mapHeightWanted);
 	void AddObstacle(const sf::Vector2i& _position);
 
 	void DisplayPathfinding(sf::RenderWindow &_window);

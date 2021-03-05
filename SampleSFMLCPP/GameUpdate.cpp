@@ -15,11 +15,11 @@ void UpdateTexts(struct Game *_game)
 		UpdateDynamicsTexts(&_game->m_debbugTexts[5], _game->m_buildWindow.GetBuildingCheckboxSelected().x, _game->m_buildWindow.GetBuildingCheckboxSelected().y);
 
 		// Security to avoid an array exit
-		if (_game->m_map.IsCoordinatesIsInMap(_game->m_buildWindow.GetBuildingCheckboxSelected()))
+		if (_game->m_map->IsCoordinatesIsInMap(_game->m_buildWindow.GetBuildingCheckboxSelected()))
 		{
-			UpdateDynamicsTexts(&_game->m_debbugTexts[7], _game->m_map.GetMap()[FIRST_FLOOR + COLLISIONS_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
-			UpdateDynamicsTexts(&_game->m_debbugTexts[9], _game->m_map.GetMap()[FIRST_FLOOR + BUILDING_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
-			UpdateDynamicsTexts(&_game->m_debbugTexts[11], _game->m_map.GetMap()[FIRST_FLOOR + SPRITE_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
+			UpdateDynamicsTexts(&_game->m_debbugTexts[7], _game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
+			UpdateDynamicsTexts(&_game->m_debbugTexts[9], _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
+			UpdateDynamicsTexts(&_game->m_debbugTexts[11], _game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
 		}
 	}
 
@@ -57,10 +57,11 @@ void GameUpdate(struct Game *_game)
 			//_game->path.MainPathfinding();
 		}
 		else if (_game->m_actualGameState == SELLING_WINDOW
-			&& _game->m_purchasers != nullptr)
+			&& _game->m_purchaserManager->IsPurchaserExist())
 		{
-			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchasers, _game->m_builds.m_stall->GetStorage()->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned(), *_game->m_screenReso);
-			_game->m_sellingWindow->UpdateSellingWindowTexts(_game->m_purchasers);
+			int quantityStocked = _game->m_builds.m_stall->GetRessourceStocked();
+			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchaserManager->GetPurchasers(), quantityStocked, *_game->m_screenReso);
+			_game->m_sellingWindow->UpdateSellingWindowTexts(_game->m_purchaserManager->GetPurchasers());
 		}
 		else
 		{
@@ -68,7 +69,7 @@ void GameUpdate(struct Game *_game)
 			_game->m_workersList->UpdateWorkersLife(_game);
 			
 			// Update the main character
-			_game->m_mainCharacter->InitPathfinding(&_game->m_map);			
+			_game->m_mainCharacter->InitPathfinding();			
 			_game->m_mainCharacter->UpdatePathAndActivities(_game);
 		}
 
@@ -81,37 +82,37 @@ void GameUpdate(struct Game *_game)
 			_game->m_time->UpdateMonthToDisplay();
 
 
-			_game->m_builds.UpdateBuildingManagement(&_game->m_map);
+			_game->m_builds.UpdateBuildingManagement(_game->m_map);
 
 			_game->m_builds.m_vines.UpdateVineLife();
-			_game->m_builds.m_vines.UpdateVineSprite(_game->m_map.GetMap());
+			_game->m_builds.m_vines.UpdateVineSprite(_game->m_map->GetMap());
 			_game->m_builds.m_vines.UpdateVineProduction();
 
 			_game->m_builds.m_stompingVats.UpdateBuildingConstruction();
-			_game->m_builds.m_stompingVats.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_GRAPE_STOMPING_VATS);
+			_game->m_builds.m_stompingVats.UpdateBuildingSprite(_game->m_map->GetMap(), BUILDING_GRAPE_STOMPING_VATS);
 			_game->m_builds.m_stompingVats.UpdateInternalCycles();
 			_game->m_builds.m_stompingVats.UpdateBuildingProduction();
 
 			_game->m_builds.m_winePress.UpdateBuildingConstruction();
-			_game->m_builds.m_winePress.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_WINE_PRESS);
+			_game->m_builds.m_winePress.UpdateBuildingSprite(_game->m_map->GetMap(), BUILDING_WINE_PRESS);
 			_game->m_builds.m_winePress.UpdateInternalCycles();
 			_game->m_builds.m_winePress.UpdateBuildingProduction();
 
 			_game->m_builds.m_wineStorehouse.UpdateBuildingConstruction();
-			_game->m_builds.m_wineStorehouse.UpdateBuildingSprite(_game->m_map.GetMap(), BUILDING_WINE_STOREHOUSE);
+			_game->m_builds.m_wineStorehouse.UpdateBuildingSprite(_game->m_map->GetMap(), BUILDING_WINE_STOREHOUSE);
 			_game->m_builds.m_wineStorehouse.UpdateInternalCycles();
 			_game->m_builds.m_wineStorehouse.UpdateBuildingProduction();
 
-			_game->m_builds.m_stall->UpdateBuildingConstruction(_game->m_time->GetFrameTime());
-			_game->m_builds.m_stall->UpdateBuildingSprite(_game->m_map.GetMap());
-			_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchasers, &_game->m_builds.m_storehouse);
+			_game->m_builds.m_stall->UpdateBuildingConstruction();
+			_game->m_builds.m_stall->UpdateBuildingSprite(_game->m_map->GetMap());
+			//_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchasers, &_game->m_builds.m_storehouse);
 
-			_game->m_builds.m_storehouse.UpdateBuildingConstruction(_game->m_time->GetFrameTime());
-			_game->m_builds.m_storehouse.UpdateBuildingSprite(_game->m_map.GetMap());
-			_game->m_builds.m_storehouse.UpdateInternalCycles(_game->m_time->GetFrameTime());
+			_game->m_builds.m_storehouse.UpdateBuildingConstruction();
+			_game->m_builds.m_storehouse.UpdateBuildingSprite(_game->m_map->GetMap());
+			_game->m_builds.m_storehouse.UpdateInternalCycles();
 			
 
-			if (_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+			/*if (_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 				&& _game->m_builds.m_stall->GetIsNewMerchantNeeded() == true)
 			{
 				if (_game->m_purchasers != nullptr)
@@ -139,7 +140,7 @@ void GameUpdate(struct Game *_game)
 				}
 
 				_game->m_builds.m_stall->SetIsNewMerchantNeeded(false);
-			}
+			}*/
 		}
 
 		UpdateTexts(_game);

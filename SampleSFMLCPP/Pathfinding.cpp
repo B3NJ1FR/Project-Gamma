@@ -1,4 +1,5 @@
 #include "Pathfinding.h"
+#include "Map.h"
 
 
 Pathfinding::Pathfinding()
@@ -28,13 +29,16 @@ Pathfinding::Pathfinding()
 
 Pathfinding::~Pathfinding()
 {
-	for (int i = 0; i < mapSize.y; i++)
+	if (temporaryMap != nullptr)
 	{
-		delete temporaryMap[i];
-	}
+		for (int i = 0; i < mapSize.y; i++)
+		{
+			delete temporaryMap[i];
+		}
 
-	delete [] temporaryMap;
-	temporaryMap = nullptr;
+		delete[] temporaryMap;
+		temporaryMap = nullptr;
+	}
 
 	if (openList != nullptr)
 	{
@@ -63,29 +67,15 @@ void Pathfinding::PathfindingReset()
 }
 
 
-// TO OPTIMIZE
-void Pathfinding::InitMapCopyPathfinding(const sf::Vector2i& _mapSize, unsigned short ***_map, unsigned short _mapHeight)
+void Pathfinding::InitMapCopyPathfinding(unsigned short _mapHeightWanted)
 {
-	mapSize = _mapSize;
+	Map* pMap = Map::GetSingleton();
+
+	mapSize = pMap->GetMapSize();
 
 	// Init of the temporary map
-	temporaryMap = new unsigned short *[mapSize.y];
-
-	for (int i = 0; i < mapSize.y; i++)
-	{
-		temporaryMap[i] = new unsigned short[mapSize.x];
-	}
-
-	// Copying the collisions of the real map
-	for (int y = 0; y < mapSize.y; y++)
-	{
-		for (int x = 0; x < mapSize.x; x++)
-		{
-			temporaryMap[y][x] = _map[_mapHeight][y][x];
-		}
-	}
+	temporaryMap = pMap->GetMapLayer(_mapHeightWanted);
 }
-
 
 
 void Pathfinding::AddObstacle(const sf::Vector2i& _position)

@@ -3,6 +3,7 @@
 
 Map::Map()
 {
+	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\nHEERE\n\n\n\n\n\n\n\n\n\n\n\n";
 	m_map = nullptr;
 	m_numberLayers = 0;
 	m_numberLines = 0;
@@ -30,6 +31,37 @@ Map::~Map()
 	m_map = nullptr;
 }
 
+Map* Map::GetSingleton()
+{
+	static Map uniqueInstance;
+	return &uniqueInstance;
+}
+
+unsigned short** Map::GetMapLayer(unsigned short _mapHeightWanted)
+{
+	// Init of the temporary map
+	unsigned short** temporaryMap = new unsigned short* [m_numberLines];
+
+	for (int i = 0; i < m_numberLines; i++)
+	{
+		temporaryMap[i] = new unsigned short[m_numberColumns];
+	}
+
+	if (_mapHeightWanted >= 0 && _mapHeightWanted < m_numberLayers)
+	{
+		// Copying the collisions of the real map
+		// TO OPTIMIZE : 1200x call to pMap->GetMap();
+		for (int y = 0; y < m_numberLines; y++)
+		{
+			for (int x = 0; x < m_numberColumns; x++)
+			{
+				temporaryMap[y][x] = m_map[_mapHeightWanted][y][x];
+			}
+		}
+	}
+
+	return temporaryMap;
+}
 
 void Map::InitMapFromFile()
 {

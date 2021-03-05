@@ -4,18 +4,17 @@
 #include "Buildings.h"
 #include "Money.h"
 #include "Storehouse.h"
-#include "Purchasers.h"
 
 
 enum StallStatus
 {
 	STALL_NOT_CONSTRUCTED = -1,
 	STALL_WAITING,
-	STALL_SEND_REQUEST_PURCHASER,
 	STALL_PURCHASER_IS_PRESENT,
 	STALL_OFFER_HANDLED,
 };
 
+class Purchasers;
 
 class Stalls
 {
@@ -64,6 +63,8 @@ public:
 	void SetConstructionStatus(const enum BuildingStatus &_newStatus);
 	void SetStatus(const enum StallStatus &_newStatus);
 	void SetIsNewMerchantNeeded(const bool &_newStatus);
+	inline void SetIsPurchaserIsThere(bool _newStatus) { m_isPurchaserThere = _newStatus; }
+	inline void SetIsOfferAccepted(bool _newStatus) { m_isOfferAccepted = _newStatus; }
 	void AddNewBuilding(sf::Vector2f _mapPosition);
 	void AddStorehousePosition(const sf::Vector2f &_mapPosition);
 	inline void SetRessourceQuantityToSell(const int& _quantity = RESET) { m_ressourceQuantityToSell = _quantity; };
@@ -84,8 +85,9 @@ public:
 	bool GetIsNewMerchantNeeded();
 	inline sf::Vector2i GetMapPosition() const { return (sf::Vector2i)m_mapPosition; }
 	inline Storage* GetStorage() const { return m_storage; }
+	int GetRessourceStocked() const;
 
-	void UpdateBuildingConstruction(const float &_frametime);
+	void UpdateBuildingConstruction();
 	void UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, Purchasers *_purchasers, Storehouse *_storehouse);
 	void UpdateBuildingSprite(unsigned short ***_map);
 

@@ -28,7 +28,7 @@ public :
 
 	// Getters
 	static RessourcesManager* GetSingleton();
-	unsigned int GetResourceQuantity(std::string _ressourceName);
+	unsigned int GetResourceQuantity(std::string _ressourceName, std::string _specificBuildingName = std::string(""));
 	sf::Sprite GetResourceSprite(TypesOfRessources _ressourceName);
 	sf::Sprite GetResourceSprite(std::string _ressourceName);
 

@@ -3,6 +3,7 @@
 #include "Money.h"
 #include "Map.h"
 #include "TimeManagement.h"
+#include "RessourcesManager.h"
 
 
 
@@ -313,9 +314,6 @@ bool Stalls::GetWorkerIsThere(const sf::Vector2f &_mapPosition)
 }
 
 
-
-
-
 enum StallStatus Stalls::GetStatus()
 {
 	return m_actualState;
@@ -337,9 +335,13 @@ bool Stalls::GetIsNewMerchantNeeded()
 	return m_isNewMerchantNeeded;
 }
 
+int Stalls::GetRessourceStocked() const
+{
+	return RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), "Storehouse");
+}
 
 
-void Stalls::UpdateBuildingConstruction(const float &_frametime)
+void Stalls::UpdateBuildingConstruction()
 {
 	switch (m_constructionState)
 	{
@@ -362,7 +364,7 @@ void Stalls::UpdateBuildingConstruction(const float &_frametime)
 
 		if (m_isWorkerThere == true)
 		{
-			m_lifeTime += _frametime;
+			m_lifeTime += TimeManagement::GetSingleton()->GetFrameTime();
 			m_isWorkerThere = false;
 		}
 
@@ -403,38 +405,20 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 		{
 		case STALL_WAITING:
 			
-			if (m_storehousesCoordinates != nullptr)
+			// - Si recoit information qu'il y a un purchaser qui attend : 
+			//		- Check la quantité à vendre
+			// - Afficher Selling Window avec la quantité max à vendre
+			// - Une fois la quantité validée :
+			//		- Transfert des entrepots vers stall
+			//		- Quand Transfert fini :
+			//			- Transfert de stall vers purchaser
+			//			- Purchaser part
+			//			- Quand Purchaser parti -> le delete
+
+			if (m_isPurchaserThere)
 			{
-				for (int i = 0; i < m_numberStorehousesCoordinates; i++)
-				{
-					if (m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned() >= m_quantitativeThreshold)
-					{
-						m_isNewMerchantNeeded = true;
-
-						// A MODIFIER
-						m_internalImportRessourceCounterSaved = _storehouse->GetStorage(m_storehousesCoordinates[i])->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned();
-
-						std::cout << "Pret a attendre purchaser\n";
-
-						m_actualState = STALL_SEND_REQUEST_PURCHASER;
-					}
-				}
-			}
-			
-			break;
-
-		case STALL_SEND_REQUEST_PURCHASER:
-			
-			m_actualProductionTime += TimeManagement::GetSingleton()->GetFrameTime();
-
-			if (_purchasers != nullptr)
-			{
-				if (m_actualProductionTime >= _purchasers->TimeToTravel())
-				{
-					m_actualState = STALL_PURCHASER_IS_PRESENT;
-					*(_state) = SELLING_WINDOW;
-					m_actualProductionTime = RESET;
-				}
+				SetStatus(STALL_PURCHASER_IS_PRESENT);
+				*(_state) = SELLING_WINDOW;
 			}
 
 			break;
@@ -450,26 +434,57 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 			
 			if (m_isOfferAccepted == true)
 			{
-				// We pre-call the destruction of this merchant
-				if (_purchasers != nullptr)
-				{
-					m_isNewMerchantNeeded = true;
-				}
+				// - Une fois la quantité validée :
+				//		- Transfert des entrepots vers stall
+				//		- Quand Transfert fini :
+				//			- Transfert de stall vers purchaser
+				//			- Purchaser part
+				//			- Quand Purchaser parti -> le delete
 
 				if (m_storehousesCoordinates != nullptr)
 				{
-					Ressources* resource = _storehouse->GetStorage(*m_storehousesCoordinates)->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+					int quantityToSell = m_ressourceQuantityToSell;
 
-					// We exchange sesterce money against amphoras of wine
-					if (resource->GetQuantityOwned() - 1 >= m_internalImportRessourceCounterSaved - m_ressourceQuantityToSell)
+					// Transfer of the resources from the differents storages to the stall
+					for (size_t i = 0; i < m_numberStorehousesCoordinates; i++)
 					{
-						_money->AddMoney(m_priceAccepted);
-						resource->AddOrSubtractQuantityOwned(-1);
+						Storage* storage = _storehouse->GetStorage(m_storehousesCoordinates[i]);
+						Ressources* resource = storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+						if (resource->GetQuantityOwned() >= quantityToSell)
+						{
+							Storage::TransferOfResource(storage, m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE), m_ressourceQuantityToSell);
+							quantityToSell = 0;
+						}
+						else if (resource->GetQuantityOwned() != 0
+							&& resource->GetQuantityOwned() < quantityToSell)
+						{
+							int newQuantityAdded = resource->GetQuantityOwned();
+							Storage::TransferOfTheWholeResource(storage, m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+
+							quantityToSell -= newQuantityAdded;
+						}
+
+						// If we have finished to transfer the resources, we brake the for loop
+						if (quantityToSell == 0) break;
 					}
-					else
-					{
-						m_actualState = STALL_WAITING;
-					}
+
+					// Transfer the resources into the reserve to securise them
+					Ressources* resource = m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+					resource->TransferFromOwnedToReserved(resource->GetQuantityOwned());
+
+
+
+					//// We exchange sesterce money against amphoras of wine
+					//if (resource->GetQuantityOwned() - 1 >= m_internalImportRessourceCounterSaved - m_ressourceQuantityToSell)
+					//{
+					//	_money->AddMoney(m_priceAccepted);
+					//	resource->AddOrSubtractQuantityOwned(-1);
+					//}
+					//else
+					//{
+					//	m_actualState = STALL_WAITING;
+					//}
 				}
 			}
 			else
@@ -480,7 +495,7 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 					m_isNewMerchantNeeded = true;
 				}	
 				
-				m_actualState = STALL_SEND_REQUEST_PURCHASER;
+				//m_actualState = STALL_SEND_REQUEST_PURCHASER;
 			}
 
 			break;

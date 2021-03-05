@@ -178,6 +178,7 @@
     <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="PauseWindow.cpp" />
     <ClCompile Include="Purchasers.cpp" />
+    <ClCompile Include="PurchasersManager.cpp" />
     <ClCompile Include="Ressources.cpp" />
     <ClCompile Include="RessourcesManager.cpp" />
     <ClCompile Include="SavingGame.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="PauseWindow.h" />
     <ClInclude Include="Purchasers.h" />
+    <ClInclude Include="PurchasersManager.h" />
     <ClInclude Include="Ressources.h" />
     <ClInclude Include="RessourcesManager.h" />
     <ClInclude Include="SavingGame.h" />

@@ -66,10 +66,10 @@ public:
 	inline Storage* GetStorage() const { return m_storage; }
 
 	// Methods
-	void InitPathfinding(Map* _map);
+	void InitPathfinding();
 
 	void DisplayWorker();
-	void UpdatePathAndActivities(Map* _map, TimeManagement* _time, BuildingManagement* _builds);
+	void UpdatePathAndActivities(Map* _map, BuildingManagement* _builds);
 
 	void ActiveLauchingMovement(); // TEMPORAIRE
 	bool m_isPressingStart; // Temporaire

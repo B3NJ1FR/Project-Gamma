@@ -39,7 +39,7 @@ MainCharacter::~MainCharacter()
 }
 
 
-void MainCharacter::InitPathfinding(Map *_map)
+void MainCharacter::InitPathfinding()
 {
 	if (m_isLauchingMovement == true)
 	{
@@ -51,7 +51,7 @@ void MainCharacter::InitPathfinding(Map *_map)
 
 		m_path = new Pathfinding;
 
-		m_path->InitMapCopyPathfinding(sf::Vector2i(_map->GetNumberOfColumns(), _map->GetNumberOfLines()), _map->GetMap(), (FIRST_FLOOR + COLLISIONS_ID)); // TEMPORAIRE
+		m_path->InitMapCopyPathfinding(FIRST_FLOOR + COLLISIONS_ID); // TEMPORAIRE
 
 		m_path->SetPathStartingPosition((sf::Vector2i)m_mapPosition); // TEMPORAIRE
 		m_path->SetPathEndingPosition((sf::Vector2i)m_mapEndPosition); // TEMPORAIRE
@@ -1006,7 +1006,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					if (m_waitingTimer > 3)
 					{
 						// Set the position of the next building plannified
-						SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
+						SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
 
 						SetMainCharacterStatus(IDLE, true);
 
@@ -1047,15 +1047,15 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 	case MOVEMENT:
 
 		// Speed modification depending on the type of soil
-		if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
+		if (_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
 		{
 			speed = _game->m_time->GetFrameTime() * 2.25f;
 		}
-		else if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
+		else if (_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
 		{
 			speed = _game->m_time->GetFrameTime() * 3.5f;
 		}
-		else if (_game->m_map.GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
+		else if (_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
 		{
 			speed = _game->m_time->GetFrameTime() * 5;
 		}
@@ -1118,14 +1118,14 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					{
 						for (int x = 0; x < _game->m_buildingsListPlanned->GetBuildingSize().x; x++)
 						{
-							_game->m_map.GetMap()[ZERO_FLOOR + SPRITE_ID]
+							_game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID]
 								[_game->m_buildingsListPlanned->GetBuildingPositionInMap().y - y]
 							[_game->m_buildingsListPlanned->GetBuildingPositionInMap().x - x] = 1;
 						}
 					}
 
 					// Modifier couche pour ID
-					_game->m_buildWindow.SetBuildingOnMap(&_game->m_map, &_game->m_builds, FIRST_FLOOR, _game->m_buildingsListPlanned->GetBuildingID(), COLLISION, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
+					_game->m_buildWindow.SetBuildingOnMap(_game->m_map, &_game->m_builds, FIRST_FLOOR, _game->m_buildingsListPlanned->GetBuildingID(), COLLISION, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
 
 
 
@@ -1187,7 +1187,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					_game->m_buildingsListPlanned->DeleteCurrentFirstBuildingInList();
 
 					//Update the workers's paths
-					_game->m_workersList->CheckAndUpdateWorkersPath(_game->m_map.GetMap());
+					_game->m_workersList->CheckAndUpdateWorkersPath(_game->m_map->GetMap());
 
 
 					// Test if the list is empty or not
@@ -1199,7 +1199,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					else
 					{
 						// Set the position of the next building plannified
-						SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
+						SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
 
 						SetMainCharacterStatus(IDLE, true);
 					}

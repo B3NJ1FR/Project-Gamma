@@ -45,7 +45,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	}
 
 	// Save the map
-	_game->m_map.LoadingMapFromFile(&saveFile);
+	_game->m_map->LoadingMapFromFile(&saveFile);
 
 
 	// Loading of the money data
@@ -61,7 +61,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	std::cout << "Time loaded !\n";
 
 	// Loading of the workers data
-	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map.GetMap());
+	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map->GetMap());
 
 	std::cout << "Workers loaded !\n";
 
@@ -90,7 +90,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 
 	std::cout << "Stall loaded !\n";
 
-	if ((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+	/*if ((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 		|| _game->m_builds.m_stall->GetStatus() == STALL_PURCHASER_IS_PRESENT))
 	{
 		if (_game->m_purchasers != nullptr)
@@ -107,7 +107,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 		_game->m_purchasers->LoadingPurchasersFromFile(&saveFile);
 
 		std::cout << "Purchaser loaded !\n";
-	}
+	}*/
 
 
 	// Loading of the Buildings list planned
@@ -115,7 +115,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 
 	if (_game->m_buildingsListPlanned->GetBuildingPositionInMap() != sf::Vector2i(-1, -1))
 	{
-		_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), &_game->m_map);
+		_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
 		_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
 		_game->m_mainCharacter->SetIsCurrentlyBuilding(true);
 	}

@@ -43,7 +43,7 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 
 	// Save the map
-	_game->m_map.SavingMapFromFile(&saveFile);
+	_game->m_map->SavingMapFromFile(&saveFile);
 
 	// Saving of the money data
 	int money = _game->m_money.GetMoneyQuantity();
@@ -82,13 +82,13 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 	std::cout << "Stall saved !\n";
 
-	if (((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
+	/*if (((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 		&& _game->m_builds.m_stall->GetIsNewMerchantNeeded() == false)
 		|| _game->m_builds.m_stall->GetStatus() == STALL_PURCHASER_IS_PRESENT)
 		&& _game->m_purchasers != nullptr)
 	{
 		_game->m_purchasers->SavingPurchasersForFile(&saveFile);
-	}
+	}*/
 
 	std::cout << "Purchasers saved !\n";
 

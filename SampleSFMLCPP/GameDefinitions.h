@@ -19,6 +19,7 @@
 #include "BuildWindow.h"
 #include "TutorialWindow.h"
 #include "ManagerBetweenWorkersAndMain.h"
+#include "PurchasersManager.h"
 
 #define MAX_ZOOMING 0.3f
 #define MAX_DEZOOMING -0.3f
@@ -64,7 +65,7 @@ public:
 	int m_maximalNumberOfSprites;
 
 	// Map
-	Map m_map; // WE DONT LOAD THE MAP
+	Map* m_map; // WE DONT LOAD THE MAP
 
 	// Camera
 	sf::Vector3f m_camera;
@@ -88,7 +89,7 @@ public:
 
 	// Entities
 	WorkersList *m_workersList;
-	Purchasers *m_purchasers;
+	PurchasersManager* m_purchaserManager;
 	MainCharacter *m_mainCharacter;
 	ManagerBetweenWorkersAndMain *m_managerBetweenWorkersAndMain;
 
