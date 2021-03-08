@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EnumInternalState.h"
+
 #include "Storage.h"
 #include "Buildings.h"
 #include "Money.h"
@@ -22,6 +24,8 @@ private:
 	Buildings *m_building;
 
 	Storage* m_storage = nullptr;
+
+	InternalState m_internalState;
 
 	sf::Vector2f m_mapPosition;
 	enum BuildingStatus m_constructionState;

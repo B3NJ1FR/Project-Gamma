@@ -37,5 +37,6 @@ public :
 	void DisplayBuildingsStoragesContent();
 	void DisplayWorkersStoragesContent();
 	void ClearAllStorages();
+	void CheatAddResourcesToBuilding(std::string _ressourceName, int _quantity, std::string _specificBuildingName = std::string(""));
 };
 

@@ -23,10 +23,13 @@ Purchasers::Purchasers()
 	m_isPreviousOfferHasBeenRefused = false;
 
 	m_isStallExist = false;
+	m_isCanLeaveTheMap = false;
+	m_isWaitingEndTheMap = false;
 }
 
 Purchasers::~Purchasers()
 {
+	std::cout << "Clear Purchasers\n";
 	ClearStorage();
 }
 
@@ -183,15 +186,15 @@ void Purchasers::Initialisation(Stalls* _stall)
 	if (_stall->GetConstructionStatus() == BuildingStatus::BUILT)
 	{
 		m_isStallExist = true;
-		m_mapEndPosition = FindWherePurchaserMustStopItself();
+		m_mapEndPosition = FindWherePurchaserMustStopItself(_stall->GetMapPosition());
+		m_isLauchingMovement = true;
+		InitPathfinding();
 	}
 	else
 	{
 		m_isStallExist = false;
-		m_mapEndPosition = FindEndRoad();
+		m_isCanLeaveTheMap = true;
 	}
-
-	InitPathfinding();
 
 	std::cout << "New merchant created\n\n";
 }
@@ -215,19 +218,32 @@ void Purchasers::InitPathfinding()
 	}
 }
 
-void Purchasers::UpdateLife(struct Game* _game)
+void Purchasers::UpdateLife(BuildingManagement* _builds)
 {
 	InitPathfinding();
-	UpdatePathAndActivities(_game->m_map, &_game->m_builds);
+	UpdatePathAndActivities(_builds);
 }
 
-void Purchasers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
+void Purchasers::UpdatePathAndActivities(BuildingManagement* _builds)
 {
 	float speed(RESET);
+
+	Map* currentMap = nullptr;
 
 	switch (m_actualStatus)
 	{
 	case PurchaserStatus::IDLE:
+
+		if (m_isCanLeaveTheMap)
+		{
+			m_mapEndPosition = FindEndRoad();
+			m_isLauchingMovement = true;
+
+			InitPathfinding();
+
+			m_isCanLeaveTheMap = false;
+			m_isWaitingEndTheMap = true;
+		}
 
 		//std::cout << "Idle\n";
 		if (m_isLauchingMovement == true)
@@ -237,6 +253,7 @@ void Purchasers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 			SetStatus(PurchaserStatus::WAITING_MOVEMENT);
 			m_isLauchingMovement = false;
 		}
+
 
 		break;
 
@@ -266,18 +283,20 @@ void Purchasers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 	case PurchaserStatus::MOVEMENT:
 
-		if (_map->IsCoordinatesIsInMap((sf::Vector2i)m_mapPosition))
+		currentMap = Map::GetSingleton();
+
+		if (currentMap->IsCoordinatesIsInMap((sf::Vector2i)m_mapPosition))
 		{
 			// Speed modification depending on the type of soil
-			if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
+			if (currentMap->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == PATH)
 			{
 				speed = TimeManagement::GetSingleton()->GetFrameTime() * 2.25f;
 			}
-			else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
+			else if (currentMap->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == STONE_PATH)
 			{
 				speed = TimeManagement::GetSingleton()->GetFrameTime() * 3.5f;
 			}
-			else if (_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
+			else if (currentMap->GetMap()[ZERO_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] == ROAD)
 			{
 				speed = TimeManagement::GetSingleton()->GetFrameTime() * 5.0f;
 			}
@@ -293,7 +312,14 @@ void Purchasers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 		// If the path ask to be deleted, that mean that the worker has reached his destination
 		if (m_path->GetActualStatus() == PATHFINDING_NEED_TO_BE_DELETED)
 		{
-			SetStatus(PurchaserStatus::WORKING);
+			if (m_isWaitingEndTheMap)
+			{
+				SetStatus(PurchaserStatus::END_OF_LIFE);
+			}
+			else
+			{
+				SetStatus(PurchaserStatus::WORKING);
+			}
 
 			// We delete the path and init his pointer to null
 			delete m_path;
@@ -317,16 +343,19 @@ void Purchasers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 	case PurchaserStatus::END_OF_LIFE:
 
+		std::cout << "Purchaser : End of life\n";
+		PurchasersManager::GetSingleton()->RemoveCurrentPurchaser();
+		delete this;
 		break;
 
 	default:
 		break;
 	}
 }
-sf::Vector2f Purchasers::FindWherePurchaserMustStopItself()
+sf::Vector2f Purchasers::FindWherePurchaserMustStopItself(sf::Vector2i _coordinatesStall)
 {
 	// A MODIFIER
-	return sf::Vector2f(0, 0);
+	return sf::Vector2f(_coordinatesStall.x, m_mapPosition.y);
 }
 
 sf::Vector2f Purchasers::FindEndRoad()
@@ -356,6 +385,8 @@ void Purchasers::ClearStorage()
 	}
 }
 
+
+
 void Purchasers::SavingPurchasersForFile(std::ofstream *_file)
 {
 	_file->write((char *)&m_actualStatus, sizeof(enum WorkerStatus));
@@ -383,8 +414,6 @@ void Purchasers::SavingPurchasersForFile(std::ofstream *_file)
 
 	_file->write((char *)&m_isPreviousOfferHasBeenRefused, sizeof(bool));
 }
-
-
 
 void Purchasers::LoadingPurchasersFromFile(std::ifstream *_file)
 {

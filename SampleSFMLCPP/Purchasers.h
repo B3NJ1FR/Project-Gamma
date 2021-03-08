@@ -1,20 +1,11 @@
 #pragma once
 
+#include "EnumPurchaserStatus.h"
+
 #include "Entities.h"
 #include "Storage.h"
 #include "BuildingManagement.h"
 
-
-enum class PurchaserStatus
-{
-	IDLE,
-	WAITING_MOVEMENT,
-	MOVEMENT,
-	WORKING,
-	WAITING_RESOURCES,
-	PICKUP_RESSOURCES,
-	END_OF_LIFE,
-};
 
 class Purchasers : public Entities
 {
@@ -51,6 +42,8 @@ private:
 	bool m_isPreviousOfferHasBeenRefused;
 
 	bool m_isStallExist;
+	bool m_isCanLeaveTheMap;
+	bool m_isWaitingEndTheMap;
 
 	//bool isLauchingMovement; // Temporaire
 	//bool isItWorkingPlace;
@@ -69,6 +62,8 @@ public:
 	// Setters
 	inline void SetActualQuantityStored(const int& _quantity);
 	inline void SetStatus(enum PurchaserStatus _newStatus) { m_actualStatus = _newStatus; };
+	inline void SetCanLeaveTheMap(bool _newStatus) { m_isCanLeaveTheMap = _newStatus; };
+	
 	// Getters
 	sf::Vector2i GetUnitPriceScope();
 	inline sf::Vector2i GetUnitQuantityRessourceScope() const { return sf::Vector2i(m_minimalRessourceQuantity, m_maximalRessourceQuantity); };
@@ -78,11 +73,11 @@ public:
 	void Initialisation(Stalls* _stall);
 	void InitialisationFromDataFile();
 	void InitPathfinding();
-	sf::Vector2f FindWherePurchaserMustStopItself();
+	sf::Vector2f FindWherePurchaserMustStopItself(sf::Vector2i _coordinatesStall);
 	sf::Vector2f FindEndRoad();
 
-	void UpdateLife(struct Game* _game);
-	void UpdatePathAndActivities(Map* _map, BuildingManagement* _builds);
+	void UpdateLife(BuildingManagement* _builds);
+	void UpdatePathAndActivities(BuildingManagement* _builds);
 
 	int RandomiseData(const sf::Vector2i& _data);
 

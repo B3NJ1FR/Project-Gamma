@@ -235,3 +235,21 @@ void RessourcesManager::ClearAllStorages()
 		}
 	}
 }
+
+void RessourcesManager::CheatAddResourcesToBuilding(std::string _ressourceName, int _quantity, std::string _specificBuildingName)
+{
+	unsigned int sumOfRessources = 0;
+
+	for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
+	{
+		if (_specificBuildingName == std::string("")
+			|| _specificBuildingName == (*iterator)->GetName())
+		{
+			if ((*iterator)->IsResourceExistHere(_ressourceName))
+			{
+				(*iterator)->AddOrSubtractResource(_ressourceName, _quantity);
+				break;
+			}
+		}
+	}
+}

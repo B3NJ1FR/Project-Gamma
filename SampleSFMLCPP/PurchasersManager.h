@@ -31,9 +31,9 @@ public:
 	bool IsPurchaserExist() const { return (m_currentPurchaser != nullptr) ? true : false; }
 
 	// Methods
-	void Update(Stalls* _stall);
-	void AskToDestroyCurrentPurchaser();
-	void DestroyCurrentPurchaser();
+	void Update(BuildingManagement* _builds, Stalls* _stall);
+	void AskToRemoveCurrentPurchaser();
+	void RemoveCurrentPurchaser();
 
 	// Save
 	void SavingForFile(std::ofstream* _file);

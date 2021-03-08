@@ -14,7 +14,8 @@ PurchasersManager::PurchasersManager()
 
 PurchasersManager::~PurchasersManager()
 {
-	DestroyCurrentPurchaser();
+	std::cout << "Clear the purchaser Manager\n";
+	RemoveCurrentPurchaser();
 }
 
 PurchasersManager* PurchasersManager::GetSingleton()
@@ -49,15 +50,15 @@ void PurchasersManager::Initialisation()
 
 	purchaserFile.close();
 
-	std::cout << "New merchant created\n\n";
+	std::cout << "Initialisation Purchaser Manager\n\n";
 }
 
 
-void PurchasersManager::Update(Stalls* _stall)
+void PurchasersManager::Update(BuildingManagement* _builds, Stalls* _stall)
 {
 	if (m_isMerchantSpawned)
 	{
-
+		m_currentPurchaser->UpdateLife(_builds);
 	}
 	else
 	{
@@ -74,31 +75,31 @@ void PurchasersManager::Update(Stalls* _stall)
 
 			if (m_currentTimeBeforeSpawn <= 0.0f)
 			{
+				std::cout << "New purchaser spawned !\n\n";
 				m_isMerchantSpawned = true;
 				m_currentPurchaser = new Purchasers();
 				m_currentPurchaser->Initialisation(_stall);
-				//
 			}
 		}
 	}
 }
 
 
-void PurchasersManager::AskToDestroyCurrentPurchaser()
+void PurchasersManager::AskToRemoveCurrentPurchaser()
 {
 	if (m_isMerchantSpawned)
 	{
-		DestroyCurrentPurchaser();
+		RemoveCurrentPurchaser();
 	}
 
 	m_currentTimeBeforeSpawn = 0.0f;
 }
 
-void PurchasersManager::DestroyCurrentPurchaser()
+void PurchasersManager::RemoveCurrentPurchaser()
 {
 	if (m_currentPurchaser != nullptr)
 	{
-		delete m_currentPurchaser;
+		m_currentPurchaser = nullptr;
 	}
 }
 

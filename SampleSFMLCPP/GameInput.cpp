@@ -266,6 +266,10 @@ void GameInput(struct Game *_game)
 					{
 						RessourcesManager::GetSingleton()->DisplayBuildingsStoragesContent();
 					}
+					if (event.key.code == sf::Keyboard::T)
+					{
+						RessourcesManager::GetSingleton()->CheatAddResourcesToBuilding(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), 10, "Storehouse");
+					}
 				}
 				
 

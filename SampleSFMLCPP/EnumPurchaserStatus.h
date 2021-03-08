@@ -1,0 +1,12 @@
+#pragma once
+
+enum class PurchaserStatus
+{
+	IDLE,
+	WAITING_MOVEMENT,
+	MOVEMENT,
+	WORKING,
+	WAITING_RESOURCES,
+	PICKUP_RESSOURCES,
+	END_OF_LIFE,
+};

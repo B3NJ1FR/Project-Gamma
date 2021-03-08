@@ -105,12 +105,13 @@ void GameUpdate(struct Game *_game)
 
 			_game->m_builds.m_stall->UpdateBuildingConstruction();
 			_game->m_builds.m_stall->UpdateBuildingSprite(_game->m_map->GetMap());
-			//_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchasers, &_game->m_builds.m_storehouse);
+			_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchaserManager->GetPurchasers(), &_game->m_builds.m_storehouse);
 
 			_game->m_builds.m_storehouse.UpdateBuildingConstruction();
 			_game->m_builds.m_storehouse.UpdateBuildingSprite(_game->m_map->GetMap());
 			_game->m_builds.m_storehouse.UpdateInternalCycles();
 			
+			_game->m_purchaserManager->Update(&_game->m_builds, _game->m_builds.m_stall);
 
 			/*if (_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
 				&& _game->m_builds.m_stall->GetIsNewMerchantNeeded() == true)

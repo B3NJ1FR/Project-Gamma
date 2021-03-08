@@ -1,4 +1,5 @@
 #include "Stalls.h"
+#include "EnumPurchaserStatus.h"
 #include "GameDefinitions.h"
 #include "Money.h"
 #include "Map.h"
@@ -12,6 +13,8 @@ Stalls::Stalls(Buildings *_specificBuildingConcerned)
 	m_building = _specificBuildingConcerned;
 
 	m_storage = nullptr;
+
+	m_internalState = InternalState::STATE_INIT;
 
 	m_mapPosition = sf::Vector2f(0, 0);
 	m_constructionState = BuildingStatus::BUILDING_DESTROYED;
@@ -39,6 +42,8 @@ Stalls::Stalls(Buildings *_specificBuildingConcerned)
 
 	m_storehousesCoordinates = nullptr;
 	m_numberStorehousesCoordinates = 0;
+	
+	m_isOfferAccepted = false;
 }
 
 
@@ -97,6 +102,8 @@ void Stalls::AddNewBuilding(sf::Vector2f _mapPosition)
 	m_storage = new Storage();
 	m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
 	m_storage->SetName("Stall");
+
+	m_internalState = InternalState::STATE_INIT;
 
 	// Init of the building construction status after being placed on map
 	m_constructionState = PLANNED;
@@ -441,61 +448,82 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 				//			- Purchaser part
 				//			- Quand Purchaser parti -> le delete
 
-				if (m_storehousesCoordinates != nullptr)
+				switch (m_internalState)
 				{
-					int quantityToSell = m_ressourceQuantityToSell;
+				case InternalState::STATE_INIT:
+
+					std::cout << "Offer accepted !\n\n";
+					_purchasers->SetStatus(PurchaserStatus::WAITING_RESOURCES);
 
 					// Transfer of the resources from the differents storages to the stall
-					for (size_t i = 0; i < m_numberStorehousesCoordinates; i++)
+					if (m_storehousesCoordinates != nullptr)
 					{
-						Storage* storage = _storehouse->GetStorage(m_storehousesCoordinates[i]);
-						Ressources* resource = storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+						int quantityToSell = m_ressourceQuantityToSell;
 
-						if (resource->GetQuantityOwned() >= quantityToSell)
+						for (size_t i = 0; i < m_numberStorehousesCoordinates; i++)
 						{
-							Storage::TransferOfResource(storage, m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE), m_ressourceQuantityToSell);
-							quantityToSell = 0;
-						}
-						else if (resource->GetQuantityOwned() != 0
-							&& resource->GetQuantityOwned() < quantityToSell)
-						{
-							int newQuantityAdded = resource->GetQuantityOwned();
-							Storage::TransferOfTheWholeResource(storage, m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
+							Storage* storage = _storehouse->GetStorage(m_storehousesCoordinates[i]);
+							Ressources* resource = storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
 
-							quantityToSell -= newQuantityAdded;
-						}
+							if (resource->GetQuantityOwned() >= quantityToSell)
+							{
+								Storage::TransferOfResource(storage, m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE), m_ressourceQuantityToSell);
+								quantityToSell = 0;
+							}
+							else if (resource->GetQuantityOwned() != 0
+								&& resource->GetQuantityOwned() < quantityToSell)
+							{
+								int newQuantityAdded = resource->GetQuantityOwned();
+								Storage::TransferOfTheWholeResource(storage, m_storage, Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
 
-						// If we have finished to transfer the resources, we brake the for loop
-						if (quantityToSell == 0) break;
+								quantityToSell -= newQuantityAdded;
+							}
+
+							// If we have finished to transfer the resources, we brake the for loop
+							if (quantityToSell == 0) break;
+						}
 					}
 
 					// Transfer the resources into the reserve to securise them
-					Ressources* resource = m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE));
-					resource->TransferFromOwnedToReserved(resource->GetQuantityOwned());
+					m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->TransferFromOwnedToReserved(m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned());
 
+					m_internalState = InternalState::STATE_UPDATE;
+					break;
+				case InternalState::STATE_UPDATE:
 
+					// Transfer resources from the stall to the purchaser
+					if (m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityReserved() - 1 > 0)
+					{
+						_purchasers->SetStatus(PurchaserStatus::PICKUP_RESSOURCES);
+						_money->AddMoney(m_priceAccepted);
+						m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->AddOrSubtractQuantityReserved(-1);
+					}
+					else
+					{
+						// Ask to the purchaser to leave the place
+						_purchasers->SetStatus(PurchaserStatus::IDLE);
+						_purchasers->SetCanLeaveTheMap(true);
 
-					//// We exchange sesterce money against amphoras of wine
-					//if (resource->GetQuantityOwned() - 1 >= m_internalImportRessourceCounterSaved - m_ressourceQuantityToSell)
-					//{
-					//	_money->AddMoney(m_priceAccepted);
-					//	resource->AddOrSubtractQuantityOwned(-1);
-					//}
-					//else
-					//{
-					//	m_actualState = STALL_WAITING;
-					//}
+						// Wait a new purchaser
+						m_internalState = InternalState::STATE_EXIT;
+						m_actualState = STALL_WAITING;
+					}
+
+					break;
+				default:
+					break;
 				}
 			}
 			else
 			{
-				// We ask the destruction of this merchant
-				if (_purchasers != nullptr)
-				{
-					m_isNewMerchantNeeded = true;
-				}	
-				
-				//m_actualState = STALL_SEND_REQUEST_PURCHASER;
+				// A MODIFIER EN : le purchaser réoffre une autre proposition, et si elle est refusée, là, il part
+				// Ask to the purchaser to leave the place
+				_purchasers->SetStatus(PurchaserStatus::IDLE);
+				_purchasers->SetCanLeaveTheMap(true);
+
+				// Wait a new purchaser
+				m_internalState = InternalState::STATE_EXIT;
+				m_actualState = STALL_WAITING;
 			}
 
 			break;

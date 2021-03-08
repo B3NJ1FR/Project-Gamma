@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EnumInternalState.h"
 #include "Storage.h"
 #include "TimeManagement.h"
 #include "Buildings.h"
@@ -32,14 +33,6 @@ enum VineStateOfAnnualLife
 	HARVESTED,
 	ROTTEN_HARVESTS,
 	PUTTING_IN_WINE_STOREHOUSE, // Mise en Chai
-};
-
-enum class InternalState
-{
-	STATE_INIT,
-	STATE_UPDATE,
-	STATE_EXIT,
-	STATE_WAITING,
 };
 
 // Calendrier des Vignes
