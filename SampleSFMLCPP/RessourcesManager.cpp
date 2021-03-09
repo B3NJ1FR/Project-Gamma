@@ -151,16 +151,19 @@ unsigned int RessourcesManager::GetResourceQuantity(std::string _ressourceName, 
 {
 	unsigned int sumOfRessources = 0;
 
-	for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
+	if (m_vectorStorages.size() > 0)
 	{
-		if (_specificBuildingName == std::string("")
-			|| _specificBuildingName == (*iterator)->GetName())
+		for (std::vector<Storage*>::iterator iterator = m_vectorStorages.begin(); iterator != m_vectorStorages.end(); iterator++)
 		{
-			int ressourceQuantity = (*iterator)->GetResourceQuantity(_ressourceName);
-
-			if (ressourceQuantity >= 0)
+			if (_specificBuildingName == std::string("")
+				|| _specificBuildingName == (*iterator)->GetName())
 			{
-				sumOfRessources += ressourceQuantity;
+				int ressourceQuantity = (*iterator)->GetResourceQuantity(_ressourceName);
+
+				if (ressourceQuantity >= 0)
+				{
+					sumOfRessources += ressourceQuantity;
+				}
 			}
 		}
 	}

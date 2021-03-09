@@ -9,6 +9,7 @@ Purchasers::Purchasers()
 
 	m_storage = new Storage();
 	m_storage->SetName("Purchaser");
+	m_storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
 	
 	m_minimalMoneyValueForRessource = RESET;
 	m_maximalMoneyValueForRessource = RESET;
@@ -342,9 +343,8 @@ void Purchasers::UpdatePathAndActivities(BuildingManagement* _builds)
 		break;
 
 	case PurchaserStatus::END_OF_LIFE:
-
 		std::cout << "Purchaser : End of life\n";
-		PurchasersManager::GetSingleton()->RemoveCurrentPurchaser();
+ 		PurchasersManager::GetSingleton()->RemoveCurrentPurchaser();
 		delete this;
 		break;
 
@@ -355,13 +355,13 @@ void Purchasers::UpdatePathAndActivities(BuildingManagement* _builds)
 sf::Vector2f Purchasers::FindWherePurchaserMustStopItself(sf::Vector2i _coordinatesStall)
 {
 	// A MODIFIER
-	return sf::Vector2f(_coordinatesStall.x, m_mapPosition.y);
+	return sf::Vector2f(_coordinatesStall.x, 6);
 }
 
 sf::Vector2f Purchasers::FindEndRoad()
 {
 	// A MODIFIER
-	return sf::Vector2f(0, 0);
+	return sf::Vector2f(20, 6);
 }
 
 int Purchasers::RandomiseData(const sf::Vector2i& _data)

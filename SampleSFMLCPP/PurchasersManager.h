@@ -10,7 +10,7 @@ private:
 
 	int m_minRangeTimeForSpawn;
 	int m_maxRangeTimeForSpawn;
-	int m_currentTimeBeforeSpawn;
+	float m_currentTimeBeforeSpawn;
 
 	bool m_isMerchantSpawned;
 

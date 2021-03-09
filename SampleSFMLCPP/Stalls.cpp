@@ -424,6 +424,7 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 
 			if (m_isPurchaserThere)
 			{
+				std::cout << "Here\n";
 				SetStatus(STALL_PURCHASER_IS_PRESENT);
 				*(_state) = SELLING_WINDOW;
 			}
@@ -438,7 +439,7 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 			
 			// - Animation de vente des amphores
 			// - Vente des amphores en échange de sesterces
-			
+
 			if (m_isOfferAccepted == true)
 			{
 				// - Une fois la quantité validée :
@@ -448,16 +449,25 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 				//			- Purchaser part
 				//			- Quand Purchaser parti -> le delete
 
+				std::cout << "[Stall] - Entree - " << std::endl;
+
+				// PROBLEME DU SWITCH
 				switch (m_internalState)
 				{
 				case InternalState::STATE_INIT:
 
 					std::cout << "Offer accepted !\n\n";
-					_purchasers->SetStatus(PurchaserStatus::WAITING_RESOURCES);
+					if (_purchasers != nullptr)
+					{
+						std::cout << "[Stall] - la \n";
+						_purchasers->SetStatus(PurchaserStatus::WAITING_RESOURCES);
+					}
 
+					std::cout << "[Stall] - apres \n";
 					// Transfer of the resources from the differents storages to the stall
 					if (m_storehousesCoordinates != nullptr)
 					{
+						std::cout << "[Stall] - here\n";
 						int quantityToSell = m_ressourceQuantityToSell;
 
 						for (size_t i = 0; i < m_numberStorehousesCoordinates; i++)
@@ -484,8 +494,11 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 						}
 					}
 
+					std::cout << "[Stall] - " << m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned() << std::endl;
 					// Transfer the resources into the reserve to securise them
 					m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->TransferFromOwnedToReserved(m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityOwned());
+
+					std::cout << "[STALL] - Ressources transfered from storehouses to stall\n";
 
 					m_internalState = InternalState::STATE_UPDATE;
 					break;
@@ -494,18 +507,25 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 					// Transfer resources from the stall to the purchaser
 					if (m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->GetQuantityReserved() - 1 > 0)
 					{
-						_purchasers->SetStatus(PurchaserStatus::PICKUP_RESSOURCES);
+						if (_purchasers != nullptr)
+						{
+							_purchasers->SetStatus(PurchaserStatus::PICKUP_RESSOURCES);
+						}
+
 						_money->AddMoney(m_priceAccepted);
 						m_storage->GetResource(Ressources::GetNameFromEnum(AMPHORA_OF_WINE))->AddOrSubtractQuantityReserved(-1);
 					}
 					else
 					{
-						// Ask to the purchaser to leave the place
-						_purchasers->SetStatus(PurchaserStatus::IDLE);
-						_purchasers->SetCanLeaveTheMap(true);
+						if (_purchasers != nullptr)
+						{
+							// Ask to the purchaser to leave the place
+							_purchasers->SetStatus(PurchaserStatus::IDLE);
+							_purchasers->SetCanLeaveTheMap(true);
+						}
 
 						// Wait a new purchaser
-						m_internalState = InternalState::STATE_EXIT;
+						m_internalState = InternalState::STATE_INIT;
 						m_actualState = STALL_WAITING;
 					}
 
@@ -518,11 +538,16 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 			{
 				// A MODIFIER EN : le purchaser réoffre une autre proposition, et si elle est refusée, là, il part
 				// Ask to the purchaser to leave the place
-				_purchasers->SetStatus(PurchaserStatus::IDLE);
-				_purchasers->SetCanLeaveTheMap(true);
+				if (_purchasers != nullptr)
+				{
+					_purchasers->SetStatus(PurchaserStatus::IDLE);
+					_purchasers->SetCanLeaveTheMap(true);
+				}
+
+				m_isPurchaserThere = false;
 
 				// Wait a new purchaser
-				m_internalState = InternalState::STATE_EXIT;
+				m_internalState = InternalState::STATE_INIT;
 				m_actualState = STALL_WAITING;
 			}
 

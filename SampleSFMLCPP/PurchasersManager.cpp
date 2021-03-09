@@ -45,6 +45,7 @@ void PurchasersManager::Initialisation()
 		if (temporaryString == "SPAWN_TIME")
 		{
 			purchaserFile >> m_minRangeTimeForSpawn >> m_maxRangeTimeForSpawn;
+			std::cout << "Spawning time range : " << m_minRangeTimeForSpawn << ' ' << m_maxRangeTimeForSpawn << std::endl;
 		}
 	}
 
@@ -58,7 +59,7 @@ void PurchasersManager::Update(BuildingManagement* _builds, Stalls* _stall)
 {
 	if (m_isMerchantSpawned)
 	{
-		m_currentPurchaser->UpdateLife(_builds);
+		if (m_currentPurchaser != nullptr) m_currentPurchaser->UpdateLife(_builds);
 	}
 	else
 	{
@@ -79,6 +80,7 @@ void PurchasersManager::Update(BuildingManagement* _builds, Stalls* _stall)
 				m_isMerchantSpawned = true;
 				m_currentPurchaser = new Purchasers();
 				m_currentPurchaser->Initialisation(_stall);
+				m_currentTimeBeforeSpawn = 0.0f;
 			}
 		}
 	}
@@ -101,6 +103,8 @@ void PurchasersManager::RemoveCurrentPurchaser()
 	{
 		m_currentPurchaser = nullptr;
 	}
+
+	m_isMerchantSpawned = false;
 }
 
 

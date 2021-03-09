@@ -1172,7 +1172,9 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 						break;
 					case BUILDING_STALL:
 						_game->m_builds.m_stall->AddNewBuilding((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
-						//_game->m_builds.m_stall.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap())->AddNewResourceToStorage(1, AMPHORA_OF_WINE);
+
+						storage = _game->m_builds.m_stall->GetStorage();
+						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
 						break;
 						/*case BUILDING_VILLA:
 							break;

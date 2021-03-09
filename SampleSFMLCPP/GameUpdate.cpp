@@ -29,7 +29,6 @@ void UpdateTexts(struct Game *_game)
 	UpdateDynamicsTexts(&_game->m_UITexts[5], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(GRAPES_MUST)));
 	UpdateDynamicsTexts(&_game->m_UITexts[7], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(GRAPE_JUICE)));
 	UpdateDynamicsTexts(&_game->m_UITexts[9], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(AMPHORA_OF_WINE)));
-
 }
 
 
@@ -81,7 +80,6 @@ void GameUpdate(struct Game *_game)
 			_game->m_time->UpdateGeneralTime();
 			_game->m_time->UpdateMonthToDisplay();
 
-
 			_game->m_builds.UpdateBuildingManagement(_game->m_map);
 
 			_game->m_builds.m_vines.UpdateVineLife();
@@ -112,36 +110,6 @@ void GameUpdate(struct Game *_game)
 			_game->m_builds.m_storehouse.UpdateInternalCycles();
 			
 			_game->m_purchaserManager->Update(&_game->m_builds, _game->m_builds.m_stall);
-
-			/*if (_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
-				&& _game->m_builds.m_stall->GetIsNewMerchantNeeded() == true)
-			{
-				if (_game->m_purchasers != nullptr)
-				{
-					delete _game->m_purchasers;
-					_game->m_purchasers = nullptr;
-
-					std::cout << "Suppression of this actual merchant\n\n";
-				}
-
-				_game->m_builds.m_stall->SetIsNewMerchantNeeded(false);
-
-				_game->m_purchasers = new Purchasers;
-				_game->m_purchasers->Initialisation(_game->m_builds.m_stall->GetActualRessourcesStocked());
-			}
-			else if (_game->m_builds.m_stall->GetStatus() == STALL_OFFER_HANDLED
-				&& _game->m_builds.m_stall->GetIsNewMerchantNeeded() == true)
-			{
-				if (_game->m_purchasers != nullptr)
-				{
-					delete _game->m_purchasers;
-					_game->m_purchasers = nullptr;
-
-					std::cout << "Suppression of this merchant\n\n";
-				}
-
-				_game->m_builds.m_stall->SetIsNewMerchantNeeded(false);
-			}*/
 		}
 
 		UpdateTexts(_game);

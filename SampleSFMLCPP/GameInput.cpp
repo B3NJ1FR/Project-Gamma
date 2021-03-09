@@ -468,6 +468,10 @@ void GameInput(struct Game *_game)
 						//	}
 						//}					
 					}
+					else if (_game->m_actualGameState == SELLING_WINDOW)
+					{
+						_game->m_time->InputTimeManagement(*_game->m_window, *_game->m_screenReso);
+					}
 					else if (_game->m_actualGameState == VILLA_MANAGEMENT)
 					{
 						_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, *_game->m_window);

@@ -34,15 +34,15 @@ Storage::Storage(int _quantityOfRessources, enum TypesOfRessources _ressources, 
 
 Storage::~Storage()
 {
+	// Remove the storage from the list
+	RessourcesManager::GetSingleton()->RemoveStorage(this);
+
 	if (!m_mapOfResources.empty())
 	{
 		for (TypeMapStringResources::iterator iterator = m_mapOfResources.begin(); iterator != m_mapOfResources.end(); iterator++)
 		{
 			if (iterator->second.first != nullptr)
 			{
-				// Remove the storage from the list
-				RessourcesManager::GetSingleton()->RemoveStorage(this);
-
 				// Delete the storage from the list
 				delete iterator->second.first;
 			}
@@ -99,10 +99,18 @@ std::ostream& operator<< (std::ostream& _ostream, const Storage& _storageToDispl
 
 void Storage::AddNewResourceToStorage(std::string _ressourceName, ResourceData _data)
 {
-	TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
+	if (m_mapOfResources.size() > 0)
+	{
+		TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
 
-	// Verification if the new ressources doesn't already exist in the map
-	if (iterator == m_mapOfResources.end())
+		// Verification if the new ressources doesn't already exist in the map
+		if (iterator == m_mapOfResources.end())
+		{
+			Ressources* temporaryRess = new Ressources(_ressourceName);
+			m_mapOfResources.insert(std::pair<std::string, std::pair<Ressources*, ResourceData>>(temporaryRess->GetName(), std::pair<Ressources*, ResourceData>(temporaryRess, _data)));
+		}
+	}
+	else
 	{
 		Ressources* temporaryRess = new Ressources(_ressourceName);
 		m_mapOfResources.insert(std::pair<std::string, std::pair<Ressources*, ResourceData>>(temporaryRess->GetName(), std::pair<Ressources*, ResourceData>(temporaryRess, _data)));
@@ -111,10 +119,18 @@ void Storage::AddNewResourceToStorage(std::string _ressourceName, ResourceData _
 
 void Storage::AddNewResourceToStorage(std::string _ressourceName, Ressources _ressource, ResourceData _data)
 {
-	TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
+	if (m_mapOfResources.size() > 0)
+	{
+		TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
 
-	// Verification if the new ressources doesn't already exist in the map
-	if (iterator == m_mapOfResources.end())
+		// Verification if the new ressources doesn't already exist in the map
+		if (iterator == m_mapOfResources.end())
+		{
+			Ressources* temporaryRess = new Ressources(_ressource);
+			m_mapOfResources.insert(std::pair<std::string, std::pair<Ressources*, ResourceData>>(temporaryRess->GetName(), std::pair<Ressources*, ResourceData>(temporaryRess, _data)));
+		}
+	}
+	else
 	{
 		Ressources* temporaryRess = new Ressources(_ressource);
 		m_mapOfResources.insert(std::pair<std::string, std::pair<Ressources*, ResourceData>>(temporaryRess->GetName(), std::pair<Ressources*, ResourceData>(temporaryRess, _data)));
@@ -142,6 +158,7 @@ void Storage::AddNewResourceToStorage(int _quantityOfRessources, enum TypesOfRes
 		{
 			Ressources* temporaryRess = new Ressources(_ressources);
 			m_mapOfResources.insert(std::pair<std::string, std::pair<Ressources*, ResourceData>>(temporaryRess->GetName(), std::pair<Ressources*, ResourceData>(temporaryRess, ResourceData::RESOURCE_NORMAL)));
+			std::cout << "new storage : " <<temporaryRess->GetQuantityReserved() << std::endl;
 		}
 
 		_ressources = va_arg(arguments, enum TypesOfRessources);
@@ -154,36 +171,45 @@ void Storage::AddNewResourceToStorage(int _quantityOfRessources, enum TypesOfRes
 
 void Storage::RemoveResourceOfStorage(std::string _ressourceName)
 {
-	TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
-
-	// Verification if the new ressources doesn't already exist in the map
-	if (iterator != m_mapOfResources.end())
+	if (m_mapOfResources.size() > 0)
 	{
-		m_mapOfResources.erase(iterator);
+		TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
+
+		// Verification if the new ressources doesn't already exist in the map
+		if (iterator != m_mapOfResources.end())
+		{
+			m_mapOfResources.erase(iterator);
+		}
 	}
 }
 
 void Storage::AddOrSubtractResource(std::string _ressourceName, int _quantity)
 {
-	TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
-
-	if (iterator != m_mapOfResources.end())
+	if (m_mapOfResources.size() > 0)
 	{
-		((Ressources*)iterator->second.first)->AddOrSubtractQuantityOwned(_quantity);
+		TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
+
+		if (iterator != m_mapOfResources.end())
+		{
+			((Ressources*)iterator->second.first)->AddOrSubtractQuantityOwned(_quantity);
+		}
 	}
 }
 
 
 int Storage::GetResourceQuantity(std::string _ressourceName) 
 {
-	TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
-
-	if (iterator != m_mapOfResources.end())
+	if (m_mapOfResources.size() > 0)
 	{
-		return ((Ressources*)iterator->second.first)->GetQuantityOwned();
-	}
+		TypeMapStringResources::iterator iterator = m_mapOfResources.find(_ressourceName);
 
-	return -1;
+		if (iterator != m_mapOfResources.end())
+		{
+			return ((Ressources*)iterator->second.first)->GetQuantityOwned();
+		}
+
+		return -1;
+	}
 }
 
 
