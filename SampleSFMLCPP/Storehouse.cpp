@@ -698,7 +698,7 @@ void Storehouse::ClearStorages()
 }
 
 
-void Storehouse::SavingVinesListForFile(std::ofstream *_file)
+void Storehouse::SavingForFile(std::ofstream *_file)
 {
 	// Save the number of vines
 	_file->write((char *)&m_list->size, sizeof(int));
@@ -724,7 +724,7 @@ void Storehouse::SavingVinesListForFile(std::ofstream *_file)
 }
 
 
-void Storehouse::LoadingVinesListFromFile(std::ifstream *_file)
+void Storehouse::LoadingFromFile(std::ifstream *_file)
 {
 	// Delete every vines
 	if (m_list != nullptr)

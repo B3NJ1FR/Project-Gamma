@@ -58,8 +58,8 @@ public:
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 	void ClearStorages();
 
-	void SavingVinesListForFile(std::ofstream *_file);
-	void LoadingVinesListFromFile(std::ifstream *_file);
+	void SavingForFile(std::ofstream *_file);
+	void LoadingFromFile(std::ifstream *_file);
 
 private:
 	LinkedListClass::sLinkedList *m_list;

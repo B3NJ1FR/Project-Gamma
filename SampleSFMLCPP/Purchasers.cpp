@@ -182,7 +182,7 @@ void Purchasers::Initialisation(Stalls* _stall)
 	// Spawn position
 	// A MODIFIER AVEC UNE VERSION QUI LE FAIT VENIR
 	// DE LA BONNE DIRECTION EN FONCTION DE LA PROVENANCE
-	m_mapPosition = sf::Vector2f(3, 0);
+	m_mapPosition = sf::Vector2f(3, 6);
 
 	if (_stall->GetConstructionStatus() == BuildingStatus::BUILT)
 	{
@@ -387,7 +387,7 @@ void Purchasers::ClearStorage()
 
 
 
-void Purchasers::SavingPurchasersForFile(std::ofstream *_file)
+void Purchasers::SavingForFile(std::ofstream *_file)
 {
 	_file->write((char *)&m_actualStatus, sizeof(enum WorkerStatus));
 	
@@ -402,6 +402,8 @@ void Purchasers::SavingPurchasersForFile(std::ofstream *_file)
 
 	SavingStringIntoBinaryFile(_file, m_provenance);
 
+	_file->write((char *)&m_isLauchingMovement, sizeof(bool));
+
 	_file->write((char *)&m_minimalMoneyValueForRessource, sizeof(int));
 	_file->write((char *)&m_maximalMoneyValueForRessource, sizeof(int));
 
@@ -411,12 +413,21 @@ void Purchasers::SavingPurchasersForFile(std::ofstream *_file)
 
 	_file->write((char *)&m_ressourceID, sizeof(enum TypesOfRessources));
 
+	_file->write((char*)&m_counterOfRefusedOffers, sizeof(int));
 
 	_file->write((char *)&m_isPreviousOfferHasBeenRefused, sizeof(bool));
+	_file->write((char*)&m_isStallExist, sizeof(bool));
+	_file->write((char*)&m_isCanLeaveTheMap, sizeof(bool));
+	_file->write((char*)&m_isWaitingEndTheMap, sizeof(bool));
 }
 
-void Purchasers::LoadingPurchasersFromFile(std::ifstream *_file)
+void Purchasers::LoadingFromFile(std::ifstream *_file)
 {
+	if (m_storage != nullptr)
+	{
+		ClearStorage();
+	}
+
 	_file->read((char *)&m_actualStatus, sizeof(enum WorkerStatus));
 
 	// Loading the storage of the purchaser
@@ -432,14 +443,21 @@ void Purchasers::LoadingPurchasersFromFile(std::ifstream *_file)
 
 	m_provenance = LoadingStringFromBinaryFile(_file);
 
-	_file->read((char *)&m_minimalMoneyValueForRessource, sizeof(int));
-	_file->read((char *)&m_maximalMoneyValueForRessource, sizeof(int));
+	_file->read((char*)&m_isLauchingMovement, sizeof(bool));
 
-	_file->read((char *)&m_minimalRessourceQuantity, sizeof(int));
-	_file->read((char *)&m_actualRessourceQuantity, sizeof(int));
-	_file->read((char *)&m_actualRessourceQuantity, sizeof(int));
+	_file->read((char*)&m_minimalMoneyValueForRessource, sizeof(int));
+	_file->read((char*)&m_maximalMoneyValueForRessource, sizeof(int));
 
-	_file->read((char *)&m_ressourceID, sizeof(enum TypesOfRessources));
+	_file->read((char*)&m_minimalRessourceQuantity, sizeof(int));
+	_file->read((char*)&m_actualRessourceQuantity, sizeof(int));
+	_file->read((char*)&m_actualRessourceQuantity, sizeof(int));
 
-	_file->read((char *)&m_isPreviousOfferHasBeenRefused, sizeof(bool));
+	_file->read((char*)&m_ressourceID, sizeof(enum TypesOfRessources));
+
+	_file->read((char*)&m_counterOfRefusedOffers, sizeof(int));
+
+	_file->read((char*)&m_isPreviousOfferHasBeenRefused, sizeof(bool));
+	_file->read((char*)&m_isStallExist, sizeof(bool));
+	_file->read((char*)&m_isCanLeaveTheMap, sizeof(bool));
+	_file->read((char*)&m_isWaitingEndTheMap, sizeof(bool));
 }

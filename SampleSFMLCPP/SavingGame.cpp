@@ -64,32 +64,23 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 	// Saving of the vines data
 	_game->m_builds.m_vines.SavingVinesListForFile(&saveFile);
-
 	std::cout << "Vines saved !\n";
 
 	// Saving of the specific buildings data
 	_game->m_builds.m_stompingVats.SavingSpecificsBuildingsListForFile(&saveFile);
 	_game->m_builds.m_winePress.SavingSpecificsBuildingsListForFile(&saveFile);
 	_game->m_builds.m_wineStorehouse.SavingSpecificsBuildingsListForFile(&saveFile);
-
 	std::cout << "Specifics buildings saved !\n";
 
 	// Saving of the storehouses data
-	_game->m_builds.m_storehouse.SavingVinesListForFile(&saveFile);
+	_game->m_builds.m_storehouse.SavingForFile(&saveFile);
+	std::cout << "Storehouses saved !\n";
 
 	// Saving of the stall data
 	_game->m_builds.m_stall->SavingStallForFile(&saveFile);
-
 	std::cout << "Stall saved !\n";
 
-	/*if (((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
-		&& _game->m_builds.m_stall->GetIsNewMerchantNeeded() == false)
-		|| _game->m_builds.m_stall->GetStatus() == STALL_PURCHASER_IS_PRESENT)
-		&& _game->m_purchasers != nullptr)
-	{
-		_game->m_purchasers->SavingPurchasersForFile(&saveFile);
-	}*/
-
+	PurchasersManager::GetSingleton()->SavingForFile(&saveFile);
 	std::cout << "Purchasers saved !\n";
 
 	// Saving of the Buildings list planned

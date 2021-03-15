@@ -210,6 +210,8 @@ int Storage::GetResourceQuantity(std::string _ressourceName)
 
 		return -1;
 	}
+
+	return -1;
 }
 
 

@@ -18,6 +18,8 @@ Workers::Workers()
 	m_storage = new Storage();
 	m_storage->SetName("Worker");
 
+	std::cout << "Ressources : " << m_storage->GetName() << ' ' << m_storage->GetNumberOfResources() << std::endl;
+
 	m_targetedBuilding = nullptr;
 
 	SetTimeToDeposit(RESET);

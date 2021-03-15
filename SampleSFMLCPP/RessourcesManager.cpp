@@ -2,8 +2,7 @@
 
 
 RessourcesManager::RessourcesManager()
-{
-}
+{ }
 
 RessourcesManager::~RessourcesManager()
 {
@@ -178,6 +177,8 @@ sf::Sprite RessourcesManager::GetResourceSprite(TypesOfRessources _ressourceName
 	{
 		return m_vectorRessources[(int)_ressourceName]->GetSprite();
 	}
+
+	return sf::Sprite();
 }
 
 sf::Sprite RessourcesManager::GetResourceSprite(std::string _ressourceName)

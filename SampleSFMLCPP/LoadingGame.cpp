@@ -52,22 +52,18 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	int money(RESET);
 	saveFile.read((char *) &money, sizeof(int));
 	_game->m_money.SetInitialQuantity(money);
-
 	std::cout << "Money loaded !\n";
 
 	// Loading of the time elapsed
 	_game->m_time->LoadingTimeFromFile(&saveFile);
-
 	std::cout << "Time loaded !\n";
 
 	// Loading of the workers data
 	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map->GetMap());
-
 	std::cout << "Workers loaded !\n";
 
 	// Loading of the vines data
 	_game->m_builds.m_vines.LoadingVinesListFromFile(&saveFile);
-
 	std::cout << "Vines loaded !\n";
 	
 	// Saving of the specific buildings data
@@ -81,33 +77,15 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	std::cout << "Wine Storehouses loaded !\n";
 
 	// Saving of the storehouses data
-	_game->m_builds.m_storehouse.LoadingVinesListFromFile(&saveFile);
-
+	_game->m_builds.m_storehouse.LoadingFromFile(&saveFile);
 	std::cout << "Storehouses loaded !\n";
 
 	// Loading of the stall data
 	_game->m_builds.m_stall->LoadingStallFromFile(&saveFile);
-
 	std::cout << "Stall loaded !\n";
 
-	/*if ((_game->m_builds.m_stall->GetStatus() == STALL_SEND_REQUEST_PURCHASER
-		|| _game->m_builds.m_stall->GetStatus() == STALL_PURCHASER_IS_PRESENT))
-	{
-		if (_game->m_purchasers != nullptr)
-		{
-			delete _game->m_purchasers;
-			_game->m_purchasers = nullptr;
-
-			std::cout << "Suppression of this actual merchant\n\n";
-		}
-
-		_game->m_builds.m_stall->SetIsNewMerchantNeeded(false);
-
-		_game->m_purchasers = new Purchasers;
-		_game->m_purchasers->LoadingPurchasersFromFile(&saveFile);
-
-		std::cout << "Purchaser loaded !\n";
-	}*/
+	PurchasersManager::GetSingleton()->LoadingFromFile(&saveFile, _game->m_builds.m_stall);
+	std::cout << "Purchasers loaded !\n";
 
 
 	// Loading of the Buildings list planned

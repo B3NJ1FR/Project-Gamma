@@ -105,15 +105,44 @@ void PurchasersManager::RemoveCurrentPurchaser()
 	}
 
 	m_isMerchantSpawned = false;
+	m_currentTimeBeforeSpawn = 0.0f;
 }
 
 
 void PurchasersManager::SavingForFile(std::ofstream* _file)
 {
+	// Saving the current purchaser
+	Purchasers* purchaser = m_currentPurchaser;
+	_file->write((char*)&purchaser, sizeof(Purchasers*));
 
+	if (purchaser != nullptr)
+	{
+		purchaser->SavingForFile(_file);
+	}
+
+	_file->write((char*)&m_minRangeTimeForSpawn, sizeof(int));
+	_file->write((char*)&m_maxRangeTimeForSpawn, sizeof(int));
+	_file->write((char*)&m_currentTimeBeforeSpawn, sizeof(float));
+
+	_file->write((char*)&m_isMerchantSpawned, sizeof(bool));
 }
 
-void PurchasersManager::LoadingFromFile(std::ifstream* _file)
+void PurchasersManager::LoadingFromFile(std::ifstream* _file, Stalls* _stall)
 {
+	// Loading the current purchaser
+	Purchasers* purchaser = nullptr;
+	_file->read((char*)&purchaser, sizeof(Purchasers*));
 
+	if (purchaser != nullptr)
+	{
+		m_currentPurchaser = new Purchasers();
+		m_currentPurchaser->Initialisation(_stall);
+		m_currentPurchaser->LoadingFromFile(_file);
+	}
+
+	_file->read((char*)&m_minRangeTimeForSpawn, sizeof(int));
+	_file->read((char*)&m_maxRangeTimeForSpawn, sizeof(int));
+	_file->read((char*)&m_currentTimeBeforeSpawn, sizeof(float));
+
+	_file->read((char*)&m_isMerchantSpawned, sizeof(bool));
 }

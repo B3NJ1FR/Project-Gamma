@@ -27,8 +27,8 @@ public:
 	// Setters
 
 	// Getters
-	Purchasers* GetPurchasers() const { return m_currentPurchaser; }
-	bool IsPurchaserExist() const { return (m_currentPurchaser != nullptr) ? true : false; }
+	inline Purchasers* GetPurchasers() const { return m_currentPurchaser; }
+	inline bool IsPurchaserExist() const { return (m_currentPurchaser != nullptr) ? true : false; }
 
 	// Methods
 	void Update(BuildingManagement* _builds, Stalls* _stall);
@@ -37,6 +37,6 @@ public:
 
 	// Save
 	void SavingForFile(std::ofstream* _file);
-	void LoadingFromFile(std::ifstream* _file);
+	void LoadingFromFile(std::ifstream* _file, Stalls* _stall);
 };
 

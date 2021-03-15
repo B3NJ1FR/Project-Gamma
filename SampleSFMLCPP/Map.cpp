@@ -3,7 +3,6 @@
 
 Map::Map()
 {
-	std::cout << "\n\n\n\n\n\n\n\n\n\n\n\nHEERE\n\n\n\n\n\n\n\n\n\n\n\n";
 	m_map = nullptr;
 	m_numberLayers = 0;
 	m_numberLines = 0;

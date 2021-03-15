@@ -86,6 +86,6 @@ public:
 	void ClearStorage();
 
 	// Save
-	void SavingPurchasersForFile(std::ofstream *_file);
-	void LoadingPurchasersFromFile(std::ifstream *_file);
+	void SavingForFile(std::ofstream *_file);
+	void LoadingFromFile(std::ifstream *_file);
 };
