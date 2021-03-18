@@ -23,12 +23,27 @@ void Game::DisplayDecor()
 									sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
 									sf::Vector2f cameraIso = WorldToScreen(m_camera.x, m_camera.y);
 
-									m_spriteArray[m_map->GetMap()[z][y][x]].setScale(m_scale);
+									// Z - 1 = BUILDING_ID Layer
+									// If we find something else than 0, that mean there is there a building,
+									// So we will search our sprite into the buildings sprites array
+									unsigned short buildingIDLayer = m_map->GetMap()[z - 1][y][x];
+									if (buildingIDLayer != 0 && buildingIDLayer != 65535)
+									{
+										m_builds.GetSpriteFromBuildID(buildingIDLayer, m_map->GetMap()[z][y][x]).setScale(m_scale);
+										BlitSprite(m_builds.GetSpriteFromBuildID(buildingIDLayer, m_map->GetMap()[z][y][x]),
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+											0, *m_window);
+									}
+									else if (buildingIDLayer == 0 || buildingIDLayer == 65535)
+									{
+										m_spriteArray[m_map->GetMap()[z][y][x]].setScale(m_scale);
 
-									BlitSprite(m_spriteArray[m_map->GetMap()[z][y][x]],
-										(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
-										(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
-										0, *m_window);
+										BlitSprite(m_spriteArray[m_map->GetMap()[z][y][x]],
+											(m_screenReso->x / 2) + (tileCoordinates.x + cameraIso.x) / (1 - m_camera.z),
+											(m_screenReso->y / 2) + (tileCoordinates.y + cameraIso.y + TILE_HEIGHT) / (1 - m_camera.z),
+											0, *m_window);
+									}
 								}
 							}
 							else if (m_actualGameState == BUILD_MODE)

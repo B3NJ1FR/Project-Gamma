@@ -328,6 +328,10 @@ void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum
 					if (((SpecificsBuildings::sBuildingData *)currentElement->data)->constructionState == BUILT
 						&& ((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt == false)
 					{
+						Map* pMap = Map::GetSingleton();
+						sf::Vector2i mapPosition = (sf::Vector2i)((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition;
+						unsigned short buildingSpriteID = m_building->GetSize().x * m_building->GetSize().y - 1;
+
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt = true;
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = false;
 
@@ -335,8 +339,28 @@ void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum
 						{
 						case BUILDING_GRAPE_STOMPING_VATS:
 
-							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 4;
+							/*_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
+								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 4;*/
+
+							std::cout << "Size : " << mapPosition.x << ' ' << mapPosition.y << std::endl;
+							for (int y = 0; y < m_building->GetSize().y; y++)
+							{
+								for (int x = 0; x < m_building->GetSize().x; x++)
+								{
+									if (pMap->IsCoordinatesIsInMap(mapPosition))
+									{
+										// Set the collisions and buildings id for the building
+										pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][mapPosition.y - y][mapPosition.x - x] = buildingSpriteID;
+										std::cout << buildingSpriteID << ' ' << mapPosition.x - x << ' ' << mapPosition.y - y << std::endl;
+									}
+									else
+									{
+										std::cout << "\n\n\n\tError during building placement\n\n\n";
+									}
+
+									--buildingSpriteID;
+								}
+							}
 							break;
 						case BUILDING_WINE_PRESS:
 							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]

@@ -16,7 +16,7 @@ private:
 	sf::Sprite m_sellingWindowScrollLine;
 	sf::Text m_sellingWindowProvenance;
 	sf::Text m_sellingWindowPrice[3];
-	sf::Text m_sellingWindowRessourceQuantity[4];
+	sf::Text m_sellingWindowRessourceQuantity[6];
 
 	int m_sellingWindowScrollButtonPosition;
 	int m_sellingWindowScrollButtonMax;

@@ -1,5 +1,6 @@
 #include "SellingWindow.h"
 #include "GameDefinitions.h"
+#include "RessourcesManager.h"
 
 
 SellingWindow::SellingWindow(sf::Font *_font, const sf::Vector2i &_screenResolution)
@@ -21,8 +22,10 @@ SellingWindow::SellingWindow(sf::Font *_font, const sf::Vector2i &_screenResolut
 
 	LoadTextString(&m_sellingWindowRessourceQuantity[0], "", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2 - 300, _screenResolution.y / 2 - 20));
 	LoadTextString(&m_sellingWindowRessourceQuantity[1], "", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2 + 270, _screenResolution.y / 2 - 20));
-	LoadTextString(&m_sellingWindowRessourceQuantity[2], "Quantity to sell :", _font, 30, sf::Color::Black, sf::Vector2f(1920 / 2 - 250, _screenResolution.y / 2 + 20));
-	LoadTextString(&m_sellingWindowRessourceQuantity[3], "", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2, _screenResolution.y / 2 + 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[2], "Quantity to sell :", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2 - 250, _screenResolution.y / 2 + 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[3], "", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2 - 10, _screenResolution.y / 2 + 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[4], "/", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2 + 30, _screenResolution.y / 2 + 20));
+	LoadTextString(&m_sellingWindowRessourceQuantity[5], "", _font, 30, sf::Color::Black, sf::Vector2f(_screenResolution.x / 2 + 50, _screenResolution.y / 2 + 20));
 
 
 	m_sellingWindowScrollButtonPosition = (int)((_screenResolution.x / 2) - (m_sellingWindowScrollLine.getGlobalBounds().width / 2));
@@ -110,20 +113,21 @@ void SellingWindow::UpdateSellingWindowTexts(Purchasers *_purchasers)
 	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[0], _purchasers->GetUnitQuantityRessourceScope().x);
 	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[1], _purchasers->GetUnitQuantityRessourceScope().y);
 	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[3], m_quantityConvertedToSell);
+	UpdateDynamicsTexts(&m_sellingWindowRessourceQuantity[5], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(AMPHORA_OF_WINE)));
 }
 
 void SellingWindow::DisplaySellingWindow(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
 {
 	// Display of the background
-	BlitSprite(m_sellingWindowBackground, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
+	BlitSprite(m_sellingWindowBackground, (float)(_screenResolution.x / 2), (float)(_screenResolution.y / 2), 0, _window);
 	
 	// Display of the accept and reject buttons
-	BlitSprite(m_sellingWindowAcceptButton, _screenResolution.x / 2 + 200, _screenResolution.y / 2 + 125, 0, _window);
-	BlitSprite(m_sellingWindowRejectButton, _screenResolution.x / 2 - 200, _screenResolution.y / 2 + 125, 0, _window);
+	BlitSprite(m_sellingWindowAcceptButton, (float)(_screenResolution.x / 2 + 200), (float)(_screenResolution.y / 2 + 125), 0, _window);
+	BlitSprite(m_sellingWindowRejectButton, (float)(_screenResolution.x / 2 - 200), (float)(_screenResolution.y / 2 + 125), 0, _window);
 
 	// Display of the scroll's cursor and line
-	BlitSprite(m_sellingWindowScrollLine, _screenResolution.x / 2, _screenResolution.y / 2, 0, _window);
-	BlitSprite(m_sellingWindowScrollButton, m_sellingWindowScrollButtonPosition, _screenResolution.y / 2, 0, _window);
+	BlitSprite(m_sellingWindowScrollLine, (float)(_screenResolution.x / 2), (float)(_screenResolution.y / 2), 0, _window);
+	BlitSprite(m_sellingWindowScrollButton, (float)(m_sellingWindowScrollButtonPosition), (float)(_screenResolution.y / 2), 0, _window);
 	
 
 	// Display of the merchant provenance
@@ -140,6 +144,8 @@ void SellingWindow::DisplaySellingWindow(sf::RenderWindow &_window, const sf::Ve
 	BlitString(m_sellingWindowRessourceQuantity[1], _window);
 	BlitString(m_sellingWindowRessourceQuantity[2], _window);
 	BlitString(m_sellingWindowRessourceQuantity[3], _window);
+	BlitString(m_sellingWindowRessourceQuantity[4], _window);
+	BlitString(m_sellingWindowRessourceQuantity[5], _window);
 }
 
 

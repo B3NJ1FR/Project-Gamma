@@ -12,6 +12,7 @@ BuildingManagement::BuildingManagement()
 	m_buildingsNameTexts = nullptr;
 
 	InitBuildingsFromFile();
+	InitBuildingsSpritesFromFile();
 
 	if (m_buildings != nullptr)
 	{
@@ -212,10 +213,17 @@ void BuildingManagement::InitBuildingsFromFile()
 
 						std::cout << "\tExit :\t\t" << temporaryExit.x << " " << temporaryExit.y << std::endl;
 					}
-					else if (temporaryString == "SPRITE")
+					else if (temporaryString == "SPRITES")
 					{
 						buildingsFile >> temporaryString;
-						m_buildings[buildingID].SetSprite(temporaryString);
+						if (m_vBuildingsSpritesFiles == nullptr)
+						{
+							m_vBuildingsSpritesFiles = new std::vector<std::string>();
+						}
+
+						m_vBuildingsSpritesFiles->push_back(temporaryString);
+
+						//m_buildings[buildingID].SetSprite(temporaryString);
 					}
 					else if (temporaryString == "ICON")
 					{
@@ -355,6 +363,75 @@ void BuildingManagement::InitBuildingsFromFile()
 	std::cout << "\n\n\tBuildings Initialisation succeed !\n\n\n";
 
 	buildingsFile.close();
+}
+
+
+void BuildingManagement::InitBuildingsSpritesFromFile()
+{
+	if (m_vBuildingsSpritesFiles != nullptr)
+	{
+		for (auto currentFileName : *m_vBuildingsSpritesFiles)
+		{
+			sf::Vector2i buildingSize = sf::Vector2i(0, 0);
+			std::vector<sf::Sprite> spriteVector;
+
+			std::ifstream spritesFile(currentFileName, std::ios::in);
+
+			std::string temporaryString;
+			temporaryString.erase();
+			int temporaryNumber = RESET;
+
+			if (!spritesFile.is_open())
+			{
+				std::cout << "Error accessing Sprites.data file" << std::endl;
+
+				exit(EXIT_FAILURE);
+			}
+
+			while (!spritesFile.eof())
+			{
+				spritesFile >> temporaryString;
+
+				if (temporaryString == "SPRITE")
+				{
+					sf::Sprite newSprite;
+					
+					spritesFile >> temporaryNumber;
+					spritesFile >> temporaryString;
+
+					if (temporaryString != "VOID")
+					{
+						newSprite = LoadSprite(temporaryString, temporaryNumber);
+						std::cout << temporaryNumber << std::endl;
+					}
+
+					spriteVector.push_back(newSprite);
+				}
+			}
+
+			spritesFile.close();
+
+			std::cout << currentFileName << std::endl;
+			m_vBuildingsSprites.push_back(spriteVector);
+		}
+
+		m_vBuildingsSpritesFiles->clear();
+		delete m_vBuildingsSpritesFiles;
+		m_vBuildingsSpritesFiles = nullptr;
+	}
+}
+
+sf::Sprite BuildingManagement::GetSpriteFromBuildID(int _buildingID, int _index) const
+{ 
+	if (m_vBuildingsSprites.size() != 0 && _buildingID < m_vBuildingsSprites.size())
+	{
+		if (m_vBuildingsSprites[_buildingID].size() != 0 && _index < m_vBuildingsSprites[_buildingID].size())
+		{
+			return m_vBuildingsSprites[_buildingID][_index];
+		}
+	}
+
+	return sf::Sprite();
 }
 
 void BuildingManagement::UpdateBuildingManagement(Map* _map)

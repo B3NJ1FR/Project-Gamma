@@ -87,6 +87,24 @@ sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition = 0
 
 		temporarySprite.setOrigin(origin);
 	}
+	else if (_originPosition == 9)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = TILE_WIDTH / 2;
+		origin.y = origin.y;
+
+		temporarySprite.setOrigin(origin);
+	}
+	else if (_originPosition == 10)
+	{
+		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
+
+		origin.x = -TILE_WIDTH / 2;
+		origin.y = origin.y - TILE_WIDTH / 4;
+
+		temporarySprite.setOrigin(origin);
+	}
 
 	return temporarySprite;
 }
