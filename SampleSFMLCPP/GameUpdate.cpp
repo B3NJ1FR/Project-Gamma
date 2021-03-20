@@ -87,17 +87,17 @@ void GameUpdate(struct Game *_game)
 			_game->m_builds.m_vines.UpdateVineProduction();
 
 			_game->m_builds.m_stompingVats.UpdateBuildingConstruction();
-			_game->m_builds.m_stompingVats.UpdateBuildingSprite(_game->m_map->GetMap(), BUILDING_GRAPE_STOMPING_VATS);
+			_game->m_builds.m_stompingVats.UpdateBuildingSprite();
 			_game->m_builds.m_stompingVats.UpdateInternalCycles();
 			_game->m_builds.m_stompingVats.UpdateBuildingProduction();
 
 			_game->m_builds.m_winePress.UpdateBuildingConstruction();
-			_game->m_builds.m_winePress.UpdateBuildingSprite(_game->m_map->GetMap(), BUILDING_WINE_PRESS);
+			_game->m_builds.m_winePress.UpdateBuildingSprite();
 			_game->m_builds.m_winePress.UpdateInternalCycles();
 			_game->m_builds.m_winePress.UpdateBuildingProduction();
 
 			_game->m_builds.m_wineStorehouse.UpdateBuildingConstruction();
-			_game->m_builds.m_wineStorehouse.UpdateBuildingSprite(_game->m_map->GetMap(), BUILDING_WINE_STOREHOUSE);
+			_game->m_builds.m_wineStorehouse.UpdateBuildingSprite();
 			_game->m_builds.m_wineStorehouse.UpdateInternalCycles();
 			_game->m_builds.m_wineStorehouse.UpdateBuildingProduction();
 

@@ -100,8 +100,8 @@ sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition = 0
 	{
 		sf::Vector2f origin = { (float)temporaryTexture->getSize().x, (float)temporaryTexture->getSize().y };
 
-		origin.x = -TILE_WIDTH / 2;
-		origin.y = origin.y - TILE_WIDTH / 4;
+		origin.x = 0;
+		origin.y = origin.y ;
 
 		temporarySprite.setOrigin(origin);
 	}

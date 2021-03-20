@@ -15,11 +15,11 @@ enum TypeOfBuilding
 	BUILDING_DORMITORY, // NEXT UPDATE
 };
 
+class DoubleVectorsOfSpritesID : public std::vector<std::vector<std::vector<int>>> {};
 
 class Buildings
 {
 protected :
-
 	sf::Vector2i m_size;
 	sf::Vector2i m_enterPosition;
 	sf::Vector2i m_exitPosition;
@@ -49,6 +49,8 @@ protected :
 
 	int m_numberOfWorkersNeededToWorks;
 
+	DoubleVectorsOfSpritesID m_vBuildingsSpritesID;
+
 public :
 
 	// Constructor & Destructor
@@ -74,6 +76,7 @@ public :
 	void SetRessourceIDProduced(int *_resssourceID, const unsigned char &_numberRessources = 1);
 	void SetRessourceQuantityProduced(int *_resssourceQuantity = 0);
 	inline void SetNumberWorkersNeeded(int _numberOfWorkers = 1) { m_numberOfWorkersNeededToWorks = _numberOfWorkers; };
+	inline void SetVecBuildingsSpritesID(DoubleVectorsOfSpritesID _vBuildingsSpritesID) { m_vBuildingsSpritesID = _vBuildingsSpritesID; };
 
 	inline std::string GetName() const { return m_name; };
 	inline std::string GetDescription() const { return m_description; };
@@ -88,6 +91,7 @@ public :
 	inline unsigned int GetRessourceNumberNeeded() const { return m_numberRessourceNeeded; };
 	inline unsigned int GetRessourceNumberProduced() const { return m_numberRessourceProduced; };
 	inline int GetNumberWorkersNeeded() const { return m_numberOfWorkersNeededToWorks; };
+	inline DoubleVectorsOfSpritesID GetVecBuildingsSpritesID() { return m_vBuildingsSpritesID; };
 	
 	int GetRessourceIDNeeded(const unsigned char &_value = 1) const;
 	int GetRessourceQuantityNeeded(const unsigned char &_value = 1) const;

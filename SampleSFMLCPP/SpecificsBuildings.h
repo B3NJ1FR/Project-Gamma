@@ -65,7 +65,7 @@ public:
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction();
 	void UpdateInternalCycles();
-	void UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building);
+	void UpdateBuildingSprite();
 	void UpdateBuildingProduction();
 
 	bool GetWorkerIsThere(const sf::Vector2f &_mapPosition);

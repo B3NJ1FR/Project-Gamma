@@ -9,6 +9,16 @@
 #include "Map.h"
 
 
+enum class FloorsInBuildingSprites
+{
+	FIBS_GROUND,
+	FIBS_STUDS,
+	FIBS_MAIN_FLOOR,
+	
+	FIBS_ENUM_SIZE,
+};
+
+
 class DoubleVectorsOfSprites : public std::vector<std::vector<sf::Sprite>> {};
 
 class BuildingManagement

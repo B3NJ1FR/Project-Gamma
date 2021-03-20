@@ -315,7 +315,7 @@ void SpecificsBuildings::UpdateBuildingConstruction()
 }
 
 
-void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum TypeOfBuilding &_building)
+void SpecificsBuildings::UpdateBuildingSprite()
 {
 	if (m_list != nullptr)
 	{
@@ -330,48 +330,27 @@ void SpecificsBuildings::UpdateBuildingSprite(unsigned short ***_map, const enum
 					{
 						Map* pMap = Map::GetSingleton();
 						sf::Vector2i mapPosition = (sf::Vector2i)((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition;
-						unsigned short buildingSpriteID = m_building->GetSize().x * m_building->GetSize().y - 1;
+						unsigned short buildingSpriteID = RESET;
 
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->hasBeenBuilt = true;
 						((SpecificsBuildings::sBuildingData *)currentElement->data)->isChangingSprite = false;
 
-						switch (_building)
+						for (int y = 0; y < m_building->GetSize().y; y++)
 						{
-						case BUILDING_GRAPE_STOMPING_VATS:
-
-							/*_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 4;*/
-
-							std::cout << "Size : " << mapPosition.x << ' ' << mapPosition.y << std::endl;
-							for (int y = 0; y < m_building->GetSize().y; y++)
+							for (int x = 0; x < m_building->GetSize().x; x++)
 							{
-								for (int x = 0; x < m_building->GetSize().x; x++)
+								if (pMap->IsCoordinatesIsInMap(mapPosition))
 								{
-									if (pMap->IsCoordinatesIsInMap(mapPosition))
-									{
-										// Set the collisions and buildings id for the building
-										pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][mapPosition.y - y][mapPosition.x - x] = buildingSpriteID;
-										std::cout << buildingSpriteID << ' ' << mapPosition.x - x << ' ' << mapPosition.y - y << std::endl;
-									}
-									else
-									{
-										std::cout << "\n\n\n\tError during building placement\n\n\n";
-									}
-
-									--buildingSpriteID;
+									buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
+									
+									// Set the correct sprite id for this building
+									pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][mapPosition.y - y][mapPosition.x - x] = buildingSpriteID;
+								}
+								else
+								{
+									std::cout << "\n\n\n\tError during building placement\n\n\n";
 								}
 							}
-							break;
-						case BUILDING_WINE_PRESS:
-							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 17;
-							break;
-						case BUILDING_WINE_STOREHOUSE:
-							_map[FIRST_FLOOR + SPRITE_ID][(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.y]
-								[(int)((SpecificsBuildings::sBuildingData *)currentElement->data)->mapPosition.x] = 16;
-							break;
-						default:
-							break;
 						}
 					}
 				}

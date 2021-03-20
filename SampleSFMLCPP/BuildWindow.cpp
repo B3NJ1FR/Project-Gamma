@@ -145,81 +145,38 @@ void BuildWindow::InputBuildingModeOldScrollUI(const float &_scrollDelta, const 
 	}
 }
 
-void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, enum Floors _floorFocused, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i& _mapPosition)
+void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i& _mapPosition)
 {
-	for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
+	sf::Vector2i buildingSize = _builds->m_buildings[_typeOfBuilding].GetSize();
+
+	for (int y = 0; y < buildingSize.y; y++)
 	{
-		for (int x = 0; x < _builds->m_buildings[_typeOfBuilding].GetSize().x; x++)
+		for (int x = 0; x < buildingSize.y; x++)
 		{
-			if (_map->IsCoordinatesIsInMap(_mapPosition))
+			if (_map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y)))
 			{
-				// Set the collisions and buildings id for the building
-				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_collisionID;
-				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
-				
-				// Set the building sprite
-				switch (_typeOfBuilding)
+				if (x == 0 && y == 0)
 				{
-				case BUILDING_VINES:
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 32;
-					break;
-				case BUILDING_GRAPE_STOMPING_VATS:
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 26;
-					break;
-				case BUILDING_WINE_PRESS:
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 30;
-					break;
-				case BUILDING_WINE_STOREHOUSE:
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 31;
-					break;
-				case BUILDING_STOREHOUSE:
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 29;
-					break;
-				case BUILDING_STALL:
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 27;
-					break;
-				/*case BUILDING_VILLA:
-					break;
-				case BUILDING_DORMITORY:
-					break;*/
-				default:
-					break;
+					std::cout << "\n\nEntree dans build on map\n\n";
+					// Set the collisions and buildings id for the building
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_STUDS][buildingSize.y - 1][buildingSize.x - 1];
+
+					// Set the collisions and buildings id for the ground
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][buildingSize.y - 1][buildingSize.x - 1];
 				}
-				
+				else
+				{
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_STUDS][buildingSize.y - 1 - y][buildingSize.x - 1 - x];
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][buildingSize.y - 1 - y][buildingSize.x - 1 - x];
+				}
+
+				// Set the collisions and buildings id for the building
+				_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_collisionID;
+				_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
 
 				// Set the collisions and buildings id for the ground
 				_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_collisionID;
 				_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
-
-				// Set the ground sprite adapted to the building selected
-				switch (_typeOfBuilding)
-				{
-				case BUILDING_VINES:
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 7;
-					break;
-				case BUILDING_GRAPE_STOMPING_VATS:
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 25;
-					break;
-				case BUILDING_WINE_PRESS:
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 23;
-					break;
-				case BUILDING_WINE_STOREHOUSE:
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 24;
-					break;
-				case BUILDING_STOREHOUSE:
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 22;
-					break;
-				case BUILDING_STALL:
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 20;
-					break;
-					/*case BUILDING_VILLA:
-						break;
-					case BUILDING_DORMITORY:
-						break;*/
-				default:
-					break;
-				}
-
 			}
 			else
 			{
@@ -236,25 +193,32 @@ void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBu
 	{
 		for (int x = 0; x < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().x; x++)
 		{
-			if (x == 0 && y == 0)
+			if (_game->m_map->IsCoordinatesIsInMap(_mapPosition))
 			{
-				// Set the collisions and buildings id for the building
-				_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
-				_game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
-				_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = _game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x];
+				if (x == 0 && y == 0)
+				{
+					// Set the collisions and buildings id for the building
+					_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 2;
+					// Set the collisions and buildings id for the ground
+					_game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 1;
+				}
+				else
+				{
+					// Set the collisions and buildings id for the building
+					_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 0;
 
+					// Set the collisions and buildings id for the ground
+					_game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 0;
+				}
+
+				// Set the collisions and buildings id for the building
+				_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)BUILDING_GHOST;
+				_game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
 
 				// Set the collisions and buildings id for the ground
-				_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y][_mapPosition.x] = BUILDING_GHOST;
-				_game->m_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_typeOfBuilding;
-			}
-			else if (_game->m_map->IsCoordinatesIsInMap(_mapPosition))
-			{
-				// Set the collisions and buildings id for the building
-				_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
-				
-				// Set the collisions and buildings id for the ground
-				_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_GHOST;
+				_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)BUILDING_GHOST;
+				_game->m_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
+
 			}
 			else
 			{

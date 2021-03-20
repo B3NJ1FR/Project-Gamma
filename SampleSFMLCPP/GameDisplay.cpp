@@ -17,8 +17,8 @@ void Game::DisplayDecor()
 						{
 							if (m_actualGameState != BUILD_MODE)
 							{
-								if (!(z == FIRST_FLOOR + SPRITE_ID
-									&& m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][y][x] == BUILDING_GHOST))
+								if (!((z == FIRST_FLOOR + SPRITE_ID || z == ZERO_FLOOR + SPRITE_ID)
+									&& m_map->GetMap()[z - 2][y][x] == BUILDING_GHOST))
 								{
 									sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
 									sf::Vector2f cameraIso = WorldToScreen(m_camera.x, m_camera.y);
@@ -48,6 +48,7 @@ void Game::DisplayDecor()
 							}
 							else if (m_actualGameState == BUILD_MODE)
 							{
+								// A MODIFIER / REVOIR
 								if (z == ZERO_FLOOR + SPRITE_ID)
 								{
 									if (m_map->GetMap()[z - 2][y][x] == BUILDING_GHOST)

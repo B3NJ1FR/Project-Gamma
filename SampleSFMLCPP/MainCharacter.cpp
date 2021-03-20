@@ -1125,7 +1125,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					}
 
 					// Modifier couche pour ID
-					_game->m_buildWindow.SetBuildingOnMap(_game->m_map, &_game->m_builds, FIRST_FLOOR, _game->m_buildingsListPlanned->GetBuildingID(), COLLISION, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
+					_game->m_buildWindow.SetBuildingOnMap(_game->m_map, &_game->m_builds, _game->m_buildingsListPlanned->GetBuildingID(), COLLISION, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
 
 
 

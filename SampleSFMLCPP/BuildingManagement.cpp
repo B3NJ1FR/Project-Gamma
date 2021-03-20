@@ -370,9 +370,11 @@ void BuildingManagement::InitBuildingsSpritesFromFile()
 {
 	if (m_vBuildingsSpritesFiles != nullptr)
 	{
+		int currentBuildingID = 0;
+
 		for (auto currentFileName : *m_vBuildingsSpritesFiles)
 		{
-			sf::Vector2i buildingSize = sf::Vector2i(0, 0);
+			sf::Vector2i buildingSize = m_buildings[currentBuildingID].GetSize();
 			std::vector<sf::Sprite> spriteVector;
 
 			std::ifstream spritesFile(currentFileName, std::ios::in);
@@ -392,6 +394,34 @@ void BuildingManagement::InitBuildingsSpritesFromFile()
 			{
 				spritesFile >> temporaryString;
 
+				if (temporaryString == "ID")
+				{
+					DoubleVectorsOfSpritesID spritesIDVector;
+
+					for (int z = 0; z < (int)FloorsInBuildingSprites::FIBS_ENUM_SIZE; z++)
+					{
+						std::vector <std::vector<int>> vectorOfIDVector;
+
+						for (int y = 0; y < buildingSize.y; y++)
+						{
+							std::vector<int> idVector;
+							for (int x = 0; x < buildingSize.x; x++)
+							{
+								spritesFile >> temporaryString;
+
+								if (temporaryString == "END_ID") break;
+
+								idVector.push_back(std::stoi(temporaryString));
+							}
+							vectorOfIDVector.push_back(idVector);
+						}
+
+						spritesIDVector.push_back(vectorOfIDVector);
+					}
+
+					m_buildings[currentBuildingID].SetVecBuildingsSpritesID(spritesIDVector);
+				}
+
 				if (temporaryString == "SPRITE")
 				{
 					sf::Sprite newSprite;
@@ -402,7 +432,6 @@ void BuildingManagement::InitBuildingsSpritesFromFile()
 					if (temporaryString != "VOID")
 					{
 						newSprite = LoadSprite(temporaryString, temporaryNumber);
-						std::cout << temporaryNumber << std::endl;
 					}
 
 					spriteVector.push_back(newSprite);
@@ -413,11 +442,14 @@ void BuildingManagement::InitBuildingsSpritesFromFile()
 
 			std::cout << currentFileName << std::endl;
 			m_vBuildingsSprites.push_back(spriteVector);
+
+			currentBuildingID += 1;
 		}
 
 		m_vBuildingsSpritesFiles->clear();
 		delete m_vBuildingsSpritesFiles;
 		m_vBuildingsSpritesFiles = nullptr;
+
 	}
 }
 
@@ -425,9 +457,9 @@ sf::Sprite BuildingManagement::GetSpriteFromBuildID(int _buildingID, int _index)
 { 
 	if (m_vBuildingsSprites.size() != 0 && _buildingID < m_vBuildingsSprites.size())
 	{
-		if (m_vBuildingsSprites[_buildingID].size() != 0 && _index < m_vBuildingsSprites[_buildingID].size())
+		if (m_vBuildingsSprites[_buildingID].size() != 0 && _index - 1 >= 0 && _index - 1 < m_vBuildingsSprites[_buildingID].size())
 		{
-			return m_vBuildingsSprites[_buildingID][_index];
+			return m_vBuildingsSprites[_buildingID][_index - 1];
 		}
 	}
 
