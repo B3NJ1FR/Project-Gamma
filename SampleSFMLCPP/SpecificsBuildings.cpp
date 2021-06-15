@@ -342,9 +342,14 @@ void SpecificsBuildings::UpdateBuildingSprite()
 								if (pMap->IsCoordinatesIsInMap(mapPosition))
 								{
 									buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
-									
-									// Set the correct sprite id for this building
-									pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][mapPosition.y - y][mapPosition.x - x] = buildingSpriteID;
+
+									if (buildingSpriteID >= 0)
+									{
+										// Set the correct sprite id for this building
+										pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][mapPosition.y - y][mapPosition.x - x] = buildingSpriteID;
+
+										pMap->GetMap()[FIRST_FLOOR + COLLISIONS_ID][mapPosition.y - y][mapPosition.x - x] = COLLISION;
+									}
 								}
 								else
 								{

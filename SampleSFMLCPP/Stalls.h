@@ -93,7 +93,7 @@ public:
 
 	void UpdateBuildingConstruction();
 	void UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, Purchasers *_purchasers, Storehouse *_storehouse);
-	void UpdateBuildingSprite(unsigned short ***_map);
+	void UpdateBuildingSprite();
 
 	void ClearStorages();
 

@@ -151,11 +151,13 @@ void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, int _
 
 	for (int y = 0; y < buildingSize.y; y++)
 	{
-		for (int x = 0; x < buildingSize.y; x++)
+		for (int x = 0; x < buildingSize.x; x++)
 		{
 			if (_map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y)))
 			{
-				if (x == 0 && y == 0)
+				if (x == 0 && y == 0 
+					&& _map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x, _mapPosition.y))
+					&& buildingSize.x - 1 >= 0 && buildingSize.y - 1 >= 0)
 				{
 					std::cout << "\n\nEntree dans build on map\n\n";
 					// Set the collisions and buildings id for the building
@@ -163,6 +165,7 @@ void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, int _
 
 					// Set the collisions and buildings id for the ground
 					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][buildingSize.y - 1][buildingSize.x - 1];
+					std::cout << _map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] << "\n";
 				}
 				else
 				{

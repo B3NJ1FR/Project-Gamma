@@ -463,6 +463,7 @@ sf::Sprite BuildingManagement::GetSpriteFromBuildID(int _buildingID, int _index)
 		}
 	}
 
+	//std::cout << _buildingID << " " << _index "\n";
 	return sf::Sprite();
 }
 

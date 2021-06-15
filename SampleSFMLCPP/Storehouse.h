@@ -41,7 +41,7 @@ public:
 	void AddNewBuildingToList(sf::Vector2f _mapPosition);
 	void UpdateBuildingConstruction();
 	void UpdateInternalCycles();
-	void UpdateBuildingSprite(unsigned short ***_map);
+	void UpdateBuildingSprite();
 	//void UpdateBuildingProduction(Ressources *_ressource);
 
 	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;

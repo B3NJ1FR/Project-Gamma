@@ -97,7 +97,7 @@ public:
 	void ReadVineLinkedList();
 	void AddNewVineToList(sf::Vector2f _mapPosition);
 	void UpdateVineLife();
-	void UpdateVineSprite(unsigned short ***_map);
+	void UpdateVineSprite();
 	void UpdateVineProduction();
 
 	bool IsBuildingIsWorking(const sf::Vector2f& _mapPosition) const;

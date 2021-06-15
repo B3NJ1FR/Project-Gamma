@@ -1,5 +1,7 @@
 #include "Storehouse.h"
 #include "TimeManagement.h"
+#include "Map.h"
+#include "BuildingManagement.h"
 
 Storehouse::Storehouse()
 {
@@ -184,7 +186,7 @@ void Storehouse::UpdateBuildingConstruction()
 }
 
 
-void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
+void Storehouse::UpdateBuildingSprite()
 {
 	if (m_list != nullptr)
 	{
@@ -197,11 +199,36 @@ void Storehouse::UpdateBuildingSprite(unsigned short ***_map)
 					if (((Storehouse::sStorehouseData *)currentElement->data)->constructionState == BUILT
 						&& ((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt == false)
 					{
-						((Storehouse::sStorehouseData *)currentElement->data)->hasBeenBuilt = true;
-						((Storehouse::sStorehouseData *)currentElement->data)->isChangingSprite = false;
+						Storehouse::sStorehouseData* currentStorehouseData = ((Storehouse::sStorehouseData*)currentElement->data);
+						currentStorehouseData->hasBeenBuilt = true;
+						currentStorehouseData->isChangingSprite = false;
 
-						_map[3 + 2][(int)((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y]
-							[(int)((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x] = 19;
+						Map* pMap = Map::GetSingleton();
+						sf::Vector2i mapPosition = (sf::Vector2i)currentStorehouseData->mapPosition;
+						unsigned short buildingSpriteID = RESET;
+
+						for (int y = 0; y < m_building->GetSize().y; y++)
+						{
+							for (int x = 0; x < m_building->GetSize().x; x++)
+							{
+								if (pMap->IsCoordinatesIsInMap(mapPosition))
+								{
+									buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
+
+									if (buildingSpriteID >= 0)
+									{
+										// Set the correct sprite id for this building
+										pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][mapPosition.y - y][mapPosition.x - x] = buildingSpriteID;
+
+										pMap->GetMap()[FIRST_FLOOR + COLLISIONS_ID][mapPosition.y - y][mapPosition.x - x] = COLLISION;
+									}
+								}
+								else
+								{
+									std::cout << "\n\n\n\tError during building placement\n\n\n";
+								}
+							}
+						}
 					}
 				}
 			}

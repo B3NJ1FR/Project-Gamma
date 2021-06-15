@@ -543,7 +543,7 @@ void Vines::UpdateVineLife()
 }
 
 
-void Vines::UpdateVineSprite(unsigned short ***_map)
+void Vines::UpdateVineSprite()
 {
 	if (m_list != nullptr)
 	{
@@ -559,69 +559,77 @@ void Vines::UpdateVineSprite(unsigned short ***_map)
 						((Vines::sVines *)currentElement->data)->hasBeenBuilt = true;
 						((Vines::sVines *)currentElement->data)->isChangingSprite = false;
 
-						_map[FIRST_FLOOR + SPRITE_ID][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 3;
+						sf::Vector2i currentMapPosition = (sf::Vector2i)((Vines::sVines*)currentElement->data)->mapPosition;
+
+						// Set the correct sprite id for this building
+						Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 3;
+
+						Map::GetSingleton()->GetMap()[FIRST_FLOOR + COLLISIONS_ID][currentMapPosition.y][currentMapPosition.x] = COLLISION;
 					}
 					else
 					{
+						sf::Vector2i currentMapPosition = (sf::Vector2i)((Vines::sVines*)currentElement->data)->mapPosition;
+
 						switch (((Vines::sVines *)currentElement->data)->generalState)
 						{
 						case PLANTED:
 							break;
+
 						case THREE_YEARS_GROWTHING:
-							_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-								[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 8;
+							Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 4;
 							break;
+
 						case READY_TO_PRODUCE:
 
 							switch (((Vines::sVines *)currentElement->data)->annualState)
 							{
 							case NEED_PRUNE:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 12;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 6;
 								break;
+
 							case PRUNED:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 5;
 								break;
+
 							case NEED_PLOUGHING:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 13;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 7;
 								break;
+
 							case PLOUGHED:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 5;
 								break;
+
 							case NEED_WEEDING:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 14;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 8;
 								break;
+
 							case WEEDED:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 5;
 								break;
+
 							case NEED_CARE:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 15;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 9;
 								break;
+
 							case CARED:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 5;
 								break;
+
 							case NEED_HARVEST:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 10;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 10;
 								break;
+
 							case HARVESTED:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines *)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines *)currentElement->data)->mapPosition.x] = 9;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 5;
 								break;
+
 							case ROTTEN_HARVESTS:
-								_map[FIRST_FLOOR + 2][(int)((Vines::sVines*)currentElement->data)->mapPosition.y]
-									[(int)((Vines::sVines*)currentElement->data)->mapPosition.x] = 9;
+								Map::GetSingleton()->GetMap()[FIRST_FLOOR + SPRITE_ID][currentMapPosition.y][currentMapPosition.x] = 5;
 								break;
+
 							case PUTTING_IN_WINE_STOREHOUSE:
 								break;
+
 							default:
 								break;
 							}

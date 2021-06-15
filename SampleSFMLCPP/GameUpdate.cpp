@@ -17,9 +17,9 @@ void UpdateTexts(struct Game *_game)
 		// Security to avoid an array exit
 		if (_game->m_map->IsCoordinatesIsInMap(_game->m_buildWindow.GetBuildingCheckboxSelected()))
 		{
-			UpdateDynamicsTexts(&_game->m_debbugTexts[7], _game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
-			UpdateDynamicsTexts(&_game->m_debbugTexts[9], _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
-			UpdateDynamicsTexts(&_game->m_debbugTexts[11], _game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
+			UpdateDynamicsTexts(&_game->m_debbugTexts[7], _game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
+			UpdateDynamicsTexts(&_game->m_debbugTexts[9], _game->m_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
+			UpdateDynamicsTexts(&_game->m_debbugTexts[11], _game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_game->m_buildWindow.GetBuildingCheckboxSelected().y][_game->m_buildWindow.GetBuildingCheckboxSelected().x]);
 		}
 	}
 
@@ -83,7 +83,7 @@ void GameUpdate(struct Game *_game)
 			_game->m_builds.UpdateBuildingManagement(_game->m_map);
 
 			_game->m_builds.m_vines.UpdateVineLife();
-			_game->m_builds.m_vines.UpdateVineSprite(_game->m_map->GetMap());
+			_game->m_builds.m_vines.UpdateVineSprite();
 			_game->m_builds.m_vines.UpdateVineProduction();
 
 			_game->m_builds.m_stompingVats.UpdateBuildingConstruction();
@@ -102,11 +102,11 @@ void GameUpdate(struct Game *_game)
 			_game->m_builds.m_wineStorehouse.UpdateBuildingProduction();
 
 			_game->m_builds.m_stall->UpdateBuildingConstruction();
-			_game->m_builds.m_stall->UpdateBuildingSprite(_game->m_map->GetMap());
+			_game->m_builds.m_stall->UpdateBuildingSprite();
 			_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchaserManager->GetPurchasers(), &_game->m_builds.m_storehouse);
 
 			_game->m_builds.m_storehouse.UpdateBuildingConstruction();
-			_game->m_builds.m_storehouse.UpdateBuildingSprite(_game->m_map->GetMap());
+			_game->m_builds.m_storehouse.UpdateBuildingSprite();
 			_game->m_builds.m_storehouse.UpdateInternalCycles();
 			
 			_game->m_purchaserManager->Update(&_game->m_builds, _game->m_builds.m_stall);

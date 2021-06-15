@@ -567,7 +567,7 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 		
 }
 
-void Stalls::UpdateBuildingSprite(unsigned short ***_map)
+void Stalls::UpdateBuildingSprite()
 {
 	if (m_isChangingSprite == true)
 	{
@@ -575,10 +575,27 @@ void Stalls::UpdateBuildingSprite(unsigned short ***_map)
 			&& m_hasBeenBuilt == false
 			&& m_isChangingSprite == true)
 		{
+			Map* pMap = Map::GetSingleton();
+			unsigned short buildingSpriteID = RESET;
+
 			m_hasBeenBuilt = true;
 			m_isChangingSprite = false;
 
-			_map[FIRST_FLOOR + SPRITE_ID][(int)m_mapPosition.y][(int)m_mapPosition.x] = 18;
+			for (int y = 0; y < m_building->GetSize().y; y++)
+			{
+				for (int x = 0; x < m_building->GetSize().x; x++)
+				{
+					buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
+
+					if (buildingSpriteID >= 0)
+					{
+						// Set the correct sprite id for this building
+						pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][(int)m_mapPosition.y - y][(int)m_mapPosition.x - x] = buildingSpriteID;
+
+						pMap->GetMap()[FIRST_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y - y][(int)m_mapPosition.x - x] = COLLISION;
+					}
+				}
+			}
 		}
 	}
 }
