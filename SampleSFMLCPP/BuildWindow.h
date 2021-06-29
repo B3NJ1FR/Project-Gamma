@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "Map.h"
+#include "LinkedList.h"
 #include "BuildingManagement.h"
 
 #define BUILD_WINDOW_HELP_NB_OF_TEXTS 5
@@ -16,7 +17,7 @@ enum BuildWindowTextBuildingHelps
 	BUILD_WINDOW_HELP_MONEY_COST,
 };
 
-class BuildWindow
+class BuildWindow : public LinkedListClass
 {
 private:
 	int m_IDChosenBuilding;
@@ -36,11 +37,24 @@ private:
 	sf::Sprite m_separationLine;
 	float m_scrollBuildingList;
 
+	LinkedListClass::sLinkedList* m_listOfPreviousID = nullptr;
+
+	struct PreviousPositionIDs
+	{
+		sf::Vector2i mapPosition;
+		unsigned short currentFloor;
+
+		unsigned short typeOfBuilding;
+		unsigned short spriteID;
+	};
+	typedef struct PreviousPositionIDs sPreviousPositionIDs;
+
 public:
 	// Constructor & Destructor
 	BuildWindow();
 	~BuildWindow();
 	
+	void InitialisationListOfPreviousID();
 	void InitTextsBuildWindow(sf::Font *_font);
 	void InitSpritesBuildWindow();
 
@@ -71,4 +85,11 @@ public:
 	void InputBuildWindow(struct Game *_game);
 	void UpdateBuildWindow(struct Game *_game);
 	void DisplayBuildWindow(struct Game *_game);
+
+	void SaveFromMapPreviousBuildID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding);
+	void SaveFromMapPreviousSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _spriteID);
+	void LoadOnMapPreviousID();
+
+	void SavingGhostBuildingsForFile(std::ofstream* _file);
+	void LoadingGhostBuildingsFromFile(std::ifstream* _file);
 };

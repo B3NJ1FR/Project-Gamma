@@ -108,7 +108,10 @@ void GameUpdate(struct Game *_game)
 			_game->m_builds.m_storehouse.UpdateBuildingConstruction();
 			_game->m_builds.m_storehouse.UpdateBuildingSprite();
 			_game->m_builds.m_storehouse.UpdateInternalCycles();
-			
+
+			_game->m_builds.m_villa->UpdateBuildingConstruction();
+			_game->m_builds.m_villa->UpdateBuildingSprite();
+
 			_game->m_purchaserManager->Update(&_game->m_builds, _game->m_builds.m_stall);
 		}
 

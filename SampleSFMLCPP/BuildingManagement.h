@@ -6,6 +6,7 @@
 #include "SpecificsBuildings.h"
 #include "Stalls.h"
 #include "Storehouse.h"
+#include "Villa.h"
 #include "Map.h"
 
 
@@ -37,6 +38,7 @@ public :
 	SpecificsBuildings m_wineStorehouse;
 	Stalls* m_stall;
 	Storehouse m_storehouse;
+	Villa* m_villa;
 	sf::Text* m_buildingsNameTexts;
 
 	// Constructor & Destructor

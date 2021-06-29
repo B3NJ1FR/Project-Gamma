@@ -18,6 +18,8 @@ BuildWindow::BuildWindow()
 
 	// Initialisation of the sprites
 	InitSpritesBuildWindow();
+
+	InitialisationListOfPreviousID();
 }
 
 BuildWindow::~BuildWindow()
@@ -42,6 +44,19 @@ BuildWindow::~BuildWindow()
 		//delete m_textBuildingHelps;
 		m_textBuildingHelps = nullptr;
 	}
+
+	if (m_listOfPreviousID != nullptr) FreeLinkedList(m_listOfPreviousID);
+}
+
+
+void BuildWindow::InitialisationListOfPreviousID()
+{
+	std::cout << "List before : " << m_listOfPreviousID << std::endl;
+
+	m_listOfPreviousID = LinkedListInitialisation();
+
+	std::cout << "List " << m_listOfPreviousID << " Size : " << m_listOfPreviousID->size << " Real First : " << m_listOfPreviousID->first << " & Last : " << m_listOfPreviousID->last << std::endl;
+
 }
 
 void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
@@ -155,23 +170,9 @@ void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, int _
 		{
 			if (_map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y)))
 			{
-				if (x == 0 && y == 0 
-					&& _map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x, _mapPosition.y))
-					&& buildingSize.x - 1 >= 0 && buildingSize.y - 1 >= 0)
-				{
-					std::cout << "\n\nEntree dans build on map\n\n";
-					// Set the collisions and buildings id for the building
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_STUDS][buildingSize.y - 1][buildingSize.x - 1];
-
-					// Set the collisions and buildings id for the ground
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][buildingSize.y - 1][buildingSize.x - 1];
-					std::cout << _map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] << "\n";
-				}
-				else
-				{
-					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_STUDS][buildingSize.y - 1 - y][buildingSize.x - 1 - x];
-					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][buildingSize.y - 1 - y][buildingSize.x - 1 - x];
-				}
+				std::cout << "\n\nEntree dans build on map\n\n";
+				_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_STUDS][buildingSize.y - 1 - y][buildingSize.x - 1 - x];
+				_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_builds->m_buildings[_typeOfBuilding].GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][buildingSize.y - 1 - y][buildingSize.x - 1 - x];
 
 				// Set the collisions and buildings id for the building
 				_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_collisionID;
@@ -192,36 +193,33 @@ void BuildWindow::SetBuildingOnMap(Map *_map, BuildingManagement* _builds, int _
 
 void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition)
 {
-	for (int y = 0; y < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().y; y++)
+	Buildings& currentBuild = _game->m_builds.m_buildings[_typeOfBuilding];
+	for (int y = 0; y < currentBuild.GetSize().y; y++)
 	{
-		for (int x = 0; x < _game->m_builds.m_buildings[_typeOfBuilding].GetSize().x; x++)
+		for (int x = 0; x < currentBuild.GetSize().x; x++)
 		{
-			if (_game->m_map->IsCoordinatesIsInMap(_mapPosition))
+			if (_game->m_map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y)))
 			{
-				if (x == 0 && y == 0)
-				{
-					// Set the collisions and buildings id for the building
-					_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 2;
-					// Set the collisions and buildings id for the ground
-					_game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] = 1;
-				}
-				else
-				{
-					// Set the collisions and buildings id for the building
-					_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 0;
+				// Set the collisions and buildings id for the building
+				SaveFromMapPreviousSpriteID(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y), FIRST_FLOOR + SPRITE_ID, _game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x]);
+				unsigned short studsSpriteID = (unsigned short)currentBuild.GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_STUDS][currentBuild.GetSize().y - 1 - y][currentBuild.GetSize().x - 1 - x];
+				_game->m_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = studsSpriteID;
 
-					// Set the collisions and buildings id for the ground
-					_game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 0;
-				}
+				// Set the collisions and buildings id for the ground
+				SaveFromMapPreviousSpriteID(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y), ZERO_FLOOR + SPRITE_ID, _game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x]);
+				unsigned short groundSpriteID = (unsigned short)currentBuild.GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][currentBuild.GetSize().y - 1 - y][currentBuild.GetSize().x - 1 - x];
+				_game->m_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = groundSpriteID;
+
 
 				// Set the collisions and buildings id for the building
+				SaveFromMapPreviousBuildID(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y), FIRST_FLOOR + BUILDING_ID, _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x]);
 				_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)BUILDING_GHOST;
 				_game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
 
 				// Set the collisions and buildings id for the ground
+				SaveFromMapPreviousBuildID(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y), ZERO_FLOOR + BUILDING_ID, _game->m_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x]);
 				_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)BUILDING_GHOST;
 				_game->m_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_typeOfBuilding;
-
 			}
 			else
 			{
@@ -719,4 +717,129 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			BlitString(m_textBuildingCaseOccupied[0], 500, _game->m_screenReso->y - 100, *_game->m_window);
 		}
 	}
+}
+
+
+
+void BuildWindow::SaveFromMapPreviousBuildID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding)
+{
+	LinkedListClass::sElement* newElement = new LinkedListClass::sElement;
+	newElement->data = new sPreviousPositionIDs;
+
+	// Save the position in map
+	((sPreviousPositionIDs*)newElement->data)->mapPosition = _mapPosition;
+	((sPreviousPositionIDs*)newElement->data)->currentFloor = _currentFloor;
+
+	((sPreviousPositionIDs*)newElement->data)->typeOfBuilding = _typeOfBuilding;
+	((sPreviousPositionIDs*)newElement->data)->spriteID = 0;
+
+	newElement->status = ElementStatus::ELEMENT_ACTIVE;
+
+	// Add this element at the end the list
+	if (m_listOfPreviousID == nullptr) m_listOfPreviousID = LinkedListInitialisation();
+	AddElementToLinkedList(m_listOfPreviousID, newElement, -1);
+}
+
+void BuildWindow::SaveFromMapPreviousSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _spriteID)
+{
+	LinkedListClass::sElement* newElement = new LinkedListClass::sElement;
+	newElement->data = new sPreviousPositionIDs;
+
+	// Save the position in map
+	((sPreviousPositionIDs*)newElement->data)->mapPosition = _mapPosition;
+	((sPreviousPositionIDs*)newElement->data)->currentFloor = _currentFloor;
+
+	((sPreviousPositionIDs*)newElement->data)->typeOfBuilding = 0;
+	((sPreviousPositionIDs*)newElement->data)->spriteID = _spriteID;
+
+	newElement->status = ElementStatus::ELEMENT_ACTIVE;
+
+	// Add this element at the end the list
+	if (m_listOfPreviousID == nullptr) m_listOfPreviousID = LinkedListInitialisation();
+	AddElementToLinkedList(m_listOfPreviousID, newElement, -1);
+}
+
+void BuildWindow::LoadOnMapPreviousID()
+{
+	if (m_listOfPreviousID != nullptr)
+	{
+		if (m_listOfPreviousID->first != nullptr)
+		{
+			Map* pMap = Map::GetSingleton();
+
+			for (LinkedListClass::sElement* currentElement = m_listOfPreviousID->first; currentElement != NULL; currentElement = currentElement->next)
+			{
+				sPreviousPositionIDs* pPrevPosID = (sPreviousPositionIDs*)currentElement->data;
+
+				if (pPrevPosID->currentFloor % 3 == BUILDING_ID)
+				{
+					pMap->GetMap()[pPrevPosID->currentFloor][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->typeOfBuilding;
+				}
+				else if (pPrevPosID->currentFloor % 3 == SPRITE_ID)
+				{
+					pMap->GetMap()[pPrevPosID->currentFloor][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->spriteID;
+				}
+
+				currentElement->status = ElementStatus::ELEMENT_DELETION_REQUIRED;
+			}
+		}
+
+		// We clear the list
+		FreeLinkedList(m_listOfPreviousID);
+		m_listOfPreviousID = nullptr;
+	}
+}
+
+
+void BuildWindow::SavingGhostBuildingsForFile(std::ofstream* _file)
+{
+	// Save the number of elements in the list
+	_file->write((char*)&m_listOfPreviousID->size, sizeof(int));
+
+	if (m_listOfPreviousID != nullptr)
+	{
+		if (m_listOfPreviousID->first != nullptr)
+		{
+			LinkedListClass::sElement* currentElement = m_listOfPreviousID->first;
+
+			for (currentElement = m_listOfPreviousID->first; currentElement != nullptr; currentElement = currentElement->next)
+			{
+				_file->write((char*)(sPreviousPositionIDs*)currentElement->data, sizeof(sPreviousPositionIDs));
+			}
+		}
+	}
+}
+
+void BuildWindow::LoadingGhostBuildingsFromFile(std::ifstream* _file)
+{
+	// Delete every elements of the list
+	if (m_listOfPreviousID != nullptr)
+	{
+		FreeLinkedList(m_listOfPreviousID);
+	}
+
+	// We reinit the list
+	m_listOfPreviousID = LinkedListInitialisation();
+
+	// Load the number of elements
+	int previousListSize(RESET);
+	_file->read((char*)&previousListSize, sizeof(int));
+
+	// We add every element data to the list
+	for (int i = RESET; i < previousListSize; i++)
+	{
+		std::cout << i << std::endl;
+		LinkedListClass::sElement* newElement = new LinkedListClass::sElement;
+		newElement->data = new sPreviousPositionIDs;
+
+		_file->read((char*)newElement->data, sizeof(sPreviousPositionIDs));
+
+		newElement->status = ElementStatus::ELEMENT_ACTIVE;
+
+		// Add this element at the end the list
+		if (m_listOfPreviousID == nullptr) m_listOfPreviousID = LinkedListInitialisation();
+		AddElementToLinkedList(m_listOfPreviousID, newElement, -1);
+	}
+
+	LoadOnMapPreviousID();
 }

@@ -1125,7 +1125,31 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					}
 
 					// Modifier couche pour ID
-					_game->m_buildWindow.SetBuildingOnMap(_game->m_map, &_game->m_builds, _game->m_buildingsListPlanned->GetBuildingID(), COLLISION, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
+					if (_game->m_buildingsListPlanned->GetBuildingID() == TypeOfBuilding::BUILDING_PATH
+						|| _game->m_buildingsListPlanned->GetBuildingID() == TypeOfBuilding::BUILDING_PAVED_PATH
+						|| _game->m_buildingsListPlanned->GetBuildingID() == TypeOfBuilding::BUILDING_ROAD)
+					{
+						TypesOfCollisions collisionToAskToBeBuilt = TypesOfCollisions::COLLISION;
+
+						switch ((TypeOfBuilding)_game->m_buildingsListPlanned->GetBuildingID())
+						{
+						case BUILDING_PATH:
+							collisionToAskToBeBuilt = TypesOfCollisions::PATH;
+							break;
+						case BUILDING_PAVED_PATH:
+							collisionToAskToBeBuilt = TypesOfCollisions::STONE_PATH;
+							break;
+						case BUILDING_ROAD:
+							collisionToAskToBeBuilt = TypesOfCollisions::ROAD;
+							break;
+						}
+
+						_game->m_buildWindow.SetBuildingOnMap(_game->m_map, &_game->m_builds, _game->m_buildingsListPlanned->GetBuildingID(), collisionToAskToBeBuilt, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
+					}
+					else
+					{
+						_game->m_buildWindow.SetBuildingOnMap(_game->m_map, &_game->m_builds, _game->m_buildingsListPlanned->GetBuildingID(), COLLISION, _game->m_buildingsListPlanned->GetBuildingPositionInMap());
+					}
 
 
 

@@ -108,6 +108,12 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	BuildingDestruction::GetSingleton()->LoadingFromFile(&saveFile);
 	std::cout << "Building Destruction List loaded !\n";
 
+	// Saving of the stall data
+	_game->m_builds.m_villa->LoadingVillaFromFile(&saveFile);
+	std::cout << "Villa loaded !\n";
+
+	_game->m_buildWindow.LoadingGhostBuildingsFromFile(&saveFile);
+	std::cout << "BuildWindow loaded !\n";
 
 	std::cout << "\n\nGame loaded successfully !\n\n\n";
 

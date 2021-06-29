@@ -788,6 +788,7 @@ void LinkedListClass::FreeLinkedList(LinkedListClass::sLinkedList *_list)
 		}
 
 		free(_list);
+		_list = nullptr;
 	}
 }
 

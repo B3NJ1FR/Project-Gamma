@@ -74,7 +74,7 @@ void Pathfinding::InitMapCopyPathfinding(unsigned short _mapHeightWanted)
 	mapSize = pMap->GetMapSize();
 
 	// Init of the temporary map
-	temporaryMap = pMap->GetMapLayer(_mapHeightWanted);
+	temporaryMap = pMap->GetMapLayerWithoutSpecificsCollisions(_mapHeightWanted);
 }
 
 
@@ -478,26 +478,6 @@ void Pathfinding::MainStatePathfinding()
 		temporaryMap[startPosition.y][startPosition.x] = STARTING_TILE;
 		temporaryMap[endPosition.y][endPosition.x] = ENDING_TILE;
 		
-
-		// TEMPORARY
-		/*testMap[3][17] = OBSTACLE_TILE;
-		testMap[4][17] = OBSTACLE_TILE;
-		testMap[3][18] = OBSTACLE_TILE;
-		testMap[5][17] = OBSTACLE_TILE;
-
-		testMap[4][9] = OBSTACLE_TILE;
-		testMap[3][12] = OBSTACLE_TILE;
-		testMap[4][12] = OBSTACLE_TILE;
-		testMap[5][12] = OBSTACLE_TILE;
-		testMap[6][12] = OBSTACLE_TILE;
-		testMap[7][12] = OBSTACLE_TILE;
-		testMap[8][12] = OBSTACLE_TILE;
-
-		testMap[2][10] = OBSTACLE_TILE;
-		testMap[3][10] = OBSTACLE_TILE;
-		testMap[4][10] = OBSTACLE_TILE;
-		testMap[5][10] = OBSTACLE_TILE;*/
-
 		// Add the first node with the starting position entered
 		AddFirstNodeToList(startPosition);
 

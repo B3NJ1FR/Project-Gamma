@@ -339,7 +339,7 @@ void SpecificsBuildings::UpdateBuildingSprite()
 						{
 							for (int x = 0; x < m_building->GetSize().x; x++)
 							{
-								if (pMap->IsCoordinatesIsInMap(mapPosition))
+								if (pMap->IsCoordinatesIsInMap(sf::Vector2i(mapPosition.x - x, mapPosition.y - y)))
 								{
 									buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
 

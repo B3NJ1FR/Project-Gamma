@@ -585,14 +585,17 @@ void Stalls::UpdateBuildingSprite()
 			{
 				for (int x = 0; x < m_building->GetSize().x; x++)
 				{
-					buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
-
-					if (buildingSpriteID >= 0)
+					if (pMap->IsCoordinatesIsInMap(sf::Vector2i(m_mapPosition.x - x, m_mapPosition.y - y)))
 					{
-						// Set the correct sprite id for this building
-						pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][(int)m_mapPosition.y - y][(int)m_mapPosition.x - x] = buildingSpriteID;
+						buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
 
-						pMap->GetMap()[FIRST_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y - y][(int)m_mapPosition.x - x] = COLLISION;
+						if (buildingSpriteID >= 0)
+						{
+							// Set the correct sprite id for this building
+							pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][(int)m_mapPosition.y - y][(int)m_mapPosition.x - x] = buildingSpriteID;
+
+							pMap->GetMap()[FIRST_FLOOR + COLLISIONS_ID][(int)m_mapPosition.y - y][(int)m_mapPosition.x - x] = COLLISION;
+						}
 					}
 				}
 			}

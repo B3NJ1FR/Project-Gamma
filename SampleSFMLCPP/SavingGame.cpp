@@ -95,6 +95,13 @@ void SavingGame::SaveTheGame(struct Game *_game)
 	BuildingDestruction::GetSingleton()->SavingForFile(&saveFile);
 	std::cout << "Building Destruction List saved !\n";
 
+	// Saving of the villa data
+	_game->m_builds.m_villa->SavingVillaForFile(&saveFile);
+	std::cout << "Villa saved !\n";
+
+	_game->m_buildWindow.SavingGhostBuildingsForFile(&saveFile);
+	std::cout << "BuildWindow saved !\n";
+
 	std::cout << "\n\nGame saved successfully !\n\n\n";
 
 	saveFile.close();

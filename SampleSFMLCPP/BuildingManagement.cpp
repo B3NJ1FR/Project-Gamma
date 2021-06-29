@@ -16,13 +16,16 @@ BuildingManagement::BuildingManagement()
 
 	if (m_buildings != nullptr)
 	{
-		m_stall = new Stalls(&m_buildings[BUILDING_STALL]);
+		m_stall = new Stalls(&m_buildings[TypeOfBuilding::BUILDING_STALL]);
 
-		m_vines.InitialisationVines(&m_buildings[BUILDING_VINES]);
-		m_stompingVats.InitialisationSpeBuilding(&m_buildings[BUILDING_GRAPE_STOMPING_VATS]);
-		m_winePress.InitialisationSpeBuilding(&m_buildings[BUILDING_WINE_PRESS]);
-		m_wineStorehouse.InitialisationSpeBuilding(&m_buildings[BUILDING_WINE_STOREHOUSE]);
-		m_storehouse.InitialisationStorehouse(&m_buildings[BUILDING_STOREHOUSE]);
+		m_vines.InitialisationVines(&m_buildings[TypeOfBuilding::BUILDING_VINES]);
+		m_stompingVats.InitialisationSpeBuilding(&m_buildings[TypeOfBuilding::BUILDING_GRAPE_STOMPING_VATS]);
+		m_winePress.InitialisationSpeBuilding(&m_buildings[TypeOfBuilding::BUILDING_WINE_PRESS]);
+		m_wineStorehouse.InitialisationSpeBuilding(&m_buildings[TypeOfBuilding::BUILDING_WINE_STOREHOUSE]);
+		m_storehouse.InitialisationStorehouse(&m_buildings[TypeOfBuilding::BUILDING_STOREHOUSE]);
+
+		m_villa = Villa::GetSingleton();
+		m_villa->Initialisation(&m_buildings[TypeOfBuilding::BUILDING_VILLA]);
 	}
 
 	BuildingDestruction::GetSingleton()->InitialisationBuildingsToDestroy();
@@ -407,6 +410,7 @@ void BuildingManagement::InitBuildingsSpritesFromFile()
 							std::vector<int> idVector;
 							for (int x = 0; x < buildingSize.x; x++)
 							{
+								std::cout << "Here\n";
 								spritesFile >> temporaryString;
 
 								if (temporaryString == "END_ID") break;

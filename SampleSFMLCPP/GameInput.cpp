@@ -111,6 +111,7 @@ void GameInput(struct Game *_game)
 						_game->m_mainCharacter->SetMainCharacterStatus(IDLE, false);
 					}
 
+					_game->m_buildWindow.LoadOnMapPreviousID();
 					_game->m_actualGameState = NORMAL_MODE;
 					_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 				}

@@ -61,6 +61,7 @@ public :
 	inline sf::Vector2i GetMapSize() const { return sf::Vector2i(m_numberColumns, m_numberLines);  }
 	inline unsigned short*** GetMap() { return m_map;  }
 	unsigned short** GetMapLayer(unsigned short _mapHeightWanted);
+	unsigned short** GetMapLayerWithoutSpecificsCollisions(unsigned short _mapHeightWanted);
 
 	// Methods
 	void InitMapFromFile();

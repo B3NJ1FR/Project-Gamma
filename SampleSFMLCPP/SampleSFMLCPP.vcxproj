@@ -191,6 +191,7 @@
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="TutorialWindow.cpp" />
+    <ClCompile Include="Villa.cpp" />
     <ClCompile Include="VillaManagement.cpp" />
     <ClCompile Include="Vines.cpp" />
     <ClCompile Include="Workers.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Test.h" />
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="TutorialWindow.h" />
+    <ClInclude Include="Villa.h" />
     <ClInclude Include="VillaManagement.h" />
     <ClInclude Include="Vines.h" />
     <ClInclude Include="Workers.h" />

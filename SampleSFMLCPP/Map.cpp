@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Villa.h"
 
 
 Map::Map()
@@ -55,6 +56,51 @@ unsigned short** Map::GetMapLayer(unsigned short _mapHeightWanted)
 			for (int x = 0; x < m_numberColumns; x++)
 			{
 				temporaryMap[y][x] = m_map[_mapHeightWanted][y][x];
+			}
+		}
+	}
+
+	return temporaryMap;
+}
+
+unsigned short** Map::GetMapLayerWithoutSpecificsCollisions(unsigned short _mapHeightWanted)
+{
+	// Init of the temporary map
+	unsigned short** temporaryMap = new unsigned short* [m_numberLines];
+
+	for (int i = 0; i < m_numberLines; i++)
+	{
+		temporaryMap[i] = new unsigned short[m_numberColumns];
+	}
+
+	if (_mapHeightWanted >= 0 && _mapHeightWanted < m_numberLayers)
+	{
+		// Copying the collisions of the real map
+		// TO OPTIMIZE : 1200x call to pMap->GetMap();
+		for (int y = 0; y < m_numberLines; y++)
+		{
+			for (int x = 0; x < m_numberColumns; x++)
+			{
+				unsigned char caseValue = m_map[_mapHeightWanted][y][x];
+
+				switch (caseValue)
+				{
+				case COLLISION:
+					temporaryMap[y][x] = COLLISION;
+					break;
+				case BUILDING_ENTRANCE:
+					temporaryMap[y][x] = BUILDING_ENTRANCE;
+					break;
+				case BUILDING_EXIT:
+					temporaryMap[y][x] = BUILDING_EXIT;
+					break;
+				case BUILDING_WILL_BE_DESTROYED:
+					temporaryMap[y][x] = BUILDING_WILL_BE_DESTROYED;
+					break;
+				default:
+					temporaryMap[y][x] = NO_COLLISION;
+					break;
+				}
 			}
 		}
 	}
@@ -182,50 +228,53 @@ void Map::InitMapFromFile()
 							}
 						}
 
-						if (x == 10 && y == 8)
-						{
-							// Sol
-							m_map[z - 3][y][x] = 34;
+						//if (x == 10 && y == 8)
+						//{
+						//	// Sol
+						//	m_map[z - 3][y][x] = 34;
 
-							// Sprite villa
-							m_map[z][y][x] = 35;
+						//	// Sprite villa
+						//	m_map[z][y][x] = 35;
 
-							// Collision
-							m_map[z - 2][y][x] = COLLISION;
-							m_map[z - 2][y][x - 1] = COLLISION;
-							m_map[z - 2][y][x - 2] = COLLISION;
-							m_map[z - 2][y][x - 3] = COLLISION;
-							m_map[z - 2][y][x - 4] = COLLISION;
-							m_map[z - 2][y][x - 5] = COLLISION;
+						//	// Collision
+						//	m_map[z - 2][y][x] = COLLISION;
+						//	m_map[z - 2][y][x - 1] = COLLISION;
+						//	m_map[z - 2][y][x - 2] = COLLISION;
+						//	m_map[z - 2][y][x - 3] = COLLISION;
+						//	m_map[z - 2][y][x - 4] = COLLISION;
+						//	m_map[z - 2][y][x - 5] = COLLISION;
 
-							m_map[z - 2][y - 1][x] = COLLISION;
-							m_map[z - 2][y - 1][x - 1] = COLLISION;
-							m_map[z - 2][y - 1][x - 2] = COLLISION;
-							m_map[z - 2][y - 1][x - 3] = COLLISION;
-							m_map[z - 2][y - 1][x - 4] = COLLISION;
-							m_map[z - 2][y - 1][x - 5] = COLLISION;
+						//	m_map[z - 2][y - 1][x] = COLLISION;
+						//	m_map[z - 2][y - 1][x - 1] = COLLISION;
+						//	m_map[z - 2][y - 1][x - 2] = COLLISION;
+						//	m_map[z - 2][y - 1][x - 3] = COLLISION;
+						//	m_map[z - 2][y - 1][x - 4] = COLLISION;
+						//	m_map[z - 2][y - 1][x - 5] = COLLISION;
 
-							// Building ID
-							m_map[z - 1][y][x] = BUILDING_VILLA;
-							m_map[z - 1][y][x - 1] = BUILDING_VILLA;
-							m_map[z - 1][y][x - 2] = BUILDING_VILLA;
-							m_map[z - 1][y][x - 3] = BUILDING_VILLA;
-							m_map[z - 1][y][x - 4] = BUILDING_VILLA;
-							m_map[z - 1][y][x - 5] = BUILDING_VILLA;
+						//	// Building ID
+						//	m_map[z - 1][y][x] = BUILDING_VILLA;
+						//	m_map[z - 1][y][x - 1] = BUILDING_VILLA;
+						//	m_map[z - 1][y][x - 2] = BUILDING_VILLA;
+						//	m_map[z - 1][y][x - 3] = BUILDING_VILLA;
+						//	m_map[z - 1][y][x - 4] = BUILDING_VILLA;
+						//	m_map[z - 1][y][x - 5] = BUILDING_VILLA;
 
-							m_map[z - 1][y - 1][x] = BUILDING_VILLA;
-							m_map[z - 1][y - 1][x - 1] = BUILDING_VILLA;
-							m_map[z - 1][y - 1][x - 2] = BUILDING_VILLA;
-							m_map[z - 1][y - 1][x - 3] = BUILDING_VILLA;
-							m_map[z - 1][y - 1][x - 4] = BUILDING_VILLA;
-							m_map[z - 1][y - 1][x - 5] = BUILDING_VILLA;
-						}
+						//	m_map[z - 1][y - 1][x] = BUILDING_VILLA;
+						//	m_map[z - 1][y - 1][x - 1] = BUILDING_VILLA;
+						//	m_map[z - 1][y - 1][x - 2] = BUILDING_VILLA;
+						//	m_map[z - 1][y - 1][x - 3] = BUILDING_VILLA;
+						//	m_map[z - 1][y - 1][x - 4] = BUILDING_VILLA;
+						//	m_map[z - 1][y - 1][x - 5] = BUILDING_VILLA;
+						//}
 
 					}
 
 				}
 			}
 		}
+
+		// Add the villa to the map
+		Villa::GetSingleton()->ForceBuildingConstructionWithoutWorkers(sf::Vector2i(10, 8));
 	}
 	else
 	{
