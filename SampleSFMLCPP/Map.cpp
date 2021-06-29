@@ -181,29 +181,22 @@ void Map::InitMapFromFile()
 						m_map[z][y][x] = -1;
 					}
 
-					if (z == (ZERO_FLOOR + COLLISIONS_ID) && z % 3 == COLLISIONS_ID)
-					{
-						// Collisions of the road
-						if (y == 4)
-						{
-							m_map[z][y][x] = ROAD;
-						}
-						else if (y == 5)
-						{
-							m_map[z][y][x] = ROAD;
-						}
-					}
-
 					if (z == (ZERO_FLOOR + SPRITE_ID) && z % 3 == SPRITE_ID)
 					{
 						// Display of the road
 						if (y == 4)
 						{
-							m_map[z][y][x] = 5;
+							// Set road
+							m_map[z][y][x] = 1;
+							m_map[z - 1][y][x] = TypeOfBuilding::BUILDING_ROAD;
+							m_map[z - 2][y][x] = ROAD;
 						}
 						else if (y == 5)
 						{
-							m_map[z][y][x] = 6;
+							// Set road
+							m_map[z][y][x] = 2;
+							m_map[z - 1][y][x] = TypeOfBuilding::BUILDING_ROAD;
+							m_map[z - 2][y][x] = ROAD;
 						}
 						else
 						{
@@ -219,54 +212,11 @@ void Map::InitMapFromFile()
 
 							if (randomNumber == 1)
 							{
-								m_map[z][y][x] = 11;
+								// Set tree on map
+								m_map[z][y][x] = 3;
 								m_map[z - 2][y][x] = COLLISION;
 							}
-							else
-							{
-								m_map[z][y][x] = 0;
-							}
 						}
-
-						//if (x == 10 && y == 8)
-						//{
-						//	// Sol
-						//	m_map[z - 3][y][x] = 34;
-
-						//	// Sprite villa
-						//	m_map[z][y][x] = 35;
-
-						//	// Collision
-						//	m_map[z - 2][y][x] = COLLISION;
-						//	m_map[z - 2][y][x - 1] = COLLISION;
-						//	m_map[z - 2][y][x - 2] = COLLISION;
-						//	m_map[z - 2][y][x - 3] = COLLISION;
-						//	m_map[z - 2][y][x - 4] = COLLISION;
-						//	m_map[z - 2][y][x - 5] = COLLISION;
-
-						//	m_map[z - 2][y - 1][x] = COLLISION;
-						//	m_map[z - 2][y - 1][x - 1] = COLLISION;
-						//	m_map[z - 2][y - 1][x - 2] = COLLISION;
-						//	m_map[z - 2][y - 1][x - 3] = COLLISION;
-						//	m_map[z - 2][y - 1][x - 4] = COLLISION;
-						//	m_map[z - 2][y - 1][x - 5] = COLLISION;
-
-						//	// Building ID
-						//	m_map[z - 1][y][x] = BUILDING_VILLA;
-						//	m_map[z - 1][y][x - 1] = BUILDING_VILLA;
-						//	m_map[z - 1][y][x - 2] = BUILDING_VILLA;
-						//	m_map[z - 1][y][x - 3] = BUILDING_VILLA;
-						//	m_map[z - 1][y][x - 4] = BUILDING_VILLA;
-						//	m_map[z - 1][y][x - 5] = BUILDING_VILLA;
-
-						//	m_map[z - 1][y - 1][x] = BUILDING_VILLA;
-						//	m_map[z - 1][y - 1][x - 1] = BUILDING_VILLA;
-						//	m_map[z - 1][y - 1][x - 2] = BUILDING_VILLA;
-						//	m_map[z - 1][y - 1][x - 3] = BUILDING_VILLA;
-						//	m_map[z - 1][y - 1][x - 4] = BUILDING_VILLA;
-						//	m_map[z - 1][y - 1][x - 5] = BUILDING_VILLA;
-						//}
-
 					}
 
 				}

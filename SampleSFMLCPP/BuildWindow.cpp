@@ -401,7 +401,6 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 				{
 					if (_game->m_map->IsCoordinatesIsInMap(sf::Vector2i(m_buildingCaseSelected.y - y, m_buildingCaseSelected.x - x)))
 					{
-						// GROS CRASH LA vvvv
 						// Check case occupation concerning collisions
 						if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
 						{
@@ -612,93 +611,135 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 	// Display of the building chosen
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->m_window);
+	//---------------------------------------------------------------------------------------------------------------------
+
+	Buildings* currentBuilding = &_game->m_builds.m_buildings[m_IDChosenBuilding];
 
 	// Display the building choosen on the mouse
-	if (m_IDChosenBuilding == 2)
+	for (int y = 0; y < currentBuilding->GetSize().y; y++)
 	{
-		if (m_isBuildingCaseOccupied == false)
+		for (int x = 0; x < currentBuilding->GetSize().x; x++)
 		{
-			sf::Color color(255, 255, 255, 150);
-			_game->m_spriteArray[17].setColor(color);
-		}
-		else
-		{
-			sf::Color color(255, 0, 0, 150);
-			_game->m_spriteArray[17].setColor(color);
-		}
+			unsigned short buildingSpriteID = (unsigned short)currentBuilding->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][currentBuilding->GetSize().y - 1 - y][currentBuilding->GetSize().x - 1 - x];
+			sf::Sprite buildingSprite = _game->m_builds.GetSpriteFromBuildID(m_IDChosenBuilding, buildingSpriteID);
 
-		BlitSprite(_game->m_spriteArray[17], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
+			if (m_isBuildingCaseOccupied == false)
+			{
+				sf::Color color(255, 255, 255, 150);
+				buildingSprite.setColor(color);
+			}
+			else
+			{
+				sf::Color color(255, 0, 0, 150);
+				buildingSprite.setColor(color);
+			}
+			
+			sf::Vector2f tileCoordinates = WorldToScreen((float)currentBuilding->GetSize().x - x, (float)currentBuilding->GetSize().y - y);
 
-		_game->m_spriteArray[17].setColor(sf::Color::White);
+			/*BlitSprite(buildingSprite,
+				(float)mousePosition.x + tileCoordinates.x - ((TILE_WIDTH / 2) * currentBuilding->GetSize().x),
+				(float)mousePosition.y + tileCoordinates.y + TILE_HEIGHT - ((TILE_HEIGHT / 2) * currentBuilding->GetSize().y),
+				0, *_game->m_window);*/
+
+			BlitSprite(buildingSprite,
+				(float)mousePosition.x + tileCoordinates.x,
+				(float)mousePosition.y + tileCoordinates.y - (1.5f * TILE_HEIGHT),
+				0, *_game->m_window);
+
+			buildingSprite.setColor(sf::Color::White);
+		}
 	}
-	else if (m_IDChosenBuilding == 3)
-	{
-		if (m_isBuildingCaseOccupied == false)
-		{
-			sf::Color color(255, 255, 255, 150);
-			_game->m_spriteArray[16].setColor(color);
-		}
-		else
-		{
-			sf::Color color(255, 0, 0, 150);
-			_game->m_spriteArray[16].setColor(color);
-		}
 
-		BlitSprite(_game->m_spriteArray[16], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
 
-		_game->m_spriteArray[16].setColor(sf::Color::White);
-	}
-	else if (m_IDChosenBuilding == 4)
-	{
-		if (m_isBuildingCaseOccupied == false)
-		{
-			sf::Color color(255, 255, 255, 150);
-			_game->m_spriteArray[19].setColor(color);
-		}
-		else
-		{
-			sf::Color color(255, 0, 0, 150);
-			_game->m_spriteArray[19].setColor(color);
-		}
+	//---------------------------------------------------------------------------------------------------------------------
 
-		BlitSprite(_game->m_spriteArray[19], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
 
-		_game->m_spriteArray[19].setColor(sf::Color::White);
-	}
-	else if (m_IDChosenBuilding == 5)
-	{
-		if (m_isBuildingCaseOccupied == false)
-		{
-			sf::Color color(255, 255, 255, 150);
-			_game->m_spriteArray[18].setColor(color);
-		}
-		else
-		{
-			sf::Color color(255, 0, 0, 150);
-			_game->m_spriteArray[18].setColor(color);
-		}
+	//// Display the building choosen on the mouse
+	//if (m_IDChosenBuilding == 2)
+	//{
+	//	if (m_isBuildingCaseOccupied == false)
+	//	{
+	//		sf::Color color(255, 255, 255, 150);
+	//		_game->m_spriteArray[17].setColor(color);
+	//	}
+	//	else
+	//	{
+	//		sf::Color color(255, 0, 0, 150);
+	//		_game->m_spriteArray[17].setColor(color);
+	//	}
 
-		BlitSprite(_game->m_spriteArray[18], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
+	//	BlitSprite(_game->m_spriteArray[17], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
 
-		_game->m_spriteArray[18].setColor(sf::Color::White);
-	}
-	else if (m_IDChosenBuilding != _game->m_builds.GetNumberOfBuildings())
-	{
-		if (m_isBuildingCaseOccupied == false)
-		{
-			sf::Color color(255, 255, 255, 150);
-			_game->m_spriteArray[3 + m_IDChosenBuilding].setColor(color);
-		}
-		else
-		{
-			sf::Color color(255, 0, 0, 150);
-			_game->m_spriteArray[3 + m_IDChosenBuilding].setColor(color);
-		}
+	//	_game->m_spriteArray[17].setColor(sf::Color::White);
+	//}
+	//else if (m_IDChosenBuilding == 3)
+	//{
+	//	if (m_isBuildingCaseOccupied == false)
+	//	{
+	//		sf::Color color(255, 255, 255, 150);
+	//		_game->m_spriteArray[16].setColor(color);
+	//	}
+	//	else
+	//	{
+	//		sf::Color color(255, 0, 0, 150);
+	//		_game->m_spriteArray[16].setColor(color);
+	//	}
 
-		BlitSprite(_game->m_spriteArray[3 + m_IDChosenBuilding], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
+	//	BlitSprite(_game->m_spriteArray[16], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
 
-		_game->m_spriteArray[3 + m_IDChosenBuilding].setColor(sf::Color::White);
-	}
+	//	_game->m_spriteArray[16].setColor(sf::Color::White);
+	//}
+	//else if (m_IDChosenBuilding == 4)
+	//{
+	//	if (m_isBuildingCaseOccupied == false)
+	//	{
+	//		sf::Color color(255, 255, 255, 150);
+	//		_game->m_spriteArray[19].setColor(color);
+	//	}
+	//	else
+	//	{
+	//		sf::Color color(255, 0, 0, 150);
+	//		_game->m_spriteArray[19].setColor(color);
+	//	}
+
+	//	BlitSprite(_game->m_spriteArray[19], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
+
+	//	_game->m_spriteArray[19].setColor(sf::Color::White);
+	//}
+	//else if (m_IDChosenBuilding == 5)
+	//{
+	//	if (m_isBuildingCaseOccupied == false)
+	//	{
+	//		sf::Color color(255, 255, 255, 150);
+	//		_game->m_spriteArray[18].setColor(color);
+	//	}
+	//	else
+	//	{
+	//		sf::Color color(255, 0, 0, 150);
+	//		_game->m_spriteArray[18].setColor(color);
+	//	}
+
+	//	BlitSprite(_game->m_spriteArray[18], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
+
+	//	_game->m_spriteArray[18].setColor(sf::Color::White);
+	//}
+	//else if (m_IDChosenBuilding != _game->m_builds.GetNumberOfBuildings())
+	//{
+	//	if (m_isBuildingCaseOccupied == false)
+	//	{
+	//		sf::Color color(255, 255, 255, 150);
+	//		_game->m_spriteArray[3 + m_IDChosenBuilding].setColor(color);
+	//	}
+	//	else
+	//	{
+	//		sf::Color color(255, 0, 0, 150);
+	//		_game->m_spriteArray[3 + m_IDChosenBuilding].setColor(color);
+	//	}
+
+	//	BlitSprite(_game->m_spriteArray[3 + m_IDChosenBuilding], (float)mousePosition.x, (float)mousePosition.y + TILE_HEIGHT / 2, 0, *_game->m_window);
+
+	//	_game->m_spriteArray[3 + m_IDChosenBuilding].setColor(sf::Color::White);
+	//}
 
 
 	// Display the "Out of territory" and "Place already occupied" messages

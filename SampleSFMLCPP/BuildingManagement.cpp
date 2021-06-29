@@ -410,7 +410,6 @@ void BuildingManagement::InitBuildingsSpritesFromFile()
 							std::vector<int> idVector;
 							for (int x = 0; x < buildingSize.x; x++)
 							{
-								std::cout << "Here\n";
 								spritesFile >> temporaryString;
 
 								if (temporaryString == "END_ID") break;
