@@ -41,10 +41,6 @@ void Game::DisplayDecor()
 								0, *m_window);
 						}
 
-
-
-
-
 						// Display of the gear which is rotating when a worker is in a building
 						if (z == FIRST_FLOOR + SPRITE_ID)
 						{
@@ -183,7 +179,8 @@ void Game::DisplayDecor()
 						{
 							// Display of the buildings ghost in the Build Mode
 							if (m_map->GetMap()[z - SECOND_FLOOR][y][x] != 0 && m_map->GetMap()[z - SECOND_FLOOR][y][x] > 0
-								&& m_buildWindow.GetBuildingCheckboxSelected().x == x && m_buildWindow.GetBuildingCheckboxSelected().y == y)
+								&& m_buildWindow.GetBuildingCheckboxSelected().x >= x && m_buildWindow.GetBuildingCheckboxSelected().x - m_buildWindow.GetSizeBuildingSelected().x < x
+								&& m_buildWindow.GetBuildingCheckboxSelected().y >= y && m_buildWindow.GetBuildingCheckboxSelected().y - m_buildWindow.GetSizeBuildingSelected().y < y)
 							{
 								sf::Vector2f tileCoordinates = WorldToScreen((float)x, (float)y);
 								sf::Vector2f cameraIso = WorldToScreen(m_camera.x, m_camera.y);

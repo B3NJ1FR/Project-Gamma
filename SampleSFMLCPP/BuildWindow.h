@@ -23,6 +23,7 @@ private:
 	int m_IDChosenBuilding;
 	int m_previousIDChosenBuilding;
 	sf::Vector2i m_buildingCaseSelected;
+	sf::Vector2i m_sizeBuildingSelected;
 	bool m_isBuildingCaseOccupied;
 	sf::Text *m_textBuildingCaseOccupied;
 	sf::Text *m_textBuildingHelps;
@@ -67,6 +68,7 @@ public:
 	inline int GetIDChosenBuilding() const { return m_IDChosenBuilding; };
 
 	inline bool GetIsBuildingCaseOccupied() const { return m_isBuildingCaseOccupied; };
+	inline sf::Vector2i GetSizeBuildingSelected() const { return m_sizeBuildingSelected; };
 
 	// Setters
 	inline void SetScrollBuildingList(const float& _scrollBuildingList) { m_scrollBuildingList = _scrollBuildingList; };
