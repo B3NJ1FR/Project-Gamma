@@ -471,6 +471,7 @@ void GameInput(struct Game *_game)
 					}
 					else if (_game->m_actualGameState == SELLING_WINDOW)
 					{
+						_game->m_sellingWindow->InputSellingWindowButtons(&_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window, *_game->m_screenReso);
 						_game->m_time->InputTimeManagement(*_game->m_window, *_game->m_screenReso);
 					}
 					else if (_game->m_actualGameState == VILLA_MANAGEMENT)
@@ -492,7 +493,7 @@ void GameInput(struct Game *_game)
 		{
 			if (_game->m_actualGameState == SELLING_WINDOW)
 			{
-				_game->m_sellingWindow->InputSellingWindow(&_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window, *_game->m_screenReso);
+				_game->m_sellingWindow->InputSellingWindow(*_game->m_window, *_game->m_screenReso);
 			}
 		}
 	}

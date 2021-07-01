@@ -152,13 +152,12 @@ void Stalls::AddStorehousePosition(const sf::Vector2f &_mapPosition)
 		}
 
 		// We add the new position at the end of the list
-		newListOfCoordinates[m_numberStorehousesCoordinates + 1] = _mapPosition;
+		newListOfCoordinates[m_numberStorehousesCoordinates] = _mapPosition;
 
 		m_numberStorehousesCoordinates += 1;
 
 		// We delete the actual memory location of the "storehousesCoordinates" variable, and add the adress of the new list
 		delete m_storehousesCoordinates;
-		m_storehousesCoordinates = nullptr;
 		m_storehousesCoordinates = newListOfCoordinates;
 
 
@@ -424,9 +423,29 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 
 			if (m_isPurchaserThere)
 			{
-				std::cout << "Here\n";
-				SetStatus(STALL_PURCHASER_IS_PRESENT);
-				*(_state) = SELLING_WINDOW;
+				// In case where the player hasn't amphora of wine, the purchaser doesn't stop his travel
+				if (GetRessourceStocked() == 0)
+				{
+					// Ask to the purchaser to leave the place
+					if (_purchasers != nullptr)
+					{
+						_purchasers->SetStatus(PurchaserStatus::IDLE);
+						_purchasers->SetCanLeaveTheMap(true);
+					}
+
+					m_isPurchaserThere = false;
+					m_ressourceQuantityToSell = RESET;
+
+					// Wait a new purchaser
+					m_internalState = InternalState::STATE_INIT;
+					m_actualState = STALL_WAITING;
+				}
+				// In case where the player has amphoras of wine, the purchaser stop his travel to the domain
+				else
+				{
+					SetStatus(STALL_PURCHASER_IS_PRESENT);
+					*(_state) = SELLING_WINDOW;
+				}
 			}
 
 			break;

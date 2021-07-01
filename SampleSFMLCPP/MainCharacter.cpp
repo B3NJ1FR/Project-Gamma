@@ -1192,13 +1192,16 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 						storage = _game->m_builds.m_storehouse.GetStorage((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 
 						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
-						_game->m_builds.m_stall->AddStorehousePosition((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						if (_game->m_builds.m_stall != nullptr) _game->m_builds.m_stall->AddStorehousePosition((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 						break;
 					case BUILDING_STALL:
-						_game->m_builds.m_stall->AddNewBuilding((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
+						if (_game->m_builds.m_stall != nullptr)
+						{
+							_game->m_builds.m_stall->AddNewBuilding((sf::Vector2f)_game->m_buildingsListPlanned->GetBuildingPositionInMap());
 
-						storage = _game->m_builds.m_stall->GetStorage();
-						storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
+							storage = _game->m_builds.m_stall->GetStorage();
+							storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(AMPHORA_OF_WINE), ResourceData::RESOURCE_NEEDED_N_PRODUCED);
+						}
 						break;
 						/*case BUILDING_VILLA:
 							break;

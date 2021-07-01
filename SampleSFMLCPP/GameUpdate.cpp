@@ -59,6 +59,10 @@ void GameUpdate(struct Game *_game)
 			&& _game->m_purchaserManager->IsPurchaserExist())
 		{
 			int quantityStocked = _game->m_builds.m_stall->GetRessourceStocked();
+
+			_game->m_sellingWindow->UpdateWindowAtOpening(_game->m_purchaserManager->GetPurchasers(), *_game->m_screenReso);
+
+			_game->m_sellingWindow->IsQuantityToSellIsCorrect(_game->m_purchaserManager->GetPurchasers(), quantityStocked, *_game->m_screenReso);
 			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchaserManager->GetPurchasers(), quantityStocked, *_game->m_screenReso);
 			_game->m_sellingWindow->UpdateSellingWindowTexts(_game->m_purchaserManager->GetPurchasers());
 		}
