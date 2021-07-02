@@ -612,6 +612,14 @@ sf::Vector2i Storehouse::FindNearestBuilding(const sf::Vector2f &_mapPosition)
 
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
+				if (_mapPosition.x <= ((Storehouse::sStorehouseData*)currentElement->data)->mapPosition.x
+					&& _mapPosition.x >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.y <= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y
+					&& _mapPosition.y >= ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+				{
+					return (sf::Vector2i)((Storehouse::sStorehouseData*)currentElement->data)->mapPosition;
+				}
+
 				if (currentElement == m_list->first)
 				{
 					float distance = DistanceFormula(_mapPosition, ((Storehouse::sStorehouseData *)currentElement->data)->mapPosition);

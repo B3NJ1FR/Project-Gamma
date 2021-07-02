@@ -101,7 +101,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 								if (_builds->m_vines.DestroyedBuildingSelected(((BuildingToDestroyData*)currentElement->data)->m_coordinates) == true)
 								{
 									std::cout << "Building Destroyed";
-									RemoveBuildingOnMap(_builds, _map, Floors::FIRST_FLOOR, ((BuildingToDestroyData*)currentElement->data)->m_ID, sf::Vector3i(NO_COLLISION, RESET, RESET), (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+									RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
 								
 									currentElement->status = ELEMENT_DELETION_REQUIRED;
 									isRemovingElementNeeded = true;
@@ -127,7 +127,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									if (_builds->m_stompingVats.DestroyedBuildingSelected(((BuildingToDestroyData*)currentElement->data)->m_coordinates) == true)
 									{
 										std::cout << "Building Destroyed";
-										RemoveBuildingOnMap(_builds, _map, Floors::FIRST_FLOOR, ((BuildingToDestroyData*)currentElement->data)->m_ID, sf::Vector3i(NO_COLLISION, RESET, RESET), (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -153,7 +153,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									if (_builds->m_winePress.DestroyedBuildingSelected(((BuildingToDestroyData*)currentElement->data)->m_coordinates) == true)
 									{
 										std::cout << "Building Destroyed";
-										RemoveBuildingOnMap(_builds, _map, Floors::FIRST_FLOOR, ((BuildingToDestroyData*)currentElement->data)->m_ID, sf::Vector3i(NO_COLLISION, RESET, RESET), (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -179,7 +179,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									if (_builds->m_wineStorehouse.DestroyedBuildingSelected(((BuildingToDestroyData*)currentElement->data)->m_coordinates) == true)
 									{
 										std::cout << "Building Destroyed";
-										RemoveBuildingOnMap(_builds, _map, Floors::FIRST_FLOOR, ((BuildingToDestroyData*)currentElement->data)->m_ID, sf::Vector3i(NO_COLLISION, RESET, RESET), (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -206,7 +206,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									if (_builds->m_storehouse.DestroyedBuildingSelected(((BuildingToDestroyData*)currentElement->data)->m_coordinates) == true)
 									{
 										std::cout << "Building Destroyed";
-										RemoveBuildingOnMap(_builds, _map, Floors::FIRST_FLOOR, ((BuildingToDestroyData*)currentElement->data)->m_ID, sf::Vector3i(NO_COLLISION, RESET, RESET), (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -233,7 +233,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									if (_builds->m_stall->DestroyedBuildingSelected(((BuildingToDestroyData*)currentElement->data)->m_coordinates) == true)
 									{
 										std::cout << "Building Destroyed";
-										RemoveBuildingOnMap(_builds, _map, Floors::FIRST_FLOOR, ((BuildingToDestroyData*)currentElement->data)->m_ID, sf::Vector3i(NO_COLLISION, RESET, RESET), (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -246,7 +246,52 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 							}
 
 							break;
+						case BUILDING_PATH:
+							
+							((BuildingToDestroyData*)currentElement->data)->m_destructionTimer -= TimeManagement::GetSingleton()->GetFrameTime();
 
+							// When the time is elapsed, we destroy the building
+							if (((BuildingToDestroyData*)currentElement->data)->m_destructionTimer <= 0.0f)
+							{
+								std::cout << "Building Destroyed";
+								RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+
+								currentElement->status = ELEMENT_DELETION_REQUIRED;
+								isRemovingElementNeeded = true;
+							}
+
+							break;
+						case BUILDING_PAVED_PATH:
+
+							((BuildingToDestroyData*)currentElement->data)->m_destructionTimer -= TimeManagement::GetSingleton()->GetFrameTime();
+
+							// When the time is elapsed, we destroy the building
+							if (((BuildingToDestroyData*)currentElement->data)->m_destructionTimer <= 0.0f)
+							{
+								std::cout << "Building Destroyed";
+								RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+
+								currentElement->status = ELEMENT_DELETION_REQUIRED;
+								isRemovingElementNeeded = true;
+							}
+
+							break;
+						case BUILDING_ROAD:
+
+							((BuildingToDestroyData*)currentElement->data)->m_destructionTimer -= TimeManagement::GetSingleton()->GetFrameTime();
+
+							// When the time is elapsed, we destroy the building
+							if (((BuildingToDestroyData*)currentElement->data)->m_destructionTimer <= 0.0f)
+							{
+
+								std::cout << "Building Destroyed";
+								RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+
+								currentElement->status = ELEMENT_DELETION_REQUIRED;
+								isRemovingElementNeeded = true;
+							}
+
+							break;
 					default:
 						break;
 					}
@@ -267,22 +312,24 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 	}
 }
 
-void BuildingDestruction::RemoveBuildingOnMap(BuildingManagement *_builds, Map* _map, enum Floors _floorFocused, const int& _typeOfBuilding, const sf::Vector3i& _statsToApply, const sf::Vector2i& _mapPosition)
+void BuildingDestruction::RemoveBuildingOnMap(BuildingManagement* _builds, const int& _typeOfBuilding, const sf::Vector2i& _mapPosition)
 {
-	_map->GetMap()[_floorFocused + SPRITE_ID][_mapPosition.y][_mapPosition.x] = (unsigned short)_statsToApply.z;
+	Map* pMap = Map::GetSingleton();
 
-	// EN FAIRE UNE FONCTION
 	for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
 	{
 		for (int x = 0; x < _builds->m_buildings[_typeOfBuilding].GetSize().x; x++)
 		{
-			if (_map->IsCoordinatesIsInMap(_mapPosition))
+			if (pMap->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y)))
 			{
-				// Set the correct collision
-				_map->GetMap()[_floorFocused + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_statsToApply.x;
+				// Set the correct collision, building ID, and sprite ID
+				pMap->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = NO_COLLISION;
+				pMap->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = -1;
+				pMap->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 1;
 
-				// Set the correct building ID
-				_map->GetMap()[_floorFocused + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = (unsigned short)_statsToApply.y;
+				pMap->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = NO_COLLISION;
+				pMap->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = -1;
+				pMap->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 0;
 			}
 			else
 			{
@@ -291,7 +338,6 @@ void BuildingDestruction::RemoveBuildingOnMap(BuildingManagement *_builds, Map* 
 		}
 	}
 }
-
 
 void BuildingDestruction::SavingForFile(std::ofstream* _file)
 {

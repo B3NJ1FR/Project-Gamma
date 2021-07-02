@@ -78,6 +78,8 @@ public:
 	void InputBuildingModeOldScrollUI(const float& _scrollDelta, const sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 	void InputPickUpCaseClicked(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution, bool _isBuildingUINeeded, const sf::Vector2f& _camera, const sf::Vector2f& _cameraScale);
 	
+	sf::Vector2i FindRealOriginBuildingPosition(Map* _map, BuildingManagement* _builds, int _typeOfBuilding, const sf::Vector2i& _mapPosition);
+
 	void SetBuildingOnMap(Map* _map, BuildingManagement* _builds, int _typeOfBuilding, enum TypesOfCollisions _collisionID, const sf::Vector2i &_mapPosition);
 	void SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBuilding, const sf::Vector2i &_mapPosition);
 	void SetGhostDestructionBuildingOnMap(Map* _map, BuildingManagement* _builds, int _typeOfBuilding, const sf::Vector2i& _mapPosition);
@@ -88,6 +90,7 @@ public:
 	void UpdateBuildWindow(struct Game *_game);
 	void DisplayBuildWindow(struct Game *_game);
 
+	void SaveFromMapPreviousBuildNSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding, unsigned short _spriteID);
 	void SaveFromMapPreviousBuildID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding);
 	void SaveFromMapPreviousSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _spriteID);
 	void LoadOnMapPreviousID();

@@ -34,7 +34,7 @@ public:
 	void AddNewBuildingToDestroy(const sf::Vector2f& _coordinates, int _buildingID);
 	bool BuildingDestructionExistence(const sf::Vector2f& _coordinates, int _buildingID);
 	void UpdateBuildingDestruction(BuildingManagement* _builds, Map* _map);
-	void RemoveBuildingOnMap(BuildingManagement* _builds, Map* _map, enum Floors _floorFocused, const int& _typeOfBuilding, const sf::Vector3i& _statsToApply, const sf::Vector2i& _mapPosition);
+	void RemoveBuildingOnMap(BuildingManagement* _builds, const int& _typeOfBuilding, const sf::Vector2i& _mapPosition);
 
 	void SavingForFile(std::ofstream* _file);
 	void LoadingFromFile(std::ifstream* _file);

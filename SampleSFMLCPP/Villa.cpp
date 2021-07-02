@@ -124,11 +124,11 @@ void Villa::UpdateBuildingSprite()
 			m_hasBeenBuilt = true;
 			m_isChangingSprite = false;
 
-			// Ser the ground
+			// Set the ground
 			if (pMap->IsCoordinatesIsInMap(m_mapPosition))
 			{
 				buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][m_building->GetSize().y - 1][m_building->GetSize().x - 1];
-
+				
 				pMap->GetMap()[ZERO_FLOOR + SPRITE_ID][m_mapPosition.y][m_mapPosition.x] = buildingSpriteID;
 
 				// Set the collisions and buildings id for the ground
@@ -145,6 +145,15 @@ void Villa::UpdateBuildingSprite()
 				{
 					if (pMap->IsCoordinatesIsInMap(sf::Vector2i(m_mapPosition.x - x, m_mapPosition.y - y)))
 					{
+						if (!(x == 0 && y == 0))
+						{
+							pMap->GetMap()[ZERO_FLOOR + SPRITE_ID][m_mapPosition.y - y][m_mapPosition.x - x] = 0;
+
+							// Set the collisions and buildings id for the ground
+							pMap->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_mapPosition.y - y][m_mapPosition.x - x] = (unsigned short)COLLISION;
+							pMap->GetMap()[ZERO_FLOOR + BUILDING_ID][m_mapPosition.y - y][m_mapPosition.x - x] = (unsigned short)TypeOfBuilding::BUILDING_VILLA;
+						}
+
 						buildingSpriteID = (unsigned short)m_building->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][m_building->GetSize().y - 1 - y][m_building->GetSize().x - 1 - x];
 
 						if (buildingSpriteID >= 0)

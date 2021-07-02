@@ -229,24 +229,84 @@ void BuildWindow::SetGhostBuildingOnMap(struct Game *_game, const int &_typeOfBu
 	}
 }
 
+sf::Vector2i BuildWindow::FindRealOriginBuildingPosition(Map* _map, BuildingManagement* _builds, int _typeOfBuilding, const sf::Vector2i& _mapPosition)
+{
+	if (_typeOfBuilding != 65535)
+	{
+		sf::Vector2i buildingMapPosition = _mapPosition;
+
+		switch ((TypeOfBuilding)_typeOfBuilding)
+		{
+		case BUILDING_VINES:
+			// OK
+			break;
+		case BUILDING_GRAPE_STOMPING_VATS:
+			buildingMapPosition = _builds->m_stompingVats.FindNearestBuilding((sf::Vector2f)buildingMapPosition);
+			break;
+		case BUILDING_WINE_PRESS:
+			buildingMapPosition = _builds->m_winePress.FindNearestBuilding((sf::Vector2f)buildingMapPosition);
+			break;
+		case BUILDING_WINE_STOREHOUSE:
+			buildingMapPosition = _builds->m_wineStorehouse.FindNearestBuilding((sf::Vector2f)buildingMapPosition);
+			break;
+		case BUILDING_STOREHOUSE:
+			buildingMapPosition = _builds->m_storehouse.FindNearestBuilding((sf::Vector2f)buildingMapPosition);
+			break;
+		case BUILDING_STALL:
+			if (_builds->m_stall != nullptr) buildingMapPosition = _builds->m_stall->GetMapPosition();
+			break;
+		case BUILDING_VILLA:
+			// OK
+			break;
+		case BUILDING_PATH:
+			// OK
+			break;
+		case BUILDING_PAVED_PATH:
+			// OK
+			break;
+		case BUILDING_ROAD:
+			if (_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y][_mapPosition.x] == 1) buildingMapPosition.y += 1;
+			break;
+		case BUILDING_DORMITORY:
+			break;
+		default:
+			break;
+		}
+
+		return buildingMapPosition;
+	}
+}
+
 
 void BuildWindow::SetGhostDestructionBuildingOnMap(Map *_map, BuildingManagement *_builds, int _typeOfBuilding, const sf::Vector2i& _mapPosition)
 {
-	std::cout << _typeOfBuilding << ' ' << _builds->m_buildings[_typeOfBuilding].GetSize().x << ' ' << _builds->m_buildings[_typeOfBuilding].GetSize().y << std::endl;
-	for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
+	if (_typeOfBuilding != 65535)
 	{
-		for (int x = 0; x < _builds->m_buildings[_typeOfBuilding].GetSize().x; x++)
-		{
-			if (_map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.y - y, _mapPosition.x - x)))
-			{
-				// Set the collisions and buildings id for the building
-				_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_WILL_BE_DESTROYED;
+		std::cout << _typeOfBuilding << ' ' << _builds->m_buildings[_typeOfBuilding].GetSize().x << ' ' << _builds->m_buildings[_typeOfBuilding].GetSize().y << std::endl;
 
-				std::cout << "DEVENU GHOST\n";
-			}
-			else
+		for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
+		{
+			for (int x = 0; x < _builds->m_buildings[_typeOfBuilding].GetSize().x; x++)
 			{
-				//std::cout << "\n\n\n\tError during building placement\n\n\n";
+				if (_map->IsCoordinatesIsInMap(sf::Vector2i(_mapPosition.y - y, _mapPosition.x - x)))
+				{
+					// Set the collisions and buildings id for the building
+					SaveFromMapPreviousBuildNSpriteID(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y), FIRST_FLOOR, _map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x], _map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x]);
+					_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_WILL_BE_DESTROYED;
+					_map->GetMap()[FIRST_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = -1;
+					_map->GetMap()[FIRST_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 0;
+
+					SaveFromMapPreviousBuildNSpriteID(sf::Vector2i(_mapPosition.x - x, _mapPosition.y - y), ZERO_FLOOR, _map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x], _map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x]);
+					_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_WILL_BE_DESTROYED;
+					_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = -1;
+					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 1;
+
+					std::cout << "DEVENU GHOST\n";
+				}
+				else
+				{
+					std::cout << "\n\n\n\tError during building destruction\n\n\n";
+				}
 			}
 		}
 	}
@@ -345,7 +405,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 				_game->m_buildingsListPlanned->AddBuildingPlannedToList(m_buildingCaseSelected, (enum TypeOfBuilding)m_IDChosenBuilding, _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize());
 				
 				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
-				_game->m_buildWindow.SetGhostBuildingOnMap(_game, (enum TypeOfBuilding)m_IDChosenBuilding, m_buildingCaseSelected);
+				SetGhostBuildingOnMap(_game, (enum TypeOfBuilding)m_IDChosenBuilding, m_buildingCaseSelected);
 				
 
 				// We remove the money needed to construct the building
@@ -361,14 +421,38 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 		else if (m_IDChosenBuilding == _game->m_builds.GetNumberOfBuildings())
 		{
 			// Collisions verifications
-			if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] != NO_COLLISION)
+			if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == BUILDING_GHOST)
 			{
 				int buildingIDFocused = _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
 
-				BuildingDestruction::GetSingleton()->AddNewBuildingToDestroy((sf::Vector2f)m_buildingCaseSelected, buildingIDFocused);
+				// We find the real position of the building
+				sf::Vector2i buildingOriginPosition = _game->m_buildingsListPlanned->FindBuildingCorresponding(&_game->m_builds, m_buildingCaseSelected, (enum TypeOfBuilding)buildingIDFocused);
+				
+				// We remove it from the planned list of buildings to construct
+				_game->m_buildingsListPlanned->RemoveBuildingAtPrecisePosition(buildingOriginPosition);
 
-				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
-				SetGhostDestructionBuildingOnMap(_game->m_map, &_game->m_builds, buildingIDFocused, m_buildingCaseSelected);
+				// Replace on the map the ghost building by the previous version
+
+
+				// Remove the previous saved position in the ghost list
+
+
+				// We give back the money for the building construction
+				_game->m_money.AddMoney(_game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
+			}
+			else if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] != NO_COLLISION)
+			{
+				int buildingIDFocused = _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
+
+				if (buildingIDFocused != 65535)
+				{
+					sf::Vector2i buildingOriginPosition = FindRealOriginBuildingPosition(_game->m_map, &_game->m_builds, buildingIDFocused, m_buildingCaseSelected);
+
+					BuildingDestruction::GetSingleton()->AddNewBuildingToDestroy((sf::Vector2f)buildingOriginPosition, buildingIDFocused);
+
+					// We add the temporary collision "BUILDING_GHOST" where the building has been placed
+					SetGhostDestructionBuildingOnMap(_game->m_map, &_game->m_builds, buildingIDFocused, buildingOriginPosition);
+				}
 			}
 		}
 	}
@@ -387,25 +471,37 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 
 	//std::cout << "Case : " << _game->buildingCaseSelected.x << " & " << _game->buildingCaseSelected.y << std::endl << std::endl;
 
-	m_sizeBuildingSelected = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize();
-
-	// Security to avoid an array exit
-	if (_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
+	if (m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 	{
-		if (m_IDChosenBuilding >= 0
-			&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
-		{
-			bool isAreaEmpty = true;
+		m_sizeBuildingSelected = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize();
 
-			for (int y = 0; y < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y; y++)
+		// Security to avoid an array exit
+		if (_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
+		{
+			if (m_IDChosenBuilding >= 0
+				&& m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 			{
-				for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
+				bool isAreaEmpty = true;
+
+				for (int y = 0; y < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y; y++)
 				{
-					if (_game->m_map->IsCoordinatesIsInMap(sf::Vector2i(m_buildingCaseSelected.y - y, m_buildingCaseSelected.x - x)))
+					for (int x = 0; x < _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x; x++)
 					{
-						// Check cell occupation concerning collisions at the zero and first floors
-						if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION
-							|| _game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
+						if (_game->m_map->IsCoordinatesIsInMap(sf::Vector2i(m_buildingCaseSelected.y - y, m_buildingCaseSelected.x - x)))
+						{
+							// Check cell occupation concerning collisions at the zero and first floors
+							if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION
+								|| _game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y - y][m_buildingCaseSelected.x - x] != NO_COLLISION)
+							{
+								// The case is occupied
+								isAreaEmpty = false;
+
+								// We cut the for loop
+								y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
+								x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
+							}
+						}
+						else
 						{
 							// The case is occupied
 							isAreaEmpty = false;
@@ -415,34 +511,28 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 							x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
 						}
 					}
-					else
-					{
-						// The case is occupied
-						isAreaEmpty = false;
-
-						// We cut the for loop
-						y = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y;
-						x = _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().x;
-					}
 				}
-			}
 
-			// If we didn't found an occupied place, we call that the place is empty
-			m_isBuildingCaseOccupied = (isAreaEmpty) ? false : true;
+				// If we didn't found an occupied place, we call that the place is empty
+				m_isBuildingCaseOccupied = (isAreaEmpty) ? false : true;
+			}
+		}
+		else
+		{
+			m_isBuildingCaseOccupied = true;
+		}
+
+		// In case where the player doesn't have enough money, or this is the stall, and it has been constructed, the cells on ground are displayed in red
+		if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost()
+			|| (m_IDChosenBuilding == BUILDING_STALL && _game->m_builds.m_stall->GetConstructionStatus() != BUILDING_DESTROYED))
+		{
+			m_isBuildingCaseOccupied = true;
 		}
 	}
 	else
 	{
-		m_isBuildingCaseOccupied = true;
+		m_sizeBuildingSelected = sf::Vector2i(1, 1);
 	}
-
-	// In case where the player doesn't have enough money, or this is the stall, and it has been constructed, the cells on ground are displayed in red
-	if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost()
-		|| (m_IDChosenBuilding == BUILDING_STALL && _game->m_builds.m_stall->GetConstructionStatus() != BUILDING_DESTROYED))
-	{
-		m_isBuildingCaseOccupied = true;
-	}
-
 
 	// Text creation if they don't exist
 	if (_game->m_builds.m_buildingsNameTexts == nullptr)
@@ -591,49 +681,52 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 		}
 	}
 
-	// Display of the building chosen
+
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->m_window);
 
-	Buildings* currentBuilding = &_game->m_builds.m_buildings[m_IDChosenBuilding];
-
-	// Display the building choosen on the mouse
-	for (int y = 0; y < currentBuilding->GetSize().y; y++)
+	// Display of the building chosen
+	if (m_IDChosenBuilding < _game->m_builds.GetNumberOfBuildings())
 	{
-		for (int x = 0; x < currentBuilding->GetSize().x; x++)
+		Buildings* currentBuilding = &_game->m_builds.m_buildings[m_IDChosenBuilding];
+
+		// Display the building choosen on the mouse
+		for (int y = 0; y < currentBuilding->GetSize().y; y++)
 		{
-			unsigned short buildingSpriteID;
-			
-			if (m_IDChosenBuilding == TypeOfBuilding::BUILDING_PATH || m_IDChosenBuilding == TypeOfBuilding::BUILDING_PAVED_PATH
-				|| m_IDChosenBuilding == TypeOfBuilding::BUILDING_ROAD)
+			for (int x = 0; x < currentBuilding->GetSize().x; x++)
 			{
-				buildingSpriteID = (unsigned short)currentBuilding->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][currentBuilding->GetSize().y - 1 - y][currentBuilding->GetSize().x - 1 - x];
-			}
-			else
-			{
-				buildingSpriteID = (unsigned short)currentBuilding->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][currentBuilding->GetSize().y - 1 - y][currentBuilding->GetSize().x - 1 - x];
-			}
-			
-			sf::Sprite buildingSprite = _game->m_builds.GetSpriteFromBuildID(m_IDChosenBuilding, buildingSpriteID);
+				unsigned short buildingSpriteID;
 
-			if (m_isBuildingCaseOccupied == false)
-			{
-				sf::Color color(255, 255, 255, 150);
-				buildingSprite.setColor(color);
-			}
-			else
-			{
-				sf::Color color(255, 0, 0, 150);
-				buildingSprite.setColor(color);
-			}
-			
-			sf::Vector2f tileCoordinates = WorldToScreen(- x, - y);
+				if (m_IDChosenBuilding == TypeOfBuilding::BUILDING_PATH || m_IDChosenBuilding == TypeOfBuilding::BUILDING_PAVED_PATH
+					|| m_IDChosenBuilding == TypeOfBuilding::BUILDING_ROAD)
+				{
+					buildingSpriteID = (unsigned short)currentBuilding->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_GROUND][currentBuilding->GetSize().y - 1 - y][currentBuilding->GetSize().x - 1 - x];
+				}
+				else
+				{
+					buildingSpriteID = (unsigned short)currentBuilding->GetVecBuildingsSpritesID()[(int)FloorsInBuildingSprites::FIBS_MAIN_FLOOR][currentBuilding->GetSize().y - 1 - y][currentBuilding->GetSize().x - 1 - x];
+				}
 
-			BlitSprite(buildingSprite, (float)mousePosition.x + tileCoordinates.x, (float)mousePosition.y + tileCoordinates.y, *_game->m_window);
+				sf::Sprite buildingSprite = _game->m_builds.GetSpriteFromBuildID(m_IDChosenBuilding, buildingSpriteID);
 
-			buildingSprite.setColor(sf::Color::White);
+				if (m_isBuildingCaseOccupied == false)
+				{
+					sf::Color color(255, 255, 255, 150);
+					buildingSprite.setColor(color);
+				}
+				else
+				{
+					sf::Color color(255, 0, 0, 150);
+					buildingSprite.setColor(color);
+				}
+
+				sf::Vector2f tileCoordinates = WorldToScreen(-x, -y);
+
+				BlitSprite(buildingSprite, (float)mousePosition.x + tileCoordinates.x, (float)mousePosition.y + tileCoordinates.y, *_game->m_window);
+
+				buildingSprite.setColor(sf::Color::White);
+			}
 		}
 	}
-
 
 	// Display the "Out of territory" and "Place already occupied" messages
 	if (m_isBuildingCaseOccupied == true
@@ -653,6 +746,24 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	}
 }
 
+void BuildWindow::SaveFromMapPreviousBuildNSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding, unsigned short _spriteID)
+{
+	LinkedListClass::sElement* newElement = new LinkedListClass::sElement;
+	newElement->data = new sPreviousPositionIDs;
+
+	// Save the position in map
+	((sPreviousPositionIDs*)newElement->data)->mapPosition = _mapPosition;
+	((sPreviousPositionIDs*)newElement->data)->currentFloor = _currentFloor;
+
+	((sPreviousPositionIDs*)newElement->data)->typeOfBuilding = _typeOfBuilding;
+	((sPreviousPositionIDs*)newElement->data)->spriteID = _spriteID;
+
+	newElement->status = ElementStatus::ELEMENT_ACTIVE;
+
+	// Add this element at the end the list
+	if (m_listOfPreviousID == nullptr) m_listOfPreviousID = LinkedListInitialisation();
+	AddElementToLinkedList(m_listOfPreviousID, newElement, -1);
+}
 
 
 void BuildWindow::SaveFromMapPreviousBuildID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding)
@@ -705,7 +816,12 @@ void BuildWindow::LoadOnMapPreviousID()
 			{
 				sPreviousPositionIDs* pPrevPosID = (sPreviousPositionIDs*)currentElement->data;
 
-				if (pPrevPosID->currentFloor % 3 == BUILDING_ID)
+				if (pPrevPosID->currentFloor % 3 == COLLISIONS_ID)
+				{
+					pMap->GetMap()[pPrevPosID->currentFloor + BUILDING_ID][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->typeOfBuilding;
+					pMap->GetMap()[pPrevPosID->currentFloor + SPRITE_ID][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->spriteID;
+				}
+				else if (pPrevPosID->currentFloor % 3 == BUILDING_ID)
 				{
 					pMap->GetMap()[pPrevPosID->currentFloor][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->typeOfBuilding;
 				}

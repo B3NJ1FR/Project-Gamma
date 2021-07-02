@@ -99,6 +99,35 @@ int BuildingsListPlanned::GetBuildingID() const
 	}
 }
 
+sf::Vector2i BuildingsListPlanned::FindBuildingCorresponding(BuildingManagement* _builds, const sf::Vector2i& _mapPosition, const enum TypeOfBuilding& _buildingID)
+{
+	sf::Vector2i buildingPosition = { -1, -1 };
+
+	if (m_listOfBuildingsPlanned != nullptr)
+	{
+		if (m_listOfBuildingsPlanned->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_listOfBuildingsPlanned->first; currentElement != nullptr; currentElement = currentElement->next)
+			{
+				int buildingID = ((struct DataBuildings*)currentElement->data)->m_buildingID;
+
+				if (_buildingID == buildingID)
+				{
+					if (_mapPosition.x <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x
+						&& _mapPosition.x >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x - _builds->m_buildings[buildingID].GetSize().x
+						&& _mapPosition.y <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y
+						&& _mapPosition.y >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y - _builds->m_buildings[buildingID].GetSize().y)
+					{
+						return (sf::Vector2i)((struct DataBuildings*)currentElement->data)->m_mapPosition;
+					}
+				}
+			}
+		}
+	}
+
+	return buildingPosition;
+}
+
 void BuildingsListPlanned::AddBuildingPlannedToList(const sf::Vector2i &_mapPosition, const enum TypeOfBuilding &_buildingID, const sf::Vector2i &_buildingSize)
 {
 	LinkedListClass::sElement* newBuilding = new LinkedListClass::sElement;
@@ -128,6 +157,28 @@ void BuildingsListPlanned::DeleteCurrentFirstBuildingInList()
 		{
 			// Deletion of the first element of the list
 			RemoveElementsOfLinkedList(m_listOfBuildingsPlanned, true, 1);
+		}
+	}
+}
+
+void BuildingsListPlanned::RemoveBuildingAtPrecisePosition(sf::Vector2i& _mapPosition)
+{
+	if (m_listOfBuildingsPlanned != nullptr)
+	{
+		if (m_listOfBuildingsPlanned->first != nullptr)
+		{
+			for (LinkedListClass::sElement* currentElement = m_listOfBuildingsPlanned->first; currentElement != nullptr; currentElement = currentElement->next)
+			{
+				int buildingID = ((struct DataBuildings*)currentElement->data)->m_buildingID;
+
+				if (_mapPosition == ((struct DataBuildings*)currentElement->data)->m_mapPosition)
+				{
+					currentElement->status == ELEMENT_DELETION_REQUIRED;
+					break;
+				}
+			}
+
+			RemoveElementsOfLinkedList(m_listOfBuildingsPlanned);
 		}
 	}
 }
