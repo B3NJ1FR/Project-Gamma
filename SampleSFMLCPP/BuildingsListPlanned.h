@@ -29,7 +29,7 @@ public:
 	sf::Vector2i GetBuildingPositionInMap() const;
 	sf::Vector2i GetBuildingSize() const;
 	int GetBuildingID() const;
-	sf::Vector2i FindBuildingCorresponding(BuildingManagement* _builds, const sf::Vector2i& _mapPosition, const enum TypeOfBuilding& _buildingID);
+	sf::Vector2i FindBuildingCorresponding(const sf::Vector2i& _mapPosition, const enum TypeOfBuilding& _buildingID);
 
 	// Methods
 	void AddBuildingPlannedToList(const sf::Vector2i &_mapPosition, const enum TypeOfBuilding &_buildingID, const sf::Vector2i &_buildingSize);

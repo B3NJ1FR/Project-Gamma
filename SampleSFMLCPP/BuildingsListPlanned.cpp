@@ -99,7 +99,7 @@ int BuildingsListPlanned::GetBuildingID() const
 	}
 }
 
-sf::Vector2i BuildingsListPlanned::FindBuildingCorresponding(BuildingManagement* _builds, const sf::Vector2i& _mapPosition, const enum TypeOfBuilding& _buildingID)
+sf::Vector2i BuildingsListPlanned::FindBuildingCorresponding(const sf::Vector2i& _mapPosition, const enum TypeOfBuilding& _buildingID)
 {
 	sf::Vector2i buildingPosition = { -1, -1 };
 
@@ -113,10 +113,14 @@ sf::Vector2i BuildingsListPlanned::FindBuildingCorresponding(BuildingManagement*
 
 				if (_buildingID == buildingID)
 				{
-					if (_mapPosition.x <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x
-						&& _mapPosition.x >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x - _builds->m_buildings[buildingID].GetSize().x
+					if (_mapPosition == ((struct DataBuildings*)currentElement->data)->m_mapPosition)
+					{
+						return (sf::Vector2i)((struct DataBuildings*)currentElement->data)->m_mapPosition;
+					}
+					else if (_mapPosition.x <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x
+						&& _mapPosition.x >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x - ((struct DataBuildings*)currentElement->data)->m_buildingSize.x
 						&& _mapPosition.y <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y
-						&& _mapPosition.y >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y - _builds->m_buildings[buildingID].GetSize().y)
+						&& _mapPosition.y >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y - ((struct DataBuildings*)currentElement->data)->m_buildingSize.y)
 					{
 						return (sf::Vector2i)((struct DataBuildings*)currentElement->data)->m_mapPosition;
 					}
@@ -169,10 +173,9 @@ void BuildingsListPlanned::RemoveBuildingAtPrecisePosition(sf::Vector2i& _mapPos
 		{
 			for (LinkedListClass::sElement* currentElement = m_listOfBuildingsPlanned->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
-				int buildingID = ((struct DataBuildings*)currentElement->data)->m_buildingID;
-
 				if (_mapPosition == ((struct DataBuildings*)currentElement->data)->m_mapPosition)
 				{
+					std::cout << "Destruction " << _mapPosition.x << " " << _mapPosition.y << std::endl;
 					currentElement->status == ELEMENT_DELETION_REQUIRED;
 					break;
 				}

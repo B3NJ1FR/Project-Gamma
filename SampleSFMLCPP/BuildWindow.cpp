@@ -282,8 +282,6 @@ void BuildWindow::SetGhostDestructionBuildingOnMap(Map *_map, BuildingManagement
 {
 	if (_typeOfBuilding != 65535)
 	{
-		std::cout << _typeOfBuilding << ' ' << _builds->m_buildings[_typeOfBuilding].GetSize().x << ' ' << _builds->m_buildings[_typeOfBuilding].GetSize().y << std::endl;
-
 		for (int y = 0; y < _builds->m_buildings[_typeOfBuilding].GetSize().y; y++)
 		{
 			for (int x = 0; x < _builds->m_buildings[_typeOfBuilding].GetSize().x; x++)
@@ -300,8 +298,6 @@ void BuildWindow::SetGhostDestructionBuildingOnMap(Map *_map, BuildingManagement
 					_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][_mapPosition.y - y][_mapPosition.x - x] = BUILDING_WILL_BE_DESTROYED;
 					_map->GetMap()[ZERO_FLOOR + BUILDING_ID][_mapPosition.y - y][_mapPosition.x - x] = -1;
 					_map->GetMap()[ZERO_FLOOR + SPRITE_ID][_mapPosition.y - y][_mapPosition.x - x] = 1;
-
-					std::cout << "DEVENU GHOST\n";
 				}
 				else
 				{
@@ -425,20 +421,38 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 			{
 				int buildingIDFocused = _game->m_map->GetMap()[FIRST_FLOOR + BUILDING_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x];
 
-				// We find the real position of the building
-				sf::Vector2i buildingOriginPosition = _game->m_buildingsListPlanned->FindBuildingCorresponding(&_game->m_builds, m_buildingCaseSelected, (enum TypeOfBuilding)buildingIDFocused);
-				
-				// We remove it from the planned list of buildings to construct
-				_game->m_buildingsListPlanned->RemoveBuildingAtPrecisePosition(buildingOriginPosition);
+				if (buildingIDFocused != 65535)
+				{
+					// We find the real position of the building
+					sf::Vector2i buildingOriginPosition = _game->m_buildingsListPlanned->FindBuildingCorresponding(m_buildingCaseSelected, (enum TypeOfBuilding)buildingIDFocused);
 
-				// Replace on the map the ghost building by the previous version
+					if (buildingOriginPosition != sf::Vector2i(-1, -1))
+					{
+						std::cout << buildingOriginPosition.x << " " << buildingOriginPosition.y << std::endl;
 
+						// We remove it from the planned list of buildings to construct
+						_game->m_buildingsListPlanned->RemoveBuildingAtPrecisePosition(buildingOriginPosition);
 
-				// Remove the previous saved position in the ghost list
+						// Replace on the map the ghost building by the previous version
+						for (int y = 0; y < _game->m_builds.m_buildings[buildingIDFocused].GetSize().y; y++)
+						{
+							for (int x = 0; x < _game->m_builds.m_buildings[buildingIDFocused].GetSize().x; x++)
+							{
+								RollBackToPreviousID(sf::Vector2i(buildingOriginPosition.x - x, buildingOriginPosition.y - y));
 
+								_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][buildingOriginPosition.y - y][buildingOriginPosition.x - x] = NO_COLLISION;
+								_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][buildingOriginPosition.y - y][buildingOriginPosition.x - x] = NO_COLLISION;
+							}
+						}
 
-				// We give back the money for the building construction
-				_game->m_money.AddMoney(_game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
+						// We give back the money for the building construction
+						_game->m_money.AddMoney(_game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
+					}
+					else
+					{
+						std::cout << "Ghost destruction - Can't find the building in the list of buildings planned to be constructed.\n";
+					}
+				}
 			}
 			else if (_game->m_map->GetMap()[FIRST_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] != NO_COLLISION)
 			{
@@ -804,6 +818,43 @@ void BuildWindow::SaveFromMapPreviousSpriteID(sf::Vector2i _mapPosition, unsigne
 	AddElementToLinkedList(m_listOfPreviousID, newElement, -1);
 }
 
+void BuildWindow::RollBackToPreviousID(sf::Vector2i _mapPosition)
+{
+	if (m_listOfPreviousID != nullptr)
+	{
+		if (m_listOfPreviousID->first != nullptr)
+		{
+			Map* pMap = Map::GetSingleton();
+
+			for (LinkedListClass::sElement* currentElement = m_listOfPreviousID->first; currentElement != nullptr; currentElement = currentElement->next)
+			{
+				sPreviousPositionIDs* pPrevPosID = (sPreviousPositionIDs*)currentElement->data;
+
+				if (pPrevPosID->mapPosition == _mapPosition)
+				{
+					if (pPrevPosID->currentFloor % 3 == COLLISIONS_ID)
+					{
+						pMap->GetMap()[pPrevPosID->currentFloor + BUILDING_ID][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->typeOfBuilding;
+						pMap->GetMap()[pPrevPosID->currentFloor + SPRITE_ID][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->spriteID;
+					}
+					else if (pPrevPosID->currentFloor % 3 == BUILDING_ID)
+					{
+						pMap->GetMap()[pPrevPosID->currentFloor][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->typeOfBuilding;
+					}
+					else if (pPrevPosID->currentFloor % 3 == SPRITE_ID)
+					{
+						pMap->GetMap()[pPrevPosID->currentFloor][pPrevPosID->mapPosition.y][pPrevPosID->mapPosition.x] = pPrevPosID->spriteID;
+					}
+
+					currentElement->status = ElementStatus::ELEMENT_DELETION_REQUIRED;
+				}
+			}
+
+			RemoveElementsOfLinkedList(m_listOfPreviousID);
+		}
+	}
+}
+
 void BuildWindow::LoadOnMapPreviousID()
 {
 	if (m_listOfPreviousID != nullptr)
@@ -878,7 +929,6 @@ void BuildWindow::LoadingGhostBuildingsFromFile(std::ifstream* _file)
 	// We add every element data to the list
 	for (int i = RESET; i < previousListSize; i++)
 	{
-		std::cout << i << std::endl;
 		LinkedListClass::sElement* newElement = new LinkedListClass::sElement;
 		newElement->data = new sPreviousPositionIDs;
 

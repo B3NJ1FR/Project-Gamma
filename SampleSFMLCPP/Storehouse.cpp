@@ -636,14 +636,6 @@ sf::Vector2i Storehouse::FindNearestBuilding(const sf::Vector2f &_mapPosition)
 						lastLowerDistance = distance;
 						buildingPosition = (sf::Vector2i)((Storehouse::sStorehouseData *)currentElement->data)->mapPosition;
 					}
-					else if (distance == lastLowerDistance)
-					{
-
-					}
-					else
-					{
-
-					}
 
 				}
 			}

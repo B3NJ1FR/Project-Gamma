@@ -93,6 +93,7 @@ public:
 	void SaveFromMapPreviousBuildNSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding, unsigned short _spriteID);
 	void SaveFromMapPreviousBuildID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding);
 	void SaveFromMapPreviousSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _spriteID);
+	void RollBackToPreviousID(sf::Vector2i _mapPosition);
 	void LoadOnMapPreviousID();
 
 	void SavingGhostBuildingsForFile(std::ofstream* _file);
