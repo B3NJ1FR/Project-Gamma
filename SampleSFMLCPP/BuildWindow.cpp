@@ -428,8 +428,6 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 
 					if (buildingOriginPosition != sf::Vector2i(-1, -1))
 					{
-						std::cout << buildingOriginPosition.x << " " << buildingOriginPosition.y << std::endl;
-
 						// We remove it from the planned list of buildings to construct
 						_game->m_buildingsListPlanned->RemoveBuildingAtPrecisePosition(buildingOriginPosition);
 

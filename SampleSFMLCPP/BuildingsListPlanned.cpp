@@ -115,14 +115,14 @@ sf::Vector2i BuildingsListPlanned::FindBuildingCorresponding(const sf::Vector2i&
 				{
 					if (_mapPosition == ((struct DataBuildings*)currentElement->data)->m_mapPosition)
 					{
-						return (sf::Vector2i)((struct DataBuildings*)currentElement->data)->m_mapPosition;
+						return ((struct DataBuildings*)currentElement->data)->m_mapPosition;
 					}
 					else if (_mapPosition.x <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x
-						&& _mapPosition.x >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.x - ((struct DataBuildings*)currentElement->data)->m_buildingSize.x
+						&& _mapPosition.x > ((struct DataBuildings*)currentElement->data)->m_mapPosition.x - ((struct DataBuildings*)currentElement->data)->m_buildingSize.x
 						&& _mapPosition.y <= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y
-						&& _mapPosition.y >= ((struct DataBuildings*)currentElement->data)->m_mapPosition.y - ((struct DataBuildings*)currentElement->data)->m_buildingSize.y)
+						&& _mapPosition.y > ((struct DataBuildings*)currentElement->data)->m_mapPosition.y - ((struct DataBuildings*)currentElement->data)->m_buildingSize.y)
 					{
-						return (sf::Vector2i)((struct DataBuildings*)currentElement->data)->m_mapPosition;
+						return ((struct DataBuildings*)currentElement->data)->m_mapPosition;
 					}
 				}
 			}
@@ -175,8 +175,7 @@ void BuildingsListPlanned::RemoveBuildingAtPrecisePosition(sf::Vector2i& _mapPos
 			{
 				if (_mapPosition == ((struct DataBuildings*)currentElement->data)->m_mapPosition)
 				{
-					std::cout << "Destruction " << _mapPosition.x << " " << _mapPosition.y << std::endl;
-					currentElement->status == ELEMENT_DELETION_REQUIRED;
+					currentElement->status = ElementStatus::ELEMENT_DELETION_REQUIRED;
 					break;
 				}
 			}
@@ -184,6 +183,7 @@ void BuildingsListPlanned::RemoveBuildingAtPrecisePosition(sf::Vector2i& _mapPos
 			RemoveElementsOfLinkedList(m_listOfBuildingsPlanned);
 		}
 	}
+
 }
 
 void BuildingsListPlanned::SavingBuildingsListPlannedForFile(std::ofstream* _file)

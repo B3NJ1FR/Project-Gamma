@@ -821,9 +821,9 @@ sf::Vector2i SpecificsBuildings::FindNearestBuilding(const sf::Vector2f &_mapPos
 			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
 			{
 				if (_mapPosition.x <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x
-					&& _mapPosition.x >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
+					&& _mapPosition.x > ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.x - m_building->GetSize().x
 					&& _mapPosition.y <= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y
-					&& _mapPosition.y >= ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
+					&& _mapPosition.y > ((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition.y - m_building->GetSize().y)
 				{
 					return (sf::Vector2i)((SpecificsBuildings::sBuildingData*)currentElement->data)->mapPosition;
 				}
