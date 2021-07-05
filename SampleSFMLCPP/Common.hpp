@@ -26,8 +26,9 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *
 void LoadTextString(sf::Text *_textToInitialise, std::string _string);
 void LoadTextString(sf::Text *_textToInitialise, const char * _string);
 
-void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable);
+void ChangeTextStringOrigin(sf::Text* _textToModify, int _originPosition);
 
+void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable);
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable1, const int &_variable2);
 
 std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalCharactersLength);

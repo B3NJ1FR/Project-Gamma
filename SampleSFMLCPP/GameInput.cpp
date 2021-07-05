@@ -389,7 +389,7 @@ void GameInput(struct Game *_game)
 							}
 							else
 							{
-								_game->m_workersList->WorkerListSetEndPosition(_game->m_buildWindow.GetBuildingCheckboxSelected(), _game->m_map->GetMap());
+								_game->m_workersList->WorkerListSetEndPosition(_game->m_buildWindow.GetBuildingCheckboxSelected());
 							}
 						}
 

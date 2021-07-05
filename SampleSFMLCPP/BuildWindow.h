@@ -29,6 +29,7 @@ private:
 	sf::Text *m_textBuildingHelps;
 
 	sf::Sprite m_buildingUI;
+	sf::Sprite m_buildingUIUpper;
 	sf::Sprite m_buildingUIclosed;
 	sf::Sprite m_buildingUIdestroyBuildings;
 	sf::Sprite m_blackFilter;

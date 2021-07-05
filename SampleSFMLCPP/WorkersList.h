@@ -30,12 +30,12 @@ public:
 	void DisplayWorkersSprite(const sf::Vector2i &_actualPosition, const sf::Vector3f &_cameraPosition, const sf::Vector2f &_gameScale, const bool& _characterIsSelected, sf::RenderWindow &_window);
 	void ChangeWorkerNumberSelectedAdd();
 	void ChangeWorkerNumberSelectedSubtract();
-	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map);
-	void CheckAndUpdateWorkersPath(unsigned short ***_map);
+	void WorkerListSetEndPosition(const sf::Vector2i &_mapPosition);
+	void CheckAndUpdateWorkersPath();
 	void ClearStorages();
 
 	// Save and Load
 	void SavingWorkersListForFile(std::ofstream *_file);
-	void LoadingWorkersListFromFile(std::ifstream *_file, unsigned short ***_map);
+	void LoadingWorkersListFromFile(std::ifstream *_file);
 
 };

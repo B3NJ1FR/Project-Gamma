@@ -78,7 +78,8 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 
 void BuildWindow::InitSpritesBuildWindow()
 {
-	m_buildingUI = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll_test.png", 0);
+	m_buildingUI = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll.png", 0);
+	m_buildingUIUpper = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll_upper.png", 0);
 	m_buildingUIclosed = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_closed.png", 0);
 	m_buildingUIdestroyBuildings = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/destroy_buildings.png", 0);
 	m_contour = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/contour_selection.png", 0);
@@ -572,6 +573,7 @@ void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], _game->m_builds.m_buildings[m_IDChosenBuilding].GetSize().y);
 
 		UpdateDynamicsTexts(&m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
+		ChangeTextStringOrigin(&m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], 3);
 		
 		// Texts				
 		LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], ConvertStringIntoParagraph(_game->m_builds.m_buildings[m_IDChosenBuilding].GetDescription(), 25));
@@ -640,10 +642,10 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 
 
 			// Display the money cost of the building
-			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) - 45, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
+			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 5, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
 			
 			_game->m_money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
-			BlitSprite(_game->m_money.GetSprite(), ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) + 45, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
+			BlitSprite(_game->m_money.GetSprite(), ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) + 35, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
 			_game->m_money.SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}
@@ -654,8 +656,8 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	// Display of the buildings list
 	for (int i = 0; i < _game->m_builds.GetNumberOfBuildings(); i++)
 	{
-		if (((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height + 40)
-			&& ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= (float)_game->m_screenReso->y - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height - 40)
+		if (((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList >= ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height)
+			&& ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList <= (float)_game->m_screenReso->y - _game->m_builds.m_buildings[i].GetIcon().getGlobalBounds().height)
 		{
 			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 
@@ -756,6 +758,8 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			BlitString(m_textBuildingCaseOccupied[0], 500, _game->m_screenReso->y - 100, *_game->m_window);
 		}
 	}
+
+	BlitSprite(m_buildingUIUpper, (float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width, (float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height, 0.0f, *_game->m_window);
 }
 
 void BuildWindow::SaveFromMapPreviousBuildNSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding, unsigned short _spriteID)

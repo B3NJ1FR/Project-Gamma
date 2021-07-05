@@ -1216,7 +1216,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 					_game->m_buildingsListPlanned->DeleteCurrentFirstBuildingInList();
 
 					//Update the workers's paths
-					_game->m_workersList->CheckAndUpdateWorkersPath(_game->m_map->GetMap());
+					_game->m_workersList->CheckAndUpdateWorkersPath();
 
 
 					// Test if the list is empty or not

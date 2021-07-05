@@ -47,31 +47,26 @@ Workers::~Workers()
 
 
 
-void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short*** _map)
+void Workers::SetEndingPosition(const sf::Vector2i& _mapPosition)
 {
-	if (_mapPosition.x >= 0 && _mapPosition.y >= 0)
-	{
-		m_mapEndPosition = (sf::Vector2f)_mapPosition;
-	}
+	Map* pMap = Map::GetSingleton();
 
-	//
-	// CRASH SORTIE DE TABLEAU A CAUSE DE X > 100000
-	//
+	if (pMap->IsCoordinatesIsInMap(_mapPosition)) m_mapEndPosition = (sf::Vector2f)_mapPosition;
 
 	// If this place is a building
-	if (_map[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x] >= 0)
+	if (pMap->GetMap()[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x] >= 0)
 	{
 		// We change the worker's status to working
 		m_isItWorkingPlace = true;
-		m_currentBuilding = (enum TypeOfBuilding)_map[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
+		m_currentBuilding = (enum TypeOfBuilding)pMap->GetMap()[FIRST_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
-	else if (_map[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x] >= 0)
+	else if (pMap->GetMap()[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x] >= 0)
 	{
 		// We change the worker's status to working
 		m_isItWorkingPlace = true;
-		m_currentBuilding = (enum TypeOfBuilding)_map[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
+		m_currentBuilding = (enum TypeOfBuilding)pMap->GetMap()[ZERO_FLOOR + BUILDING_ID][(int)m_mapEndPosition.y][(int)m_mapEndPosition.x];
 
 		//std::cout << "This is a working place : " << _map[FIRST_FLOOR + BUILDING_ID][(int)mapEndPosition.y][(int)mapEndPosition.x] << std::endl;
 	}
@@ -647,7 +642,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 						if (targetedPosition != sf::Vector2i(RESET, RESET))
 						{
-							SetEndingPosition(targetedPosition, _map->GetMap());
+							SetEndingPosition(targetedPosition);
 							ActiveLauchingMovement();
 						}
 
@@ -681,7 +676,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
+						SetEndingPosition(targetedPosition);
 						ActiveLauchingMovement();
 					}
 
@@ -726,7 +721,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 						if (targetedPosition != sf::Vector2i(RESET, RESET))
 						{
-							SetEndingPosition(targetedPosition, _map->GetMap());
+							SetEndingPosition(targetedPosition);
 							ActiveLauchingMovement();
 						}
 
@@ -760,7 +755,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
+						SetEndingPosition(targetedPosition);
 						ActiveLauchingMovement();
 					}
 
@@ -879,7 +874,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 						if (targetedPosition != sf::Vector2i(RESET, RESET))
 						{
-							SetEndingPosition(targetedPosition, _map->GetMap());
+							SetEndingPosition(targetedPosition);
 							ActiveLauchingMovement();
 						}
 
@@ -913,7 +908,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
+						SetEndingPosition(targetedPosition);
 						ActiveLauchingMovement();
 					}
 
@@ -1034,7 +1029,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 						if (targetedPosition != sf::Vector2i(RESET, RESET))
 						{
-							SetEndingPosition(targetedPosition, _map->GetMap());
+							SetEndingPosition(targetedPosition);
 							ActiveLauchingMovement();
 						}
 
@@ -1068,7 +1063,7 @@ void Workers::UpdatePathAndActivities(Map* _map, BuildingManagement* _builds)
 
 					if (targetedPosition != sf::Vector2i(RESET, RESET))
 					{
-						SetEndingPosition(targetedPosition, _map->GetMap());
+						SetEndingPosition(targetedPosition);
 						ActiveLauchingMovement();
 					}
 

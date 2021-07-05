@@ -243,7 +243,7 @@ void WorkersList::ChangeWorkerNumberSelectedSubtract()
 	}
 }
 
-void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, unsigned short ***_map)
+void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition)
 {
 	if (m_list != nullptr)
 	{
@@ -259,7 +259,7 @@ void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, uns
 				positionCounter++;
 			}
 
-			((Workers *)currentElement->data)->SetEndingPosition(_mapPosition, _map);
+			((Workers *)currentElement->data)->SetEndingPosition(_mapPosition);
 			
 			((Workers *)currentElement->data)->SetWorkerStatus(IDLE);
 			((Workers *)currentElement->data)->ActiveLauchingMovement();
@@ -268,7 +268,7 @@ void WorkersList::WorkerListSetEndPosition(const sf::Vector2i &_mapPosition, uns
 }
 
 
-void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
+void WorkersList::CheckAndUpdateWorkersPath()
 {
 	if (m_list != nullptr)
 	{
@@ -285,7 +285,7 @@ void WorkersList::CheckAndUpdateWorkersPath(unsigned short ***_map)
 				{
 					//std::cout << "The worker number " << positionCounter++ << "/" << list->size << " need to change his path\n\n";
 
-					((Workers *)currentElement->data)->SetEndingPosition((sf::Vector2i)((Workers *)currentElement->data)->GetWorkerEndingPosition(), _map);
+					((Workers *)currentElement->data)->SetEndingPosition((sf::Vector2i)((Workers *)currentElement->data)->GetWorkerEndingPosition());
 					
 					((Workers *)currentElement->data)->SetWorkerStatus(IDLE);
 					((Workers *)currentElement->data)->ActiveLauchingMovement();
@@ -378,7 +378,7 @@ void WorkersList::SavingWorkersListForFile(std::ofstream *_file)
 }
 
 
-void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned short ***_map)
+void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file)
 {
 	// Delete every paths if workers are moving
 	if (m_list != nullptr)
@@ -435,7 +435,7 @@ void WorkersList::LoadingWorkersListFromFile(std::ifstream *_file, unsigned shor
 			//std::cout << "End map position : " << mapEndingPositionX << " " << mapEndingPositionY << std::endl;
 
 			sf::Vector2i mapEndingPosition = { (int)mapEndingPositionX, (int)mapEndingPositionY };
-			((Workers *)newWorker->data)->SetEndingPosition(mapEndingPosition, _map);
+			((Workers *)newWorker->data)->SetEndingPosition(mapEndingPosition);
 
 			((Workers *)newWorker->data)->SetWorkerStatus(IDLE);
 			((Workers *)newWorker->data)->ActiveLauchingMovement();

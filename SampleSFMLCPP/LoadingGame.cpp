@@ -59,7 +59,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	std::cout << "Time loaded !\n";
 
 	// Loading of the workers data
-	_game->m_workersList->LoadingWorkersListFromFile(&saveFile, _game->m_map->GetMap());
+	_game->m_workersList->LoadingWorkersListFromFile(&saveFile);
 	std::cout << "Workers loaded !\n";
 
 	// Loading of the vines data

@@ -333,6 +333,37 @@ void LoadTextString(sf::Text *_textToInitialise, const char * _string)
 	_textToInitialise->setString(_string);
 }
 
+void ChangeTextStringOrigin(sf::Text* _textToModify, int _originPosition)
+{
+	if (_originPosition == 1)
+	{
+		sf::Vector2f origin = { (float)_textToModify->getGlobalBounds().width, (float)_textToModify->getGlobalBounds().height };
+
+		origin.x = origin.x / 2;
+		origin.y = origin.y / 2;
+
+		_textToModify->setOrigin(origin);
+	}
+	else if (_originPosition == 2)
+	{
+		sf::Vector2f origin = { (float)_textToModify->getGlobalBounds().width, (float)_textToModify->getGlobalBounds().height };
+
+		origin.x = origin.x / 2;
+		origin.y = RESET;
+
+		_textToModify->setOrigin(origin);
+	}
+	else if (_originPosition == 3)
+	{
+		sf::Vector2f origin = { (float)_textToModify->getGlobalBounds().width, (float)_textToModify->getGlobalBounds().height };
+
+		origin.x = origin.x;
+		origin.y = RESET;
+
+		_textToModify->setOrigin(origin);
+	}
+}
+
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable)
 {
 	char tabJoueur[64];

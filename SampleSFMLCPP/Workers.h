@@ -52,7 +52,7 @@ public:
 	inline void SetWorkerIsInWorkingPlace(const bool& _isItWorkingPlace) { m_isItWorkingPlace = _isItWorkingPlace; };
 	inline void SetTimeToDeposit(const float& _time) { m_timeToDeposit = _time; };
 	inline void AddTimeToDeposit(const float& _frametime) { m_timeToDeposit += _frametime; };
-	void SetEndingPosition(const sf::Vector2i& _mapPosition, unsigned short ***_map);
+	void SetEndingPosition(const sf::Vector2i& _mapPosition);
 
 	// Getters
 	inline sf::Vector2f GetWorkerPosition() const { return m_mapPosition; };
