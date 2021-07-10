@@ -1257,6 +1257,7 @@ void MainCharacter::UpdatePathAndActivities(Game* _game)
 			{
 				_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_PAUSE);
 				_game->m_actualGameState = VILLA_MANAGEMENT;
+				_game->m_villaManagement.SetInternalStateMachine(VillaManagementStateMachine::NORMAL_STATE);
 			}
 
 			SetMainCharacterStatus(IDLE);

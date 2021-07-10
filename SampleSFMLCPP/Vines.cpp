@@ -88,7 +88,7 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 	// En fonction de la période actuelle, mettre l'annuel state concerné en conséquence
 	((Vines::sVines *)newVine->data)->annualState = NEED_PRUNE;
 	((Vines::sVines *)newVine->data)->internalState = InternalState::STATE_INIT;
-	((Vines::sVines *)newVine->data)->previousMonth = TimeManagement::GetSingleton()->GetActualMonth();
+	((Vines::sVines *)newVine->data)->previousMonth = TimeManagement::GetSingleton()->GetCurrentMonth();
 
 	// Allocation of the storage
 	((Vines::sVines *)newVine->data)->storage = new Storage();
@@ -173,9 +173,9 @@ void Vines::UpdateVineLife()
 
 					vineData->lifeTime += pTimeManagement->GetFrameTime();
 
-					if (vineData->previousMonth != pTimeManagement->GetActualMonth())
+					if (vineData->previousMonth != pTimeManagement->GetCurrentMonth())
 					{
-						vineData->previousMonth = pTimeManagement->GetActualMonth();
+						vineData->previousMonth = pTimeManagement->GetCurrentMonth();
 
 						switch (vineData->previousMonth)
 						{

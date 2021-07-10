@@ -307,7 +307,7 @@ void Game::Display()
 	}
 	else if (m_actualGameState == VILLA_MANAGEMENT)
 	{
-		m_villaManagement.DisplayVillaManagement(*m_window);
+		m_villaManagement.DisplayVillaManagement(*m_window, *m_screenReso);
 		m_previousGameState = VILLA_MANAGEMENT;
 	}
 	else if (m_actualGameState == ESTATE_DATA_N_STATISTICS)
@@ -347,26 +347,25 @@ void Game::Display()
 
 	if (m_actualGameState == PAUSE_WINDOW)
 	{
-		if (m_previousGameState == NORMAL_MODE)
+		if (m_previousGameState != NORMAL_MODE)
 		{
-
-		}
-		else if (m_previousGameState == BUILD_MODE)
-		{
-			m_buildWindow.DisplayBuildWindow(this);
-			//DisplayUIBuildingMode(_game);
-		}
-		else if (m_previousGameState == SELLING_WINDOW)
-		{
-			m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
-		}
-		else if (m_previousGameState == VILLA_MANAGEMENT)
-		{
-			m_villaManagement.DisplayVillaManagement(*m_window);
-		}
-		else if (m_previousGameState == ESTATE_DATA_N_STATISTICS)
-		{
-			//villaManagement.DisplayVillaManagement(*window);
+			if (m_previousGameState == BUILD_MODE)
+			{
+				m_buildWindow.DisplayBuildWindow(this);
+				//DisplayUIBuildingMode(_game);
+			}
+			else if (m_previousGameState == SELLING_WINDOW)
+			{
+				m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
+			}
+			else if (m_previousGameState == VILLA_MANAGEMENT)
+			{
+				m_villaManagement.DisplayVillaManagement(*m_window, *m_screenReso);
+			}
+			else if (m_previousGameState == ESTATE_DATA_N_STATISTICS)
+			{
+				//villaManagement.DisplayVillaManagement(*window);
+			}
 		}
 
 		if (m_previousGameState == TUTORIAL_MODE)

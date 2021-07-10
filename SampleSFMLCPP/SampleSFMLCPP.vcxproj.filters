@@ -210,6 +210,15 @@
     <ClCompile Include="Villa.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
+    <ClCompile Include="ListOfAnnualProductions.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ListOfAnnualCostsNRevenues.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Fonts.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenu.h">
@@ -343,6 +352,18 @@
     </ClInclude>
     <ClInclude Include="Villa.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumVillaManagementStateMachine.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ListOfAnnualProductions.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ListOfAnnualCostsNRevenues.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

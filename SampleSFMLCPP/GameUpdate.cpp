@@ -66,6 +66,10 @@ void GameUpdate(struct Game *_game)
 			_game->m_sellingWindow->UpdateQuantityConvertedToSell(_game->m_purchaserManager->GetPurchasers(), quantityStocked, *_game->m_screenReso);
 			_game->m_sellingWindow->UpdateSellingWindowTexts(_game->m_purchaserManager->GetPurchasers());
 		}
+		else if (_game->m_actualGameState == VILLA_MANAGEMENT)
+		{
+			_game->m_villaManagement.UpdateVillaManagement();
+		}
 		else
 		{
 			// Update the workers
