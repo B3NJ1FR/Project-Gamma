@@ -442,6 +442,19 @@ std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalC
 	return temporaryString;
 }
 
+std::string TransformStringToVerticalOne(std::string _string)
+{
+	std::string str = _string;
+
+	if (str.length() > 1)
+	{
+		for (int i = str.length() - 1; i > 0; i--)
+		{
+			str.insert(i, "\n");
+		}
+	}
+	return str;
+}
 
 // That function permit to print the picture at screen to some position (x and y), and if wanted, rotating it
 void BlitSprite(sf::Sprite _sprite, const float &_posX, const float &_posY, const float &_angle, sf::RenderWindow &_window)

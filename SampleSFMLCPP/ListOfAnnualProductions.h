@@ -6,7 +6,7 @@
 #include "TimeManagement.h"
 #include "EnumInternalState.h"
 
-#define PAPYRUS_BG_OFFSET_TOP 240.0f
+#define PAPYRUS_BG_OFFSET_TOP 290.0f
 #define PAPYRUS_BG_OFFSET_BOT 160.0f
 
 struct AnnualResourceData
@@ -41,11 +41,16 @@ private:
 	InternalState internalState;
 
 	sf::Sprite m_papyrusBackground;
+	sf::Sprite m_greenCheck;
+	sf::Sprite m_redCross;
 
 	sf::Text **m_textsData;
+	sf::Text *m_textsCategoriesTitles;
 	sf::Text m_textPapyrusTitle;
+	sf::Text m_textYear;
 	sf::Font m_font;
 
+	std::string m_stringTextYear;
 
 	// Constructor
 	ListOfAnnualProductions();

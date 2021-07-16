@@ -9,9 +9,22 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 	m_time = TimeManagement::GetSingleton();
 
 	m_papyrusBackground = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/sellingWindow_background.png", 1);
+	m_greenCheck = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/greenCheck.png", 1);
+	m_redCross = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/redCross.png", 1);
+	m_greenCheck.setScale(sf::Vector2f(0.4f, 0.4f));
+	m_redCross.setScale(sf::Vector2f(0.4f, 0.4f));
 
 	m_font = Fonts::GetSingleton()->GetCharlemagneFont();
 	LoadTextString(&m_textPapyrusTitle, "Production Summary", &m_font, 35, sf::Color::Black, 1);
+
+	// Allocation of the text array
+	m_textsCategoriesTitles = new sf::Text[5];
+
+	LoadTextString(&m_textsCategoriesTitles[0], "Number\nof Buildings", &m_font, 15, sf::Color::Black, 1);
+	LoadTextString(&m_textsCategoriesTitles[1], "Quantity\nProduced", &m_font, 15, sf::Color::Black, 1);
+	LoadTextString(&m_textsCategoriesTitles[2], "Comparison\nwith last year", &m_font, 15, sf::Color::Black, 1);
+	LoadTextString(&m_textsCategoriesTitles[3], "Can be\nsold", &m_font, 15, sf::Color::Black, 1);
+	LoadTextString(&m_textsCategoriesTitles[4], "Previous merchant\nPrice", &m_font, 15, sf::Color::Black, 1);
 
 	// TESTS
 	CreateNewYearInDataMap(0);
@@ -248,6 +261,10 @@ void ListOfAnnualProductions::Update()
 	switch (internalState)
 	{
 	case InternalState::STATE_INIT:
+
+		m_stringTextYear = TransformStringToVerticalOne(std::string("Year " + std::to_string(yearNumber)));
+		LoadTextString(&m_textYear, m_stringTextYear, &m_font, 45, sf::Color::Black, 1);
+
 		if (m_listOfAnnualResourcesData[yearNumber] != nullptr)
 		{
 			if (m_listOfAnnualResourcesData[yearNumber]->first != nullptr)
@@ -257,7 +274,7 @@ void ListOfAnnualProductions::Update()
 
 				for (int i = 0; i < m_listOfAnnualResourcesData[yearNumber]->size; i++)
 				{
-					m_textsData[i] = new sf::Text[5];
+					m_textsData[i] = new sf::Text[4];
 				}
 
 				LinkedListClass::sElement* currentElement;
@@ -269,16 +286,38 @@ void ListOfAnnualProductions::Update()
 				{
 					sAnnualResourceData* curResource = ((sAnnualResourceData*)currentElement->data);
 
-					for (int i = 0; i < 5; i++)
+					for (int i = 0; i < 4; i++)
 					{
 						LoadTextString(&m_textsData[counter][i], "", &m_font, 25, sf::Color::Black);
 					}
 
+					curResource->m_comparisonWithLastYear = (rand() % (200)) - 100; // TEMPORARY / TEMPORAIRE / POUR TESTER
+					curResource->m_isCanBeSold = rand() % 2; // TEMPORARY / TEMPORAIRE / POUR TESTER
+
 					UpdateDynamicsTexts(&m_textsData[counter][0], curResource->m_numberOfBuilding);
 					UpdateDynamicsTexts(&m_textsData[counter][1], curResource->m_quantityProduced);
 					UpdateDynamicsTexts(&m_textsData[counter][2], curResource->m_comparisonWithLastYear);
-					UpdateDynamicsTexts(&m_textsData[counter][3], curResource->m_isCanBeSold);
-					UpdateDynamicsTexts(&m_textsData[counter][4], curResource->m_previousMerchantPrice);
+					UpdateDynamicsTexts(&m_textsData[counter][3], curResource->m_previousMerchantPrice);
+
+					// Center all texts
+					for (int i = 0; i < 4; i++)
+					{
+						ChangeTextStringOrigin(&m_textsData[counter][i], 1);
+					}
+
+					// Coloration of the "Comparison with last year" text's
+					if (curResource->m_comparisonWithLastYear != 0)
+					{
+						// If it's higher than 0, we color it in green, else in red
+						if (curResource->m_comparisonWithLastYear > 0)
+						{
+							m_textsData[counter][2].setFillColor(sf::Color(198, 214, 61, 255));
+						}
+						else
+						{
+							m_textsData[counter][2].setFillColor(sf::Color(199, 79, 75, 255));
+						}
+					}
 				}
 			}
 		}
@@ -306,7 +345,15 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 
 	// Display papyrus title
 	sf::Vector2f screenCenter = sf::Vector2f(_screenResolution.x / 2, _screenResolution.y / 2);
-	BlitString(m_textPapyrusTitle, screenCenter.x, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + PAPYRUS_BG_OFFSET_TOP - 40.0f, _window);
+	BlitString(m_textPapyrusTitle, screenCenter.x, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 200.0f, _window);
+
+	// Display categories titles
+	float positionHeight = screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 250.0f;
+	BlitString(m_textsCategoriesTitles[0], screenCenter.x - 245.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[1], screenCenter.x - 95.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[2], screenCenter.x + 60.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[3], screenCenter.x + 200.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[4], screenCenter.x + 370.0f, positionHeight, _window);
 
 	int yearNumber = 0;
 
@@ -328,15 +375,35 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 				sAnnualResourceData* curResource = ((sAnnualResourceData*)currentElement->data);
 				float currentHeight = screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + PAPYRUS_BG_OFFSET_TOP + (counter * spaceBetweenResources);
 
-				BlitSprite(RessourcesManager::GetSingleton()->GetResourceSprite(curResource->m_resource), screenCenter.x - 375.0f, currentHeight, _window);
+				BlitSprite(RessourcesManager::GetSingleton()->GetResourceSprite(curResource->m_resource), screenCenter.x - 425.0f, currentHeight - 10.0f, _window);
 			
-				for (int i = 0; i < 5; i++)
+				for (int i = 0; i < 4; i++)
 				{
-					BlitString(m_textsData[counter][i], screenCenter.x - 325.0f + (i + 1) * 125, currentHeight, _window);
+					if (i == 3)
+					{
+						BlitString(m_textsData[counter][i], screenCenter.x - 400.0f + (i + 2) * 150, currentHeight, _window);
+					}
+					else
+					{
+						BlitString(m_textsData[counter][i], screenCenter.x - 400.0f + (i + 1) * 150, currentHeight, _window);
+					}
+				}
+
+				if (curResource->m_isCanBeSold)
+				{
+					BlitSprite(m_greenCheck, screenCenter.x + 200, currentHeight + 5.0f, _window);
+				}
+				else
+				{
+					BlitSprite(m_redCross, screenCenter.x + 200, currentHeight + 5.0f, _window);
 				}
 			}
 		}
 	}
+
+	// Display of the year number on the papyrus border
+	BlitString(m_textYear, screenCenter.x - 550.0f, screenCenter.y, _window);
+	BlitString(m_textYear, screenCenter.x + 555.0f, screenCenter.y, _window);
 }
 
 void ListOfAnnualProductions::SavingDataForFile(std::ofstream* _file)
