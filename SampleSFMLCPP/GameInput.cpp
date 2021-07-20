@@ -69,7 +69,8 @@ void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _
 void GameInput(struct Game *_game)
 {
 	if (_game->m_actualGameState != PAUSE_WINDOW
-		&& _game->m_actualGameState != TUTORIAL_MODE)
+		&& _game->m_actualGameState != TUTORIAL_MODE
+		&& _game->m_actualGameState != VILLA_MANAGEMENT)
 	{
 		sf::Event event;
 
@@ -83,13 +84,7 @@ void GameInput(struct Game *_game)
 
 			if (event.type == sf::Event::KeyPressed)
 			{
-				// If we pressed the escape key, we close the game
-				if (event.key.code == sf::Keyboard::Escape && _game->m_actualGameState == VILLA_MANAGEMENT)
-				{
-					_game->m_actualGameState = NORMAL_MODE;
-					_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
-				}
-				else if (event.key.code == sf::Keyboard::Escape)
+				if (event.key.code == sf::Keyboard::Escape)
 				{
 					_game->m_actualGameState = PAUSE_WINDOW;
 				}
@@ -474,10 +469,6 @@ void GameInput(struct Game *_game)
 						_game->m_sellingWindow->InputSellingWindowButtons(&_game->m_actualGameState, _game->m_builds.m_stall, *_game->m_window, *_game->m_screenReso);
 						_game->m_time->InputTimeManagement(*_game->m_window, *_game->m_screenReso);
 					}
-					else if (_game->m_actualGameState == VILLA_MANAGEMENT)
-					{
-						_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, *_game->m_window);
-					}
 				}
 			}
 
@@ -504,5 +495,9 @@ void GameInput(struct Game *_game)
 	else if (_game->m_actualGameState == TUTORIAL_MODE)
 	{
 		_game->m_tutorialWindow->InputTutorialWindow(&_game->m_actualGameState, *_game->m_window);
+	}
+	else if (_game->m_actualGameState == VILLA_MANAGEMENT)
+	{
+		_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, *_game->m_window);
 	}
 }

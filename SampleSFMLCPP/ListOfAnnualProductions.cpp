@@ -311,11 +311,11 @@ void ListOfAnnualProductions::Update()
 						// If it's higher than 0, we color it in green, else in red
 						if (curResource->m_comparisonWithLastYear > 0)
 						{
-							m_textsData[counter][2].setFillColor(sf::Color(198, 214, 61, 255));
+							m_textsData[counter][2].setFillColor(sf::Color(95, 210, 95, 255));
 						}
 						else
 						{
-							m_textsData[counter][2].setFillColor(sf::Color(199, 79, 75, 255));
+							m_textsData[counter][2].setFillColor(sf::Color(215, 77, 77, 255));
 						}
 					}
 				}
