@@ -193,9 +193,9 @@ void GameInput(struct Game *_game)
 					&& _game->m_actualGameState == NORMAL_MODE)
 				{
 					// Prix temporaire
-					if (_game->m_money.GetMoneyQuantity() - 1000 >= 0)
+					if (_game->m_money->GetMoneyQuantity() - 1000 >= 0)
 					{
-						_game->m_money.SubtractMoney(1000);
+						_game->m_money->SubtractMoney(1000);
 
 						sf::Vector2i value = { rand() % _game->m_map->GetNumberOfColumns(), rand() % _game->m_map->GetNumberOfLines() };
 
@@ -498,6 +498,6 @@ void GameInput(struct Game *_game)
 	}
 	else if (_game->m_actualGameState == VILLA_MANAGEMENT)
 	{
-		_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, *_game->m_window);
+		_game->m_villaManagement.InputVillaManagement(&_game->m_actualGameState, *_game->m_window, *_game->m_screenReso);
 	}
 }

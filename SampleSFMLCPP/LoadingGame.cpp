@@ -51,7 +51,7 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 	// Loading of the money data
 	int money(RESET);
 	saveFile.read((char *) &money, sizeof(int));
-	_game->m_money.SetInitialQuantity(money);
+	_game->m_money->SetInitialQuantity(money);
 	std::cout << "Money loaded !\n";
 
 	// Loading of the time elapsed

@@ -24,7 +24,7 @@ void UpdateTexts(struct Game *_game)
 	}
 
 	// UI Texts concerning sesterces and ressources
-	UpdateDynamicsTexts(&_game->m_UITexts[1], _game->m_money.GetMoneyQuantity());
+	UpdateDynamicsTexts(&_game->m_UITexts[1], _game->m_money->GetMoneyQuantity());
 	UpdateDynamicsTexts(&_game->m_UITexts[3], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE)));
 	UpdateDynamicsTexts(&_game->m_UITexts[5], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(GRAPES_MUST)));
 	UpdateDynamicsTexts(&_game->m_UITexts[7], RessourcesManager::GetSingleton()->GetResourceQuantity(Ressources::GetNameFromEnum(GRAPE_JUICE)));
@@ -111,7 +111,7 @@ void GameUpdate(struct Game *_game)
 
 			_game->m_builds.m_stall->UpdateBuildingConstruction();
 			_game->m_builds.m_stall->UpdateBuildingSprite();
-			_game->m_builds.m_stall->UpdateInternalCycles(&_game->m_money, &_game->m_actualGameState, _game->m_purchaserManager->GetPurchasers(), &_game->m_builds.m_storehouse);
+			_game->m_builds.m_stall->UpdateInternalCycles(_game->m_money, &_game->m_actualGameState, _game->m_purchaserManager->GetPurchasers(), &_game->m_builds.m_storehouse);
 
 			_game->m_builds.m_storehouse.UpdateBuildingConstruction();
 			_game->m_builds.m_storehouse.UpdateBuildingSprite();

@@ -57,8 +57,8 @@ public:
 	inline AnnualCostsNRevenuesMapData GetMapData() const { return m_listOfAnnualCNRData; }
 
 	// Setters
-	/*void CreateNewYearInDataMap(unsigned int _yearNumber);
-	void AddResourceToYear(TypesOfRessources _resource, unsigned int _yearNumber);
+	void CreateNewYearInDataMap(unsigned int _yearNumber);
+	/*void AddResourceToYear(TypesOfRessources _resource, unsigned int _yearNumber);
 	void AddResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber);
 	void SetResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding);
 	void SetResourceQuantityProduced(unsigned int _yearNumber, TypesOfRessources _resource, int _quantityProduced);

@@ -34,6 +34,7 @@ void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable1, const int
 std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalCharactersLength);
 
 std::string TransformStringToVerticalOne(std::string _string);
+std::string TransformStringToCenteredOne(std::string _stringToCenter, int _forceOffset = 0);
 
 // That function allow to know if the player has clicked on the "button" picture's
 bool IsMouseOnSprite(sf::Vector2i _mousePosition, sf::Sprite *_sprite, int _originPosition);

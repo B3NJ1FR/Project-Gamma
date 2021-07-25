@@ -227,7 +227,7 @@ void Game::DisplayDecor()
 
 void Game::DisplayUIGeneral()
 {
-	BlitSprite(m_money.GetSprite(), 75, 50, 0, *m_window);
+	BlitSprite(m_money->GetSprite(), 75, 50, 0, *m_window);
 
 	// Display of the sesterces quantity owned
 	BlitString(m_UITexts[0], *m_window);

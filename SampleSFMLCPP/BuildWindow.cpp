@@ -329,7 +329,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 				isAreaEmpty = false;
 			}
 			// Money verification
-			else if (_game->m_money.GetMoneyQuantity() >= _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost())
+			else if (_game->m_money->GetMoneyQuantity() >= _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost())
 			{
 				// Collisions verifications
 				if (_game->m_map->GetMap()[ZERO_FLOOR + COLLISIONS_ID][m_buildingCaseSelected.y][m_buildingCaseSelected.x] == PATH
@@ -406,7 +406,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 				
 
 				// We remove the money needed to construct the building
-				_game->m_money.SubtractMoney(_game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
+				_game->m_money->SubtractMoney(_game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
 				
 				// We change the main character status
 				_game->m_mainCharacter->SetIsCurrentlyBuilding(true);
@@ -445,7 +445,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 						}
 
 						// We give back the money for the building construction
-						_game->m_money.AddMoney(_game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
+						_game->m_money->AddMoney(_game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
 					}
 					else
 					{
@@ -536,7 +536,7 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 		}
 
 		// In case where the player doesn't have enough money, or this is the stall, and it has been constructed, the cells on ground are displayed in red
-		if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost()
+		if (_game->m_money->GetMoneyQuantity() < _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost()
 			|| (m_IDChosenBuilding == BUILDING_STALL && _game->m_builds.m_stall->GetConstructionStatus() != BUILDING_DESTROYED))
 		{
 			m_isBuildingCaseOccupied = true;
@@ -602,7 +602,6 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			
 			BlitSprite(m_separationLine, ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)), ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 120.0f, 0.0f, *_game->m_window);
 
-
 			// Display the size
 			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 240, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 130, *_game->m_window);
 			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], _game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + 270, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 134, *_game->m_window);
@@ -644,9 +643,9 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			// Display the money cost of the building
 			BlitString(m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], (_game->m_screenReso->x - ((int)m_buildingUI.getGlobalBounds().width * 2) + ((int)m_buildingUI.getGlobalBounds().width / 2)) + 5, (_game->m_screenReso->y - (int)m_buildingUI.getGlobalBounds().height) + 400, *_game->m_window);
 			
-			_game->m_money.SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
-			BlitSprite(_game->m_money.GetSprite(), ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) + 35, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
-			_game->m_money.SetSpriteScale(sf::Vector2f(1, 1));
+			_game->m_money->SetSpriteScale(sf::Vector2f(0.45f, 0.45f));
+			BlitSprite(_game->m_money->GetSprite(), ((float)_game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2) + (m_buildingUI.getGlobalBounds().width / 2)) + 35, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 412, 0, *_game->m_window);
+			_game->m_money->SetSpriteScale(sf::Vector2f(1, 1));
 		}
 	}
 
@@ -662,7 +661,7 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 			BlitSprite(_game->m_builds.m_buildings[i].GetIcon(), ((float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width) + 143 + (i % 2) * 109, ((float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height) + 130 * (i / 2) + m_scrollBuildingList, 0, *_game->m_window);
 
 			// In case where the player doesn't have enough money, or this is the stall and it has been already constructed, the picture is grayed out
-			if (_game->m_money.GetMoneyQuantity() < _game->m_builds.m_buildings[i].GetConstructionCost()
+			if (_game->m_money->GetMoneyQuantity() < _game->m_builds.m_buildings[i].GetConstructionCost()
 				|| (i == BUILDING_STALL && _game->m_builds.m_stall->GetConstructionStatus() != BUILDING_DESTROYED))
 			{
 				m_blackFilter.setColor(sf::Color(255, 255, 255, 150));

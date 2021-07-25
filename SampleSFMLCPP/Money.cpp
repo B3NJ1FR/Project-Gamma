@@ -12,3 +12,9 @@ Money::~Money()
 	delete (m_sprite.getTexture());
 }
 
+
+Money* Money::GetSingleton()
+{
+	static Money uniqueInstance;
+	return &uniqueInstance;
+}

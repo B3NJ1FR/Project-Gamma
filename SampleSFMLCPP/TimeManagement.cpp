@@ -1,4 +1,6 @@
 #include "TimeManagement.h"
+#include "ListOfAnnualProductions.h"
+#include "ListOfAnnualCostsNRevenues.h"
 
 
 TimeManagement::TimeManagement()
@@ -87,6 +89,10 @@ void TimeManagement::UpdateGeneralTime()
 		m_isYearHasChanged = true;
 
 		m_numberOfYears++;
+
+		std::cout << "\n\nNew year : " << m_numberOfYears << std::endl << std::endl;
+		ListOfAnnualProductions::GetSingleton()->CreateNewYearInDataMap(m_numberOfYears);
+		ListOfAnnualCostsNRevenues::GetSingleton()->CreateNewYearInDataMap(m_numberOfYears);
 
 		m_timer -= sf::seconds(TEMPORARY_TIME * (12));
 	}

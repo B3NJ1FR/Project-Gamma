@@ -9,11 +9,16 @@ private :
 	int m_playerMoney;
 	sf::Sprite m_sprite;
 
-public:
-	// Constructor & Destructor
+	// Constructor
 	Money();
+
+public:
+	// Destructor
 	~Money();
 
+	// Singleton
+	static Money* GetSingleton();
+	
 	// Setters
 	inline void SetSpriteScale(const sf::Vector2f& _scale) { m_sprite.setScale(_scale); };
 	inline void SetInitialQuantity(int _quantityToAdd) { m_playerMoney = _quantityToAdd; };

@@ -32,6 +32,18 @@ ListOfAnnualCostsNRevenues* ListOfAnnualCostsNRevenues::GetSingleton()
 	return &uniqueInstance;
 }
 
+void ListOfAnnualCostsNRevenues::CreateNewYearInDataMap(unsigned int _yearNumber)
+{
+	/*AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+	if (it == m_listOfAnnualResourcesData.end())
+	{
+		m_listOfAnnualResourcesData[_yearNumber] = LinkedListInitialisation();
+	}
+	else
+	{
+		std::cout << "[ListOfAnnualProductions] - Error when creating new year in Data Map because the year " << _yearNumber << " already exist";
+	}*/
+}
 
 void ListOfAnnualCostsNRevenues::Update()
 {

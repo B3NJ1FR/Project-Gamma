@@ -48,6 +48,6 @@ public:
 
 	// Methods
 	void UpdateVillaManagement();
-	void InputVillaManagement(enum CurrentGameState *_state, sf::RenderWindow &_window);
+	void InputVillaManagement(enum CurrentGameState *_state, sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 	void DisplayVillaManagement(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 };

@@ -20,6 +20,7 @@ Game::Game(const sf::Vector2i& _screenResolution)
 	m_time->Initialisation(&m_charlemagneFont, *m_screenReso);
 
 	m_map = Map::GetSingleton();
+	m_money = Money::GetSingleton();
 
 	m_tutorialWindow = new TutorialWindow(&m_charlemagneFont);
 	m_workersList = new WorkersList;

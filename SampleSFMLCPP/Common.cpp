@@ -362,6 +362,15 @@ void ChangeTextStringOrigin(sf::Text* _textToModify, int _originPosition)
 
 		_textToModify->setOrigin(origin);
 	}
+	else if (_originPosition == 4)
+	{
+		sf::Vector2f origin = { (float)_textToModify->getGlobalBounds().width, (float)_textToModify->getGlobalBounds().height };
+
+		origin.x = origin.x;
+		origin.y = origin.y / 2;
+
+		_textToModify->setOrigin(origin);
+	}
 }
 
 void UpdateDynamicsTexts(sf::Text* _textString, const int &_variable)
@@ -454,6 +463,115 @@ std::string TransformStringToVerticalOne(std::string _string)
 		}
 	}
 	return str;
+}
+
+std::string TransformStringToCenteredOne(std::string _stringToCenter, int _forceOffset)
+{
+	std::string temporaryString = _stringToCenter;
+
+	if (temporaryString.find("_") != -1)
+	{
+		temporaryString.replace(temporaryString.find("_"), 1, "\n", 1);
+	}
+
+	if (temporaryString.find("\n") != -1)
+	{
+		int firstWordLengh = temporaryString.find("\n");
+		int secondWordLengh = temporaryString.length() - firstWordLengh - 1;
+
+		if (firstWordLengh == secondWordLengh)
+		{
+			std::string newString;
+			newString.erase();
+
+			char buffer[255];
+			char buffer2[255];
+
+			temporaryString.copy(buffer, firstWordLengh + 1, 0);
+			buffer[firstWordLengh + 1] = '\0';
+			temporaryString.copy(buffer2, secondWordLengh, temporaryString.find("\n") + 1);
+			buffer2[secondWordLengh] = '\0';
+
+			if (_forceOffset > 0)
+			{
+				for (int i = 0; i < _forceOffset; i++)
+				{
+					newString.append(" ");
+				}
+			}
+
+			temporaryString.erase();
+			temporaryString = buffer + newString + buffer2;
+		}
+		else if (firstWordLengh < secondWordLengh)
+		{
+			int differenceBetweenWords = secondWordLengh - firstWordLengh;
+
+			std::string newString;
+			newString.erase();
+
+			for (int i = 0; i < ((differenceBetweenWords / 2) - 1); i++)
+			{
+				newString.append("\t");
+			}
+
+			if (differenceBetweenWords % 2 == 1
+				&& differenceBetweenWords / 2 != 0)
+			{
+				newString.append(" ");
+			}
+
+			if (_forceOffset > 0)
+			{
+				for (int i = 0; i < _forceOffset; i++)
+				{
+					newString.append(" ");
+				}
+			}
+
+			temporaryString = newString + temporaryString;
+		}
+		else if (firstWordLengh > secondWordLengh)
+		{
+			int differenceBetweenWords = firstWordLengh - secondWordLengh;
+
+			std::string newString;
+			newString.erase();
+
+			char buffer[255];
+			char buffer2[255];
+
+			temporaryString.copy(buffer, firstWordLengh + 1, 0);
+			buffer[firstWordLengh + 1] = '\0';
+			temporaryString.copy(buffer2, secondWordLengh, temporaryString.find("\n") + 1);
+			buffer2[secondWordLengh] = '\0';
+
+			for (int i = 0; i < ((differenceBetweenWords / 2) - 1); i++)
+			{
+				newString.append("\t");
+			}
+
+			if (differenceBetweenWords % 2 == 1)
+			{
+				newString.append(" ");
+			}
+
+			if (_forceOffset > 0)
+			{
+				for (int i = 0; i < _forceOffset; i++)
+				{
+					newString.append(" ");
+				}
+			}
+
+			temporaryString.erase();
+			temporaryString = buffer + newString + buffer2;
+
+			//std::cout << temporaryString << std::endl;
+		}
+	}
+
+	return temporaryString;
 }
 
 // That function permit to print the picture at screen to some position (x and y), and if wanted, rotating it

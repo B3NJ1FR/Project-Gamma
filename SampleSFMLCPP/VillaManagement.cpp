@@ -47,7 +47,7 @@ VillaManagement::~VillaManagement()
 
 }
 
-void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::RenderWindow &_window)
+void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
 {
 	sf::Event event;
 	while (_window.pollEvent(event))
@@ -126,6 +126,10 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 					}
 				}
 			}
+		}
+		else
+		{
+			ListOfAnnualProductions::GetSingleton()->Input(event, _window, _screenResolution);
 		}
 	}
 }

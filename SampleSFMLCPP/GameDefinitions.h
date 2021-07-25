@@ -101,7 +101,7 @@ public:
 	BuildingsListPlanned *m_buildingsListPlanned;
 	
 	// Money
-	Money m_money;
+	Money *m_money;
 	
 	// Save and Load
 	SavingGame m_save;

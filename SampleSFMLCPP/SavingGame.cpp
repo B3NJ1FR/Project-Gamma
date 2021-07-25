@@ -46,7 +46,7 @@ void SavingGame::SaveTheGame(struct Game *_game)
 	_game->m_map->SavingMapFromFile(&saveFile);
 
 	// Saving of the money data
-	int money = _game->m_money.GetMoneyQuantity();
+	int money = _game->m_money->GetMoneyQuantity();
 	saveFile.write((char *) &money, sizeof(int));
 
 	std::cout << "Money saved !\n";
