@@ -5,6 +5,7 @@
 #include "Ressources.h"
 #include "TimeManagement.h"
 #include "EnumInternalState.h"
+#include "EnumVillaManagementStateMachine.h"
 
 #define PAPYRUS_BG_OFFSET_TOP 290.0f
 #define PAPYRUS_BG_OFFSET_BOT 160.0f
@@ -49,6 +50,7 @@ private:
 	sf::Sprite m_rightArrow;
 
 	sf::Text **m_textsData;
+	int m_textsDataMaxSize;
 	sf::Text *m_textsCategoriesTitles;
 	sf::Text m_textPapyrusTitle;
 	sf::Text m_textYear;
@@ -89,9 +91,11 @@ public:
 
 	// Methods
 	bool IsResourceExistInLinkedList(LinkedListClass::sLinkedList* _list, TypesOfRessources _resource);
+	void ClearTexts();
+	void UpdateTextsContent();
 
 	void Input(sf::Event _event, sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
-	void Update();
+	void Update(VillaManagementStateMachine* _internalStateMachine);
 	void Display(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 
 	// Save & Load

@@ -33,6 +33,8 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 	LoadTextString(&m_textArrowPrevYear, TransformStringToCenteredOne("Previous\nYear", 2), &m_font, 25, sf::Color(236, 150, 55), 1);
 	LoadTextString(&m_textArrowNextYear, TransformStringToCenteredOne("Next\nYear", 1), &m_font, 25, sf::Color(236, 150, 55), 1);
 
+	m_textsDataMaxSize = RESET;
+
 	m_isLeftArrowActived = true;
 	m_isRightArrowActived = true;
 	m_yearAsChanged = false;
@@ -125,8 +127,15 @@ void ListOfAnnualProductions::CreateNewYearInDataMap(unsigned int _yearNumber)
 	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
 	if (it == m_listOfAnnualResourcesData.end())
 	{
-		m_listOfAnnualResourcesData[_yearNumber] = LinkedListInitialisation();
+		LinkedListClass::sLinkedList* list = LinkedListInitialisation();
+		m_listOfAnnualResourcesData[_yearNumber] = list;
 		m_currentYearDisplayed = _yearNumber;
+		std::cout << "[ListOfAnnualProductions] - New year created " << m_currentYearDisplayed << "\n\n";
+
+		AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, m_currentYearDisplayed);
+		AddResourceToYear(TypesOfRessources::GRAPES_MUST, m_currentYearDisplayed);
+		AddResourceToYear(TypesOfRessources::GRAPE_JUICE, m_currentYearDisplayed);
+		AddResourceToYear(TypesOfRessources::GRAPE_MARC, m_currentYearDisplayed);
 	}
 	else
 	{
@@ -324,8 +333,81 @@ bool ListOfAnnualProductions::IsResourceExistInLinkedList(LinkedListClass::sLink
 	return false;
 }
 
+void ListOfAnnualProductions::ClearTexts()
+{
+	if (m_textsData != nullptr) delete m_textsData;
+}
+
+void ListOfAnnualProductions::UpdateTextsContent()
+{
+	// If the current size is lower than which needed, we reallocate the array (avoid to allocate the array every time)
+	if (m_textsDataMaxSize < m_listOfAnnualResourcesData[m_currentYearDisplayed]->size)
+	{
+		m_textsDataMaxSize = m_listOfAnnualResourcesData[m_currentYearDisplayed]->size;
+
+		// Desallocation
+		ClearTexts();
+
+		// Allocation of the text array
+		m_textsData = new sf::Text * [m_textsDataMaxSize];
+
+		for (int i = 0; i < m_textsDataMaxSize; i++)
+		{
+			m_textsData[i] = new sf::Text[4];
+		}
+	}
+
+	LinkedListClass::sElement* currentElement;
+	int counter;
+
+	for (currentElement = m_listOfAnnualResourcesData[m_currentYearDisplayed]->first, counter = 0;
+		currentElement != nullptr;
+		currentElement = currentElement->next, counter++)
+	{
+		sAnnualResourceData* curResource = ((sAnnualResourceData*)currentElement->data);
+
+		for (int i = 0; i < 4; i++) LoadTextString(&m_textsData[counter][i], "", &m_font, 25, sf::Color::Black);
+
+		curResource->m_comparisonWithLastYear = (rand() % (200)) - 100; // TEMPORARY / TEMPORAIRE / POUR TESTER
+		curResource->m_isCanBeSold = rand() % 2; // TEMPORARY / TEMPORAIRE / POUR TESTER
+		curResource->m_previousMerchantPrice = 1;
+
+		for (int i = 0; i < counter; i++) curResource->m_previousMerchantPrice *= 10;
+
+		UpdateDynamicsTexts(&m_textsData[counter][0], curResource->m_numberOfBuilding);
+		UpdateDynamicsTexts(&m_textsData[counter][1], curResource->m_quantityProduced);
+		UpdateDynamicsTexts(&m_textsData[counter][2], curResource->m_comparisonWithLastYear);
+		UpdateDynamicsTexts(&m_textsData[counter][3], curResource->m_previousMerchantPrice);
+
+		// Center the first three texts
+		for (int i = 0; i < 3; i++) ChangeTextStringOrigin(&m_textsData[counter][i], 1);
+
+		ChangeTextStringOrigin(&m_textsData[counter][3], 4);
+
+		// Coloration of the "Comparison with last year" text's
+		if (curResource->m_comparisonWithLastYear != 0)
+		{
+			// If it's higher than 0, we color it in green, else in red
+			if (curResource->m_comparisonWithLastYear > 0)
+			{
+				m_textsData[counter][2].setFillColor(sf::Color(95, 210, 95, 255));
+			}
+			else
+			{
+				m_textsData[counter][2].setFillColor(sf::Color(215, 77, 77, 255));
+			}
+		}
+	}
+}
+
 void ListOfAnnualProductions::Input(sf::Event _event, sf::RenderWindow& _window, const sf::Vector2i& _screenResolution)
 {
+	if (_event.type == sf::Event::KeyPressed
+		&& _event.key.code == sf::Keyboard::Escape)
+	{
+		internalState = InternalState::STATE_EXIT;
+	}
+
 	if (_event.type == sf::Event::MouseButtonPressed
 		&& _event.mouseButton.button == sf::Mouse::Left)
 	{
@@ -360,7 +442,7 @@ void ListOfAnnualProductions::Input(sf::Event _event, sf::RenderWindow& _window,
 	}
 }
 
-void ListOfAnnualProductions::Update()
+void ListOfAnnualProductions::Update(VillaManagementStateMachine* _internalStateMachine)
 {
 	switch (internalState)
 	{
@@ -381,60 +463,7 @@ void ListOfAnnualProductions::Update()
 		{
 			if (m_listOfAnnualResourcesData[m_currentYearDisplayed]->first != nullptr)
 			{
-				// Allocation of the text array
-				m_textsData = new sf::Text* [m_listOfAnnualResourcesData[m_currentYearDisplayed]->size];
-
-				for (int i = 0; i < m_listOfAnnualResourcesData[m_currentYearDisplayed]->size; i++)
-				{
-					m_textsData[i] = new sf::Text[4];
-				}
-
-				LinkedListClass::sElement* currentElement;
-				int counter;
-
-				for (currentElement = m_listOfAnnualResourcesData[m_currentYearDisplayed]->first, counter = 0;
-					currentElement != nullptr;
-					currentElement = currentElement->next, counter++)
-				{
-					sAnnualResourceData* curResource = ((sAnnualResourceData*)currentElement->data);
-
-					for (int i = 0; i < 4; i++)
-					{
-						LoadTextString(&m_textsData[counter][i], "", &m_font, 25, sf::Color::Black);
-					}
-
-					curResource->m_comparisonWithLastYear = (rand() % (200)) - 100; // TEMPORARY / TEMPORAIRE / POUR TESTER
-					curResource->m_isCanBeSold = rand() % 2; // TEMPORARY / TEMPORAIRE / POUR TESTER
-					curResource->m_previousMerchantPrice = 1;
-					for (size_t i = 0; i < counter; i++)
-					{
-						curResource->m_previousMerchantPrice *= 10;
-					}
-
-					UpdateDynamicsTexts(&m_textsData[counter][0], curResource->m_numberOfBuilding);
-					UpdateDynamicsTexts(&m_textsData[counter][1], curResource->m_quantityProduced);
-					UpdateDynamicsTexts(&m_textsData[counter][2], curResource->m_comparisonWithLastYear);
-					UpdateDynamicsTexts(&m_textsData[counter][3], curResource->m_previousMerchantPrice);
-
-					// Center the first three texts
-					for (int i = 0; i < 3; i++) ChangeTextStringOrigin(&m_textsData[counter][i], 1);
-		
-					ChangeTextStringOrigin(&m_textsData[counter][3], 4);
-
-					// Coloration of the "Comparison with last year" text's
-					if (curResource->m_comparisonWithLastYear != 0)
-					{
-						// If it's higher than 0, we color it in green, else in red
-						if (curResource->m_comparisonWithLastYear > 0)
-						{
-							m_textsData[counter][2].setFillColor(sf::Color(95, 210, 95, 255));
-						}
-						else
-						{
-							m_textsData[counter][2].setFillColor(sf::Color(215, 77, 77, 255));
-						}
-					}
-				}
+				UpdateTextsContent();
 			}
 		}
 		internalState = InternalState::STATE_UPDATE;
@@ -453,14 +482,26 @@ void ListOfAnnualProductions::Update()
 			LoadTextString(&m_textYear, m_stringTextYear, &m_font, 45, sf::Color::Black, 1);
 
 			m_yearAsChanged = false;
+
+			if (m_listOfAnnualResourcesData[m_currentYearDisplayed] != nullptr)
+			{
+				if (m_listOfAnnualResourcesData[m_currentYearDisplayed]->first != nullptr)
+				{
+					UpdateTextsContent();
+				}
+			}
 		}
 
 		break;
 	case InternalState::STATE_EXIT:
 		// Désallouer le tableau de texts
+		internalState = InternalState::STATE_INIT;
+		*_internalStateMachine = VillaManagementStateMachine::NORMAL_STATE;
 		break;
+
 	case InternalState::STATE_WAITING:
 		break;
+
 	default:
 		break;
 	}
@@ -521,9 +562,10 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 				float currentHeight = screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + PAPYRUS_BG_OFFSET_TOP + (counter * spaceBetweenResources);
 
 				BlitSprite(RessourcesManager::GetSingleton()->GetResourceSprite(curResource->m_resource), screenCenter.x - 425.0f, currentHeight - 10.0f, _window);
-			
+
 				for (int i = 0; i < 4; i++)
 				{
+
 					if (i == 3)
 					{
 						BlitString(m_textsData[counter][i], screenCenter.x + 400.0f, currentHeight, _window);

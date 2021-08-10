@@ -33,7 +33,7 @@ private:
 
 	bool m_isFeedbackActive[(int)SpriteElements::NB_MAX_ELEMENTS];
 
-	VillaManagementStateMachine internalStateMachine;
+	VillaManagementStateMachine m_internalStateMachine;
 
 public:
 	// Constructor & Destructor
@@ -41,10 +41,10 @@ public:
 	~VillaManagement();
 
 	// Getters
-	inline VillaManagementStateMachine GetInternalStateMachine() const { return internalStateMachine; }
+	inline VillaManagementStateMachine GetInternalStateMachine() const { return m_internalStateMachine; }
 
 	// Setters
-	inline void SetInternalStateMachine(VillaManagementStateMachine _value) { internalStateMachine = _value; }
+	inline void SetInternalStateMachine(VillaManagementStateMachine _value) { m_internalStateMachine = _value; }
 
 	// Methods
 	void UpdateVillaManagement();

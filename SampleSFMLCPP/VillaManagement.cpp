@@ -39,7 +39,7 @@ VillaManagement::VillaManagement()
 	m_imagePurse.loadFromFile("Data/Assets/Sprites/Menu/VillaManagement/moneys.png");
 	m_imageEntrance.loadFromFile("Data/Assets/Sprites/Menu/VillaManagement/entrance.png");
 
-	internalStateMachine = VillaManagementStateMachine::NORMAL_STATE;
+	m_internalStateMachine = VillaManagementStateMachine::NORMAL_STATE;
 }
 
 VillaManagement::~VillaManagement()
@@ -62,19 +62,15 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				if (internalStateMachine == VillaManagementStateMachine::NORMAL_STATE)
+				if (m_internalStateMachine == VillaManagementStateMachine::NORMAL_STATE)
 				{
 					*(_state) = NORMAL_MODE;
 					TimeManagement::GetSingleton()->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 				}
-				else
-				{
-					internalStateMachine = VillaManagementStateMachine::NORMAL_STATE;
-				}
 			}
 		}
 
-		if (internalStateMachine == VillaManagementStateMachine::NORMAL_STATE)
+		if (m_internalStateMachine == VillaManagementStateMachine::NORMAL_STATE)
 		{
 			sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 			mousePosition = sf::Vector2i(mousePosition.x / 2, mousePosition.y / 2);
@@ -136,11 +132,11 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 
 void VillaManagement::UpdateVillaManagement()
 {
-	if (internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
+	if (m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
 	{
-		ListOfAnnualProductions::GetSingleton()->Update();
+		ListOfAnnualProductions::GetSingleton()->Update(&m_internalStateMachine);
 	}
-	else if (internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE)
+	else if (m_internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE)
 	{
 		ListOfAnnualCostsNRevenues::GetSingleton()->Update();
 	}
@@ -159,11 +155,11 @@ void VillaManagement::DisplayVillaManagement(sf::RenderWindow &_window, const sf
 		BlitSprite(m_spriteElements[i], _window);
 	}
 
-	if (internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE || internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
+	if (m_internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE || m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
 	{
 		BlitSprite(m_greyBackground, _window);
 
-		if (internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
+		if (m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
 		{
 			ListOfAnnualProductions::GetSingleton()->Display(_window, _screenResolution);
 		}
