@@ -13,6 +13,7 @@ TimeManagement::TimeManagement()
 	m_isYearHasChanged = true;
 
 	m_typeOfAcceleration = TypeOfTimeAcceleration::GAME_NORMAL_SPEED;
+
 }
 
 

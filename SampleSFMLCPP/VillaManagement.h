@@ -31,6 +31,7 @@ private:
 	sf::Image m_imagePurse;
 	sf::Image m_imageEntrance;
 
+
 	bool m_isFeedbackActive[(int)SpriteElements::NB_MAX_ELEMENTS];
 
 	VillaManagementStateMachine m_internalStateMachine;

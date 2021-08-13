@@ -70,11 +70,12 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 			}
 		}
 
-		if (m_internalStateMachine == VillaManagementStateMachine::NORMAL_STATE)
-		{
-			sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
-			mousePosition = sf::Vector2i(mousePosition.x / 2, mousePosition.y / 2);
+		sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
+		mousePosition = sf::Vector2i(mousePosition.x / 2, mousePosition.y / 2);
 
+		switch (m_internalStateMachine)
+		{
+		case VillaManagementStateMachine::NORMAL_STATE:
 			// We ask to display the feedback if we've the mouse hover
 			m_isFeedbackActive[(int)SpriteElements::DOMAIN_PLAN] = (m_imageDomainPlan.getPixel(mousePosition.x, mousePosition.y).a != 0) ? true : false;
 			m_isFeedbackActive[(int)SpriteElements::PAPYRUS_COSTS] = (m_imagePapyrus.getPixel(mousePosition.x, mousePosition.y).a != 0) ? true : false;
@@ -122,10 +123,21 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 					}
 				}
 			}
-		}
-		else
-		{
+			break;
+		case VillaManagementStateMachine::BUILD_MODE_STATE:
+			break;
+		case VillaManagementStateMachine::COSTS_N_REVENUES_STATE:
+			ListOfAnnualCostsNRevenues::GetSingleton()->Input(event, _window, _screenResolution);
+			break;
+		case VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE:
 			ListOfAnnualProductions::GetSingleton()->Input(event, _window, _screenResolution);
+			break;
+		case VillaManagementStateMachine::DISPLAY_MONEY_STATE:
+			break;
+		case VillaManagementStateMachine::QUIT_STATE:
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -138,7 +150,7 @@ void VillaManagement::UpdateVillaManagement()
 	}
 	else if (m_internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE)
 	{
-		ListOfAnnualCostsNRevenues::GetSingleton()->Update();
+		ListOfAnnualCostsNRevenues::GetSingleton()->Update(&m_internalStateMachine);
 	}
 }
 
@@ -149,10 +161,10 @@ void VillaManagement::DisplayVillaManagement(sf::RenderWindow &_window, const sf
 
 	for (int i = 0; i < (int)SpriteElements::NB_MAX_ELEMENTS; i++)
 	{
+		BlitSprite(m_spriteElements[i], _window);
+
 		// If the feedback is active, we have to display it
 		if (m_isFeedbackActive[i]) BlitSprite(m_spriteElementsFeedbacks[i], _window);
-
-		BlitSprite(m_spriteElements[i], _window);
 	}
 
 	if (m_internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE || m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)

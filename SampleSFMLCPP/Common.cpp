@@ -293,6 +293,24 @@ void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *
 
 		_textToInitialise->setOrigin(origin);
 	}
+	else if (_originPosition == 4)
+	{
+		sf::Vector2f origin = { (float)_textToInitialise->getGlobalBounds().width, (float)_textToInitialise->getGlobalBounds().height };
+
+		origin.x = origin.x;
+		origin.y = origin.y / 2;
+
+		_textToInitialise->setOrigin(origin);
+	}
+	else if (_originPosition == 5)
+	{
+		sf::Vector2f origin = { (float)_textToInitialise->getGlobalBounds().width, (float)_textToInitialise->getGlobalBounds().height };
+
+		origin.x = RESET;
+		origin.y = origin.y / 2;
+
+		_textToInitialise->setOrigin(origin);
+	}
 }
 
 
@@ -367,6 +385,15 @@ void ChangeTextStringOrigin(sf::Text* _textToModify, int _originPosition)
 		sf::Vector2f origin = { (float)_textToModify->getGlobalBounds().width, (float)_textToModify->getGlobalBounds().height };
 
 		origin.x = origin.x;
+		origin.y = origin.y / 2;
+
+		_textToModify->setOrigin(origin);
+	}
+	else if (_originPosition == 5)
+	{
+		sf::Vector2f origin = { (float)_textToModify->getGlobalBounds().width, (float)_textToModify->getGlobalBounds().height };
+
+		origin.x = RESET;
 		origin.y = origin.y / 2;
 
 		_textToModify->setOrigin(origin);
@@ -572,6 +599,19 @@ std::string TransformStringToCenteredOne(std::string _stringToCenter, int _force
 	}
 
 	return temporaryString;
+}
+
+
+void ColorStringAccordingToItsValue(sf::Text* _textString, int _value, sf::Color _negativeColor, sf::Color _positiveColor, sf::Color _normalColor)
+{
+	if (_value == 0)
+	{
+		_textString->setFillColor(_normalColor);
+	}
+	else
+	{
+		_textString->setFillColor((_value > 0) ? _positiveColor : _negativeColor);
+	}
 }
 
 // That function permit to print the picture at screen to some position (x and y), and if wanted, rotating it

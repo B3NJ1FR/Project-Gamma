@@ -12,8 +12,8 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 	m_papyrusBackground = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/sellingWindow_background.png", 1);
 	m_greenCheck = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/greenCheck.png", 1);
 	m_redCross = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/redCross.png", 1);
-	m_leftArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/arrow_previous.png", 1);
-	m_rightArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/arrow_next.png", 1);
+	m_leftArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_previous.png", 1);
+	m_rightArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_next.png", 1);
 	m_greenCheck.setScale(sf::Vector2f(0.4f, 0.4f));
 	m_redCross.setScale(sf::Vector2f(0.4f, 0.4f));
 	m_leftArrow.setScale(sf::Vector2f(0.65f, 0.65f));
@@ -42,7 +42,7 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 	m_currentYearDisplayed = TimeManagement::GetSingleton()->GetCurrentYear();
 
 	// TESTS
-	CreateNewYearInDataMap(0);
+	CreateNewYearInDataMap(m_currentYearDisplayed);
 	/*CreateNewYearInDataMap(1);
 	CreateNewYearInDataMap(2);
 	CreateNewYearInDataMap(3);
@@ -124,6 +124,8 @@ ListOfAnnualProductions* ListOfAnnualProductions::GetSingleton()
 
 void ListOfAnnualProductions::CreateNewYearInDataMap(unsigned int _yearNumber)
 {
+	if (_yearNumber < 0) return;
+
 	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
 	if (it == m_listOfAnnualResourcesData.end())
 	{
@@ -384,19 +386,7 @@ void ListOfAnnualProductions::UpdateTextsContent()
 
 		ChangeTextStringOrigin(&m_textsData[counter][3], 4);
 
-		// Coloration of the "Comparison with last year" text's
-		if (curResource->m_comparisonWithLastYear != 0)
-		{
-			// If it's higher than 0, we color it in green, else in red
-			if (curResource->m_comparisonWithLastYear > 0)
-			{
-				m_textsData[counter][2].setFillColor(sf::Color(95, 210, 95, 255));
-			}
-			else
-			{
-				m_textsData[counter][2].setFillColor(sf::Color(215, 77, 77, 255));
-			}
-		}
+		ColorStringAccordingToItsValue(&m_textsData[counter][2], curResource->m_comparisonWithLastYear, sf::Color(215, 77, 77, 255), sf::Color(95, 210, 95, 255));
 	}
 }
 

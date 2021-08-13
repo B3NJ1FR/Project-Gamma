@@ -211,6 +211,7 @@
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="Entities.h" />
     <ClInclude Include="EnumInternalState.h" />
+    <ClInclude Include="EnumListOfCostsNRevenues.h" />
     <ClInclude Include="EnumPurchaserStatus.h" />
     <ClInclude Include="EnumVillaManagementStateMachine.h" />
     <ClInclude Include="ErrorsLogFile.h" />

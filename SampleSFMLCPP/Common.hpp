@@ -36,6 +36,8 @@ std::string ConvertStringIntoParagraph(std::string _string, const int &_maximalC
 std::string TransformStringToVerticalOne(std::string _string);
 std::string TransformStringToCenteredOne(std::string _stringToCenter, int _forceOffset = 0);
 
+void ColorStringAccordingToItsValue(sf::Text* _textString, int _value, sf::Color _negativeColor, sf::Color _positiveColor, sf::Color _normalColor = sf::Color::Black);
+
 // That function allow to know if the player has clicked on the "button" picture's
 bool IsMouseOnSprite(sf::Vector2i _mousePosition, sf::Sprite *_sprite, int _originPosition);
 
