@@ -35,6 +35,8 @@ ListOfAnnualCostsNRevenues::ListOfAnnualCostsNRevenues()
 	LoadTextString(&m_textArrowPrevYear, TransformStringToCenteredOne("Previous\nYear", 2), &m_font, 25, sf::Color(236, 150, 55), 1);
 	LoadTextString(&m_textArrowNextYear, TransformStringToCenteredOne("Next\nYear", 1), &m_font, 25, sf::Color(236, 150, 55), 1);
 
+	LoadTextString(&m_textFinalCNRResult, "", &m_font, 40, sf::Color::Black, 5);
+	
 	m_currentYearDisplayed = TimeManagement::GetSingleton()->GetCurrentYear();
 	CreateNewYearInDataMap(m_currentYearDisplayed);
 	internalState = InternalState::STATE_INIT;
@@ -55,6 +57,11 @@ ListOfAnnualCostsNRevenues* ListOfAnnualCostsNRevenues::GetSingleton()
 {
 	static ListOfAnnualCostsNRevenues uniqueInstance;
 	return &uniqueInstance;
+}
+
+int ListOfAnnualCostsNRevenues::GetFinalRevenues(int _yearNumber)
+{
+	if (m_annualCNRDataMap.find(_yearNumber) != m_annualCNRDataMap.end()) return m_annualCNRDataMap[_yearNumber]->m_finalResult;
 }
 
 void ListOfAnnualCostsNRevenues::CreateNewYearInDataMap(unsigned int _yearNumber)
@@ -100,8 +107,19 @@ void ListOfAnnualCostsNRevenues::AddCNRValueToYear(EnumListOfCostsNRevenues _cos
 	default:
 		break;
 	}
+
+	CalculateFinalRevenues(_yearNumber);
 }
 
+void ListOfAnnualCostsNRevenues::CalculateFinalRevenues(int _yearNumber)
+{
+	AnnualCostsNRevenuesMapData::iterator it = m_annualCNRDataMap.find(_yearNumber);
+
+	if (it != m_annualCNRDataMap.end())
+	{
+		m_annualCNRDataMap[_yearNumber]->m_finalResult = m_annualCNRDataMap[_yearNumber]->m_purchasingWorkers + m_annualCNRDataMap[_yearNumber]->m_buildingConstruction + m_annualCNRDataMap[_yearNumber]->m_salesOfAmphorasOfWine;
+	}
+}
 
 void ListOfAnnualCostsNRevenues::Input(sf::Event _event, sf::RenderWindow& _window, const sf::Vector2i& _screenResolution)
 {
@@ -158,7 +176,11 @@ void ListOfAnnualCostsNRevenues::UpdateTextsContent()
 		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], curCNR->m_buildingConstruction);
 		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], curCNR->m_salesOfAmphorasOfWine);
 
+		CalculateFinalRevenues(m_currentYearDisplayed);
+		UpdateDynamicsTexts(&m_textFinalCNRResult, curCNR->m_finalResult);
+
 		// Center the first three texts
+		ChangeTextStringOrigin(&m_textFinalCNRResult, 4);
 		for (int i = 0; i < (int)EnumListOfCostsNRevenues::MAX_SIZE; i++) ChangeTextStringOrigin(&m_textsCategoriesValues[i], 4);
 
 		// Coloration of the value depending if they are under or higher of 0
@@ -167,6 +189,7 @@ void ListOfAnnualCostsNRevenues::UpdateTextsContent()
 		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], curCNR->m_purchasingWorkers, red, green);
 		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], curCNR->m_buildingConstruction, red, green);
 		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], curCNR->m_salesOfAmphorasOfWine, red, green);
+		ColorStringAccordingToItsValue(&m_textFinalCNRResult, curCNR->m_finalResult, red, green);
 	}
 }
 void ListOfAnnualCostsNRevenues::Update(VillaManagementStateMachine* _internalStateMachine)
@@ -255,7 +278,7 @@ void ListOfAnnualCostsNRevenues::Display(sf::RenderWindow& _window, const sf::Ve
 	// Display the money at the end of the line
 	sf::Sprite spriteSesterce = Money::GetSingleton()->GetSprite();
 	spriteSesterce.setScale(sf::Vector2f(0.85f, 0.85f));
-	BlitSprite(spriteSesterce, screenCenter.x + 425.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 525.0f, _window);
+	BlitSprite(spriteSesterce, screenCenter.x + 305.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 527.0f, _window);
 
 	// Separation Line
 	BlitSprite(m_separationLine, screenCenter.x + 15.0f, screenCenter.y - 20.0f, _window);
@@ -269,6 +292,9 @@ void ListOfAnnualCostsNRevenues::Display(sf::RenderWindow& _window, const sf::Ve
 	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], screenCenter.x + 5.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
 	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], screenCenter.x + 5.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 373.0f, _window);
 	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], screenCenter.x + 490.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
+
+	// Display final result value
+	BlitString(m_textFinalCNRResult, screenCenter.x + 265.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 518.0f, _window);
 
 	// Display of the year number on the papyrus border
 	BlitString(m_textYear, screenCenter.x - 550.0f, screenCenter.y, _window);

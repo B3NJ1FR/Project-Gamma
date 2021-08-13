@@ -15,6 +15,8 @@ struct AnnualCostsNRevenues
 	int m_buildingConstruction = 0;
 
 	int m_salesOfAmphorasOfWine = 0;
+
+	int m_finalResult = 0;
 };
 typedef struct AnnualCostsNRevenues sAnnualCostsNRevenues;
 
@@ -43,6 +45,7 @@ private:
 	sf::Text *m_textPapyrusTitles;
 	sf::Text *m_textsCategoriesTitles;
 	sf::Text *m_textsCategoriesValues;
+	sf::Text m_textFinalCNRResult;
 	sf::Text m_textYear;
 	sf::Text m_textArrowPrevYear;
 	sf::Text m_textArrowNextYear;
@@ -68,6 +71,7 @@ public:
 
 	// Getters
 	inline AnnualCostsNRevenuesMapData GetMapData() const { return m_annualCNRDataMap; }
+	int GetFinalRevenues(int _yearNumber);
 
 	// Setters
 	void CreateNewYearInDataMap(unsigned int _yearNumber);
@@ -80,6 +84,7 @@ public:
 	void SetResourcePreviousMerchantPrice(unsigned int _yearNumber, TypesOfRessources _resource, int _previousMerchantPrice);*/
 
 	// Methods
+	void CalculateFinalRevenues(int _yearNumber);
 
 	void Input(sf::Event _event, sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 	void UpdateTextsContent();
