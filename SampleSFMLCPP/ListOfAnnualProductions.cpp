@@ -588,10 +588,92 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 
 void ListOfAnnualProductions::SavingDataForFile(std::ofstream* _file)
 {
+	std::cout << "Size : " << m_listOfAnnualResourcesData.size() <<std::endl;
+	
+	// Save the number of years of data
+	int numberOfYearsToSave = m_listOfAnnualResourcesData.size();
+	_file->write((char*)&numberOfYearsToSave, sizeof(int));
 
+	for (AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.begin();
+		it != m_listOfAnnualResourcesData.end();
+		it++)
+	{
+		LinkedListClass::sLinkedList* currentList = (*it).second;
+
+		if (currentList != nullptr)
+		{
+			if (currentList->first != nullptr)
+			{
+				// Save the year number
+				int yearNumber = (*it).first;
+				_file->write((char*)&yearNumber, sizeof(int));
+
+				// Save the number of resources saved in this year
+				_file->write((char*)&currentList->size, sizeof(int));
+
+				for (LinkedListClass::sElement* currentElement = currentList->first; 
+					currentElement != nullptr; 
+					currentElement = currentElement->next)
+				{
+					//sAnnualResourceData* resData = (sAnnualResourceData*)currentElement->data;
+
+					_file->write((char*)(sAnnualResourceData*)currentElement->data, sizeof(sAnnualResourceData));
+				}
+			}
+		}
+	}
 }
 
 void ListOfAnnualProductions::LoadingDataFromFile(std::ifstream* _file)
 {
+	int numberOfYearsSaved = RESET;
 
+	m_listOfAnnualResourcesData.clear();
+
+	// Load the number of years of data
+	_file->read((char*)&numberOfYearsSaved, sizeof(int));
+
+	std::cout << "Size : " << numberOfYearsSaved << std::endl;
+	
+	for (int i = 0; i < numberOfYearsSaved; i++)
+	{
+		int currentYearNumber = RESET;
+		int numberOfResSaved = RESET;
+
+		LinkedListClass::sLinkedList* list = LinkedListInitialisation();
+		m_listOfAnnualResourcesData[numberOfYearsSaved] = list;
+
+		// Load the year number
+		_file->read((char*)&currentYearNumber, sizeof(int));
+
+		// Save the number of resources saved in this year
+		_file->read((char*)&numberOfResSaved, sizeof(int));
+
+		for (int j = 0; j < numberOfResSaved; j++)
+		{
+			LinkedListClass::sElement* newRes = new LinkedListClass::sElement;
+			newRes->data = new sAnnualResourceData*;
+
+			_file->read((char*)(sAnnualResourceData*)newRes->data, sizeof(sAnnualResourceData));
+
+			newRes->status = ELEMENT_ACTIVE;
+
+			if (j == 0)
+			{
+				// Add this worker at the top of the list
+				AddElementToLinkedList(list, newRes, 1);
+			}
+			else
+			{
+				// Add this worker at the end of the list
+				AddElementToLinkedList(list, newRes, -1);
+			}
+		}
+
+		for (LinkedListClass::sElement* currentElement = list->first; currentElement != nullptr; currentElement = currentElement->next)
+		{
+			sAnnualResourceData* resData = (sAnnualResourceData*)currentElement->data;
+			std::cout << "Ressource " << resData->m_resource << " : " << resData->m_numberOfBuilding << " buildings, " << resData->m_quantityProduced << " " << resData->m_comparisonWithLastYear << " - " << resData->m_isCanBeSold << " & " << resData->m_previousMerchantPrice << "$\n";
+		}
+	}
 }

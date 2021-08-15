@@ -1,6 +1,8 @@
 #include "SavingGame.h"
 #include "GameDefinitions.h"
 #include "BuildingDestruction.h"
+#include "ListOfAnnualCostsNRevenues.h"
+#include "ListOfAnnualProductions.h"
 
 
 SavingGame::SavingGame()
@@ -101,6 +103,12 @@ void SavingGame::SaveTheGame(struct Game *_game)
 
 	_game->m_buildWindow.SavingGhostBuildingsForFile(&saveFile);
 	std::cout << "BuildWindow saved !\n";
+
+	ListOfAnnualProductions::GetSingleton()->SavingDataForFile(&saveFile);
+	std::cout << "ListOfAnnualProductions saved !\n";
+
+	ListOfAnnualCostsNRevenues::GetSingleton()->SavingDataForFile(&saveFile);
+	std::cout << "ListOfAnnualCostsNRevenues saved !\n";
 
 	std::cout << "\n\nGame saved successfully !\n\n\n";
 

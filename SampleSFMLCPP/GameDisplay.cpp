@@ -286,34 +286,35 @@ void Game::Display()
 
 	DisplayDecor();
 
-	if (m_actualGameState == NORMAL_MODE)
+	switch (m_actualGameState)
 	{
+	case NORMAL_MODE:
 		m_previousGameState = NORMAL_MODE;
-	}
-	else if (m_actualGameState == BUILD_MODE)
-	{
+		break;
+	case BUILD_MODE:
 		m_buildWindow.DisplayBuildWindow(this);
 		//DisplayUIBuildingMode();
 		m_previousGameState = BUILD_MODE;
-	}
-	else if (m_actualGameState == TEST_PATHFINDING_MODE)
-	{
-		//->path.DisplayPathfinding(*_game->m_window);
-	}
-	else if (m_actualGameState == SELLING_WINDOW)
-	{
+		break;
+	case TEST_PATHFINDING_MODE:
+		//m_path.DisplayPathfinding(*_game->m_window);
+		break;
+	case SELLING_WINDOW:
 		m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
 		m_previousGameState = SELLING_WINDOW;
-	}
-	else if (m_actualGameState == VILLA_MANAGEMENT)
-	{
+		break;
+	case PAUSE_WINDOW:
+		break;
+	case VILLA_MANAGEMENT:
 		m_villaManagement.DisplayVillaManagement(*m_window, *m_screenReso);
 		m_previousGameState = VILLA_MANAGEMENT;
-	}
-	else if (m_actualGameState == ESTATE_DATA_N_STATISTICS)
-	{
+		break;
+	case ESTATE_DATA_N_STATISTICS:
 		//villaManagement.DisplayVillaManagement(*window);
 		m_previousGameState = ESTATE_DATA_N_STATISTICS;
+		break;
+	default:
+		break;
 	}
 
 	if (m_actualGameState == TUTORIAL_MODE)
@@ -323,20 +324,26 @@ void Game::Display()
 	}
 
 	DisplayUIGeneral();
-	m_time->DisplayUITime(*m_window, *m_screenReso);
+	m_time->DisplayCalendar(*m_window, *m_screenReso);
 
-	// --------------- Display of the manager between main character and workers --------------- 
-
-	if (m_mainCharacter->GetIsMainCharacterSelected())
+	if (m_actualGameState != VILLA_MANAGEMENT
+		&& m_actualGameState != BUILD_MODE)
 	{
-		m_managerBetweenWorkersAndMain->DisplayInsidePortraitFrame(m_mainCharacter->GetSprite(), *m_window);
-	}
-	else
-	{
-		m_managerBetweenWorkersAndMain->DisplayInsidePortraitFrame(m_workersList->GetCurrentWorkerSprite(), *m_window);
-	}
+		m_time->DisplayTimeChanger(*m_window, *m_screenReso);
 
-	m_managerBetweenWorkersAndMain->DisplayManagerBetweenWorkersAndMain(*m_window);
+		// --------------- Display of the manager between main character and workers --------------- 
+
+		if (m_mainCharacter->GetIsMainCharacterSelected())
+		{
+			m_managerBetweenWorkersAndMain->DisplayInsidePortraitFrame(m_mainCharacter->GetSprite(), *m_window);
+		}
+		else
+		{
+			m_managerBetweenWorkersAndMain->DisplayInsidePortraitFrame(m_workersList->GetCurrentWorkerSprite(), *m_window);
+		}
+
+		m_managerBetweenWorkersAndMain->DisplayManagerBetweenWorkersAndMain(*m_window);
+	}
 
 
 
@@ -349,22 +356,23 @@ void Game::Display()
 	{
 		if (m_previousGameState != NORMAL_MODE)
 		{
-			if (m_previousGameState == BUILD_MODE)
+			switch (m_previousGameState)
 			{
+			case BUILD_MODE:
 				m_buildWindow.DisplayBuildWindow(this);
 				//DisplayUIBuildingMode(_game);
-			}
-			else if (m_previousGameState == SELLING_WINDOW)
-			{
+				break;
+			case SELLING_WINDOW:
 				m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
-			}
-			else if (m_previousGameState == VILLA_MANAGEMENT)
-			{
+				break;
+			case VILLA_MANAGEMENT:
 				m_villaManagement.DisplayVillaManagement(*m_window, *m_screenReso);
-			}
-			else if (m_previousGameState == ESTATE_DATA_N_STATISTICS)
-			{
+				break;
+			case ESTATE_DATA_N_STATISTICS:
 				//villaManagement.DisplayVillaManagement(*window);
+				break;
+			default:
+				break;
 			}
 		}
 

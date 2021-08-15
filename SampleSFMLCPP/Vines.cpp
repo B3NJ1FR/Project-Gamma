@@ -1031,7 +1031,7 @@ bool Vines::DestroyedBuildingSelected(const sf::Vector2f &_mapPosition)
 		{
 			bool isBuildingFind = false;
 			
-			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement *currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				//std::cout << "Map : " << positionCounter << "/" << list->size << " -> "<< ((Vines::sVines *)currentElement->data)->mapPosition.x << " " << ((Vines::sVines *)currentElement->data)->mapPosition.y << std::endl;
 
@@ -1076,7 +1076,7 @@ void Vines::ClearStorages()
 	{
 		if (m_list->first != nullptr)
 		{
-			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement* currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				// We remove all storages
 				if (((Vines::sVines*)currentElement->data)->storage != nullptr)
@@ -1102,7 +1102,7 @@ void Vines::SavingVinesListForFile(std::ofstream *_file)
 		{
 			LinkedListClass::sElement *currentElement = m_list->first;
 
-			for (currentElement = m_list->first; currentElement != NULL; currentElement = currentElement->next)
+			for (currentElement = m_list->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				Vines::sVines* vinesData = (Vines::sVines*)currentElement->data;
 				_file->write((char *)vinesData, sizeof(sVines));

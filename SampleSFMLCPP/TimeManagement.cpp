@@ -172,7 +172,6 @@ void TimeManagement::InputTimeManagement(sf::RenderWindow &_window, const sf::Ve
 {
 	sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
 
-	// Button New Game
 	if (mousePostionAtScreen.x > _screenResolution.x - 695 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.x < _screenResolution.x - 695 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE].getGlobalBounds().height / 2)
@@ -180,7 +179,6 @@ void TimeManagement::InputTimeManagement(sf::RenderWindow &_window, const sf::Ve
 	{
 		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_PAUSE);
 	}
-	// Button Continue
 	else if (mousePostionAtScreen.x > _screenResolution.x - 645 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.x < _screenResolution.x - 645 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED].getGlobalBounds().height / 2)
@@ -188,7 +186,6 @@ void TimeManagement::InputTimeManagement(sf::RenderWindow &_window, const sf::Ve
 	{
 		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
 	}
-	// Button Options	
 	else if (mousePostionAtScreen.x > _screenResolution.x - 595 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.x < _screenResolution.x - 595 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED].getGlobalBounds().height / 2)
@@ -196,7 +193,6 @@ void TimeManagement::InputTimeManagement(sf::RenderWindow &_window, const sf::Ve
 	{
 		SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_DOUBLE_SPEED);
 	}
-	// Button Quit
 	else if (mousePostionAtScreen.x > _screenResolution.x - 535 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.x < _screenResolution.x - 535 + (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > 45 - (m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED].getGlobalBounds().height / 2)
@@ -263,21 +259,23 @@ void TimeManagement::UpdateMonthToDisplay()
 	}
 }
 
-void TimeManagement::DisplayUITime(sf::RenderWindow &_window, const sf::Vector2i &_screenResolution)
+
+void TimeManagement::DisplayCalendar(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution)
 {
 	BlitString(m_monthText, _window);
 	BlitString(yearText, _window);
-		
-	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE], (float)_screenResolution.x - 695.0f, 45.0f, 0.0f, _window);
-	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED], (float)_screenResolution.x - 645.0f, 45.0f, 0.0f, _window);
-	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED], (float)_screenResolution.x - 595.0f, 45.0f, 0.0f, _window);
-	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED], (float)_screenResolution.x - 535.0f, 45.0f, 0.0f, _window);
 
 	BlitSprite(m_sundial, (float)_screenResolution.x - 435.0f, 45.0f, 0.0f, _window);
 	BlitSprite(m_sundialArrowIndicator, (float)_screenResolution.x - 435.0f, 30.0f, (int)(m_timer.asSeconds() * 3.75f) % (int)(TEMPORARY_TIME * 3.75f) - 20.0f, _window);
 }
 
-
+void TimeManagement::DisplayTimeChanger(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution)
+{
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_PAUSE], (float)_screenResolution.x - 695.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_NORMAL_SPEED], (float)_screenResolution.x - 645.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_DOUBLE_SPEED], (float)_screenResolution.x - 595.0f, 45.0f, 0.0f, _window);
+	BlitSprite(m_timesSprite[(int)TypeOfTimeAcceleration::GAME_TRIPLE_SPEED], (float)_screenResolution.x - 535.0f, 45.0f, 0.0f, _window);
+}
 
 void TimeManagement::SavingTimeFromFile(std::ofstream *_file)
 {

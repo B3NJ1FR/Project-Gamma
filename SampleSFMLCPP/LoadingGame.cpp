@@ -1,6 +1,8 @@
 #include "LoadingGame.h"
 #include "GameDefinitions.h"
 #include "BuildingDestruction.h"
+#include "ListOfAnnualProductions.h"
+#include "ListOfAnnualCostsNRevenues.h"
 
 // WE DONT LOAD THE MAP
 
@@ -114,6 +116,12 @@ void LoadingGame::LoadTheGame(struct Game *_game)
 
 	_game->m_buildWindow.LoadingGhostBuildingsFromFile(&saveFile);
 	std::cout << "BuildWindow loaded !\n";
+
+	ListOfAnnualProductions::GetSingleton()->LoadingDataFromFile(&saveFile);
+	std::cout << "ListOfAnnualProductions saved !\n";
+
+	ListOfAnnualCostsNRevenues::GetSingleton()->LoadingDataFromFile(&saveFile);
+	std::cout << "ListOfAnnualCostsNRevenues saved !\n";
 
 	std::cout << "\n\nGame loaded successfully !\n\n\n";
 

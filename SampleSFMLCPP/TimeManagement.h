@@ -95,7 +95,8 @@ public:
 
 	void InputTimeManagement(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
 	void UpdateMonthToDisplay();
-	void DisplayUITime(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution);
+	void DisplayTimeChanger(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
+	void DisplayCalendar(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 
 	void SavingTimeFromFile(std::ofstream *_file);
 	void LoadingTimeFromFile(std::ifstream *_file);
