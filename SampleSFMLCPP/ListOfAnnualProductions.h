@@ -9,7 +9,7 @@
 
 #define PAPYRUS_BG_OFFSET_TOP 290.0f
 #define PAPYRUS_BG_OFFSET_BOT 160.0f
-#define ARROW_CHANGE_YEAR_OFFSET_X 750.0f
+#define ARROW_CHANGE_YEAR_OFFSET_X 760.0f
 #define ARROW_CHANGE_YEAR_OFFSET_Y 25.0f
 
 struct AnnualResourceData
@@ -23,17 +23,14 @@ struct AnnualResourceData
 
 	bool m_isCanBeSold;
 	int m_previousMerchantPrice;
+
+	AnnualResourceData() : m_resource(TypesOfRessources::GRAPE_VINE), m_numberOfBuilding(0), m_quantityProduced(0), m_comparisonWithLastYear(0), m_isCanBeSold(false), m_previousMerchantPrice(0) {};
+	AnnualResourceData(TypesOfRessources _res, int _nbOfBuildings, int _qtyProduced, int _comparisonWLY, bool _canBeSold, int _prevMerchantPrice) : m_resource(_res), m_numberOfBuilding(_nbOfBuildings), m_quantityProduced(_qtyProduced), m_comparisonWithLastYear(_comparisonWLY), m_isCanBeSold(_canBeSold), m_previousMerchantPrice(_prevMerchantPrice) {};
 };
 typedef struct AnnualResourceData sAnnualResourceData;
 
 // std::map< [YEAR], [List of resources present at this year]>
 typedef std::map<int, LinkedListClass::sLinkedList*> AnnualResourcesProducedMapData;
-
-//
-//
-// WARNING : ALL THE METHODS ONLY WORK FOR THE YEAR 0 -> TO CHANGE
-//
-//
 
 class ListOfAnnualProductions : LinkedListClass
 {
@@ -81,8 +78,10 @@ public:
 	
 	// Setters
 	void CreateNewYearInDataMap(unsigned int _yearNumber);
+	void CreateNewResourceInList(LinkedListClass::LinkedList* _list, sAnnualResourceData _resourceData);
 	void AddResourceToYear(TypesOfRessources _resource, unsigned int _yearNumber);
 	void AddResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber);
+	void SetResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber);
 	void SetResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding);
 	void SetResourceQuantityProduced(unsigned int _yearNumber, TypesOfRessources _resource, int _quantityProduced);
 	void SetResourceComparisonWithLastYear(unsigned int _yearNumber, TypesOfRessources _resource, int _comparisonWithLastYear);

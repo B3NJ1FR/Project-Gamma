@@ -64,7 +64,10 @@ public :
 	unsigned short** GetMapLayerWithoutSpecificsCollisions(unsigned short _mapHeightWanted);
 
 	// Methods
+	void Initialise();
 	void InitMapFromFile();
+
+	void ClearMap();
 
 	void SavingMapFromFile(std::ofstream* _file);
 	void LoadingMapFromFile(std::ifstream* _file);

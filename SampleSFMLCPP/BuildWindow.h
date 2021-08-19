@@ -28,6 +28,7 @@ private:
 	sf::Text *m_textBuildingCaseOccupied;
 	sf::Text *m_textBuildingHelps;
 
+	sf::Sprite m_background;
 	sf::Sprite m_buildingUI;
 	sf::Sprite m_buildingUIUpper;
 	sf::Sprite m_buildingUIclosed;
@@ -89,6 +90,7 @@ public:
 
 	void InputBuildWindow(struct Game *_game);
 	void UpdateBuildWindow(struct Game *_game);
+	void DisplayBackground(sf::RenderWindow& _window);
 	void DisplayBuildWindow(struct Game *_game);
 
 	void SaveFromMapPreviousBuildNSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding, unsigned short _spriteID);

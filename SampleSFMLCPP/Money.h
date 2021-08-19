@@ -28,6 +28,7 @@ public:
 	inline int GetMoneyQuantity() const { return m_playerMoney; };
 
 	// Methods
+	void Initialise();
 	inline void AddMoney(int _quantityToAdd = 1) { m_playerMoney += _quantityToAdd; };
 	inline void SubtractMoney(int _quantityToRemove = 1) { m_playerMoney -= _quantityToRemove; };
 };

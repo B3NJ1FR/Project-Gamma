@@ -284,6 +284,8 @@ void Game::Display()
 {
 	m_window->clear();
 
+	if (m_actualGameState == BUILD_MODE) m_buildWindow.DisplayBackground(*m_window);
+
 	DisplayDecor();
 
 	switch (m_actualGameState)

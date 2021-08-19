@@ -16,8 +16,8 @@ enum GeneralState
 
 // This function allow to precharging the sprites for the pictures that will appear at screen
 // Also, we add the posibility to center the picture origin
-sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition);
-sf::Sprite LoadSprite(const std::string _stringFileName, const sf::Vector2f &_screenPosition, int _originPosition);
+sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition = 0, bool _smoothActived = false);
+sf::Sprite LoadSprite(const std::string _stringFileName, const sf::Vector2f &_screenPosition, int _originPosition = 0, bool _smoothActived = false);
 
 void LoadTextString(sf::Text *_textToInitialise, const char * _string, sf::Font *_font, int _characterSize, sf::Color _color);
 void LoadTextString(sf::Text *_textToInitialise, std::string _string, sf::Font *_font, int _characterSize, sf::Color _color, int _originPosition = 0);

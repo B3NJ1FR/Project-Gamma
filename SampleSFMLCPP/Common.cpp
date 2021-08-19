@@ -2,10 +2,12 @@
 
 // This function allow to precharging the sprites for the pictures that will appear at screen
 // Also, we add the posibility to center the picture origin
-sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition = 0)
+sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition, bool _smoothActived)
 {
 	sf::Texture* temporaryTexture = new sf::Texture;
 	temporaryTexture->loadFromFile(_stringFileName);
+
+	if (_smoothActived) temporaryTexture->setSmooth(true);
 
 	sf::Sprite temporarySprite;
 	temporarySprite.setTexture(*temporaryTexture);
@@ -109,10 +111,12 @@ sf::Sprite LoadSprite(const std::string _stringFileName, int _originPosition = 0
 	return temporarySprite;
 }
 
-sf::Sprite LoadSprite(const std::string _stringFileName, const sf::Vector2f &_screenPosition, int _originPosition = 0)
+sf::Sprite LoadSprite(const std::string _stringFileName, const sf::Vector2f &_screenPosition, int _originPosition, bool _smoothActived)
 {
 	sf::Texture* temporaryTexture = new sf::Texture;
 	temporaryTexture->loadFromFile(_stringFileName);
+
+	if (_smoothActived) temporaryTexture->setSmooth(true);
 
 	sf::Sprite temporarySprite;
 	temporarySprite.setTexture(*temporaryTexture);

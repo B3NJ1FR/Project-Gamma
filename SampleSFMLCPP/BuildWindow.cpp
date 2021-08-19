@@ -78,6 +78,8 @@ void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 
 void BuildWindow::InitSpritesBuildWindow()
 {
+	m_background = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/build_mode_background.png", 0);
+
 	m_buildingUI = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll.png", 0);
 	m_buildingUIUpper = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/old_scroll_upper.png", 0);
 	m_buildingUIclosed = LoadSprite("Data/Assets/Sprites/Menu/old_scroll_closed.png", 0);
@@ -582,6 +584,12 @@ void BuildWindow::UpdateTextsBuildWindow(struct Game *_game)
 	}
 }
 
+void BuildWindow::DisplayBackground(sf::RenderWindow& _window)
+{
+	// Display of the special background
+	BlitSprite(m_background, 0, 0, _window);
+}
+
 void BuildWindow::DisplayBuildWindow(struct Game *_game)
 {
 	// Display of the building selection UI
@@ -895,18 +903,21 @@ void BuildWindow::LoadOnMapPreviousID()
 
 void BuildWindow::SavingGhostBuildingsForFile(std::ofstream* _file)
 {
-	// Save the number of elements in the list
-	_file->write((char*)&m_listOfPreviousID->size, sizeof(int));
-
 	if (m_listOfPreviousID != nullptr)
 	{
-		if (m_listOfPreviousID->first != nullptr)
-		{
-			LinkedListClass::sElement* currentElement = m_listOfPreviousID->first;
+		// Save the number of elements in the list
+		_file->write((char*)&m_listOfPreviousID->size, sizeof(int));
 
-			for (currentElement = m_listOfPreviousID->first; currentElement != nullptr; currentElement = currentElement->next)
+		if (m_listOfPreviousID != nullptr)
+		{
+			if (m_listOfPreviousID->first != nullptr)
 			{
-				_file->write((char*)(sPreviousPositionIDs*)currentElement->data, sizeof(sPreviousPositionIDs));
+				LinkedListClass::sElement* currentElement = m_listOfPreviousID->first;
+
+				for (currentElement = m_listOfPreviousID->first; currentElement != nullptr; currentElement = currentElement->next)
+				{
+					_file->write((char*)(sPreviousPositionIDs*)currentElement->data, sizeof(sPreviousPositionIDs));
+				}
 			}
 		}
 	}

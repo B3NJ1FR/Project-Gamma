@@ -50,6 +50,10 @@ void TimeManagement::Initialisation(sf::Font* _font, const sf::Vector2i& _screen
 	m_sundialArrowIndicator = LoadSprite("Data/Assets/Sprites/UI/TimeManagement/arrow.png", 2);
 
 	SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
+
+	std::cout << "\n\nNew year : " << m_numberOfYears << std::endl << std::endl;
+	ListOfAnnualProductions::GetSingleton()->CreateNewYearInDataMap(m_numberOfYears);
+	ListOfAnnualCostsNRevenues::GetSingleton()->CreateNewYearInDataMap(m_numberOfYears);
 }
 
 

@@ -9,7 +9,7 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 
 	m_time = TimeManagement::GetSingleton();
 
-	m_papyrusBackground = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/sellingWindow_background.png", 1);
+	m_papyrusBackground = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/productionSummary_background.png", 1);
 	m_greenCheck = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/greenCheck.png", 1);
 	m_redCross = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/redCross.png", 1);
 	m_leftArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_previous.png", 1);
@@ -40,72 +40,6 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 	m_yearAsChanged = false;
 
 	m_currentYearDisplayed = TimeManagement::GetSingleton()->GetCurrentYear();
-
-	// TESTS
-	CreateNewYearInDataMap(m_currentYearDisplayed);
-	/*CreateNewYearInDataMap(1);
-	CreateNewYearInDataMap(2);
-	CreateNewYearInDataMap(3);
-	CreateNewYearInDataMap(4);
-	CreateNewYearInDataMap(5);
-	CreateNewYearInDataMap(6);
-	CreateNewYearInDataMap(7);*/
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 0);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 0);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 0);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 0);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 0);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 0);
-
-	/*AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 1);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 1);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 1);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 1);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 1);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 1);
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 2);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 2);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 2);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 2);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 2);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 2);
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 3);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 3);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 3);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 3);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 3);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 3);
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 4);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 4);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 4);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 4);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 4);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 4);
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 5);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 5);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 5);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 5);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 5);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 5);
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 6);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 6);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 6);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 6);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 6);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 6);
-
-	AddResourceToYear(TypesOfRessources::BUNCH_OF_GRAPE, 7);
-	AddResourceToYear(TypesOfRessources::GRAPES_MUST, 7);
-	AddResourceToYear(TypesOfRessources::GRAPE_JUICE, 7);
-	AddResourceToYear(TypesOfRessources::GRAPE_MARC, 7);
-	AddResourceToYear(TypesOfRessources::DOLIUM, 7);
-	AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, 7);*/
 
 	internalState = InternalState::STATE_INIT;
 }
@@ -138,11 +72,36 @@ void ListOfAnnualProductions::CreateNewYearInDataMap(unsigned int _yearNumber)
 		AddResourceToYear(TypesOfRessources::GRAPES_MUST, m_currentYearDisplayed);
 		AddResourceToYear(TypesOfRessources::GRAPE_JUICE, m_currentYearDisplayed);
 		AddResourceToYear(TypesOfRessources::GRAPE_MARC, m_currentYearDisplayed);
+		AddResourceToYear(TypesOfRessources::DOLIUM, m_currentYearDisplayed);
+		AddResourceToYear(TypesOfRessources::AMPHORAS, m_currentYearDisplayed);
+		AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, m_currentYearDisplayed);
 	}
 	else
 	{
-		std::cout << "[ListOfAnnualProductions] - Error when creating new year in Data Map because the year " << _yearNumber << " already exist";
+		std::cout << "[ListOfAnnualProductions] - Error when creating new year in Data Map because the year " << _yearNumber << " already exist\n";
 	}
+}
+
+
+void ListOfAnnualProductions::CreateNewResourceInList(LinkedListClass::LinkedList* _list, sAnnualResourceData _resourceData)
+{
+	LinkedListClass::sElement* newResource = new LinkedListClass::sElement;
+	newResource->data = new sAnnualResourceData;
+
+	((sAnnualResourceData*)newResource->data)->m_resource = _resourceData.m_resource;
+
+	((sAnnualResourceData*)newResource->data)->m_numberOfBuilding = _resourceData.m_numberOfBuilding;
+
+	((sAnnualResourceData*)newResource->data)->m_quantityProduced = _resourceData.m_quantityProduced;
+	((sAnnualResourceData*)newResource->data)->m_comparisonWithLastYear = _resourceData.m_comparisonWithLastYear;
+
+	((sAnnualResourceData*)newResource->data)->m_isCanBeSold = _resourceData.m_isCanBeSold;
+	((sAnnualResourceData*)newResource->data)->m_previousMerchantPrice = _resourceData.m_previousMerchantPrice;
+
+	newResource->status = ELEMENT_ACTIVE;
+
+	// Add this new resource at the end of the list of resources produced this year
+	AddElementToLinkedList(_list, newResource, -1);
 }
 
 void ListOfAnnualProductions::AddResourceToYear(TypesOfRessources _resource, unsigned int _yearNumber)
@@ -160,27 +119,44 @@ void ListOfAnnualProductions::AddResourceToYear(TypesOfRessources _resource, uns
 	// We verify that the resource doesn't already exist in the list
 	if (!IsResourceExistInLinkedList(m_listOfAnnualResourcesData[_yearNumber], _resource))
 	{
-		LinkedListClass::sElement* newResource = new LinkedListClass::sElement;
-		newResource->data = new sAnnualResourceData;
-
-		((sAnnualResourceData*)newResource->data)->m_resource = _resource;
-
-		((sAnnualResourceData*)newResource->data)->m_numberOfBuilding = 0;
-
-		((sAnnualResourceData*)newResource->data)->m_quantityProduced = 0;
-		((sAnnualResourceData*)newResource->data)->m_comparisonWithLastYear = 0;
-
-		((sAnnualResourceData*)newResource->data)->m_isCanBeSold = false;
-		((sAnnualResourceData*)newResource->data)->m_previousMerchantPrice = 0;
-
-		newResource->status = ELEMENT_ACTIVE;
-
-		// Add this new resource at the end of the list of resources produced this year
-		AddElementToLinkedList(m_listOfAnnualResourcesData[_yearNumber], newResource, -1);
+		CreateNewResourceInList(m_listOfAnnualResourcesData[_yearNumber], AnnualResourceData(_resource, 0, 0, 0, false, 0));
 	}
 }
 
 void ListOfAnnualProductions::AddResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber)
+{
+	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+
+	if (it != m_listOfAnnualResourcesData.end())
+	{
+		if (m_listOfAnnualResourcesData[_yearNumber] != nullptr)
+		{
+			if (m_listOfAnnualResourcesData[_yearNumber]->first != nullptr)
+			{
+				for (LinkedListClass::sElement* currentElement = m_listOfAnnualResourcesData[_yearNumber]->first; currentElement != nullptr; currentElement = currentElement->next)
+				{
+					if (((sAnnualResourceData*)currentElement->data)->m_resource == _resourceData.m_resource)
+					{
+						((sAnnualResourceData*)currentElement->data)->m_numberOfBuilding += _resourceData.m_numberOfBuilding;
+
+						((sAnnualResourceData*)currentElement->data)->m_quantityProduced += _resourceData.m_quantityProduced;
+						((sAnnualResourceData*)currentElement->data)->m_comparisonWithLastYear += _resourceData.m_comparisonWithLastYear;
+
+						((sAnnualResourceData*)currentElement->data)->m_isCanBeSold = _resourceData.m_isCanBeSold;
+						((sAnnualResourceData*)currentElement->data)->m_previousMerchantPrice += _resourceData.m_previousMerchantPrice;
+
+						return;
+					}
+				}
+
+				// If we don't find the resource in the current list, we add it
+				CreateNewResourceInList(m_listOfAnnualResourcesData[_yearNumber], _resourceData);
+			}
+		}
+	}
+}
+
+void ListOfAnnualProductions::SetResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber)
 {
 	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
 
@@ -201,13 +177,17 @@ void ListOfAnnualProductions::AddResourceDataToYear(sAnnualResourceData _resourc
 
 						((sAnnualResourceData*)currentElement->data)->m_isCanBeSold = _resourceData.m_isCanBeSold;
 						((sAnnualResourceData*)currentElement->data)->m_previousMerchantPrice = _resourceData.m_previousMerchantPrice;
+
+						return;
 					}
 				}
+
+				// If we don't find the resource in the current list, we add it
+				CreateNewResourceInList(m_listOfAnnualResourcesData[_yearNumber], _resourceData);
 			}
 		}
 	}
 }
-
 void ListOfAnnualProductions::SetResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding)
 {
 	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
@@ -370,11 +350,11 @@ void ListOfAnnualProductions::UpdateTextsContent()
 
 		for (int i = 0; i < 4; i++) LoadTextString(&m_textsData[counter][i], "", &m_font, 25, sf::Color::Black);
 
-		curResource->m_comparisonWithLastYear = (rand() % (200)) - 100; // TEMPORARY / TEMPORAIRE / POUR TESTER
-		curResource->m_isCanBeSold = rand() % 2; // TEMPORARY / TEMPORAIRE / POUR TESTER
-		curResource->m_previousMerchantPrice = 1;
+		//curResource->m_comparisonWithLastYear = (rand() % (200)) - 100; // TEMPORARY / TEMPORAIRE / POUR TESTER
+		//curResource->m_isCanBeSold = rand() % 2; // TEMPORARY / TEMPORAIRE / POUR TESTER
+		//curResource->m_previousMerchantPrice = 1;
 
-		for (int i = 0; i < counter; i++) curResource->m_previousMerchantPrice *= 10;
+		//for (int i = 0; i < counter; i++) curResource->m_previousMerchantPrice *= 10;
 
 		UpdateDynamicsTexts(&m_textsData[counter][0], curResource->m_numberOfBuilding);
 		UpdateDynamicsTexts(&m_textsData[counter][1], curResource->m_quantityProduced);
@@ -526,9 +506,9 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 	float positionHeight = screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 250.0f;
 	BlitString(m_textsCategoriesTitles[0], screenCenter.x - 245.0f, positionHeight, _window);
 	BlitString(m_textsCategoriesTitles[1], screenCenter.x - 95.0f, positionHeight, _window);
-	BlitString(m_textsCategoriesTitles[2], screenCenter.x + 60.0f, positionHeight, _window);
-	BlitString(m_textsCategoriesTitles[3], screenCenter.x + 200.0f, positionHeight, _window);
-	BlitString(m_textsCategoriesTitles[4], screenCenter.x + 370.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[2], screenCenter.x + 75.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[3], screenCenter.x + 230.0f, positionHeight, _window);
+	BlitString(m_textsCategoriesTitles[4], screenCenter.x + 380.0f, positionHeight, _window);
 
 	// Display of the resources data
 	if (m_listOfAnnualResourcesData[m_currentYearDisplayed] != nullptr)
@@ -551,45 +531,43 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 				sAnnualResourceData* curResource = ((sAnnualResourceData*)currentElement->data);
 				float currentHeight = screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + PAPYRUS_BG_OFFSET_TOP + (counter * spaceBetweenResources);
 
-				BlitSprite(RessourcesManager::GetSingleton()->GetResourceSprite(curResource->m_resource), screenCenter.x - 425.0f, currentHeight - 10.0f, _window);
+				BlitSprite(RessourcesManager::GetSingleton()->GetResourceSprite(curResource->m_resource), screenCenter.x - 450.0f, currentHeight - 10.0f, _window);
 
 				for (int i = 0; i < 4; i++)
 				{
 
 					if (i == 3)
 					{
-						BlitString(m_textsData[counter][i], screenCenter.x + 400.0f, currentHeight, _window);
+						BlitString(m_textsData[counter][i], screenCenter.x + 430.0f, currentHeight, _window);
 					}
 					else
 					{
-						BlitString(m_textsData[counter][i], screenCenter.x - 400.0f + (i + 1) * 150, currentHeight, _window);
+						BlitString(m_textsData[counter][i], screenCenter.x - 400.0f + (i + 1) * 160, currentHeight, _window);
 					}
 				}
 
 				if (curResource->m_isCanBeSold)
 				{
-					BlitSprite(m_greenCheck, screenCenter.x + 200, currentHeight + 5.0f, _window);
+					BlitSprite(m_greenCheck, screenCenter.x + 230, currentHeight + 5.0f, _window);
 				}
 				else
 				{
-					BlitSprite(m_redCross, screenCenter.x + 200, currentHeight + 5.0f, _window);
+					BlitSprite(m_redCross, screenCenter.x + 230, currentHeight + 5.0f, _window);
 				}
 
 				// Display the money at the end of the line
-				BlitSprite(spriteSesterce, screenCenter.x + 425.0f, currentHeight + 7.0f, _window);
+				BlitSprite(spriteSesterce, screenCenter.x + 455.0f, currentHeight + 7.0f, _window);
 			}
 		}
 	}
 
 	// Display of the year number on the papyrus border
-	BlitString(m_textYear, screenCenter.x - 550.0f, screenCenter.y, _window);
-	BlitString(m_textYear, screenCenter.x + 555.0f, screenCenter.y, _window);
+	BlitString(m_textYear, screenCenter.x - 590.0f, screenCenter.y, _window);
+	BlitString(m_textYear, screenCenter.x + 595.0f, screenCenter.y, _window);
 }
 
 void ListOfAnnualProductions::SavingDataForFile(std::ofstream* _file)
 {
-	std::cout << "Size : " << m_listOfAnnualResourcesData.size() <<std::endl;
-	
 	// Save the number of years of data
 	int numberOfYearsToSave = m_listOfAnnualResourcesData.size();
 	_file->write((char*)&numberOfYearsToSave, sizeof(int));
@@ -633,47 +611,26 @@ void ListOfAnnualProductions::LoadingDataFromFile(std::ifstream* _file)
 	// Load the number of years of data
 	_file->read((char*)&numberOfYearsSaved, sizeof(int));
 
-	std::cout << "Size : " << numberOfYearsSaved << std::endl;
-	
 	for (int i = 0; i < numberOfYearsSaved; i++)
 	{
 		int currentYearNumber = RESET;
 		int numberOfResSaved = RESET;
 
-		LinkedListClass::sLinkedList* list = LinkedListInitialisation();
-		m_listOfAnnualResourcesData[numberOfYearsSaved] = list;
-
 		// Load the year number
 		_file->read((char*)&currentYearNumber, sizeof(int));
+
+		CreateNewYearInDataMap(currentYearNumber);
 
 		// Save the number of resources saved in this year
 		_file->read((char*)&numberOfResSaved, sizeof(int));
 
 		for (int j = 0; j < numberOfResSaved; j++)
 		{
-			LinkedListClass::sElement* newRes = new LinkedListClass::sElement;
-			newRes->data = new sAnnualResourceData*;
+			sAnnualResourceData newResource;
 
-			_file->read((char*)(sAnnualResourceData*)newRes->data, sizeof(sAnnualResourceData));
-
-			newRes->status = ELEMENT_ACTIVE;
-
-			if (j == 0)
-			{
-				// Add this worker at the top of the list
-				AddElementToLinkedList(list, newRes, 1);
-			}
-			else
-			{
-				// Add this worker at the end of the list
-				AddElementToLinkedList(list, newRes, -1);
-			}
-		}
-
-		for (LinkedListClass::sElement* currentElement = list->first; currentElement != nullptr; currentElement = currentElement->next)
-		{
-			sAnnualResourceData* resData = (sAnnualResourceData*)currentElement->data;
-			std::cout << "Ressource " << resData->m_resource << " : " << resData->m_numberOfBuilding << " buildings, " << resData->m_quantityProduced << " " << resData->m_comparisonWithLastYear << " - " << resData->m_isCanBeSold << " & " << resData->m_previousMerchantPrice << "$\n";
+			_file->read((char*)&newResource, sizeof(sAnnualResourceData));
+			
+			SetResourceDataToYear(newResource, currentYearNumber);
 		}
 	}
 }

@@ -1,12 +1,18 @@
 #include "ManagerBetweenWorkersAndMain.h"
+#include "Fonts.h"
 
 ManagerBetweenWorkersAndMain::ManagerBetweenWorkersAndMain(const sf::Vector2i& _screenResolution)
 {
 	m_portraitFrame = LoadSprite("Data/Assets/Sprites/UI/Manager/portraitFrame.png", sf::Vector2f(150, _screenResolution.y - 100), 1);
 	m_changementLeftArrow = LoadSprite("Data/Assets/Sprites/UI/Manager/left_arrow.png", sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y), 1);
 	m_changementRightArrow = LoadSprite("Data/Assets/Sprites/UI/Manager/right_arrow.png", sf::Vector2f(m_portraitFrame.getPosition().x + SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y), 1);
-	m_keyA = LoadSprite("Data/Assets/Sprites/UI/Manager/key_A.png", sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y + 40), 1);
-	m_keyE = LoadSprite("Data/Assets/Sprites/UI/Manager/key_E.png", sf::Vector2f(m_portraitFrame.getPosition().x + SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y + 40), 1);
+	m_keyA = LoadSprite("Data/Assets/Sprites/UI/Manager/key_A.png", sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y + 40.0f), 1);
+	m_keyE = LoadSprite("Data/Assets/Sprites/UI/Manager/key_E.png", sf::Vector2f(m_portraitFrame.getPosition().x + SPACE_FROM_PORTRAIT_FRAME, m_portraitFrame.getPosition().y + 40.0f), 1);
+	m_keyO = LoadSprite("Data/Assets/Sprites/UI/Manager/key_O.png", sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME - 26.0f, m_portraitFrame.getPosition().y + 75.0f), 1, true);
+
+	m_font = Fonts::GetSingleton()->GetCharlemagneFont();
+	LoadTextString(&m_pressToBuyWorker, ": To buy worker", &m_font, 20, sf::Color::White, sf::Vector2f(m_portraitFrame.getPosition().x - SPACE_FROM_PORTRAIT_FRAME - 5.0f, m_portraitFrame.getPosition().y + 70.0f));
+	ChangeTextStringOrigin(&m_pressToBuyWorker, 5);
 
 	m_valueNumberWorkerOrMainSelected = RESET;
 }
@@ -24,7 +30,6 @@ void ManagerBetweenWorkersAndMain::CheckClickOnArrows(MainCharacter *_mainCharac
 {
 	sf::Vector2i mousePostionAtScreen = sf::Mouse::getPosition(_window);
 
-	// Button New Game
 	if (mousePostionAtScreen.x > m_changementLeftArrow.getPosition().x - (m_changementLeftArrow.getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.x <  m_changementLeftArrow.getPosition().x + (m_changementLeftArrow.getGlobalBounds().width / 2)
 		&& mousePostionAtScreen.y > m_changementLeftArrow.getPosition().y - (m_changementLeftArrow.getGlobalBounds().height / 2)
@@ -88,7 +93,6 @@ void ManagerBetweenWorkersAndMain::CheckClickOnArrows(MainCharacter *_mainCharac
 
 void ManagerBetweenWorkersAndMain::CheckClickKeys(bool _isHigherRequired, MainCharacter* _mainCharacter, WorkersList* _workersList)
 {
-	// Button New Game
 	if (!_isHigherRequired)
 	{
 		// PREVIOUS
@@ -152,6 +156,9 @@ void ManagerBetweenWorkersAndMain::DisplayManagerBetweenWorkersAndMain(sf::Rende
 	BlitSprite(m_portraitFrame, _window);
 	BlitSprite(m_changementRightArrow, _window);
 	BlitSprite(m_keyE, _window);
+	BlitSprite(m_keyO, _window);
+	BlitString(m_pressToBuyWorker, _window);
+
 }
 
 void ManagerBetweenWorkersAndMain::DisplayInsidePortraitFrame(sf::Sprite _spriteIntoPortraitFrame, sf::RenderWindow& _window)

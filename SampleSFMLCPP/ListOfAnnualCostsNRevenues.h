@@ -23,12 +23,6 @@ typedef struct AnnualCostsNRevenues sAnnualCostsNRevenues;
 // std::map< [YEAR], [Values of CNR]>
 typedef std::map<int, sAnnualCostsNRevenues*> AnnualCostsNRevenuesMapData;
 
-//
-//
-// WARNING : ALL THE METHODS ONLY WORK FOR THE YEAR 0 -> TO CHANGE
-//
-//
-
 // CNR = Costs And Revenues
 class ListOfAnnualCostsNRevenues
 {
@@ -76,6 +70,7 @@ public:
 	// Setters
 	void CreateNewYearInDataMap(unsigned int _yearNumber);
 	void AddCNRValueToYear(EnumListOfCostsNRevenues _costOrRevenuesWanted, int _value, unsigned int _yearNumber);
+	void SetCNRValuesToYear(sAnnualCostsNRevenues _CNR, unsigned int _yearNumber);
 	/*void AddResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber);
 	void SetResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding);
 	void SetResourceQuantityProduced(unsigned int _yearNumber, TypesOfRessources _resource, int _quantityProduced);

@@ -5,7 +5,7 @@
 
 ListOfAnnualCostsNRevenues::ListOfAnnualCostsNRevenues()
 {
-	m_papyrusBackground = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Costs_n_Revenues/sellingWindow_background.png", 1);
+	m_papyrusBackground = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Costs_n_Revenues/costAndRevenuesWindow_background.png", 1);
 	m_separationLine = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Costs_n_Revenues/separationLine.png", 1);
 	m_leftArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_previous.png", 1);
 	m_rightArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_next.png", 1);
@@ -38,7 +38,6 @@ ListOfAnnualCostsNRevenues::ListOfAnnualCostsNRevenues()
 	LoadTextString(&m_textFinalCNRResult, "", &m_font, 40, sf::Color::Black, 5);
 	
 	m_currentYearDisplayed = TimeManagement::GetSingleton()->GetCurrentYear();
-	CreateNewYearInDataMap(m_currentYearDisplayed);
 	internalState = InternalState::STATE_INIT;
 }
 
@@ -77,17 +76,19 @@ void ListOfAnnualCostsNRevenues::CreateNewYearInDataMap(unsigned int _yearNumber
 	}
 	else
 	{
-		std::cout << "[ListOfAnnualCostsNRevenues] - Error when creating new year in Data Map because the year " << _yearNumber << " already exist";
+		std::cout << "[ListOfAnnualCostsNRevenues] - Error when creating new year in Data Map because the year " << _yearNumber << " already exist\n";
 	}
 }
 
 void ListOfAnnualCostsNRevenues::AddCNRValueToYear(EnumListOfCostsNRevenues _costOrRevenuesWanted, int _value, unsigned int _yearNumber)
 {
+	if (_yearNumber < 0) return;
+
 	AnnualCostsNRevenuesMapData::iterator it = m_annualCNRDataMap.find(_yearNumber);
 
 	if (it == m_annualCNRDataMap.end())
 	{
-		std::cout << "[ListOfAnnualCostsNRevenues] - Error when adding resources to year because the year : " << _yearNumber << " doesn't exist in the data map, but has now been created.";
+		std::cout << "[ListOfAnnualCostsNRevenues] - Error when adding CNR Value to year because the year : " << _yearNumber << " doesn't exist in the data map, but has now been created.\n\n";
 
 		// We create the year in the Data Map
 		CreateNewYearInDataMap(_yearNumber);
@@ -109,6 +110,30 @@ void ListOfAnnualCostsNRevenues::AddCNRValueToYear(EnumListOfCostsNRevenues _cos
 	}
 
 	CalculateFinalRevenues(_yearNumber);
+}
+
+
+void ListOfAnnualCostsNRevenues::SetCNRValuesToYear(sAnnualCostsNRevenues _CNR, unsigned int _yearNumber)
+{
+	if (_yearNumber < 0) return;
+
+	AnnualCostsNRevenuesMapData::iterator it = m_annualCNRDataMap.find(_yearNumber);
+
+	if (it != m_annualCNRDataMap.end())
+	{
+		m_annualCNRDataMap[_yearNumber]->m_purchasingWorkers = _CNR.m_purchasingWorkers;
+		m_annualCNRDataMap[_yearNumber]->m_buildingConstruction = _CNR.m_buildingConstruction;
+		m_annualCNRDataMap[_yearNumber]->m_salesOfAmphorasOfWine = _CNR.m_salesOfAmphorasOfWine;
+		m_annualCNRDataMap[_yearNumber]->m_finalResult = _CNR.m_finalResult;
+
+		CalculateFinalRevenues(_yearNumber);
+	}
+	else
+	{
+		m_annualCNRDataMap[_yearNumber] = new sAnnualCostsNRevenues(_CNR);
+		m_currentYearDisplayed = _yearNumber;
+		std::cout << "[ListOfAnnualCostsNRevenues] - New year created in SetCNRValuesToYear " << m_currentYearDisplayed << "\n\n";
+	}
 }
 
 void ListOfAnnualCostsNRevenues::CalculateFinalRevenues(int _yearNumber)
@@ -167,10 +192,6 @@ void ListOfAnnualCostsNRevenues::UpdateTextsContent()
 	if (m_annualCNRDataMap[m_currentYearDisplayed] != nullptr)
 	{
 		sAnnualCostsNRevenues* curCNR = m_annualCNRDataMap[m_currentYearDisplayed];
-
-		curCNR->m_purchasingWorkers = (rand() % (200)) - 100; /* TEMPORARY / TEMPORAIRE / POUR TESTER*/
-		curCNR->m_buildingConstruction = (rand() % (200)) - 100; /* TEMPORARY / TEMPORAIRE / POUR TESTER*/
-		curCNR->m_salesOfAmphorasOfWine = (rand() % (200)) - 100; /* TEMPORARY / TEMPORAIRE / POUR TESTER*/
 
 		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], curCNR->m_purchasingWorkers);
 		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], curCNR->m_buildingConstruction);
@@ -304,10 +325,51 @@ void ListOfAnnualCostsNRevenues::Display(sf::RenderWindow& _window, const sf::Ve
 
 void ListOfAnnualCostsNRevenues::SavingDataForFile(std::ofstream* _file)
 {
+	// Save the number of years of data
+	int numberOfYearsToSave = m_annualCNRDataMap.size();
+	_file->write((char*)&numberOfYearsToSave, sizeof(int));
 
+	for (AnnualCostsNRevenuesMapData::iterator it = m_annualCNRDataMap.begin();
+		it != m_annualCNRDataMap.end();
+		it++)
+	{
+		sAnnualCostsNRevenues* currentCNR = (*it).second;
+
+		if (currentCNR != nullptr)
+		{
+			// Save the year number
+			int yearNumber = (*it).first;
+			_file->write((char*)&yearNumber, sizeof(int));
+
+			// Save the CNR of this year
+			_file->write((char*)currentCNR, sizeof(sAnnualCostsNRevenues));
+		}
+	}
 }
 
 void ListOfAnnualCostsNRevenues::LoadingDataFromFile(std::ifstream* _file)
 {
+	int numberOfYearsSaved = RESET;
 
+	m_annualCNRDataMap.clear();
+
+	// Load the number of years of data
+	_file->read((char*)&numberOfYearsSaved, sizeof(int));
+
+	for (int i = 0; i < numberOfYearsSaved; i++)
+	{
+		int currentYearNumber = RESET;
+		int numberOfResSaved = RESET;
+		sAnnualCostsNRevenues newCNR;
+
+		// Load the year number
+		_file->read((char*)&currentYearNumber, sizeof(int));
+
+		CreateNewYearInDataMap(currentYearNumber);
+
+		// Load the CNR data
+		_file->read((char*)&newCNR, sizeof(sAnnualCostsNRevenues));
+
+		SetCNRValuesToYear(newCNR, currentYearNumber);
+	}
 }

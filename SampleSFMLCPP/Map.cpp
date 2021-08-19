@@ -4,31 +4,12 @@
 
 Map::Map()
 {
-	m_map = nullptr;
-	m_numberLayers = 0;
-	m_numberLines = 0;
-	m_numberColumns = 0;
-
-	InitMapFromFile();
+	
 }
 
 Map::~Map()
 {
-	for (int i = 0; i < m_numberLayers; i++)
-	{
-		for (int j = 0; j < m_numberLines; j++)
-		{
-			delete m_map[i][j];
-		}
-	}
-
-	for (int i = 0; i < m_numberLayers; i++)
-	{
-		delete m_map[i];
-	}
-
-	delete m_map;
-	m_map = nullptr;
+	ClearMap();
 }
 
 Map* Map::GetSingleton()
@@ -106,6 +87,17 @@ unsigned short** Map::GetMapLayerWithoutSpecificsCollisions(unsigned short _mapH
 	}
 
 	return temporaryMap;
+}
+
+void Map::Initialise()
+{
+	ClearMap();
+
+	m_numberLayers = 0;
+	m_numberLines = 0;
+	m_numberColumns = 0;
+
+	InitMapFromFile();
 }
 
 void Map::InitMapFromFile()
@@ -232,6 +224,32 @@ void Map::InitMapFromFile()
 		std::cout << "ERROR OF MAP DEFINITION\n\n\n";
 	}
 }
+
+
+void Map::ClearMap()
+{
+	if (m_map != nullptr)
+	{
+		for (int i = 0; i < m_numberLayers; i++)
+		{
+			for (int j = 0; j < m_numberLines; j++)
+			{
+				delete m_map[i][j];
+			}
+		}
+
+		for (int i = 0; i < m_numberLayers; i++)
+		{
+			delete m_map[i];
+		}
+
+		delete m_map;
+	}
+
+	m_map = nullptr;
+}
+
+
 
 void Map::SavingMapFromFile(std::ofstream* _file)
 {

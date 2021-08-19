@@ -14,6 +14,10 @@ private:
 	sf::Sprite m_portraitFrame;
 	sf::Sprite m_keyA;
 	sf::Sprite m_keyE;
+	sf::Sprite m_keyO;
+
+	sf::Font m_font;
+	sf::Text m_pressToBuyWorker;
 
 	int m_valueNumberWorkerOrMainSelected;
 

@@ -18,3 +18,10 @@ Money* Money::GetSingleton()
 	static Money uniqueInstance;
 	return &uniqueInstance;
 }
+
+void Money::Initialise()
+{
+	m_playerMoney = 4450;
+
+	m_sprite = LoadSprite("Data/Assets/Sprites/Menu/sesterce.png", 1);
+}

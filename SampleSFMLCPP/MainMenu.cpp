@@ -4,7 +4,7 @@
 MainMenu::MainMenu()
 {
 	// Initialisation of the sprites
-	logo = LoadSprite("Data/Assets/Vindemia Antiquus_Icon.png", 0);
+	logo = LoadSprite("Data/Assets/logo_vindemia_antiquus.png", 0);
 	background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 1);
 	buttonNewGame = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_New_Game.png", 1);
 	buttonContinue = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
@@ -265,7 +265,7 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window, const sf::Vector2i& _s
 
 
 	// Blit the logo
-	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width - 20, 0, 0, _window);
+	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width + 170.0f, -40.0f, 0, _window);
 
 	sf::Vector2f newScale = { _screenResolution.y / 1080.f, _screenResolution.y / 1080.f };
 	buttonNewGame.setScale(newScale);
@@ -308,7 +308,7 @@ void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window, const sf::Vecto
 
 
 	// Blit the logo
-	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width - 20, 0, 0, _window);
+	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width / 2, 0, 0, _window);
 
 	float widthOffset = (_screenResolution.x * 400) / 1920.f;
 
