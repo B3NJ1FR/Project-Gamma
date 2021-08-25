@@ -2,6 +2,7 @@
 #include "GameDefinitions.h"
 #include "BuildingDestruction.h"
 #include "RessourcesManager.h"
+#include "EnumListOfCostsNRevenues.h"
 
 
 
@@ -406,9 +407,10 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
 				SetGhostBuildingOnMap(_game, (enum TypeOfBuilding)m_IDChosenBuilding, m_buildingCaseSelected);
 				
+				//ListOfAnnualProductions::GetSingleton()->AddResourceQuantityProduced(TimeManagement::GetSingleton()->GetCurrentYear(), Ressources::GetEnumFromName(resource->GetName()), quantityProduced);
 
 				// We remove the money needed to construct the building
-				_game->m_money->SubtractMoney(_game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
+				_game->m_money->Payments(EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION, _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
 				
 				// We change the main character status
 				_game->m_mainCharacter->SetIsCurrentlyBuilding(true);
@@ -447,7 +449,7 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 						}
 
 						// We give back the money for the building construction
-						_game->m_money->AddMoney(_game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
+						_game->m_money->Earnings(EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION, _game->m_builds.m_buildings[buildingIDFocused].GetConstructionCost());
 					}
 					else
 					{
@@ -872,7 +874,7 @@ void BuildWindow::LoadOnMapPreviousID()
 		{
 			Map* pMap = Map::GetSingleton();
 
-			for (LinkedListClass::sElement* currentElement = m_listOfPreviousID->first; currentElement != NULL; currentElement = currentElement->next)
+			for (LinkedListClass::sElement* currentElement = m_listOfPreviousID->first; currentElement != nullptr; currentElement = currentElement->next)
 			{
 				sPreviousPositionIDs* pPrevPosID = (sPreviousPositionIDs*)currentElement->data;
 
@@ -920,6 +922,12 @@ void BuildWindow::SavingGhostBuildingsForFile(std::ofstream* _file)
 				}
 			}
 		}
+	}
+	else
+	{
+		// Save the number of elements in the list
+		int listSize(RESET);
+		_file->write((char*)&listSize, sizeof(int));
 	}
 }
 

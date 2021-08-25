@@ -3,6 +3,7 @@
 #include "ErrorsLogFile.h"
 #include "TimeManagement.h"
 #include "RessourcesManager.h"
+#include "ListOfAnnualProductions.h"
 
 
 
@@ -680,6 +681,7 @@ void Vines::UpdateVineProduction()
 					{
 						// We add the resources created during this production
 						resource->AddOrSubtractQuantityOwned(quantityProduced);
+						ListOfAnnualProductions::GetSingleton()->AddResourceQuantityProduced(TimeManagement::GetSingleton()->GetCurrentYear(), Ressources::GetEnumFromName(resource->GetName()), quantityProduced);
 
 						((Vines::sVines*)currentElement->data)->isProduced = false;
 						((Vines::sVines*)currentElement->data)->isProdCanBeCollected = true;

@@ -1,6 +1,7 @@
 #include "GameInput.h"
 #include "GameDefinitions.h"
 #include "RessourcesManager.h"
+#include "EnumListOfCostsNRevenues.h"
 
 void CameraInputs(sf::Vector3f *_camera, const float &_frametime, sf::Vector2i _mapSize)
 {
@@ -195,7 +196,7 @@ void GameInput(struct Game *_game)
 					// Prix temporaire
 					if (_game->m_money->GetMoneyQuantity() - 1000 >= 0)
 					{
-						_game->m_money->SubtractMoney(1000);
+						_game->m_money->Payments(EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS, 1000);
 
 						sf::Vector2i value = { rand() % _game->m_map->GetNumberOfColumns(), rand() % _game->m_map->GetNumberOfLines() };
 

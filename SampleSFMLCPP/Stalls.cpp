@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "TimeManagement.h"
 #include "RessourcesManager.h"
+#include "EnumListOfCostsNRevenues.h"
 
 
 
@@ -535,7 +536,7 @@ void Stalls::UpdateInternalCycles(Money *_money, enum CurrentGameState *_state, 
 					else
 					{
 						// Once the transfer is done, the purchaser pays the money negociated to the vineyard
-						_money->AddMoney(m_priceAccepted * m_ressourceQuantityToSell);
+						_money->Earnings(EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE, m_priceAccepted * m_ressourceQuantityToSell);
 						if (_purchasers != nullptr)
 						{
 							// Ask to the purchaser to leave the place

@@ -81,6 +81,8 @@ public:
 	void CreateNewResourceInList(LinkedListClass::LinkedList* _list, sAnnualResourceData _resourceData);
 	void AddResourceToYear(TypesOfRessources _resource, unsigned int _yearNumber);
 	void AddResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber);
+	void AddResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding);
+	void AddResourceQuantityProduced(unsigned int _yearNumber, TypesOfRessources _resource, int _quantityProduced);
 	void SetResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber);
 	void SetResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding);
 	void SetResourceQuantityProduced(unsigned int _yearNumber, TypesOfRessources _resource, int _quantityProduced);

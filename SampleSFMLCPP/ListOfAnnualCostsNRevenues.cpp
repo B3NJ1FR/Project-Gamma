@@ -22,14 +22,14 @@ ListOfAnnualCostsNRevenues::ListOfAnnualCostsNRevenues()
 	// Allocation of the text array
 	m_textsCategoriesTitles = new sf::Text[(int)(EnumListOfCostsNRevenues::MAX_SIZE)];
 
-	LoadTextString(&m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], TransformStringToCenteredOne("Purchasing of Workers"), &m_font, 20, sf::Color::Black, 5);
 	LoadTextString(&m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], TransformStringToCenteredOne("Building Construction"), &m_font, 20, sf::Color::Black, 5);
+	LoadTextString(&m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], TransformStringToCenteredOne("Purchasing of Workers"), &m_font, 20, sf::Color::Black, 5);
 	LoadTextString(&m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], TransformStringToCenteredOne("Sales of Amphoras of Wine"), &m_font, 20, sf::Color::Black, 5);
 
 	m_textsCategoriesValues = new sf::Text[(int)(EnumListOfCostsNRevenues::MAX_SIZE)];
 
-	LoadTextString(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], "", &m_font, 23, sf::Color::Black, 5);
 	LoadTextString(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], "", &m_font, 23, sf::Color::Black, 5);
+	LoadTextString(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], "", &m_font, 23, sf::Color::Black, 5);
 	LoadTextString(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], "", &m_font, 23, sf::Color::Black, 5);
 
 	LoadTextString(&m_textArrowPrevYear, TransformStringToCenteredOne("Previous\nYear", 2), &m_font, 25, sf::Color(236, 150, 55), 1);
@@ -96,11 +96,11 @@ void ListOfAnnualCostsNRevenues::AddCNRValueToYear(EnumListOfCostsNRevenues _cos
 
 	switch (_costOrRevenuesWanted)
 	{
-	case EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS:
-		m_annualCNRDataMap[_yearNumber]->m_purchasingWorkers += _value;
-		break;
 	case EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION:
 		m_annualCNRDataMap[_yearNumber]->m_buildingConstruction += _value;
+		break;
+	case EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS:
+		m_annualCNRDataMap[_yearNumber]->m_purchasingWorkers += _value;
 		break;
 	case EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE:
 		m_annualCNRDataMap[_yearNumber]->m_salesOfAmphorasOfWine += _value;
@@ -193,8 +193,8 @@ void ListOfAnnualCostsNRevenues::UpdateTextsContent()
 	{
 		sAnnualCostsNRevenues* curCNR = m_annualCNRDataMap[m_currentYearDisplayed];
 
-		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], curCNR->m_purchasingWorkers);
 		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], curCNR->m_buildingConstruction);
+		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], curCNR->m_purchasingWorkers);
 		UpdateDynamicsTexts(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], curCNR->m_salesOfAmphorasOfWine);
 
 		CalculateFinalRevenues(m_currentYearDisplayed);
@@ -207,8 +207,8 @@ void ListOfAnnualCostsNRevenues::UpdateTextsContent()
 		// Coloration of the value depending if they are under or higher of 0
 		sf::Color green = sf::Color(95, 210, 95, 255);
 		sf::Color red = sf::Color(215, 77, 77, 255);
-		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], curCNR->m_purchasingWorkers, red, green);
-		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], curCNR->m_buildingConstruction, red, green);
+		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], curCNR->m_buildingConstruction, red, red);
+		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], curCNR->m_purchasingWorkers, red, red);
 		ColorStringAccordingToItsValue(&m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], curCNR->m_salesOfAmphorasOfWine, red, green);
 		ColorStringAccordingToItsValue(&m_textFinalCNRResult, curCNR->m_finalResult, red, green);
 	}
@@ -305,13 +305,13 @@ void ListOfAnnualCostsNRevenues::Display(sf::RenderWindow& _window, const sf::Ve
 	BlitSprite(m_separationLine, screenCenter.x + 15.0f, screenCenter.y - 20.0f, _window);
 
 	// Categories of costs & revenues Titles
-	BlitString(m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], screenCenter.x - 475.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
-	BlitString(m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], screenCenter.x - 475.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 375.0f, _window);
+	BlitString(m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], screenCenter.x - 475.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
+	BlitString(m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], screenCenter.x - 475.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 375.0f, _window);
 	BlitString(m_textsCategoriesTitles[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], screenCenter.x + 40.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
 
 	// Categories of costs & revenues Titles
-	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], screenCenter.x + 5.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
-	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], screenCenter.x + 5.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 373.0f, _window);
+	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION], screenCenter.x + 5.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
+	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS], screenCenter.x + 5.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 373.0f, _window);
 	BlitString(m_textsCategoriesValues[(int)EnumListOfCostsNRevenues::SALES_OF_AMPHORAS_OF_WINE], screenCenter.x + 490.0f, screenCenter.y - (float)(m_papyrusBackground.getGlobalBounds().height / 2.0f) + 300.0f, _window);
 
 	// Display final result value

@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "Fonts.h"
 
 
 MainMenu::MainMenu()
@@ -6,6 +7,7 @@ MainMenu::MainMenu()
 	// Initialisation of the sprites
 	logo = LoadSprite("Data/Assets/logo_vindemia_antiquus.png", 0);
 	background = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Background.png", 1);
+	credits = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Credits.png", 3, true);
 	buttonNewGame = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_New_Game.png", 1);
 	buttonContinue = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Continue.png", 1);
 	buttonOptions = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Options.png", 1);
@@ -14,8 +16,7 @@ MainMenu::MainMenu()
 	buttonReturn = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Button_Quit.png", 1);
 	warningMessage = LoadSprite("Data/Assets/Sprites/Menu/Main_Menu_Message.png", 1);
 
-	font.loadFromFile("Data/Fonts/arial.ttf");
-
+	font = Fonts::GetSingleton()->GetCharlemagneFont();
 
 	// ***************** VERSION NUMBER LOADING ***************** //
 
@@ -55,7 +56,8 @@ MainMenu::MainMenu()
 	fullscreen = nullptr;
 	temporaryResolution = -1;
 
-	LoadTextString(versionNumber, versionString, &font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 50));
+	LoadTextString(versionNumber, versionString, &font, 35, sf::Color::White, sf::Vector2f(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50));
+	ChangeTextStringOrigin(versionNumber, 4);
 
 	isNewGameClicked = false;
 	isLoadGameClicked = false;
@@ -267,6 +269,10 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window, const sf::Vector2i& _s
 	// Blit the logo
 	BlitSprite(logo, _screenResolution.x - logo.getGlobalBounds().width + 170.0f, -40.0f, 0, _window);
 
+	// Blit the credits
+	BlitSprite(credits, _screenResolution.x, _screenResolution.y - 250.0f, 0, _window);
+
+
 	sf::Vector2f newScale = { _screenResolution.y / 1080.f, _screenResolution.y / 1080.f };
 	buttonNewGame.setScale(newScale);
 	buttonContinue.setScale(newScale);
@@ -295,7 +301,6 @@ void MainMenu::DisplayMainMenu(sf::RenderWindow &_window, const sf::Vector2i& _s
 	}
 
 	_window.display();
-
 }
 
 
@@ -339,7 +344,6 @@ void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window, const sf::Vecto
 	}
 
 	_window.display();
-
 }
 
 

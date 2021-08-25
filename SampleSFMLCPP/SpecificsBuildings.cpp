@@ -1,6 +1,7 @@
 #include "SpecificsBuildings.h"
 #include "GameDefinitions.h"
 #include "RessourcesManager.h"
+#include "ListOfAnnualProductions.h"
 
 
 
@@ -403,6 +404,8 @@ void SpecificsBuildings::UpdateBuildingProduction()
 					{
 						// We add the resources created during this production
 						resource->AddOrSubtractQuantityOwned(quantityProduced);
+
+						ListOfAnnualProductions::GetSingleton()->AddResourceQuantityProduced(TimeManagement::GetSingleton()->GetCurrentYear(), Ressources::GetEnumFromName(resource->GetName()), quantityProduced);
 
 						// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
 						// A MODIFIER

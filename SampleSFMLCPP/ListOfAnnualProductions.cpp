@@ -156,6 +156,51 @@ void ListOfAnnualProductions::AddResourceDataToYear(sAnnualResourceData _resourc
 	}
 }
 
+void ListOfAnnualProductions::AddResourceNumberOfBuilding(unsigned int _yearNumber, TypesOfRessources _resource, int _numberOfBuilding)
+{
+	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+
+	if (it != m_listOfAnnualResourcesData.end())
+	{
+		if (m_listOfAnnualResourcesData[_yearNumber] != nullptr)
+		{
+			if (m_listOfAnnualResourcesData[_yearNumber]->first != nullptr)
+			{
+				for (LinkedListClass::sElement* currentElement = m_listOfAnnualResourcesData[_yearNumber]->first; currentElement != nullptr; currentElement = currentElement->next)
+				{
+					if (((sAnnualResourceData*)currentElement->data)->m_resource == _resource)
+					{
+						((sAnnualResourceData*)currentElement->data)->m_numberOfBuilding += _numberOfBuilding;
+					}
+				}
+			}
+		}
+	}
+}
+
+void ListOfAnnualProductions::AddResourceQuantityProduced(unsigned int _yearNumber, TypesOfRessources _resource, int _quantityProduced)
+{
+	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+
+	if (it != m_listOfAnnualResourcesData.end())
+	{
+		if (m_listOfAnnualResourcesData[_yearNumber] != nullptr)
+		{
+			if (m_listOfAnnualResourcesData[_yearNumber]->first != nullptr)
+			{
+				for (LinkedListClass::sElement* currentElement = m_listOfAnnualResourcesData[_yearNumber]->first; currentElement != nullptr; currentElement = currentElement->next)
+				{
+					if (((sAnnualResourceData*)currentElement->data)->m_resource == _resource)
+					{
+						((sAnnualResourceData*)currentElement->data)->m_quantityProduced += _quantityProduced;
+					}
+				}
+			}
+		}
+	}
+}
+
+
 void ListOfAnnualProductions::SetResourceDataToYear(sAnnualResourceData _resourceData, unsigned int _yearNumber)
 {
 	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);

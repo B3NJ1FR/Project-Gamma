@@ -17,6 +17,7 @@ private:
 
 	sf::Sprite logo;
 	sf::Sprite background;
+	sf::Sprite credits;
 	sf::Sprite buttonNewGame;
 	sf::Sprite buttonContinue;
 	sf::Sprite buttonOptions;

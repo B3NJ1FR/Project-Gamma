@@ -86,7 +86,6 @@ public:
 	inline float GetContinuousFrameTime()const { return m_frameTime.asSeconds(); };
 	inline float GetGeneralTime() const { return m_timer.asSeconds(); };
 	inline enum MonthsInOneYear GetCurrentMonth() const { return m_actualMonth; };
-	//inline int GetCurrentYear() const { return 7; };
 	inline int GetCurrentYear() const { return m_numberOfYears; };
 
 	// Methods

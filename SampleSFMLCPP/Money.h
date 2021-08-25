@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include "EnumListOfCostsNRevenues.h"
 
 
 class Money
@@ -31,5 +32,7 @@ public:
 	void Initialise();
 	inline void AddMoney(int _quantityToAdd = 1) { m_playerMoney += _quantityToAdd; };
 	inline void SubtractMoney(int _quantityToRemove = 1) { m_playerMoney -= _quantityToRemove; };
+	void Earnings(EnumListOfCostsNRevenues _typeOfEarn, int _quantityToAdd);
+	void Payments(EnumListOfCostsNRevenues _typeOfCost, int _quantityToRemove);
 };
 
