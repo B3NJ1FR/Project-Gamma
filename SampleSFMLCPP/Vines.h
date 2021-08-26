@@ -110,6 +110,7 @@ public:
 	bool CheckVineHasBeenBuilt(const sf::Vector2f &_mapPosition);
 	bool UpdateRessourcePickuping(const sf::Vector2f &_mapPosition);
 	void RessourcePickedUp(const sf::Vector2f &_mapPosition);
+	int CalculateQtyBunchOfGrapeProduced(Vines::sVines* _vineConcerned, int _maximalQty);
 
 	bool DestroyedBuildingSelected(const sf::Vector2f &_mapPosition);
 	void ClearStorages();

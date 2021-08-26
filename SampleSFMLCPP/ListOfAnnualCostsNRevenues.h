@@ -33,6 +33,7 @@ private:
 	sf::Sprite m_separationLine;
 	sf::Sprite m_leftArrow;
 	sf::Sprite m_rightArrow;
+	sf::Sprite m_returnButton;
 
 	InternalState internalState;
 

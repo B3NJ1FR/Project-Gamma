@@ -9,8 +9,10 @@ ListOfAnnualCostsNRevenues::ListOfAnnualCostsNRevenues()
 	m_separationLine = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Costs_n_Revenues/separationLine.png", 1);
 	m_leftArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_previous.png", 1);
 	m_rightArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_next.png", 1);
+	m_returnButton = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/return_button.png", 1, true);
 	m_leftArrow.setScale(sf::Vector2f(0.65f, 0.65f));
 	m_rightArrow.setScale(sf::Vector2f(0.65f, 0.65f));
+	m_returnButton.setScale(sf::Vector2f(0.65f, 0.65f));
 
 	m_font = Fonts::GetSingleton()->GetCharlemagneFont();
 
@@ -185,6 +187,15 @@ void ListOfAnnualCostsNRevenues::Input(sf::Event _event, sf::RenderWindow& _wind
 				m_yearAsChanged = true;
 			}
 		}
+
+		// Button to return to the villa
+		if (mousePosition.x > screenCenter.x - (m_returnButton.getGlobalBounds().width / 2)
+			&& mousePosition.x < screenCenter.x + (m_returnButton.getGlobalBounds().width / 2)
+			&& mousePosition.y > screenCenter.y + 370.0f - (m_returnButton.getGlobalBounds().height / 2)
+			&& mousePosition.y < screenCenter.y + 370.0f + (m_returnButton.getGlobalBounds().height / 2))
+		{
+			internalState = InternalState::STATE_EXIT;
+		}
 	}
 }
 void ListOfAnnualCostsNRevenues::UpdateTextsContent()
@@ -320,6 +331,9 @@ void ListOfAnnualCostsNRevenues::Display(sf::RenderWindow& _window, const sf::Ve
 	// Display of the year number on the papyrus border
 	BlitString(m_textYear, screenCenter.x - 550.0f, screenCenter.y, _window);
 	BlitString(m_textYear, screenCenter.x + 555.0f, screenCenter.y, _window);
+
+	// Display the return button
+	BlitSprite(m_returnButton, screenCenter.x, screenCenter.y + 370.0f, _window);
 }
 
 

@@ -194,9 +194,9 @@ void GameInput(struct Game *_game)
 					&& _game->m_actualGameState == NORMAL_MODE)
 				{
 					// Prix temporaire
-					if (_game->m_money->GetMoneyQuantity() - 1000 >= 0)
+					if (_game->m_money->GetMoneyQuantity() - 650 >= 0)
 					{
-						_game->m_money->Payments(EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS, 1000);
+						_game->m_money->Payments(EnumListOfCostsNRevenues::PURCHASING_OF_WORKERS, 650);
 
 						sf::Vector2i value = { rand() % _game->m_map->GetNumberOfColumns(), rand() % _game->m_map->GetNumberOfLines() };
 

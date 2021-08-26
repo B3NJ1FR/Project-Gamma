@@ -407,8 +407,6 @@ void BuildWindow::InputBuildWindow(struct Game *_game)
 				// We add the temporary collision "BUILDING_GHOST" where the building has been placed
 				SetGhostBuildingOnMap(_game, (enum TypeOfBuilding)m_IDChosenBuilding, m_buildingCaseSelected);
 				
-				//ListOfAnnualProductions::GetSingleton()->AddResourceQuantityProduced(TimeManagement::GetSingleton()->GetCurrentYear(), Ressources::GetEnumFromName(resource->GetName()), quantityProduced);
-
 				// We remove the money needed to construct the building
 				_game->m_money->Payments(EnumListOfCostsNRevenues::BUILDING_CONSTRUCTION, _game->m_builds.m_buildings[m_IDChosenBuilding].GetConstructionCost());
 				

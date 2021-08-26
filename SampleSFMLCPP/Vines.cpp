@@ -93,7 +93,6 @@ void Vines::AddNewVineToList(sf::Vector2f _mapPosition)
 
 	// Allocation of the storage
 	((Vines::sVines *)newVine->data)->storage = new Storage();
-	((Vines::sVines *)newVine->data)->storage->AddNewResourceToStorage(Ressources::GetNameFromEnum(BUNCH_OF_GRAPE), ResourceData::RESOURCE_PRODUCED);
 	((Vines::sVines *)newVine->data)->storage->SetName("Vines");
 
 	((Vines::sVines *)newVine->data)->lifeTime = RESET;
@@ -667,6 +666,7 @@ void Vines::UpdateVineProduction()
 				// If the building has produced the ressources, we manage it
 				if (((Vines::sVines*)currentElement->data)->isProduced == true)
 				{
+					Vines::sVines* currentVine = (Vines::sVines*)currentElement->data;
 					Storage* storage = ((Vines::sVines*)currentElement->data)->storage;
 					std::vector<Ressources*> arrayOfResources;
 
@@ -674,7 +674,7 @@ void Vines::UpdateVineProduction()
 
 					// DANS LE CAS DE 2 RESSOURCES OU PLUS PRODUITES, NE FONCTIONNERA PAS
 					// A MODIFIER
-					int quantityProduced = m_vineBuilding->GetRessourceQuantityProduced();
+					int quantityProduced = CalculateQtyBunchOfGrapeProduced(currentVine, m_vineBuilding->GetRessourceQuantityProduced());
 
 					// We verify that we have enough of each resource to start the production
 					for (Ressources* resource : arrayOfResources)
@@ -683,9 +683,9 @@ void Vines::UpdateVineProduction()
 						resource->AddOrSubtractQuantityOwned(quantityProduced);
 						ListOfAnnualProductions::GetSingleton()->AddResourceQuantityProduced(TimeManagement::GetSingleton()->GetCurrentYear(), Ressources::GetEnumFromName(resource->GetName()), quantityProduced);
 
-						((Vines::sVines*)currentElement->data)->isProduced = false;
-						((Vines::sVines*)currentElement->data)->isProdCanBeCollected = true;
-						((Vines::sVines*)currentElement->data)->secondaryTime = RESET;
+						currentVine->isProduced = false;
+						currentVine->isProdCanBeCollected = true;
+						currentVine->secondaryTime = RESET;
 					}
 
 					arrayOfResources.clear();
@@ -1022,6 +1022,41 @@ void Vines::RessourcePickedUp(const sf::Vector2f& _mapPosition)
 		}
 
 	}
+}
+
+int Vines::CalculateQtyBunchOfGrapeProduced(Vines::sVines* _vineConcerned, int _maximalQty)
+{
+	if (_vineConcerned != nullptr)
+	{
+		int quantityProduced = 0;
+
+		if (_vineConcerned->isPruned)
+		{
+			quantityProduced += _maximalQty / 2;
+		}
+
+		if (_vineConcerned->isPloughed && _vineConcerned->isWeeded)
+		{
+			quantityProduced += _maximalQty / 2 + rand() % 2;
+		}
+		else if (_vineConcerned->isWeeded)
+		{
+			quantityProduced += _maximalQty / 3;
+		}
+		else if (_vineConcerned->isPloughed)
+		{
+			quantityProduced += rand() % 2;
+		}
+
+		if (_vineConcerned->isCared)
+		{
+			quantityProduced += _maximalQty / 3 + rand() % 3;
+		}
+
+		return quantityProduced;
+	}
+
+	return 0;
 }
 
 

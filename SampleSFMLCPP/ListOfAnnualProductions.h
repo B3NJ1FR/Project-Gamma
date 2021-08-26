@@ -45,6 +45,7 @@ private:
 	sf::Sprite m_redCross;
 	sf::Sprite m_leftArrow;
 	sf::Sprite m_rightArrow;
+	sf::Sprite m_returnButton;
 
 	sf::Text **m_textsData;
 	int m_textsDataMaxSize;
@@ -92,6 +93,8 @@ public:
 
 	// Methods
 	bool IsResourceExistInLinkedList(LinkedListClass::sLinkedList* _list, TypesOfRessources _resource);
+	void TransferNumberOfBuildingFromPreviousYear(int _yearNumber);
+	void CalculateResourcesProductionDifference(int _yearNumber);
 	void ClearTexts();
 	void UpdateTextsContent();
 

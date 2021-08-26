@@ -14,10 +14,12 @@ ListOfAnnualProductions::ListOfAnnualProductions()
 	m_redCross = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/Production_Summary/redCross.png", 1);
 	m_leftArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_previous.png", 1);
 	m_rightArrow = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/arrow_next.png", 1);
+	m_returnButton = LoadSprite("Data/Assets/Sprites/Menu/VillaManagement/return_button.png", 1, true);
 	m_greenCheck.setScale(sf::Vector2f(0.4f, 0.4f));
 	m_redCross.setScale(sf::Vector2f(0.4f, 0.4f));
 	m_leftArrow.setScale(sf::Vector2f(0.65f, 0.65f));
 	m_rightArrow.setScale(sf::Vector2f(0.65f, 0.65f));
+	m_returnButton.setScale(sf::Vector2f(0.65f, 0.65f));
 
 	m_font = Fonts::GetSingleton()->GetCharlemagneFont();
 	LoadTextString(&m_textPapyrusTitle, "Production Summary", &m_font, 35, sf::Color::Black, 1);
@@ -75,6 +77,10 @@ void ListOfAnnualProductions::CreateNewYearInDataMap(unsigned int _yearNumber)
 		AddResourceToYear(TypesOfRessources::DOLIUM, m_currentYearDisplayed);
 		AddResourceToYear(TypesOfRessources::AMPHORAS, m_currentYearDisplayed);
 		AddResourceToYear(TypesOfRessources::AMPHORA_OF_WINE, m_currentYearDisplayed);
+		SetResourceIsCanBeSold(m_currentYearDisplayed, TypesOfRessources::AMPHORA_OF_WINE, true);
+
+		TransferNumberOfBuildingFromPreviousYear(m_currentYearDisplayed);
+
 	}
 	else
 	{
@@ -360,6 +366,109 @@ bool ListOfAnnualProductions::IsResourceExistInLinkedList(LinkedListClass::sLink
 	return false;
 }
 
+void ListOfAnnualProductions::TransferNumberOfBuildingFromPreviousYear(int _yearNumber)
+{
+	if (_yearNumber <= 0) return;
+
+	AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+	AnnualResourcesProducedMapData::iterator itPrevYear = m_listOfAnnualResourcesData.find(_yearNumber - 1);
+
+	if (it != m_listOfAnnualResourcesData.end()
+		&& itPrevYear != m_listOfAnnualResourcesData.end())
+	{
+		if (m_listOfAnnualResourcesData[_yearNumber] != nullptr
+			&& m_listOfAnnualResourcesData[_yearNumber - 1] != nullptr)
+		{
+			if (m_listOfAnnualResourcesData[_yearNumber]->first != nullptr
+				&& m_listOfAnnualResourcesData[_yearNumber - 1]->first != nullptr)
+			{
+				for (LinkedListClass::sElement* prevResource = m_listOfAnnualResourcesData[_yearNumber - 1]->first;
+					prevResource != nullptr;
+					prevResource = prevResource->next)
+				{
+					sAnnualResourceData* prevResourceData = (sAnnualResourceData*)prevResource->data;
+
+					for (LinkedListClass::sElement* currentResource = m_listOfAnnualResourcesData[_yearNumber]->first;
+						currentResource != nullptr;
+						currentResource = currentResource->next)
+					{
+						if (((sAnnualResourceData*)currentResource->data)->m_resource == prevResourceData->m_resource)
+						{
+							((sAnnualResourceData*)currentResource->data)->m_numberOfBuilding = prevResourceData->m_numberOfBuilding;
+							break;
+						}
+					}
+
+				}
+			}
+		}
+	}
+}
+
+
+
+void ListOfAnnualProductions::CalculateResourcesProductionDifference(int _yearNumber)
+{
+	if (_yearNumber < 0) return;
+
+	if (_yearNumber == 0)
+	{
+		AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+
+		if (it != m_listOfAnnualResourcesData.end())
+		{
+			if (m_listOfAnnualResourcesData[_yearNumber] != nullptr)
+			{
+				if (m_listOfAnnualResourcesData[_yearNumber]->first != nullptr)
+				{
+					for (LinkedListClass::sElement* currentResource = m_listOfAnnualResourcesData[_yearNumber]->first;
+						currentResource != nullptr;
+						currentResource = currentResource->next)
+					{
+						((sAnnualResourceData*)currentResource->data)->m_comparisonWithLastYear = ((sAnnualResourceData*)currentResource->data)->m_quantityProduced;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		AnnualResourcesProducedMapData::iterator it = m_listOfAnnualResourcesData.find(_yearNumber);
+		AnnualResourcesProducedMapData::iterator itPrevYear = m_listOfAnnualResourcesData.find(_yearNumber - 1);
+
+		if (it != m_listOfAnnualResourcesData.end()
+			&& itPrevYear != m_listOfAnnualResourcesData.end())
+		{
+			if (m_listOfAnnualResourcesData[_yearNumber] != nullptr
+				&& m_listOfAnnualResourcesData[_yearNumber - 1] != nullptr)
+			{
+				if (m_listOfAnnualResourcesData[_yearNumber]->first != nullptr
+					&& m_listOfAnnualResourcesData[_yearNumber - 1]->first != nullptr)
+				{
+					for (LinkedListClass::sElement* prevResource = m_listOfAnnualResourcesData[_yearNumber - 1]->first;
+						prevResource != nullptr;
+						prevResource = prevResource->next)
+					{
+						sAnnualResourceData* prevResourceData = (sAnnualResourceData*)prevResource->data;
+
+						for (LinkedListClass::sElement* currentResource = m_listOfAnnualResourcesData[_yearNumber]->first;
+							currentResource != nullptr;
+							currentResource = currentResource->next)
+						{
+							if (((sAnnualResourceData*)currentResource->data)->m_resource == prevResourceData->m_resource)
+							{
+								((sAnnualResourceData*)currentResource->data)->m_comparisonWithLastYear = ((sAnnualResourceData*)currentResource->data)->m_quantityProduced - prevResourceData->m_quantityProduced;
+								break;
+							}
+						}
+
+					}
+				}
+			}
+		}
+	}
+}
+
 void ListOfAnnualProductions::ClearTexts()
 {
 	if (m_textsData != nullptr) delete m_textsData;
@@ -454,6 +563,15 @@ void ListOfAnnualProductions::Input(sf::Event _event, sf::RenderWindow& _window,
 				m_yearAsChanged = true;
 			}
 		}
+
+		// Button to return to the villa
+		if (mousePosition.x > screenCenter.x - (m_returnButton.getGlobalBounds().width / 2)
+			&& mousePosition.x < screenCenter.x + (m_returnButton.getGlobalBounds().width / 2)
+			&& mousePosition.y > screenCenter.y + 370.0f - (m_returnButton.getGlobalBounds().height / 2)
+			&& mousePosition.y < screenCenter.y + 370.0f + (m_returnButton.getGlobalBounds().height / 2))
+		{
+			internalState = InternalState::STATE_EXIT;
+		}
 	}
 }
 
@@ -463,16 +581,19 @@ void ListOfAnnualProductions::Update(VillaManagementStateMachine* _internalState
 	{
 	case InternalState::STATE_INIT:
 
+		if (m_currentYearDisplayed != TimeManagement::GetSingleton()->GetCurrentYear()) TransferNumberOfBuildingFromPreviousYear(TimeManagement::GetSingleton()->GetCurrentYear());
+
 		m_currentYearDisplayed = TimeManagement::GetSingleton()->GetCurrentYear();
 
 		if (m_currentYearDisplayed == 0) m_isLeftArrowActived = false;
 		else m_isLeftArrowActived = true;
 		
-		if (m_currentYearDisplayed == TimeManagement::GetSingleton()->GetCurrentYear()) m_isRightArrowActived = false;
-		else m_isRightArrowActived = true;
+		m_isRightArrowActived = false;
 
 		m_stringTextYear = TransformStringToVerticalOne(std::string("Year " + std::to_string(m_currentYearDisplayed)));
 		LoadTextString(&m_textYear, m_stringTextYear, &m_font, 45, sf::Color::Black, 1);
+
+		CalculateResourcesProductionDifference(m_currentYearDisplayed);
 
 		if (m_listOfAnnualResourcesData[m_currentYearDisplayed] != nullptr)
 		{
@@ -481,22 +602,27 @@ void ListOfAnnualProductions::Update(VillaManagementStateMachine* _internalState
 				UpdateTextsContent();
 			}
 		}
+
 		internalState = InternalState::STATE_UPDATE;
 		break;
 	case InternalState::STATE_UPDATE:
 
 		if (m_yearAsChanged)
 		{
+			int currentYear = TimeManagement::GetSingleton()->GetCurrentYear();
+
 			if (m_currentYearDisplayed == 0) m_isLeftArrowActived = false;
 			else m_isLeftArrowActived = true;
 
-			if (m_currentYearDisplayed == TimeManagement::GetSingleton()->GetCurrentYear()) m_isRightArrowActived = false;
+			if(m_currentYearDisplayed == currentYear) m_isRightArrowActived = false;
 			else m_isRightArrowActived = true;
 
 			m_stringTextYear = TransformStringToVerticalOne(std::string("Year " + std::to_string(m_currentYearDisplayed)));
 			LoadTextString(&m_textYear, m_stringTextYear, &m_font, 45, sf::Color::Black, 1);
 
 			m_yearAsChanged = false;
+
+			CalculateResourcesProductionDifference(m_currentYearDisplayed);
 
 			if (m_listOfAnnualResourcesData[m_currentYearDisplayed] != nullptr)
 			{
@@ -609,6 +735,10 @@ void ListOfAnnualProductions::Display(sf::RenderWindow& _window, const sf::Vecto
 	// Display of the year number on the papyrus border
 	BlitString(m_textYear, screenCenter.x - 590.0f, screenCenter.y, _window);
 	BlitString(m_textYear, screenCenter.x + 595.0f, screenCenter.y, _window);
+
+	// Display the return button
+	BlitSprite(m_returnButton, screenCenter.x, screenCenter.y + 370.0f, _window);
+	
 }
 
 void ListOfAnnualProductions::SavingDataForFile(std::ofstream* _file)

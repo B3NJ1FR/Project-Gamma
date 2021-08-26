@@ -411,7 +411,6 @@ void SpecificsBuildings::UpdateBuildingProduction()
 						// A MODIFIER
 						((SpecificsBuildings::sBuildingData*)currentElement->data)->isProduced = false;
 						((SpecificsBuildings::sBuildingData*)currentElement->data)->isProdCanBeCollected = true;
-						std::cout << "Here";
 					}
 
 					arrayOfResources.clear();

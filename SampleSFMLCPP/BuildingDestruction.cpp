@@ -1,4 +1,5 @@
 #include "BuildingDestruction.h"
+#include "ListOfAnnualProductions.h"
 
 
 BuildingDestruction::BuildingDestruction()
@@ -102,6 +103,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 								{
 									std::cout << "Building Destroyed";
 									RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+									ListOfAnnualProductions::GetSingleton()->AddResourceNumberOfBuilding(TimeManagement::GetSingleton()->GetCurrentYear(), TypesOfRessources::BUNCH_OF_GRAPE, 1);
 								
 									currentElement->status = ELEMENT_DELETION_REQUIRED;
 									isRemovingElementNeeded = true;
@@ -128,6 +130,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									{
 										std::cout << "Building Destroyed";
 										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										ListOfAnnualProductions::GetSingleton()->AddResourceNumberOfBuilding(TimeManagement::GetSingleton()->GetCurrentYear(), TypesOfRessources::GRAPES_MUST, 1);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -154,6 +157,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									{
 										std::cout << "Building Destroyed";
 										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										ListOfAnnualProductions::GetSingleton()->AddResourceNumberOfBuilding(TimeManagement::GetSingleton()->GetCurrentYear(), TypesOfRessources::GRAPE_JUICE, 1);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
@@ -180,6 +184,7 @@ void BuildingDestruction::UpdateBuildingDestruction(BuildingManagement* _builds,
 									{
 										std::cout << "Building Destroyed";
 										RemoveBuildingOnMap(_builds, ((BuildingToDestroyData*)currentElement->data)->m_ID, (sf::Vector2i)((BuildingToDestroyData*)currentElement->data)->m_coordinates);
+										ListOfAnnualProductions::GetSingleton()->AddResourceNumberOfBuilding(TimeManagement::GetSingleton()->GetCurrentYear(), TypesOfRessources::AMPHORA_OF_WINE, 1);
 
 										currentElement->status = ELEMENT_DELETION_REQUIRED;
 										isRemovingElementNeeded = true;
