@@ -131,7 +131,7 @@ public :
 	// Game States
 	void Display();
 	void DisplayDecor();
-	void DisplayUIGeneral();
+	void DisplayMoneyUI();
 	void DisplayDebugger();
 };
 

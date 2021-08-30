@@ -182,6 +182,7 @@
     <ClCompile Include="PauseWindow.cpp" />
     <ClCompile Include="Purchasers.cpp" />
     <ClCompile Include="PurchasersManager.cpp" />
+    <ClCompile Include="Purse.cpp" />
     <ClCompile Include="Ressources.cpp" />
     <ClCompile Include="RessourcesManager.cpp" />
     <ClCompile Include="SavingGame.cpp" />
@@ -191,7 +192,6 @@
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Storehouse.cpp" />
     <ClCompile Include="System.cpp" />
-    <ClCompile Include="Test.cpp" />
     <ClCompile Include="TimeManagement.cpp" />
     <ClCompile Include="TutorialWindow.cpp" />
     <ClCompile Include="Villa.cpp" />
@@ -233,6 +233,7 @@
     <ClInclude Include="PauseWindow.h" />
     <ClInclude Include="Purchasers.h" />
     <ClInclude Include="PurchasersManager.h" />
+    <ClInclude Include="Purse.h" />
     <ClInclude Include="Ressources.h" />
     <ClInclude Include="RessourcesManager.h" />
     <ClInclude Include="SavingGame.h" />
@@ -242,7 +243,6 @@
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Storehouse.h" />
     <ClInclude Include="System.h" />
-    <ClInclude Include="Test.h" />
     <ClInclude Include="TimeManagement.h" />
     <ClInclude Include="TutorialWindow.h" />
     <ClInclude Include="Villa.h" />

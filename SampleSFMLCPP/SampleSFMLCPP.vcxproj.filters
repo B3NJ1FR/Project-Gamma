@@ -79,6 +79,18 @@
     <Filter Include="Fichiers d%27en-tête\Game\Internal Game\Save and Load">
       <UniqueIdentifier>{5be5b9d3-af50-4dad-9de2-657771f5011b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Villa">
+      <UniqueIdentifier>{97c6e62a-7d41-41ad-b2da-41432ec5acf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game\Entities\Purchaser">
+      <UniqueIdentifier>{013b2ebc-be78-4ca9-8276-b8d08e40ba38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Entities\Purchaser">
+      <UniqueIdentifier>{29283960-4a81-4607-95de-2166b2a95770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Game\Villa">
+      <UniqueIdentifier>{781a24c6-d432-40e2-8cf2-109ca1f97812}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -138,9 +150,6 @@
     <ClCompile Include="Stalls.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
-    <ClCompile Include="Purchasers.cpp">
-      <Filter>Fichiers sources\Game\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Storehouse.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
@@ -153,14 +162,8 @@
     <ClCompile Include="BuildWindow.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
-    <ClCompile Include="LoadingScreen.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="MainCharacter.cpp">
       <Filter>Fichiers sources\Game\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="VillaManagement.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Data.cpp">
       <Filter>Fichiers d%27en-tête\Game</Filter>
@@ -170,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="GameDefinitions.cpp">
       <Filter>Fichiers sources\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="BuildingManagement.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
@@ -189,35 +189,47 @@
     <ClCompile Include="TutorialWindow.cpp">
       <Filter>Fichiers sources\Game\Internal Game</Filter>
     </ClCompile>
-    <ClCompile Include="Test.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="ManagerBetweenWorkersAndMain.cpp">
       <Filter>Fichiers sources\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="BuildingDestruction.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
-    <ClCompile Include="Storage.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RessourcesManager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="PurchasersManager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Villa.cpp">
       <Filter>Fichiers sources\Game\Buildings</Filter>
     </ClCompile>
-    <ClCompile Include="ListOfAnnualProductions.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ListOfAnnualCostsNRevenues.cpp">
-      <Filter>Fichiers sources</Filter>
+    <ClCompile Include="Purchasers.cpp">
+      <Filter>Fichiers sources\Game\Entities\Purchaser</Filter>
     </ClCompile>
     <ClCompile Include="Fonts.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ListOfAnnualCostsNRevenues.cpp">
+      <Filter>Fichiers sources\Game\Villa</Filter>
+    </ClCompile>
+    <ClCompile Include="ListOfAnnualProductions.cpp">
+      <Filter>Fichiers sources\Game\Villa</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScreen.cpp">
+      <Filter>Fichiers sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Fichiers sources\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="PurchasersManager.cpp">
+      <Filter>Fichiers sources\Game\Entities\Purchaser</Filter>
+    </ClCompile>
+    <ClCompile Include="RessourcesManager.cpp">
+      <Filter>Fichiers sources\Game\Ressources</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage.cpp">
+      <Filter>Fichiers sources\Game\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="VillaManagement.cpp">
+      <Filter>Fichiers sources\Game\Villa</Filter>
+    </ClCompile>
+    <ClCompile Include="Purse.cpp">
+      <Filter>Fichiers sources\Game\Villa</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -278,9 +290,6 @@
     <ClInclude Include="Stalls.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
-    <ClInclude Include="Purchasers.h">
-      <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Storehouse.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
@@ -293,22 +302,13 @@
     <ClInclude Include="BuildWindow.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
     </ClInclude>
-    <ClInclude Include="LoadingScreen.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="MainCharacter.h">
       <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="VillaManagement.h">
-      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Data.h">
       <Filter>Fichiers d%27en-tête\Game</Filter>
     </ClInclude>
     <ClInclude Include="System.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="BuildingManagement.h">
@@ -326,47 +326,59 @@
     <ClInclude Include="TutorialWindow.h">
       <Filter>Fichiers d%27en-tête\Game\Internal Game</Filter>
     </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ManagerBetweenWorkersAndMain.h">
       <Filter>Fichiers d%27en-tête\Game\Entities</Filter>
     </ClInclude>
     <ClInclude Include="BuildingDestruction.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
-    <ClInclude Include="Storage.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="RessourcesManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="PurchasersManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumInternalState.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumPurchaserStatus.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Villa.h">
       <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
     </ClInclude>
-    <ClInclude Include="EnumVillaManagementStateMachine.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ListOfAnnualProductions.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="VillaManagement.h">
+      <Filter>Fichiers d%27en-tête\Game\Villa</Filter>
     </ClInclude>
     <ClInclude Include="ListOfAnnualCostsNRevenues.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Game\Villa</Filter>
     </ClInclude>
-    <ClInclude Include="Fonts.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="ListOfAnnualProductions.h">
+      <Filter>Fichiers d%27en-tête\Game\Villa</Filter>
     </ClInclude>
     <ClInclude Include="EnumListOfCostsNRevenues.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Game\Villa</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumVillaManagementStateMachine.h">
+      <Filter>Fichiers d%27en-tête\Game\Villa</Filter>
+    </ClInclude>
+    <ClInclude Include="RessourcesManager.h">
+      <Filter>Fichiers d%27en-tête\Game\Ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumInternalState.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Purchasers.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities\Purchaser</Filter>
+    </ClInclude>
+    <ClInclude Include="PurchasersManager.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities\Purchaser</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumPurchaserStatus.h">
+      <Filter>Fichiers d%27en-tête\Game\Entities\Purchaser</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScreen.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Fichiers d%27en-tête\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage.h">
+      <Filter>Fichiers d%27en-tête\Game\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Purse.h">
+      <Filter>Fichiers d%27en-tête\Game\Villa</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -225,7 +225,7 @@ void Game::DisplayDecor()
 	}
 }
 
-void Game::DisplayUIGeneral()
+void Game::DisplayMoneyUI()
 {
 	BlitSprite(m_money->GetSprite(), 75, 50, 0, *m_window);
 
@@ -295,6 +295,7 @@ void Game::Display()
 		break;
 	case BUILD_MODE:
 		m_buildWindow.DisplayBuildWindow(this);
+		DisplayMoneyUI();
 		//DisplayUIBuildingMode();
 		m_previousGameState = BUILD_MODE;
 		break;
@@ -325,7 +326,6 @@ void Game::Display()
 		m_previousGameState = TUTORIAL_MODE;
 	}
 
-	DisplayUIGeneral();
 	m_time->DisplayCalendar(*m_window, *m_screenReso);
 
 	if (m_actualGameState != VILLA_MANAGEMENT

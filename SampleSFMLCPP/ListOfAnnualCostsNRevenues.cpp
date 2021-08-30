@@ -265,13 +265,12 @@ void ListOfAnnualCostsNRevenues::Update(VillaManagementStateMachine* _internalSt
 	case InternalState::STATE_EXIT:
 		internalState = InternalState::STATE_INIT;
 		*_internalStateMachine = VillaManagementStateMachine::NORMAL_STATE;
-		break;
-		// Desallocation du tableau de texts
-		if (m_textPapyrusTitles != nullptr)
-		{
-			//delete m_textPapyrusTitles;
-			m_textPapyrusTitles = nullptr;
-		}
+		//// Desallocation du tableau de texts
+		//if (m_textPapyrusTitles != nullptr)
+		//{
+		//	//delete m_textPapyrusTitles;
+		//	m_textPapyrusTitles = nullptr;
+		//}
 		break;
 	case InternalState::STATE_WAITING:
 		break;

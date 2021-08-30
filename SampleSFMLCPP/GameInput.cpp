@@ -188,6 +188,27 @@ void GameInput(struct Game *_game)
 					}
 				}
 
+				// Change the game speed
+				if (event.key.code == sf::Keyboard::Space)
+				{
+					switch (_game->m_time->GetTypeOfAcceleration())
+					{
+					case TypeOfTimeAcceleration::GAME_PAUSE:
+						_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
+						break;
+					case TypeOfTimeAcceleration::GAME_NORMAL_SPEED:
+						_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_DOUBLE_SPEED);
+						break;
+					case TypeOfTimeAcceleration::GAME_DOUBLE_SPEED:
+						_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_TRIPLE_SPEED);
+						break;
+					case TypeOfTimeAcceleration::GAME_TRIPLE_SPEED:
+						_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_PAUSE);
+						break;
+					default:
+						break;
+					}
+				}
 
 				// Touche placé sur O, mais à changer	
 				if (event.key.code == sf::Keyboard::O
@@ -307,13 +328,31 @@ void GameInput(struct Game *_game)
 					&& event.key.code == sf::Keyboard::Num5)
 				{
 					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_STOREHOUSE);
-					std::cout << "You've choose the \n";
+					std::cout << "You've choose the storehouse\n";
 				}
 				else if (_game->m_actualGameState == BUILD_MODE
 					&& event.key.code == sf::Keyboard::Num6)
 				{
 					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_STALL);
 					std::cout << "You've choose the stall\n";
+				}
+				else if (_game->m_actualGameState == BUILD_MODE
+					&& event.key.code == sf::Keyboard::Num7)
+				{
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_PATH);
+					std::cout << "You've choose the path\n";
+				}
+				else if (_game->m_actualGameState == BUILD_MODE
+					&& event.key.code == sf::Keyboard::Num8)
+				{
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_PAVED_PATH);
+					std::cout << "You've choose the paved path\n";
+				}
+				else if (_game->m_actualGameState == BUILD_MODE
+					&& event.key.code == sf::Keyboard::Num9)
+				{
+					_game->m_buildWindow.SetIDChosenBuilding(BUILDING_ROAD);
+					std::cout << "You've choose the road\n";
 				}
 
 			}

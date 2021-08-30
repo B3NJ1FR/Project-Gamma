@@ -92,6 +92,7 @@ public:
 	void ModifyParentLink(LinkedListClass::sElement *_nodeToModify, LinkedListClass::sElement *_newParentLink);
 	void FindLowestNodeValue();
 	void FindNodeArounds();
+	bool IsPositionReachable(sf::Vector2i _position) const;
 
 	void MainStatePathfinding();
 	void WalkProcess(sf::Vector2f *_workerPosition, const float &_speed = 1);

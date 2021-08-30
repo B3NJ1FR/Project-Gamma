@@ -2,6 +2,7 @@
 #include "GameDefinitions.h"
 #include "ListOfAnnualProductions.h"
 #include "ListOfAnnualCostsNRevenues.h"
+#include "Purse.h"
 
 
 VillaManagement::VillaManagement()
@@ -133,6 +134,7 @@ void VillaManagement::InputVillaManagement(enum CurrentGameState *_state, sf::Re
 			ListOfAnnualProductions::GetSingleton()->Input(event, _window, _screenResolution);
 			break;
 		case VillaManagementStateMachine::DISPLAY_MONEY_STATE:
+			Purse::GetSingleton()->Input(event, _window, _screenResolution);
 			break;
 		case VillaManagementStateMachine::QUIT_STATE:
 			break;
@@ -152,6 +154,10 @@ void VillaManagement::UpdateVillaManagement()
 	{
 		ListOfAnnualCostsNRevenues::GetSingleton()->Update(&m_internalStateMachine);
 	}
+	else if (m_internalStateMachine == VillaManagementStateMachine::DISPLAY_MONEY_STATE)
+	{
+		Purse::GetSingleton()->Update(&m_internalStateMachine);
+	}
 }
 
 void VillaManagement::DisplayVillaManagement(sf::RenderWindow &_window, const sf::Vector2i& _screenResolution)
@@ -167,17 +173,23 @@ void VillaManagement::DisplayVillaManagement(sf::RenderWindow &_window, const sf
 		if (m_isFeedbackActive[i]) BlitSprite(m_spriteElementsFeedbacks[i], _window);
 	}
 
-	if (m_internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE || m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
+	if (m_internalStateMachine == VillaManagementStateMachine::COSTS_N_REVENUES_STATE 
+		|| m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE
+		|| m_internalStateMachine == VillaManagementStateMachine::DISPLAY_MONEY_STATE)
 	{
 		BlitSprite(m_greyBackground, _window);
 
-		if (m_internalStateMachine == VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE)
+		switch (m_internalStateMachine)
 		{
-			ListOfAnnualProductions::GetSingleton()->Display(_window, _screenResolution);
-		}
-		else
-		{
+		case VillaManagementStateMachine::COSTS_N_REVENUES_STATE:
 			ListOfAnnualCostsNRevenues::GetSingleton()->Display(_window, _screenResolution);
+			break;
+		case VillaManagementStateMachine::PRODUCTION_SUMMARY_STATE:
+			ListOfAnnualProductions::GetSingleton()->Display(_window, _screenResolution);
+			break;
+		case VillaManagementStateMachine::DISPLAY_MONEY_STATE:
+			Purse::GetSingleton()->Display(_window, _screenResolution);
+			break;
 		}
 	}
 }

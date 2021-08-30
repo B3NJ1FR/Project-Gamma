@@ -55,8 +55,11 @@ public :
 	inline void SetNumberOfColumns(unsigned char _nbOfColumns) { m_numberColumns = _nbOfColumns; }
 
 	// Getters
+	// Layers = Z Axis
 	inline unsigned short GetNumberOfLayers() const { return m_numberLayers;  }
+	// Lines = Y Axis (from Top-Right to Bot-Left)
 	inline unsigned short GetNumberOfLines() const { return m_numberLines;  }
+	// Columns = X Axis (from Top-Left to Bot-Right)
 	inline unsigned short GetNumberOfColumns() const { return m_numberColumns;  }
 	inline sf::Vector2i GetMapSize() const { return sf::Vector2i(m_numberColumns, m_numberLines);  }
 	inline unsigned short*** GetMap() { return m_map;  }

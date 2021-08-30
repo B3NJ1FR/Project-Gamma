@@ -466,31 +466,89 @@ void Pathfinding::T() // Temporaire
 	isActive = true;
 }
 
+
+bool Pathfinding::IsPositionReachable(sf::Vector2i _position) const
+{
+	Map* pMap = Map::GetSingleton();
+
+	if (pMap->IsCoordinatesIsInMap(_position))
+	{
+		if (_position.x + 1 < pMap->GetNumberOfColumns())
+		{
+			if (temporaryMap[_position.y][_position.x + 1] == 0)
+			{
+				return true;
+			}
+		}
+		if (_position.x - 1 > 0)
+		{
+			if (temporaryMap[_position.y][_position.x - 1] == 0)
+			{
+				return true;
+			}
+		}
+
+		if (_position.y + 1 < pMap->GetNumberOfLines())
+		{
+			if (temporaryMap[_position.y + 1][_position.x] == 0)
+			{
+				return true;
+			}
+		}
+		if (_position.y - 1 > 0)
+		{
+			if (temporaryMap[_position.y - 1][_position.x] == 0)
+			{
+				return true;
+			}
+		}
+	}
+	
+	// In the case of the coordinates aren't in the map OR there is no cell available around the position, we return false
+	return false;
+}
+
 void Pathfinding::MainStatePathfinding()
 {
+	int securityCounter = 0;
+	int securityLimit = Map::GetSingleton()->GetNumberOfColumns() * Map::GetSingleton()->GetNumberOfLines() * 2;
+
 	// First initialisation
 	if (actualStatus == PATHFINDING_INITIALISATION)
 	{
-		// Init of the linkedList
-		//openList = LinkedListInitialisation();
-
 		// Init of the start and ending position
 		temporaryMap[startPosition.y][startPosition.x] = STARTING_TILE;
 		temporaryMap[endPosition.y][endPosition.x] = ENDING_TILE;
 		
-		// Add the first node with the starting position entered
-		AddFirstNodeToList(startPosition);
+		if (IsPositionReachable(sf::Vector2i(endPosition.x, endPosition.y)))
+		{
+			// Add the first node with the starting position entered
+			AddFirstNodeToList(startPosition);
 
-		actualStatus = PATHFINDING_SEARCH;
+			actualStatus = PATHFINDING_SEARCH;
+		}
+		else
+		{
+			// We can't reach this coordinate
+			actualStatus = PATHFINDING_FIND_NO_WAY;
+			std::cout << "[PATHFINDING] - Initialisation - These coordinates can't be reached\n\n";
+		}
 	}
-	
-
 
 	while (actualStatus == PATHFINDING_SEARCH)
 	{
 		FindLowestNodeValue();
 		
 		FindNodeArounds();
+		securityCounter++;
+
+		// In the case where the entity can't reach the destination, 
+		// we broke the loop to avoid a freeze of the game because of pathfinding calculations
+		if (securityCounter > securityLimit)
+		{
+			actualStatus = PATHFINDING_FIND_NO_WAY;
+			std::cout << "[PATHFINDING] - Internal Loop - These coordinates can't be reached\n\n";
+		}
 	}
 
 	// Step by step
