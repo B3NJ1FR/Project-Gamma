@@ -11,7 +11,6 @@ private:
 	sf::Sprite m_backgroundMessage;
 
 	std::string *m_messages;
-	std::string m_pressSpaceMessage;
 
 	sf::Text m_text;
 	sf::Text m_textPressSpace;

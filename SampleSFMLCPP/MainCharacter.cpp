@@ -11,7 +11,7 @@ MainCharacter::MainCharacter()
 	m_spriteCharaSelected = LoadSprite("Data/Assets/Sprites/Entities/worker_selected.png", 1);
 
 	// A CONFIG / SET TEMPORAIRE
-	m_mapPosition = sf::Vector2f(10, 10);
+	m_mapPosition = sf::Vector2f(15, 10);
 	
 	m_actualStatus = WorkerStatus::IDLE;
 	m_isLauchingMovement = false;

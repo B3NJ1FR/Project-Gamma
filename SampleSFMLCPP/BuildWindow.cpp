@@ -62,19 +62,23 @@ void BuildWindow::InitialisationListOfPreviousID()
 
 void BuildWindow::InitTextsBuildWindow(sf::Font *_font)
 {
-	m_textBuildingCaseOccupied = new sf::Text[2];
+	m_textBuildingCaseOccupied = new sf::Text[4];
 
-	LoadTextString(&m_textBuildingCaseOccupied[0], "Place already occupied", _font, 40, sf::Color::White, 2);
-	LoadTextString(&m_textBuildingCaseOccupied[1], "Out of territory", _font, 40, sf::Color::White, 2);
+	sf::Color yellowColor = sf::Color(242, 195, 87);
+	sf::Color burgundy = sf::Color(123, 20, 20);
+	LoadTextString(&m_textBuildingCaseOccupied[0], "Place already occupied", _font, 40, burgundy, 2);
+	LoadTextString(&m_textBuildingCaseOccupied[1], "Place already occupied", _font, 40, yellowColor, 2);
+	LoadTextString(&m_textBuildingCaseOccupied[2], "Out of territory", _font, 40, burgundy, 2);
+	LoadTextString(&m_textBuildingCaseOccupied[3], "Out of territory", _font, 40, yellowColor, 2);
 
 
 	m_textBuildingHelps = new sf::Text[BUILD_WINDOW_HELP_NB_OF_TEXTS];
 
-	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], "", _font, 20, sf::Color::Black, 3);
-	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 20, sf::Color::Black, 0);
-	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 16, sf::Color::Black, 2);
-	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 13, sf::Color::Black);
-	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 20, sf::Color::Black, 3);
+	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_X], "", _font, 20, burgundy, 3);
+	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_Y], "", _font, 20, burgundy, 0);
+	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_SIZE_LIAISON], " x ", _font, 16, burgundy, 2);
+	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_DESCRIPTION], "", _font, 13, burgundy);
+	LoadTextString(&m_textBuildingHelps[BUILD_WINDOW_HELP_MONEY_COST], "", _font, 20, burgundy, 3);
 }
 
 void BuildWindow::InitSpritesBuildWindow()
@@ -90,10 +94,37 @@ void BuildWindow::InitSpritesBuildWindow()
 	m_enteringArrow = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/left_arrow.png", 1);
 	m_exitingArrow = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/right_arrow.png", 1);
 	m_separationLine = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/separation.png", 1);
+	m_confirmButton = LoadSprite("Data/Assets/Sprites/Menu/BuildingModeWindow/confirm_button.png", 1, true);
+	m_confirmButton.setScale(sf::Vector2f(0.65f, 0.65f));
 }
 
 
+// Building Mode : Inputs management to select the confirm button
+void BuildWindow::InputButtonConfirm(struct Game* _game)
+{
+	sf::Vector2i mousePosition = sf::Mouse::getPosition(*_game->m_window);
 
+	// Button to return to normal mode
+	if (mousePosition.x > 150.0f - (m_confirmButton.getGlobalBounds().width / 2)
+		&& mousePosition.x < 150.0f + (m_confirmButton.getGlobalBounds().width / 2)
+		&& mousePosition.y > (float)_game->m_screenReso->y - 80.0f - (m_confirmButton.getGlobalBounds().height / 2)
+		&& mousePosition.y < (float)_game->m_screenReso->y - 80.0f + (m_confirmButton.getGlobalBounds().height / 2))
+	{
+		if (!_game->m_buildingsListPlanned->IsBuildingListIsEmpty())
+		{
+			_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
+			_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
+		}
+		else
+		{
+			_game->m_mainCharacter->SetMainCharacterStatus(IDLE, false);
+		}
+
+		_game->m_buildWindow.LoadOnMapPreviousID();
+		_game->m_actualGameState = CurrentGameState::NORMAL_MODE;
+		_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
+	}
+}
 
 void BuildWindow::InputPickUpCaseClicked(sf::RenderWindow &_window, const sf::Vector2i &_screenResolution, bool _isBuildingUINeeded, const sf::Vector2f &_camera, const sf::Vector2f &_cameraScale)
 {
@@ -556,7 +587,8 @@ void BuildWindow::UpdateBuildWindow(struct Game *_game)
 
 		for (int i = 0; i < _game->m_builds.GetNumberOfBuildings(); i++)
 		{
-			LoadTextString(&_game->m_builds.m_buildingsNameTexts[i], _game->m_builds.m_buildings[i].GetName(), &_game->m_charlemagneFont, 18, sf::Color::Black, 2);
+			sf::Color burgundy = sf::Color(100, 13, 13);
+			LoadTextString(&_game->m_builds.m_buildingsNameTexts[i], _game->m_builds.m_buildings[i].GetName(), &_game->m_charlemagneFont, 18, burgundy, 2);
 		}
 	}
 
@@ -749,6 +781,8 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 		}
 	}
 
+
+
 	// Display the "Out of territory" and "Place already occupied" messages
 	if (m_isBuildingCaseOccupied == true
 		&& !(mousePosition.x > _game->m_screenReso->x - (m_buildingUI.getGlobalBounds().width * 2)
@@ -758,15 +792,20 @@ void BuildWindow::DisplayBuildWindow(struct Game *_game)
 	{
 		if (!_game->m_map->IsCoordinatesIsInMap(m_buildingCaseSelected))
 		{
-			BlitString(m_textBuildingCaseOccupied[1], 500, _game->m_screenReso->y - 100, *_game->m_window);
+			BlitString(m_textBuildingCaseOccupied[2], 652.0f, _game->m_screenReso->y - 98.0f, *_game->m_window);
+			BlitString(m_textBuildingCaseOccupied[3], 650.0, _game->m_screenReso->y - 100.0f, *_game->m_window);
 		}
 		else if (m_textBuildingCaseOccupied != nullptr)
 		{
-			BlitString(m_textBuildingCaseOccupied[0], 500, _game->m_screenReso->y - 100, *_game->m_window);
+			BlitString(m_textBuildingCaseOccupied[0], 652.0f, _game->m_screenReso->y - 98.0f, *_game->m_window);
+			BlitString(m_textBuildingCaseOccupied[1], 650.0f, _game->m_screenReso->y - 100.0f, *_game->m_window);
 		}
 	}
 
 	BlitSprite(m_buildingUIUpper, (float)_game->m_screenReso->x - m_buildingUI.getGlobalBounds().width, (float)_game->m_screenReso->y - m_buildingUI.getGlobalBounds().height, 0.0f, *_game->m_window);
+
+	// Display confirm button
+	BlitSprite(m_confirmButton, 150.0f, (float)_game->m_screenReso->y - 80.0f, *_game->m_window);
 }
 
 void BuildWindow::SaveFromMapPreviousBuildNSpriteID(sf::Vector2i _mapPosition, unsigned short _currentFloor, unsigned short _typeOfBuilding, unsigned short _spriteID)

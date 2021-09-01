@@ -205,19 +205,19 @@ void Game::DisplayDecor()
 							}
 						}
 					}
-
-
-
-					if (z == FIRST_FLOOR + SPRITE_ID)
+					else
 					{
-						// Display of the main character
-						if (m_mainCharacter->IsMainCharacterPosition(sf::Vector2i(x, y)) == true)
+						if (z == FIRST_FLOOR + SPRITE_ID)
 						{
-							m_mainCharacter->DisplayMainCharacter(sf::Vector2i(x, y), m_camera, *m_screenReso, m_scale, *m_window);
-						}
+							// Display of the main character
+							if (m_mainCharacter->IsMainCharacterPosition(sf::Vector2i(x, y)) == true)
+							{
+								m_mainCharacter->DisplayMainCharacter(sf::Vector2i(x, y), m_camera, *m_screenReso, m_scale, *m_window);
+							}
 
-						// Display of the workers
-						m_workersList->DisplayWorkersSprite(sf::Vector2i(x, y), m_camera, m_scale, m_mainCharacter->GetIsMainCharacterSelected(), *m_window);
+							// Display of the workers
+							m_workersList->DisplayWorkersSprite(sf::Vector2i(x, y), m_camera, m_scale, m_mainCharacter->GetIsMainCharacterSelected(), *m_window);
+						}
 					}
 				}
 			}
@@ -284,7 +284,8 @@ void Game::Display()
 {
 	m_window->clear();
 
-	if (m_actualGameState == BUILD_MODE) m_buildWindow.DisplayBackground(*m_window);
+	if (m_actualGameState == BUILD_MODE
+		|| (m_actualGameState == PAUSE_WINDOW && m_previousGameState == BUILD_MODE)) m_buildWindow.DisplayBackground(*m_window);
 
 	DisplayDecor();
 
@@ -305,8 +306,6 @@ void Game::Display()
 	case SELLING_WINDOW:
 		m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
 		m_previousGameState = SELLING_WINDOW;
-		break;
-	case PAUSE_WINDOW:
 		break;
 	case VILLA_MANAGEMENT:
 		m_villaManagement.DisplayVillaManagement(*m_window, *m_screenReso);
@@ -329,7 +328,8 @@ void Game::Display()
 	m_time->DisplayCalendar(*m_window, *m_screenReso);
 
 	if (m_actualGameState != VILLA_MANAGEMENT
-		&& m_actualGameState != BUILD_MODE)
+		&& m_actualGameState != BUILD_MODE
+		&& !(m_actualGameState == PAUSE_WINDOW && m_previousGameState == BUILD_MODE))
 	{
 		m_time->DisplayTimeChanger(*m_window, *m_screenReso);
 
@@ -362,16 +362,13 @@ void Game::Display()
 			{
 			case BUILD_MODE:
 				m_buildWindow.DisplayBuildWindow(this);
-				//DisplayUIBuildingMode(_game);
+				DisplayMoneyUI();
 				break;
 			case SELLING_WINDOW:
 				m_sellingWindow->DisplaySellingWindow(*m_window, *m_screenReso);
 				break;
 			case VILLA_MANAGEMENT:
 				m_villaManagement.DisplayVillaManagement(*m_window, *m_screenReso);
-				break;
-			case ESTATE_DATA_N_STATISTICS:
-				//villaManagement.DisplayVillaManagement(*window);
 				break;
 			default:
 				break;

@@ -10,13 +10,12 @@ TutorialWindow::TutorialWindow(sf::Font *_font)
 	m_isTutorielDisplayFinished = false;
 
 	m_messages = nullptr;
-	m_pressSpaceMessage = "Press Space to Continue";
-
 
 	InitTextOfTutorialFromFile();
-	
-	LoadTextString(&m_text, m_messages[m_actualMessages], _font, 18, sf::Color::Black, 1);
-	LoadTextString(&m_textPressSpace, m_pressSpaceMessage, _font, 17, sf::Color::Black, 1);
+
+	sf::Color burgundy = sf::Color(100, 13, 13);
+	LoadTextString(&m_text, m_messages[m_actualMessages], _font, 18, burgundy, 1);
+	LoadTextString(&m_textPressSpace, "Press Space to Continue", _font, 17, burgundy, 1);
 }
 
 TutorialWindow::~TutorialWindow()
@@ -82,7 +81,8 @@ void TutorialWindow::InitTextOfTutorialFromFile()
 			{
 				if (counter != -1)
 				{
-					if (temporaryString == "[SAUT_LIGNE]")
+					if (temporaryString == "[SAUT_LIGNE]"
+						|| temporaryString == "[BREAK_LINE]")
 					{
 						finalString[counter] += "\n";
 					}
@@ -159,7 +159,8 @@ void TutorialWindow::UpdateTutorialWindow(enum CurrentGameState* _state, sf::Fon
 	{
 		m_messages[m_actualMessages] = ConvertStringIntoParagraph(m_messages[m_actualMessages], NUMBER_OF_CARACTERS_PER_LINE);
 
-		LoadTextString(&m_text, m_messages[m_actualMessages], _font, 18, sf::Color::Black, 1);
+		m_text.setString(m_messages[m_actualMessages]);
+		ChangeTextStringOrigin(&m_text, 1);
 
 		m_isMessageHasChanged = false;
 	}

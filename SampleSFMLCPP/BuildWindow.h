@@ -38,6 +38,7 @@ private:
 	sf::Sprite m_enteringArrow;
 	sf::Sprite m_exitingArrow;
 	sf::Sprite m_separationLine;
+	sf::Sprite m_confirmButton;
 	float m_scrollBuildingList;
 
 	LinkedListClass::sLinkedList* m_listOfPreviousID = nullptr;
@@ -77,6 +78,7 @@ public:
 	inline void SetIDChosenBuilding(const int& _buildingID) { m_IDChosenBuilding = _buildingID; };
 
 	// Methods
+	void InputButtonConfirm(struct Game* _game);
 	void InputBuildingModeOldScrollUI(const float& _scrollDelta, const sf::RenderWindow& _window, const sf::Vector2i& _screenResolution);
 	void InputPickUpCaseClicked(sf::RenderWindow& _window, const sf::Vector2i& _screenResolution, bool _isBuildingUINeeded, const sf::Vector2f& _camera, const sf::Vector2f& _cameraScale);
 	

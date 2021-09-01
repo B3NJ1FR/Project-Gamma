@@ -90,54 +90,6 @@ void GameInput(struct Game *_game)
 					_game->m_actualGameState = PAUSE_WINDOW;
 				}
 
-				// When the B keybutton is pressed, we change the state of the game
-				if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == VILLA_MANAGEMENT)
-				{
-					_game->m_actualGameState = BUILD_MODE;
-				}
-				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == BUILD_MODE)
-				{
-					if (!_game->m_buildingsListPlanned->IsBuildingListIsEmpty())
-					{
-						_game->m_mainCharacter->SetMainCharacterEndingPosition(_game->m_buildingsListPlanned->GetBuildingPositionInMap(), _game->m_map);
-						_game->m_mainCharacter->SetMainCharacterStatus(IDLE, true);
-					}
-					else
-					{
-						_game->m_mainCharacter->SetMainCharacterStatus(IDLE, false);
-					}
-
-					_game->m_buildWindow.LoadOnMapPreviousID();
-					_game->m_actualGameState = NORMAL_MODE;
-					_game->m_time->SetTypeOfAcceleration(TypeOfTimeAcceleration::GAME_NORMAL_SPEED);
-				}
-				else if (event.key.code == sf::Keyboard::B && _game->m_actualGameState == NORMAL_MODE)
-				{
-					/*if (_game->m_workersList->GetNumberOfWorkers() > 0)
-					{
-						_game->m_mainCharacter->SetIsMainCharacterSelected(_game->m_mainCharacter->GetIsMainCharacterSelected() ? false : true);
-					}
-					else
-					{
-						_game->m_mainCharacter->SetIsMainCharacterSelected(true);
-					}*/
-				}
-
-				/*if (event.key.code == sf::Keyboard::B && _game->actualGameState == NORMAL_MODE)
-				{
-					_game->actualGameState = BUILD_MODE;
-
-					if (_game->buildingsNameTexts == nullptr)
-					{
-						_game->buildingsNameTexts = new sf::Text[_game->numberOfBuilding];
-
-						for (int i = 0; i < _game->numberOfBuilding; i++)
-						{
-							LoadTextString(&_game->buildingsNameTexts[i], _game->buildings[i].GetName(), &_game->charlemagneFont, 18, sf::Color::Black, 2);
-						}
-					}
-				}*/
-
 				// When the T keybutton is pressed, we change the state of the game
 				/*if (event.key.code == sf::Keyboard::T && _game->actualGameState == NORMAL_MODE)
 				{
@@ -436,6 +388,7 @@ void GameInput(struct Game *_game)
 					{
 						_game->m_buildWindow.InputBuildWindow(_game);
 						_game->m_buildWindow.InputBuildingModeOldScrollUI(_game->m_buildWindow.GetScrollBuildingList(), *_game->m_window, *_game->m_screenReso);
+						_game->m_buildWindow.InputButtonConfirm(_game);
 					}
 					else if (_game->m_actualGameState == TEST_PATHFINDING_MODE)
 					{
