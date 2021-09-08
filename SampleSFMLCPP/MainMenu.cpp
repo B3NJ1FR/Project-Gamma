@@ -158,9 +158,9 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 						std::cout << "\n\nOptions ...\n\n\n";
 						state = MAIN_MENU_OPTIONS;
 
-						resolution = new sf::Text;
+						//resolution = new sf::Text;
 						fullscreen = new sf::Text;
-						LoadTextString(resolution, _system->m_listOfScreenResolutions[_system->m_currentScreenResolution], &font, 40, sf::Color::Black, 1);
+						//LoadTextString(resolution, _system->m_listOfScreenResolutions[_system->m_currentScreenResolution], &font, 40, sf::Color::Black, 1);
 
 						if (_system->m_isFullscreen)
 						{
@@ -194,7 +194,7 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 					float widthOffset = (_system->m_screenResolution.x * 400) / 1920.f;
 
 					// Change resolution displayed
-					if (mousePostionAtScreen.x > widthOffset - 100
+					/*if (mousePostionAtScreen.x > widthOffset - 100
 						&& mousePostionAtScreen.x < widthOffset + 100
 						&& mousePostionAtScreen.y > 200 - 30
 						&& mousePostionAtScreen.y < 200 + 30)
@@ -202,7 +202,7 @@ void MainMenu::InputMainMenu(sf::RenderWindow &_window, enum GeneralState *_gene
 						temporaryResolution = (temporaryResolution == -1) ? _system->m_currentScreenResolution + 1 : (temporaryResolution + 1) % SR_NUMBER_MAX;
 						
 						LoadTextString(resolution, _system->m_listOfScreenResolutions[temporaryResolution], &this->font, 40, sf::Color::Black, 1);
-					}
+					}*/
 					
 					// Change fullscreen displayed
 					if (mousePostionAtScreen.x > widthOffset - 100
@@ -317,10 +317,10 @@ void MainMenu::DisplayMainMenuOptions(sf::RenderWindow& _window, const sf::Vecto
 
 	float widthOffset = (_screenResolution.x * 400) / 1920.f;
 
-	if (resolution != nullptr)
+	/*if (resolution != nullptr)
 	{
 		BlitString(*resolution, widthOffset, 200, _window);
-	}
+	}*/
 	
 	if (fullscreen != nullptr)
 	{

@@ -94,8 +94,6 @@ void Data::GameState()
 	// Display the loading screen during the game loading
 	m_loadingScreen->DisplayLoadingScreen(m_system->m_window, m_system->m_screenResolution);
 
-	std::cout << "Here";
-
 	// Initialisation
 	CreateNewGame();
 

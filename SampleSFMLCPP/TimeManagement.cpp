@@ -27,12 +27,12 @@ void TimeManagement::Initialisation(sf::Font* _font, const sf::Vector2i& _screen
 	m_gameClock.restart();
 
 	m_frameTime = m_gameClock.getElapsedTime();
-	m_timer += m_frameTime;
+	m_timer = sf::Time::Zero + m_frameTime;
 
 	m_actualMonth = IANUARIUS;
 	m_numberOfYears = RESET;
 
-	m_isMonthHasChanged = false;
+	m_isMonthHasChanged = true;
 	m_isYearHasChanged = true;
 
 	sf::Color colorActivated = { 236, 150, 55, 255 };
